@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const projects = await getCollection('projects');
+projects.sort((a, b) => b.data.year - a.data.year);
+---
+
+<Layout title="Proyectos">
+  <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
+    <div class="flex flex-col gap-12">
+      <div class="space-y-4">
+        <h1 class="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">Proyectos</h1>
+        <p class="text-muted-foreground max-w-2xl text-lg">
+          Una colección de trabajos en desarrollo full-stack, diseño UI/UX y arquitectura de
+          software.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3">
+        {
+          projects.map((project) => (
+            <a href={`/projects/${project.slug}`} class="group flex cursor-pointer flex-col gap-4">
+              <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-transparent bg-neutral-200 transition-all duration-300 group-hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+                <img
+                  src={project.data.image}
+                  alt={project.data.title}
+                  class="h-full w-full object-cover"
+                />
+                <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  <span class="sr-only">Ver Proyecto</span>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="flex items-start justify-between">
+                  <h3 class="group-hover:text-primary font-serif text-2xl font-bold transition-colors dark:text-neutral-50 dark:group-hover:text-white">
+                    {project.data.title}
+                  </h3>
+                  <span class="border-border rounded-full border px-2 py-0.5 font-mono text-xs dark:border-neutral-800 dark:text-neutral-400">
+                    {project.data.year}
+                  </span>
+                </div>
+                <p class="text-muted-foreground text-sm dark:text-neutral-400">
+                  {project.data.client}
+                </p>
+                <div class="flex flex-wrap gap-2 pt-2">
+                  {project.data.tags.map((tag) => (
+                    <span class="text-muted-foreground/80 text-xs lowercase dark:text-neutral-500">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
