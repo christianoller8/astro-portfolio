@@ -1,0 +1,110 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<Layout
+  title={`${project.data.title} | Proyectos`}
+  description={project.data.description}
+  image={project.data.image}
+>
+  <article class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 lg:px-20">
+    <a
+      href="/projects"
+      class="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center text-sm font-medium transition-colors dark:hover:text-white"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="mr-2"
+      >
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+      Volver a Proyectos
+    </a>
+
+    <header class="mb-12">
+      <h1
+        class="text-foreground mb-8 font-serif text-5xl leading-tight font-bold md:text-7xl dark:text-white"
+      >
+        {project.data.title}
+      </h1>
+
+      <div
+        class="border-border/40 grid grid-cols-2 gap-8 border-y py-6 md:grid-cols-4 dark:border-neutral-800"
+      >
+        <div>
+          <span
+            class="text-muted-foreground mb-1 block text-xs tracking-wider uppercase dark:text-neutral-500"
+          >
+            Año
+          </span>
+          <span class="text-sm font-medium dark:text-neutral-200">
+            {project.data.year}
+          </span>
+        </div>
+
+        <div>
+          <span
+            class="text-muted-foreground mb-1 block text-xs tracking-wider uppercase dark:text-neutral-500"
+          >
+            Cliente
+          </span>
+          <span class="text-sm font-medium dark:text-neutral-200">
+            {project.data.client}
+          </span>
+        </div>
+
+        <div class="col-span-2 md:col-span-2">
+          <span
+            class="text-muted-foreground mb-1 block text-xs tracking-wider uppercase dark:text-neutral-500"
+          >
+            Tecnologías
+          </span>
+          <div class="flex flex-wrap gap-2">
+            {
+              project.data.tags.map((tag) => (
+                <span class="text-sm font-medium dark:text-neutral-200">#{tag}</span>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div
+      class="mb-16 aspect-video w-full overflow-hidden rounded-xl bg-neutral-100 shadow-lg dark:bg-neutral-900"
+      transition:name={`project-image-${project.slug}`}
+    >
+      <img
+        src={project.data.image}
+        alt={`Portada del proyecto ${project.data.title}`}
+        class="h-full w-full object-cover"
+      />
+    </div>
+
+    <div class="mx-auto max-w-3xl">
+      <div class="prose prose-lg prose-neutral dark:prose-invert max-w-none">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Layout>

@@ -1,0 +1,123 @@
+---
+import Layout from '@/layouts/Layout.astro';
+
+// Metadatos de la página
+const pageTitle = 'Sobre mí | Christian Oller';
+const pageDescription =
+  'Conoce más sobre mi trayectoria como desarrollador Full Stack y mi experiencia profesional.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
+    <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-20">
+      <div class="space-y-8 lg:sticky lg:top-24 lg:col-span-4">
+        <h1 class="font-serif text-4xl leading-tight font-bold md:text-5xl">Sobre mí</h1>
+
+        <div
+          class="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-100 shadow-xl dark:bg-neutral-800"
+        >
+          <img
+            src="/images/profile.jpg"
+            alt="Foto de perfil de Christian Oller"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+
+      <div class="prose prose-neutral text-secondary dark:prose-invert max-w-none lg:col-span-8">
+        <h2 class="text-foreground mb-6 font-serif text-3xl">Mi Trayectoria</h2>
+        <p class="mb-12 text-lg leading-relaxed text-pretty">
+          Soy un Desarrollador de Software con más de 2 años de experiencia. Mi enfoque combina la
+          precisión técnica con la resolución creativa de problemas. Me he especializado en
+          soluciones ERP, tecnología para aerolíneas y plataformas de consultoría medioambiental.
+        </p>
+
+        <h3 class="text-foreground mb-8 font-serif text-2xl">Experiencia Profesional</h3>
+
+        <div class="not-prose space-y-12">
+          <div class="relative border-l border-neutral-200 pl-8 dark:border-neutral-800">
+            <div
+              class="absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full bg-neutral-400 dark:bg-neutral-600"
+            >
+            </div>
+            <div class="mb-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+              <h4 class="text-foreground text-xl font-bold">FullStack Developer</h4>
+              <span class="text-muted-foreground text-sm font-medium"
+                >Inology | Jun 2023 - Mar 2024</span
+              >
+            </div>
+            <p class="text-muted-foreground mb-4">
+              Desarrollo de aplicaciones ERP y soluciones de gestión horaria.
+            </p>
+            <ul class="text-secondary ml-4 list-outside list-disc space-y-1 text-sm">
+              <li>Mantenimiento de ERP con SQL.</li>
+              <li>Personalización de informes con Crystal Reports.</li>
+              <li>Gestión y administración de servidores.</li>
+              <li>Trato directo y consultoría con clientes.</li>
+            </ul>
+          </div>
+
+          <div class="relative border-l border-neutral-200 pl-8 dark:border-neutral-800">
+            <div
+              class="absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full bg-neutral-400 dark:bg-neutral-600"
+            >
+            </div>
+            <div class="mb-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+              <h4 class="text-foreground text-xl font-bold">Front-end Developer</h4>
+              <span class="text-muted-foreground text-sm font-medium"
+                >SM Medioambientales | Sep 2023 - Nov 2023</span
+              >
+            </div>
+            <p class="text-muted-foreground mb-4">Soluciones web para consultoría ambiental.</p>
+            <ul class="text-secondary ml-4 list-outside list-disc space-y-1 text-sm">
+              <li>Mantenimiento web y optimización.</li>
+              <li>Diseño UI (HTML/CSS/JS).</li>
+              <li>Coordinación del rediseño completo de la plataforma.</li>
+              <li>Refactorización a tecnologías modernas (Tailwind/Bootstrap).</li>
+            </ul>
+          </div>
+
+          <div class="relative border-l border-neutral-200 pl-8 dark:border-neutral-800">
+            <div
+              class="absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full bg-neutral-400 dark:bg-neutral-600"
+            >
+            </div>
+            <div class="mb-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+              <h4 class="text-foreground text-xl font-bold">Front-end Developer</h4>
+              <span class="text-muted-foreground text-sm font-medium"
+                >Vueling Airlines | Mar 2023 - May 2023</span
+              >
+            </div>
+            <p class="text-muted-foreground mb-4">
+              Innovación tecnológica y plataformas digitales para aerolíneas.
+            </p>
+            <ul class="text-secondary ml-4 list-outside list-disc space-y-1 text-sm">
+              <li>Desarrollo Web con Angular.</li>
+              <li>Implementación robusta con TypeScript/JS.</li>
+              <li>Creación de aplicaciones dinámicas de alto tráfico.</li>
+              <li>Integración de APIs y testing exhaustivo con Postman.</li>
+            </ul>
+          </div>
+
+          <div class="relative border-l border-neutral-200 pl-8 dark:border-neutral-800">
+            <div
+              class="absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full bg-neutral-400 dark:bg-neutral-600"
+            >
+            </div>
+            <div class="mb-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+              <h4 class="text-foreground text-xl font-bold">Front-end Developer</h4>
+              <span class="text-muted-foreground text-sm font-medium"
+                >Pukkas | Ene 2022 - Ago 2022</span
+              >
+            </div>
+            <p class="text-muted-foreground mb-4">Desarrollo de proyectos web a medida.</p>
+            <ul class="text-secondary ml-4 list-outside list-disc space-y-1 text-sm">
+              <li>Desarrollo Frontend de interfaces de usuario.</li>
+              <li>Integración de APIs externas y servicios web.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

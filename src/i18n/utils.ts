@@ -16,6 +16,6 @@ export function useTranslations(lang: keyof typeof ui) {
 // Función helper para generar enlaces con el idioma actual
 export function useTranslatedPath(lang: keyof typeof ui) {
   return function translatePath(path: string, l: string = lang) {
-    return l === defaultLang ? path : `/${l}${path}`;
+    return !path.startsWith('/') ? `/${l}/${path}` : `/${l}${path}`;
   };
 }

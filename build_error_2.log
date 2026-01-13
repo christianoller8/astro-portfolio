@@ -1,0 +1,19 @@
+
+> scratch@0.0.1 build
+> astro build
+
+[2m10:58:20[22m [34m[content][39m Syncing content
+[2m10:58:20[22m [34m[content][39m Synced content
+[2m10:58:20[22m [34m[types][39m Generated [2m323ms[22m
+[2m10:58:20[22m [34m[build][39m output: [34m"static"[39m
+[2m10:58:20[22m [34m[build][39m mode: [34m"static"[39m
+[2m10:58:20[22m [34m[build][39m directory: [34mD:\DEVELOPER\2026\PORTFOLIO\PROJECT\christian-portfolio\dist\[39m
+[2m10:58:20[22m [34m[build][39m Collecting build info...
+[2m10:58:20[22m [34m[build][39m [32m✓ Completed in 343ms.[39m
+[2m10:58:20[22m [34m[build][39m Building static entrypoints...
+[31m[1m10:58:21[22m [ERROR] [vite][39m [31m✗[39m Build failed in 478ms
+Could not resolve "../../layouts/Layout.astro" from "src/pages/es/projects/[slug].astro"
+file: D:/DEVELOPER/2026/PORTFOLIO/PROJECT/christian-portfolio/src/pages/es/projects/[slug].astro
+  [1mStack trace:[22m
+[2m    at getRollupError (file:///D:/DEVELOPER/2026/PORTFOLIO/PROJECT/christian-portfolio/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at ModuleLoader.handleInvalidResolvedId (file:///D:/DEVELOPER/2026/PORTFOLIO/PROJECT/christian-portfolio/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/es/shared/node-entry.js:21710:24)[22m
