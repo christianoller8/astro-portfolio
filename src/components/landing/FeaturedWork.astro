@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+// Filtrar solo los marcados como 'featured: true' en el markdown
+const featuredProjects = allProjects.filter((project) => project.data.featured);
+// Ordenar por año descendente
+featuredProjects.sort((a, b) => b.data.year - a.data.year);
+---
+
+<section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
+  <div class="flex flex-col gap-12">
+    <div class="flex items-end justify-between">
+      <h2 class="font-serif text-3xl font-bold md:text-4xl">Proyectos Destacados</h2>
+
+      <a
+        href="/projects"
+        class="hover:text-primary hidden items-center text-sm font-medium transition-colors md:inline-flex"
+      >
+        Ver todos los proyectos
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="ml-2"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16">
+      {
+        featuredProjects.map((project) => (
+          <a href={`/projects/${project.slug}`} class="group flex cursor-pointer flex-col gap-4">
+            <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-transparent bg-neutral-200 transition-all duration-300 group-hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+              <img
+                src={project.data.image}
+                alt={project.data.title}
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <span class="sr-only">Ver Proyecto</span>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex items-start justify-between">
+                <h3 class="group-hover:text-primary font-serif text-2xl font-bold transition-colors dark:text-neutral-50 dark:group-hover:text-white">
+                  {project.data.title}
+                </h3>
+                <span class="border-border rounded-full border px-2 py-0.5 font-mono text-xs dark:border-neutral-800 dark:text-neutral-400">
+                  {project.data.year}
+                </span>
+              </div>
+              <p class="text-muted-foreground text-sm dark:text-neutral-400">
+                {project.data.client}
+              </p>
+              <div class="flex flex-wrap gap-2 pt-2">
+                {project.data.tags.map((tag) => (
+                  <span class="text-muted-foreground/80 text-xs lowercase dark:text-neutral-500">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 flex justify-center md:hidden">
+      <a
+        href="/projects"
+        class="hover:text-primary inline-flex items-center text-sm font-medium transition-colors"
+      >
+        Ver todos los proyectos
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="ml-2"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

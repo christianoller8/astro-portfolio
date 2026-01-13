@@ -1,0 +1,51 @@
+---
+// Force refresh
+const technologies = [
+  'HTML5',
+  'CSS3',
+  'SASS',
+  'Bootstrap',
+  'Tailwind',
+  'PrimeNG',
+  'PrimeFlex',
+  'React',
+  'Next.js',
+  'Angular v8-v21',
+  'Karma/Jasmine',
+  'Cypress',
+  'Postman',
+  'Node',
+  'SQL',
+  'MongoDB',
+  'Git',
+  'Bitbucket',
+  'API Rest',
+  'GraphQL',
+  'Wordpress',
+  'Figma',
+  'Procreate',
+  'VSCode',
+];
+---
+
+<section
+  class="border-border/40 mx-auto w-full max-w-[1400px] border-t px-6 py-12 md:px-12 md:py-16 lg:px-20"
+>
+  <div class="flex flex-col gap-8">
+    <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+      <h2 class="text-foreground text-sm font-bold tracking-wider uppercase">Tecnologías Clave</h2>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-8">
+      {
+        technologies.map((tech) => (
+          <div class="group /* Base Styles (Light/Dark depth) */ border-border/40 bg-background/50 /* Hover Border */ hover:border-primary /* Slide Right Effect (Before Pseudo-element) */ before:bg-primary relative flex items-center justify-center overflow-hidden rounded-lg border p-4 transition-all duration-300 before:absolute before:inset-0 before:w-0 before:transition-[width] before:duration-300 before:ease-out hover:before:w-full dark:bg-neutral-900">
+            <span class="/* Text Color Logic: Base: Secondary (Gray) Hover: Background (Inverts to Primary color) */ text-secondary group-hover:text-background relative z-10 text-sm font-medium tracking-wide transition-colors duration-300">
+              {tech}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

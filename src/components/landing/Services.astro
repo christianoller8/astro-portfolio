@@ -1,0 +1,41 @@
+---
+const services = [
+  {
+    title: 'Arquitectura Frontend',
+    description: 'Creación de interfaces dinámicas y escalables con React, Angular y Next.js.',
+  },
+  {
+    title: 'Soluciones Backend',
+    description: 'Lógica robusta del lado del servidor e integración de APIs (SQL, PHP, Firebase).',
+  },
+  {
+    title: 'Implementación UI/UX',
+    description:
+      'Traducción de diseños a código pixel-perfect, accesible y responsive (Tailwind, SASS).',
+  },
+  {
+    title: 'Rendimiento y Testing',
+    description: 'Garantía de calidad y velocidad mediante Vitest y optimización continua.',
+  },
+];
+---
+
+<section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-16 lg:px-20">
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+    {
+      services.map((service) => (
+        <div class="group space-y-3">
+          <h3 class="text-foreground group-hover:text-primary text-base font-bold tracking-wider uppercase transition-colors">
+            {service.title}
+          </h3>
+
+          <div class="bg-border group-hover:bg-primary/50 h-px w-12 transition-all duration-500 group-hover:w-full dark:bg-neutral-800" />
+
+          <p class="text-muted-foreground text-base leading-relaxed text-pretty">
+            {service.description}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,63 @@
+---
+// Hero Section
+---
+
+<section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-20 lg:px-20 lg:py-24">
+  <div class="flex flex-col items-center gap-12 lg:grid lg:grid-cols-2 lg:gap-20">
+    <div
+      class="order-1 flex flex-col items-center space-y-8 text-center lg:items-start lg:text-left"
+    >
+      <div class="space-y-4">
+        <span class="text-muted-foreground text-lg tracking-wider italic">Hola, soy</span>
+
+        <h1 class="text-foreground font-serif text-4xl leading-tight uppercase lg:text-5xl">
+          Christian Oller
+        </h1>
+
+        <h2 class="text-foreground text-xl font-bold md:text-2xl">Software Developer</h2>
+
+        <p
+          class="text-muted-foreground mx-auto max-w-lg text-lg leading-relaxed text-pretty lg:mx-0"
+        >
+          Explorador digital, creador de código y entusiasta del aprendizaje continuo. Me sumerjo en
+          el universo del diseño y el desarrollo, donde cada línea de código es una nueva aventura.
+        </p>
+      </div>
+
+      <a
+        href="/contact"
+        class="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-medium transition-transform hover:scale-105"
+      >
+        Contactar
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="ml-2"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+
+    <div class="order-2 flex w-full justify-center lg:justify-end">
+      <div
+        class="relative aspect-3/4 w-64 overflow-hidden rounded-3xl shadow-2xl md:w-80 lg:w-120 lg:rounded-[3rem]"
+      >
+        <img
+          src="/images/profile.jpg"
+          alt="Foto de perfil de Christian Oller"
+          class="h-full w-full object-cover"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </div>
+</section>
