@@ -1,29 +1,34 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import { useTranslations } from '@/i18n/utils';
+import type { ui } from '@/i18n/ui';
 
-// Metadatos SEO
-const pageTitle = 'Contacto | Christian Oller';
-const pageDescription =
-  '¿Tienes un proyecto en mente? Hablemos sobre cómo puedo ayudarte con desarrollo web y diseño UI/UX.';
+interface Props {
+  lang: keyof typeof ui;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={t('contact.meta.title')} description={t('contact.meta.description')}>
   <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-[5fr_7fr] lg:gap-24">
       <div class="space-y-8">
         <div class="space-y-4">
           <h1 class="font-serif text-4xl leading-tight font-bold md:text-5xl lg:text-6xl">
-            Trabajemos <br /> juntos.
+            {t('contact.heading')}
           </h1>
           <p class="text-secondary max-w-md text-lg text-pretty">
-            ¿Interesado en empezar un proyecto? Actualmente estoy disponible para trabajos freelance
-            y abierto a nuevas oportunidades profesionales.
+            {t('contact.intro')}
           </p>
         </div>
 
         <div class="space-y-6 pt-8">
           <div class="space-y-2">
-            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">Email</h3>
+            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">
+              {t('contact.label.email')}
+            </h3>
             <a
               href="mailto:contacto@christianoller.com"
               class="text-secondary hover:text-primary text-xl transition-colors md:text-2xl"
@@ -33,7 +38,9 @@ const pageDescription =
           </div>
 
           <div class="space-y-2">
-            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">Redes Sociales</h3>
+            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">
+              {t('contact.label.social')}
+            </h3>
             <ul class="text-secondary flex flex-col gap-2 text-lg">
               <li>
                 <a
@@ -72,8 +79,10 @@ const pageDescription =
           </div>
 
           <div class="space-y-2">
-            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">Ubicación</h3>
-            <p class="text-secondary text-lg">Córdoba, España</p>
+            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">
+              {t('contact.label.location')}
+            </h3>
+            <p class="text-secondary text-lg">{t('contact.location.value')}</p>
           </div>
         </div>
       </div>
@@ -82,18 +91,18 @@ const pageDescription =
         <form class="space-y-6" method="POST">
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <label class="flex flex-col gap-2">
-              <span class="text-primary text-sm font-medium">Nombre</span>
+              <span class="text-primary text-sm font-medium">{t('contact.form.name')}</span>
               <input
                 type="text"
                 name="name"
                 required
-                placeholder="Tu nombre"
+                placeholder={t('contact.form.name.placeholder')}
                 class="bg-background border-border focus:border-primary focus:ring-primary placeholder:text-muted-foreground/50 h-12 w-full rounded-lg border px-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50 dark:placeholder:text-neutral-500"
               />
             </label>
 
             <label class="flex flex-col gap-2">
-              <span class="text-primary text-sm font-medium">Email</span>
+              <span class="text-primary text-sm font-medium">{t('contact.form.email')}</span>
               <input
                 type="email"
                 name="email"
@@ -105,26 +114,26 @@ const pageDescription =
           </div>
 
           <label class="flex flex-col gap-2">
-            <span class="text-primary text-sm font-medium">Asunto</span>
+            <span class="text-primary text-sm font-medium">{t('contact.form.subject')}</span>
             <select
               name="subject"
               class="bg-background border-border focus:border-primary focus:ring-primary text-secondary h-12 w-full rounded-lg border px-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50"
             >
-              <option value="" disabled selected>Selecciona un tipo de proyecto</option>
-              <option value="ui-ux">Diseño UI/UX</option>
-              <option value="branding">Identidad de Marca</option>
-              <option value="development">Desarrollo Web</option>
-              <option value="other">Otro</option>
+              <option value="" disabled selected>{t('contact.form.subject.placeholder')}</option>
+              <option value="ui-ux">{t('contact.form.subject.uiux')}</option>
+              <option value="branding">{t('contact.form.subject.branding')}</option>
+              <option value="development">{t('contact.form.subject.dev')}</option>
+              <option value="other">{t('contact.form.subject.other')}</option>
             </select>
           </label>
 
           <label class="flex flex-col gap-2">
-            <span class="text-primary text-sm font-medium">Mensaje</span>
+            <span class="text-primary text-sm font-medium">{t('contact.form.message')}</span>
             <textarea
               name="message"
               rows="6"
               required
-              placeholder="Cuéntame un poco sobre tu proyecto..."
+              placeholder={t('contact.form.message.placeholder')}
               class="bg-background border-border focus:border-primary focus:ring-primary placeholder:text-muted-foreground/50 min-h-[150px] w-full resize-y rounded-lg border p-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50 dark:placeholder:text-neutral-500"
             ></textarea>
           </label>
@@ -134,7 +143,7 @@ const pageDescription =
               type="submit"
               class="bg-primary text-background hover:bg-secondary/90 h-12 w-full rounded-lg px-8 font-medium shadow-lg transition-all duration-300 hover:shadow-xl md:w-auto"
             >
-              Enviar Mensaje
+              {t('contact.form.submit')}
             </button>
           </div>
         </form>

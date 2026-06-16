@@ -13,9 +13,21 @@ export function useTranslations(lang: keyof typeof ui) {
   };
 }
 
-// Función helper para generar enlaces con el idioma actual
 export function useTranslatedPath(lang: keyof typeof ui) {
   return function translatePath(path: string, l: string = lang) {
-    return !path.startsWith('/') ? `/${l}/${path}` : `/${l}${path}`;
+    let cleanPath = path.startsWith('/') ? path : `/${path}`;
+
+    // Strip existing non-default locale prefix before adding the new one
+    for (const locale of Object.keys(ui)) {
+      if (locale === defaultLang) continue;
+      if (cleanPath === `/${locale}` || cleanPath.startsWith(`/${locale}/`)) {
+        cleanPath = cleanPath.slice(`/${locale}`.length) || '/';
+        break;
+      }
+    }
+
+    if (l === defaultLang) return cleanPath;
+
+    return `/${l}${cleanPath === '/' ? '' : cleanPath}`;
   };
 }

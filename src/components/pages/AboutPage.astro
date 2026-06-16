@@ -1,38 +1,44 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import { useTranslations } from '@/i18n/utils';
+import type { ui } from '@/i18n/ui';
 
-// Metadatos de la página
-const pageTitle = 'Sobre mí | Christian Oller';
-const pageDescription =
-  'Conoce más sobre mi trayectoria como desarrollador Full Stack y mi experiencia profesional.';
+interface Props {
+  lang: keyof typeof ui;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={t('about.meta.title')} description={t('about.meta.description')}>
   <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
     <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-20">
       <div class="space-y-8 lg:sticky lg:top-24 lg:col-span-4">
-        <h1 class="font-serif text-4xl leading-tight font-bold md:text-5xl">Sobre mí</h1>
+        <h1 class="font-serif text-4xl leading-tight font-bold md:text-5xl">{t('about.heading')}</h1>
 
         <div
           class="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-100 shadow-xl dark:bg-neutral-800"
         >
           <img
             src="/images/profile.jpg"
-            alt="Foto de perfil de Christian Oller"
+            alt={t('about.img.alt')}
+            loading="eager"
+            decoding="async"
             class="h-full w-full object-cover"
           />
         </div>
       </div>
 
       <div class="prose prose-neutral text-secondary dark:prose-invert max-w-none lg:col-span-8">
-        <h2 class="text-foreground mb-6 font-serif text-3xl">Mi Trayectoria</h2>
+        <h2 class="text-foreground mb-6 font-serif text-3xl">{t('about.section.journey')}</h2>
         <p class="mb-12 text-lg leading-relaxed text-pretty">
           Soy un Desarrollador de Software con más de 2 años de experiencia. Mi enfoque combina la
           precisión técnica con la resolución creativa de problemas. Me he especializado en
           soluciones ERP, tecnología para aerolíneas y plataformas de consultoría medioambiental.
         </p>
 
-        <h3 class="text-foreground mb-8 font-serif text-2xl">Experiencia Profesional</h3>
+        <h3 class="text-foreground mb-8 font-serif text-2xl">{t('about.section.experience')}</h3>
 
         <div class="not-prose space-y-12">
           <div class="relative border-l border-neutral-200 pl-8 dark:border-neutral-800">

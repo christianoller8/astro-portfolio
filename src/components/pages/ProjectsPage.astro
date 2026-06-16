@@ -1,34 +1,50 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
+import { useTranslations, useTranslatedPath } from '@/i18n/utils';
+import type { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: keyof typeof ui;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const projects = await getCollection('projects');
 projects.sort((a, b) => b.data.year - a.data.year);
 ---
 
-<Layout title="Proyectos">
+<Layout title={t('projects.meta.title')} description={t('projects.meta.description')}>
   <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
     <div class="flex flex-col gap-12">
       <div class="space-y-4">
-        <h1 class="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">Proyectos</h1>
+        <h1 class="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
+          {t('projects.heading')}
+        </h1>
         <p class="text-muted-foreground max-w-2xl text-lg">
-          Una colección de trabajos en desarrollo full-stack, diseño UI/UX y arquitectura de
-          software.
+          {t('projects.description')}
         </p>
       </div>
 
       <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3">
         {
           projects.map((project) => (
-            <a href={`/projects/${project.slug}`} class="group flex cursor-pointer flex-col gap-4">
+            <a
+              href={translatePath(`/projects/${project.slug}`)}
+              class="group flex cursor-pointer flex-col gap-4"
+            >
               <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-transparent bg-neutral-200 transition-all duration-300 group-hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
                 <img
                   src={project.data.image}
                   alt={project.data.title}
+                  loading="lazy"
+                  decoding="async"
                   class="h-full w-full object-cover"
                 />
                 <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <span class="sr-only">Ver Proyecto</span>
+                  <span class="sr-only">{t('projects.view')}</span>
                 </div>
               </div>
 
