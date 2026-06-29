@@ -88,7 +88,8 @@ const t = useTranslations(lang);
       </div>
 
       <div class="bg-surface border-border/50 rounded-2xl border p-8 transition-colors md:p-12">
-        <form class="space-y-6" method="POST">
+        {/* Replace YOUR_FORM_ID at formspree.io/forms after creating your account */}
+        <form class="space-y-6" method="POST" action="https://formspree.io/f/YOUR_FORM_ID">
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <label class="flex flex-col gap-2">
               <span class="text-primary text-sm font-medium">{t('contact.form.name')}</span>
@@ -107,7 +108,7 @@ const t = useTranslations(lang);
                 type="email"
                 name="email"
                 required
-                placeholder="tu@email.com"
+                placeholder={t('contact.form.email.placeholder')}
                 class="bg-background border-border focus:border-primary focus:ring-primary placeholder:text-muted-foreground/50 h-12 w-full rounded-lg border px-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50 dark:placeholder:text-neutral-500"
               />
             </label>

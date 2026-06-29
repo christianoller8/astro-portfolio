@@ -1,24 +1,32 @@
 ---
 import { getCollection } from 'astro:content';
+import { useTranslations, useTranslatedPath } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const allProjects = await getCollection('projects');
-// Filtrar solo los marcados como 'featured: true' en el markdown
 const featuredProjects = allProjects.filter((project) => project.data.featured);
-// Ordenar por año descendente
 featuredProjects.sort((a, b) => b.data.year - a.data.year);
 ---
 
 <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
   <div class="flex flex-col gap-12">
     <div class="flex items-end justify-between">
-      <h2 class="font-serif text-3xl font-bold md:text-4xl">Proyectos Destacados</h2>
+      <h2 class="font-serif text-3xl font-bold md:text-4xl">{t('section.work')}</h2>
 
       <a
-        href="/projects"
+        href={translatePath('/projects')}
         class="hover:text-primary hidden items-center text-sm font-medium transition-colors md:inline-flex"
       >
-        Ver todos los proyectos
+        {t('section.viewAll')}
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
@@ -39,7 +47,7 @@ featuredProjects.sort((a, b) => b.data.year - a.data.year);
     <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16">
       {
         featuredProjects.map((project) => (
-          <a href={`/projects/${project.slug}`} class="group flex cursor-pointer flex-col gap-4">
+          <a href={translatePath(`/projects/${project.slug}`)} class="group flex cursor-pointer flex-col gap-4">
             <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-transparent bg-neutral-200 transition-all duration-300 group-hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
               <img
                 src={project.data.image}
@@ -47,7 +55,7 @@ featuredProjects.sort((a, b) => b.data.year - a.data.year);
                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <span class="sr-only">Ver Proyecto</span>
+                <span class="sr-only">{t('projects.view')}</span>
               </div>
             </div>
 
@@ -78,11 +86,12 @@ featuredProjects.sort((a, b) => b.data.year - a.data.year);
 
     <div class="mt-8 flex justify-center md:hidden">
       <a
-        href="/projects"
+        href={translatePath('/projects')}
         class="hover:text-primary inline-flex items-center text-sm font-medium transition-colors"
       >
-        Ver todos los proyectos
+        {t('section.viewAll')}
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"

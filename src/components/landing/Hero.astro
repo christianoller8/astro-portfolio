@@ -1,5 +1,13 @@
 ---
-// Hero Section
+import { useTranslations, useTranslatedPath } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
 <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-20 lg:px-20 lg:py-24">
@@ -8,15 +16,15 @@
       class="order-1 flex flex-col items-center space-y-8 text-center lg:items-start lg:text-left"
     >
       <div class="space-y-4">
-        <span class="text-muted-foreground text-lg tracking-wider italic">Hola, soy</span>
+        <span class="text-muted-foreground text-lg tracking-wider italic">{t('hero.greeting')}</span>
 
         <h1 class="text-foreground font-serif text-4xl leading-tight uppercase lg:text-5xl">
           Christian Oller
         </h1>
 
         <div class="flex items-center gap-2">
-          <h2 class="text-foreground text-xl font-bold md:text-2xl">Designer</h2>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <span class="text-foreground text-xl font-bold md:text-2xl">Designer</span>
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
             ><path
               fill="none"
               stroke="currentColor"
@@ -24,8 +32,8 @@
               stroke-width="1.5"
               d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"></path></svg
           >
-          <h2 class="text-foreground text-xl font-bold md:text-2xl">Developer</h2>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <span class="text-foreground text-xl font-bold md:text-2xl">Developer</span>
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
             ><path
               fill="none"
               stroke="currentColor"
@@ -33,24 +41,23 @@
               stroke-width="1.5"
               d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"></path></svg
           >
-          <h2 class="text-foreground text-xl font-bold md:text-2xl">QA</h2>
+          <span class="text-foreground text-xl font-bold md:text-2xl">QA</span>
         </div>
 
         <p
           class="text-muted-foreground mx-auto max-w-lg text-lg leading-relaxed text-pretty lg:mx-0"
         >
-          Especializado en transformar ideas en experiencias digitales robustas y escalables.
-          Combino la precisión técnica del desarrollo con la sensibilidad del diseño para crear
-          productos que no solo funcionan, sino que destacan.
+          {t('hero.description')}
         </p>
       </div>
 
       <a
-        href="/contact"
+        href={translatePath('/contact')}
         class="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-medium transition-transform hover:scale-105"
       >
-        Contactar
+        {t('hero.button')}
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
@@ -74,9 +81,10 @@
       >
         <img
           src="/images/profile.jpg"
-          alt="Foto de perfil de Christian Oller"
+          alt={t('about.img.alt')}
           class="h-full w-full object-cover"
           loading="eager"
+          fetchpriority="high"
         />
       </div>
     </div>

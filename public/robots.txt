@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://christianoller.dev/sitemap-index.xml

@@ -67,13 +67,15 @@ const getLinkClass = (path: string) => {
       <div class="flex items-center gap-1 text-xs font-bold tracking-widest">
         <a
           href={translatePath(Astro.url.pathname, 'es')}
+          aria-label={t('aria.lang.es')}
           class={`transition-colors hover:text-primary ${lang === 'es' ? 'text-primary' : 'text-muted-foreground'}`}
         >
           ES
         </a>
-        <span class="px-1 text-neutral-300 dark:text-neutral-700">/</span>
+        <span class="px-1 text-neutral-300 dark:text-neutral-700" aria-hidden="true">/</span>
         <a
           href={translatePath(Astro.url.pathname, 'en')}
+          aria-label={t('aria.lang.en')}
           class={`transition-colors hover:text-primary ${lang === 'en' ? 'text-primary' : 'text-muted-foreground'}`}
         >
           EN
@@ -93,17 +95,26 @@ const getLinkClass = (path: string) => {
       >
         <a
           href={translatePath(Astro.url.pathname, 'es')}
+          aria-label={t('aria.lang.es')}
           class={lang === 'es' ? 'text-primary' : 'text-muted-foreground'}
         >ES</a>
-        <span class="text-neutral-300 dark:text-neutral-700">/</span>
+        <span class="text-neutral-300 dark:text-neutral-700" aria-hidden="true">/</span>
         <a
           href={translatePath(Astro.url.pathname, 'en')}
+          aria-label={t('aria.lang.en')}
           class={lang === 'en' ? 'text-primary' : 'text-muted-foreground'}
         >EN</a>
       </div>
       <ThemeToggle />
-      <button id="mobile-menu-btn" class="text-secondary hover:text-primary p-2">
+      <button
+        id="mobile-menu-btn"
+        class="text-secondary hover:text-primary p-2"
+        aria-label={t('aria.menu')}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
@@ -123,6 +134,7 @@ const getLinkClass = (path: string) => {
   <div
     id="mobile-menu"
     class="bg-background border-border/40 hidden border-t md:hidden dark:bg-neutral-950"
+    aria-hidden="true"
   >
     <nav class="container flex flex-col gap-6 p-6 text-sm font-medium">
       {
@@ -139,5 +151,12 @@ const getLinkClass = (path: string) => {
 <script>
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
-  if (btn && menu) btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!isExpanded));
+      menu.setAttribute('aria-hidden', String(isExpanded));
+      menu.classList.toggle('hidden');
+    });
+  }
 </script>
