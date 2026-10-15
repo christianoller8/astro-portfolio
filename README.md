@@ -48,9 +48,10 @@ Static portfolio site with no server-side runtime. Every page is pre-rendered at
 
 ```
 .
-├── public/
-│   └── images/              # Static assets (project covers, profile photo)
+├── public/                  # favicon.svg, robots.txt
 ├── src/
+│   ├── assets/
+│   │   └── images/          # Optimized via astro:assets (project covers, profile photo)
 │   ├── components/
 │   │   ├── common/
 │   │   │   ├── Header.astro       # Sticky nav, language switcher, ThemeToggle
@@ -63,20 +64,23 @@ Static portfolio site with no server-side runtime. Every page is pre-rendered at
 │   │   │   ├── AboutSummary.astro # Asymmetric personal intro section
 │   │   │   └── FeaturedWork.astro # Filtered featured projects grid
 │   │   └── pages/
+│   │       ├── HomePage.astro     # Landing composition — receives lang prop
 │   │       ├── AboutPage.astro    # Full about page — receives lang prop
 │   │       ├── ContactPage.astro  # Contact info + form — receives lang prop
 │   │       ├── ProjectsPage.astro # Project grid — receives lang prop
 │   │       └── ProjectPage.astro  # Project detail — receives lang + project props
 │   ├── content/
 │   │   ├── config.ts              # Zod schema for the projects collection
-│   │   └── projects/              # One .md file per project
+│   │   └── projects/              # One .md file per project and locale
+│   │       ├── es/                # Spanish entries (project-N.md)
+│   │       └── en/                # English entries (same filenames)
 │   ├── i18n/
 │   │   ├── ui.ts                  # Translation dictionary (as const, ~50 keys/locale)
 │   │   └── utils.ts               # getLangFromUrl, useTranslations, useTranslatedPath
 │   ├── layouts/
 │   │   └── Layout.astro           # Base layout: SEO tags, canonical, OG, ClientRouter
 │   ├── pages/
-│   │   ├── index.astro            # / (ES home)
+│   │   ├── index.astro            # / → <HomePage lang="es" />
 │   │   ├── about.astro            # /about  → <AboutPage lang="es" />
 │   │   ├── contact.astro          # /contact → <ContactPage lang="es" />
 │   │   ├── projects/
@@ -140,9 +144,9 @@ Adding a third locale only requires creating a new route folder with wrapper fil
 
 **Language switcher** — uses `translatePath(Astro.url.pathname, targetLang)` so switching from `/en/projects` goes to `/projects`, not `/`.
 
-### Known limitation
+### Project content
 
-Landing page components (`Hero`, `Services`, `LogoGrid`, `AboutSummary`, `FeaturedWork`) contain hardcoded Spanish text. The i18n system currently covers page-level components only. Landing content internationalisation is pending.
+Project content is bilingual: each project has one Markdown file per locale (`src/content/projects/es/` and `src/content/projects/en/`). `src/utils/projects.ts` filters by locale and strips the folder from the slug, so URLs stay `/projects/<slug>` and `/en/projects/<slug>`. If an EN entry is missing, the ES entry is used as a fallback.
 
 ---
 
@@ -187,7 +191,7 @@ pnpm format     # Format with Prettier
 
 ## Content Collections
 
-Projects live in `src/content/projects/` as Markdown files. Each file is validated against a Zod schema at build time.
+Projects live in `src/content/projects/<locale>/` (`es/` and `en/`) as Markdown files. Each file is validated against a Zod schema at build time.
 
 ### Schema
 
@@ -198,7 +202,7 @@ Projects live in `src/content/projects/` as Markdown files. Each file is validat
   year: number
   client: string
   tags: string[]        // Technology tags displayed as #tag
-  image: string         // Path relative to /public, e.g. '/images/project-1.jpg'
+  image: ImageMetadata  // image() helper; path relative to the .md file, e.g. '../../../assets/images/project-1.jpg'
   featured: boolean     // default: false — controls visibility in FeaturedWork
   link?: string         // Optional external URL (live demo or repo)
 }
@@ -206,12 +210,32 @@ Projects live in `src/content/projects/` as Markdown files. Each file is validat
 
 ### Adding a project
 
-1. Create `src/content/projects/my-project.md`
-2. Add the frontmatter following the schema above
-3. Write the project description in the Markdown body (rendered with `@tailwindcss/typography`)
-4. Add the cover image to `public/images/`
+1. Create `src/content/projects/es/my-project.md` (Spanish) and `src/content/projects/en/my-project.md` (English) with the **same filename**
+2. Add the frontmatter following the schema above in both files (translate `title`, `description`, `client` and prose tags; keep `year`, `featured`, `link` and `image` in sync)
+3. Write the project description in the Markdown body of each file (rendered with `@tailwindcss/typography`)
+4. Add the cover image to `src/assets/images/` and reference it as `../../../assets/images/<file>` in the frontmatter
 
-The slug is derived from the filename. The same content file serves both `/projects/my-project` and `/en/projects/my-project`.
+The slug is the filename without the locale folder, so `my-project` is served at `/projects/my-project` (ES) and `/en/projects/my-project` (EN). Slugs must match across locales; an EN file missing for a slug falls back to the ES entry.
+
+---
+
+## Hero Lanyard (3D)
+
+A decorative, draggable 3D ID card hangs from a wide dark strap (with "christianoller.dev" text) in the left half of the home hero (physics with Rapier, rendering with React Three Fiber). It is a React island mounted with `client:only="react"` in `src/components/landing/Hero.astro`.
+
+- The static profile `<Image>` is always rendered. Once the 3D scene is running, the container gets `data-lanyard="ready"` and the image fades out (same box, no layout shift).
+- Nothing is rendered (static image stays) when `prefers-reduced-motion: reduce` is set or WebGL is unavailable. The heavy chunk (`LanyardScene`) is only fetched when the container is within 200px of the viewport; the render loop and physics pause when it is offscreen or the tab is hidden. `dpr` is capped at `[1, 1.5]`.
+- Touch: the canvas uses `touch-action: pan-y`, so vertical scrolling is never blocked.
+
+Files:
+
+- `src/components/lanyard/Lanyard.tsx`: wrapper (capability checks, IntersectionObserver, lazy import, error boundary).
+- `src/components/lanyard/LanyardScene.tsx`: canvas, physics chain (`useRopeJoint` / `useSphericalJoint`), camera-facing strap ribbon, orthographic camera, drag handling.
+- `src/components/lanyard/cardTexture.ts`: draws the card front/back, strap tile and soft shadow on 2D canvases.
+
+Change the card: edit the `name`, `role`, `site` props (the status line comes from the `hero.status` i18n key) passed to `<Lanyard>` in `Hero.astro`. The photo comes from `src/assets/images/profile.jpg` (`getImage` creates a 640px JPEG for the texture); swap that import to change it. Layout and colors of the faces are in `cardTexture.ts`.
+
+Dependencies: `@astrojs/react@4.4.2` (the 7.x line targets Astro 6), `react`/`react-dom@19.2.0`, `three@0.180.0`, `@react-three/fiber@9.4.0`, `@react-three/rapier@2.1.0`, `meshline@3.3.1`; dev: `@types/react`, `@types/react-dom`, `@types/three`.
 
 ---
 

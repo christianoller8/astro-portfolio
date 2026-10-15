@@ -1,7 +1,7 @@
 # Informe del Portfolio — Christian Oller
 
-**Fecha:** Junio 2026  
-**URL de producción:** `https://midominio.com` _(placeholder — pendiente de actualizar)_
+**Fecha:** Octubre 2026  
+**URL de producción:** `https://christianoller.dev` _(configurada en `astro.config.mjs`)_
 
 ---
 
@@ -28,7 +28,9 @@
 | Tipografía | Inter (sans-serif) + Playfair Display (serif) |
 | Lenguaje | TypeScript (modo estricto) |
 | Transiciones | Astro `ClientRouter` (navegación tipo SPA) |
-| Contenido | Astro Content Collections (Markdown + Zod) |
+| Contenido | Astro Content Collections (Markdown + Zod, portadas con el helper `image()`) |
+| Imágenes | `astro:assets` (`<Image>` + `sharp`, salida WebP responsive en `/_astro/`) |
+| CI | GitHub Actions (`pnpm/action-setup`, `pnpm install --frozen-lockfile`, Playwright) |
 | Testing E2E | Playwright (Chrome, Mobile Chrome/Pixel 5, Mobile Safari/iPhone 12) |
 | Linting | ESLint 9 (flat config) + typescript-eslint + eslint-plugin-astro + jsx-a11y |
 | Formateo | Prettier 3 + prettier-plugin-astro + prettier-plugin-tailwindcss |
@@ -41,6 +43,10 @@
 
 ```
 src/
+├── assets/
+│   └── images/
+│       ├── profile.jpg
+│       └── project-1.jpg … project-3.jpg   → procesadas por astro:assets
 ├── components/
 │   ├── common/
 │   │   ├── Header.astro
@@ -53,6 +59,7 @@ src/
 │   │   ├── AboutSummary.astro
 │   │   └── FeaturedWork.astro
 │   └── pages/
+│       ├── HomePage.astro      → composición de la landing (recibe `lang`)
 │       ├── AboutPage.astro
 │       ├── ContactPage.astro
 │       ├── ProjectsPage.astro
@@ -60,14 +67,18 @@ src/
 ├── content/
 │   ├── config.ts
 │   └── projects/
-│       ├── project-1.md   → EcoMarket Marketplace
-│       ├── project-2.md   → TaskFlow Analytics
-│       └── project-3.md   → SkyLink Intranet
+│       ├── es/            → contenido en español
+│       │   ├── project-1.md   → EcoMarket Marketplace
+│       │   ├── project-2.md   → TaskFlow Analytics
+│       │   └── project-3.md   → SkyLink Intranet
+│       └── en/            → traducción al inglés (mismos nombres de archivo)
 ├── i18n/
 │   ├── ui.ts              → todas las strings traducibles
 │   └── utils.ts           → getLangFromUrl, useTranslations, useTranslatedPath
 ├── layouts/
 │   └── Layout.astro
+├── utils/
+│   └── projects.ts        → getSortedProjects, getFeaturedProjects, getProjectStaticPaths
 ├── pages/
 │   ├── index.astro              → Inicio ES (/)
 │   ├── about.astro              → Sobre mí ES (/about)
@@ -86,6 +97,8 @@ src/
     └── global.css
 ```
 
+Todos los archivos de `src/pages/` (ES y EN) son wrappers de pocas líneas: las rutas públicas no cambian, pero la lógica vive una sola vez en `components/pages/` y `utils/projects.ts` (los dos `[slug].astro` reutilizan `getProjectStaticPaths`). `Layout.astro` es el único dueño de la etiqueta `<main>` (las páginas no definen otra), y sus metadatos `og:image` / `twitter:image` usan la URL absoluta del asset procesado (`.src`).
+
 ---
 
 ## Diseño y sistema visual
@@ -95,6 +108,8 @@ src/
 La paleta es intencionalmente **monocromática** — sin color de acento. Los estados interactivos se basan en variaciones de brillo y peso tipográfico, no en un color de marca.
 
 #### Modo claro
+
+Las variables viven en `src/styles/global.css` y se exponen a Tailwind vía `@theme`: `background`, `primary`, `secondary`, `accent`, `surface` y los alias `foreground` (= `--text-primary`), `muted-foreground` (= `--text-secondary`) y `border` (= `--border-accent`), usados por los componentes.
 
 | Token CSS | Valor | Uso |
 |---|---|---|
@@ -160,23 +175,25 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 - `getLangFromUrl(url)` lee el locale desde el primer segmento de la URL
 - `useTranslations(lang)` retorna una función `t(key)` que hace fallback a `es` si falta una clave
 - `useTranslatedPath(lang)` genera paths correctos para cada locale
-- Las páginas son wrappers delgados que pasan `lang="es"` o `lang="en"` a los componentes compartidos
+- Las páginas son wrappers delgados que pasan `lang="es"` o `lang="en"` a los componentes compartidos (incluido `HomePage`, que toma título y descripción de `home.meta.*`)
+- La experiencia profesional de `AboutPage` es bilingüe mediante un array local (`period`, `summary` y `highlights` por idioma)
 
 **Estado actual de i18n por componente:**
 
 | Componente | i18n activo |
 |---|---|
 | Header | ✅ Sí |
-| Footer | ❌ No (texto hardcoded en inglés) |
-| Hero | ❌ No (hardcoded en español) |
-| Services | ❌ No (hardcoded en español) |
-| LogoGrid | ❌ No (hardcoded en español) |
-| AboutSummary | ❌ No (hardcoded en español) |
-| FeaturedWork | ❌ No (hardcoded en español) |
-| AboutPage | ✅ Parcial (headings i18n, párrafos hardcoded) |
+| Footer | ✅ Sí (`footer.rights`) |
+| HomePage | ✅ Sí |
+| Hero | ✅ Sí |
+| Services | ✅ Sí |
+| LogoGrid | ✅ Sí |
+| AboutSummary | ✅ Sí |
+| FeaturedWork | ✅ Sí (UI); los títulos de proyecto vienen del Markdown de cada idioma (`content/projects/{es,en}`) |
+| AboutPage | ✅ Sí (textos vía `ui.ts`, experiencia vía array local bilingüe) |
 | ContactPage | ✅ Sí |
-| ProjectsPage | ✅ Sí |
-| ProjectPage | ✅ Sí |
+| ProjectsPage | ✅ Sí (UI y contenido de proyectos por idioma) |
+| ProjectPage | ✅ Sí (UI y contenido de proyectos por idioma) |
 
 ---
 
@@ -220,7 +237,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 |---|---|
 | **Navegación** | Link "Volver a Proyectos" |
 | **Header** | H1 serif con título + barra de metadatos (Año / Cliente / Tecnologías) |
-| **Imagen hero** | Imagen a ancho completo con view transition |
+| **Imagen hero** | Imagen a ancho completo (`<Image>` de `astro:assets`) con view transition |
 | **Cuerpo** | Contenido Markdown en contenedor `prose-lg` |
 
 ---
@@ -242,7 +259,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Inicio — Hero
 
-> _(Hardcoded en español — se muestra igual en `/en/`)_
+> _(Textos de `src/i18n/ui.ts`; se muestra la versión en español, la versión EN está en el mismo archivo)_
 
 - **Saludo:** "Hola, soy"
 - **Nombre (H1):** "Christian Oller"
@@ -250,12 +267,13 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 - **Descripción:** "Especializado en transformar ideas en experiencias digitales robustas y escalables. Combino la precisión técnica del desarrollo con la sensibilidad del diseño para crear productos que no solo funcionan, sino que destacan."
 - **CTA:** "Contactar" → `/contact`
 - **Alt de imagen:** "Foto de perfil de Christian Oller"
+- **Lanyard 3D (decorativo):** en dispositivos con WebGL y sin `prefers-reduced-motion`, una credencial 3D arrastrable (isla React + Rapier, carga diferida) reemplaza visualmente la foto; la imagen estática queda como fallback. Ver README, sección "Hero Lanyard (3D)".
 
 ---
 
 ### Inicio — Servicios
 
-> _(Hardcoded en español)_
+> _(Versión en español; traducido vía `ui.ts`)_
 
 | Título | Descripción |
 |---|---|
@@ -268,7 +286,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Inicio — Tecnologías Clave
 
-> _(Hardcoded en español)_
+> _(Versión en español; traducido vía `ui.ts`)_
 
 **Heading:** "Tecnologías Clave"
 
@@ -278,7 +296,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Inicio — About Summary
 
-> _(Hardcoded en español)_
+> _(Versión en español; traducido vía `ui.ts`)_
 
 - **H2:** "Creando experiencias digitales intuitivas y memorables"
 - **Párrafo 1:** "**Hola, soy Christian Oller.** Me especializo en construir productos digitales que fusionan una estética cuidada con una funcionalidad robusta. Mi enfoque se basa en comprender las necesidades del usuario y traducirlas en interfaces visualmente atractivas y código eficiente."
@@ -288,7 +306,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Inicio — Proyectos Destacados
 
-> _(Hardcoded en español)_
+> _(Versión en español; traducido vía `ui.ts`)_
 
 - **H2:** "Proyectos Destacados"
 - **Link:** "Ver todos los proyectos" → `/projects`
@@ -306,10 +324,10 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 | H2 trayectoria | Mi Trayectoria | My Journey |
 | H2 experiencia | Experiencia Profesional | Professional Experience |
 
-**Párrafo de trayectoria** _(hardcoded en español en ambos locales)_:
+**Párrafo de trayectoria** _(clave `about.intro` de `ui.ts`; versión en español)_:
 "Soy un Desarrollador de Software con más de 2 años de experiencia. Mi enfoque combina la precisión técnica con la resolución creativa de problemas. Me he especializado en soluciones ERP, tecnología para aerolíneas y plataformas de consultoría medioambiental."
 
-**Experiencia profesional:**
+**Experiencia profesional** _(array local en `AboutPage.astro`, bilingüe; se muestra la versión en español)_:
 
 | Rol | Empresa | Período | Descripción | Tareas |
 |---|---|---|---|---|
@@ -364,14 +382,16 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Footer (global)
 
-> _(Hardcoded en inglés — no usa el sistema i18n)_
+> _(Traducido con `useTranslations(getLangFromUrl(Astro.url))`, clave `footer.rights`)_
 
-- **Copyright:** "© {año actual}. All rights reserved."
+- **Copyright:** "© {año actual}. {footer.rights}"
 - **Links sociales:** X → `https://twitter.com` / GitHub → `https://github.com/christianoller8` / LinkedIn → `https://www.linkedin.com/in/christian-oller`
 
 ---
 
 ## Proyectos del portfolio
+
+> Cada proyecto tiene un archivo por idioma (`src/content/projects/es/` y `en/`, mismo nombre). Los datos de abajo corresponden a la versión en español; el slug es idéntico en ambos idiomas y `utils/projects.ts` usa la versión ES como fallback si falta la EN.
 
 ### Project 1 — EcoMarket Marketplace
 
@@ -431,7 +451,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 - Mobile: hamburger que despliega un menú deslizable con los mismos links
 
 **`Footer.astro`**
-- Línea de copyright con año dinámico
+- Línea de copyright con año dinámico, traducida vía i18n
 - Links sociales: X, GitHub, LinkedIn
 
 **`ThemeToggle.astro`**
@@ -441,7 +461,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Landing
 
-**`Hero.astro`** — Layout de 2 columnas: texto izquierda, retrato derecha  
+**`Hero.astro`** — Layout de 2 columnas: texto izquierda, retrato derecha (`<Image>` con `loading="eager"`)  
 **`Services.astro`** — Grid 4 columnas con tarjetas animadas (underline expand en hover)  
 **`LogoGrid.astro`** — Grid 8 columnas con tiles que tienen fill deslizante en hover  
 **`AboutSummary.astro`** — Layout 2 columnas: H2 serif izquierda, párrafos derecha  
@@ -449,6 +469,7 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Páginas
 
+**`HomePage.astro`** — Compone Hero, Services, LogoGrid, AboutSummary y FeaturedWork con el `lang` recibido; usado por ambos `index.astro`  
 **`AboutPage.astro`** — Grid 12 col: sidebar sticky (col-span-4) + contenido (col-span-8) con timeline  
 **`ContactPage.astro`** — Grid 2 col (5fr/7fr): info izquierda + formulario en tarjeta derecha  
 **`ProjectsPage.astro`** — H1 + subheading + grid 3 col de todas las tarjetas de proyectos  
@@ -460,22 +481,18 @@ El modo oscuro se activa añadiendo/quitando la clase `.dark` en `<html>`. La pr
 
 ### Crítico
 
-1. **Gap i18n en la landing:** Los componentes Hero, Services, LogoGrid, AboutSummary y FeaturedWork tienen texto hardcoded en español. Un usuario que visita `/en/` ve la homepage en español — la experiencia i18n está incompleta.
-
-2. **Footer con texto hardcoded en inglés:** El archivo `src/i18n/ui.ts` tiene la clave `footer.rights` en ambos idiomas, pero `Footer.astro` no usa `useTranslations` — muestra "All rights reserved." siempre en inglés.
-
-3. **URL del sitio es un placeholder:** `astro.config.mjs` tiene `site: 'https://midominio.com'` — esto afecta las URLs canónicas y las etiquetas Open Graph en producción.
+1. **Formulario de contacto sin backend real:** `ContactPage.astro` envía a `https://formspree.io/f/YOUR_FORM_ID`, un ID placeholder. Hasta crear el formulario en Formspree y sustituir el ID, los envíos fallan.
 
 ### Importante
 
-4. **Links sociales son placeholders:** El link de Twitter apunta a `https://twitter.com` (sin perfil). Instagram en la página de contacto apunta a `https://instagram.com`. Deben actualizarse con perfiles reales.
+2. **Dominio del email de contacto inconsistente:** `ContactPage.astro` usa `contacto@christianoller.com`, mientras que el sitio está en `christianoller.dev`. Verificar cuál es el buzón real.
 
-5. **Email de contacto:** `contacto@christianoller.com` — verificar que sea funcional y que el formulario tenga backend conectado.
+3. **Links sociales genéricos:** En `ContactPage.astro` y `Footer.astro` el link de X/Twitter apunta a `https://twitter.com` y el de Instagram (solo en contacto) a `https://instagram.com`, sin perfil. Deben actualizarse con perfiles reales.
 
-6. **Párrafo de trayectoria no i18n-izado:** En `AboutPage.astro`, el párrafo del cuerpo "Soy un Desarrollador de Software con más de 2 años de experiencia..." está hardcoded en español y no responde al locale.
+4. **Clases de borde en conflicto en `Header.astro`:** El `<header>` combina `border-border/40` y `border-gray-300`; la utilidad que gane depende del orden en el CSS generado y el resultado no es predecible. Dejar solo una.
 
 ### Menor
 
-7. **Project 3 no es featured:** SkyLink Intranet (`featured: false`) solo aparece en el listado de `/projects`. Si se quiere más exposición, cambiar a `featured: true`.
+5. **Project 3 no es featured:** SkyLink Intranet (`featured: false`) solo aparece en el listado de `/projects`. Si se quiere más exposición, cambiar a `featured: true`.
 
-8. **No existe color de acento:** La paleta es totalmente monocromática. Si en el futuro se necesita un color de marca, hay que definirlo como token CSS y en el `@theme` de Tailwind.
+6. **No existe color de acento:** La paleta es totalmente monocromática. Si en el futuro se necesita un color de marca, hay que definirlo como token CSS y en el `@theme` de Tailwind.
