@@ -41,6 +41,11 @@
   --color-accent: var(--border-accent);
   --color-surface: var(--surface-color);
 
+  /* Aliases used by components (foreground / muted-foreground / border) */
+  --color-foreground: var(--text-primary);
+  --color-muted-foreground: var(--text-secondary);
+  --color-border: var(--border-accent);
+
   /* Tipografías */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
