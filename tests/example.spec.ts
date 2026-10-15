@@ -32,7 +32,7 @@ test.describe('Funcionalidad Core', () => {
   // 2. Verificar Menú Móvil (Solo en viewport móvil)
   test('Menú móvil debe abrirse, cerrarse y navegar', async ({ page, isMobile }) => {
     // Este test solo corre si el proyecto es móvil
-    if (!isMobile) return;
+    test.skip(!isMobile, 'Solo aplica a viewport móvil');
 
     const menuBtn = page.locator('#mobile-menu-btn');
     const menu = page.locator('#mobile-menu');
@@ -57,7 +57,7 @@ test.describe('Funcionalidad Core', () => {
 
   // 3. Verificar Navegación Desktop
   test('Navegación Desktop funciona', async ({ page, isMobile }) => {
-    if (isMobile) return;
+    test.skip(isMobile, 'Solo aplica a viewport de escritorio');
 
     // Click en "Proyectos"
     await page.getByRole('navigation').getByRole('link', { name: 'Proyectos' }).click();
@@ -102,12 +102,21 @@ test.describe('Funcionalidad Core', () => {
     // Home Title
     // ANTES: await expect(page).toHaveTitle(/Portfolio|Inicio/);
     // AHORA: Ponemos el título real que definimos en index.astro
-    await expect(page).toHaveTitle(/Christian Oller | Desarrollador de Software/);
+    await expect(page).toHaveTitle(/Christian Oller \| Desarrollador de Software/);
 
     // Navigate to Projects
     await page.goto('/projects');
 
     // Projects Title (Asegúrate de que este coincida también, debería ser "Proyectos")
     await expect(page).toHaveTitle(/Proyectos/);
+  });
+
+  test('La versión en inglés tiene título, lang y hreflang correctos', async ({ page }) => {
+    await page.goto('/en/about');
+
+    await expect(page).toHaveTitle(/About \| Christian Oller/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('link[rel="alternate"][hreflang="es-ES"]')).toHaveCount(1);
+    await expect(page.locator('link[rel="alternate"][hreflang="en-US"]')).toHaveCount(1);
   });
 });
