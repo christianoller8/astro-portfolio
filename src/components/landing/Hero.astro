@@ -1,4 +1,7 @@
 ---
+import { Image, getImage } from 'astro:assets';
+import profileImage from '@/assets/images/profile.jpg';
+import Lanyard from '@/components/lanyard/Lanyard';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 
 interface Props {
@@ -8,23 +11,36 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+// Small optimized copy of the photo, drawn onto the 3D card texture
+const cardPhoto = await getImage({ src: profileImage, width: 640, format: 'jpeg' });
 ---
 
-<section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-20 lg:px-20 lg:py-24">
-  <div class="flex flex-col items-center gap-12 lg:grid lg:grid-cols-2 lg:gap-20">
+<section class="w-full pb-12 lg:pb-0">
+  <div class="flex flex-col items-center gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-0">
     <div
-      class="order-1 flex flex-col items-center space-y-8 text-center lg:items-start lg:text-left"
+      class="order-2 flex flex-col items-center space-y-8 px-6 text-center md:px-12 lg:h-[680px] lg:items-start lg:justify-center lg:pr-20 lg:pl-6 lg:text-left"
     >
       <div class="space-y-4">
-        <span class="text-muted-foreground text-lg tracking-wider italic">{t('hero.greeting')}</span>
+        <span class="text-muted-foreground block text-lg tracking-wider italic"
+          >{t('hero.greeting')}</span
+        >
 
-        <h1 class="text-foreground font-serif text-4xl leading-tight uppercase lg:text-5xl">
+        <h1
+          class="text-foreground font-serif text-4xl leading-tight uppercase md:text-6xl lg:text-[3.9rem]"
+        >
           Christian Oller
         </h1>
 
         <div class="flex items-center gap-2">
-          <span class="text-foreground text-xl font-bold md:text-2xl">Designer</span>
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <span class="text-foreground text-xl font-bold md:text-2xl lg:text-[1.65rem]"
+            >Designer</span
+          >
+          <svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
             ><path
               fill="none"
               stroke="currentColor"
@@ -32,8 +48,15 @@ const translatePath = useTranslatedPath(lang);
               stroke-width="1.5"
               d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"></path></svg
           >
-          <span class="text-foreground text-xl font-bold md:text-2xl">Developer</span>
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <span class="text-foreground text-xl font-bold md:text-2xl lg:text-[1.65rem]"
+            >Developer</span
+          >
+          <svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
             ><path
               fill="none"
               stroke="currentColor"
@@ -41,11 +64,11 @@ const translatePath = useTranslatedPath(lang);
               stroke-width="1.5"
               d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"></path></svg
           >
-          <span class="text-foreground text-xl font-bold md:text-2xl">QA</span>
+          <span class="text-foreground text-xl font-bold md:text-2xl lg:text-[1.65rem]">QA</span>
         </div>
 
         <p
-          class="text-muted-foreground mx-auto max-w-lg text-lg leading-relaxed text-pretty lg:mx-0"
+          class="text-muted-foreground mx-auto max-w-[34rem] text-lg leading-relaxed text-pretty lg:mx-0"
         >
           {t('hero.description')}
         </p>
@@ -75,16 +98,74 @@ const translatePath = useTranslatedPath(lang);
       </a>
     </div>
 
-    <div class="order-2 flex w-full justify-center lg:justify-end">
+    <!-- Lanyard column: the 3D canvas covers it from the header edge down past the card -->
+    <div class="order-1 w-full lg:order-1">
       <div
-        class="relative aspect-3/4 w-64 overflow-hidden rounded-3xl shadow-2xl md:w-80 lg:w-120 lg:rounded-[3rem]"
+        data-lanyard="pending"
+        class="group relative h-[480px] w-full md:h-[640px] lg:h-[780px]"
+        style="container-type: size; --u: calc(100cqh / 780);"
       >
-        <img
-          src="/images/profile.jpg"
-          alt={t('about.img.alt')}
-          class="h-full w-full object-cover"
-          loading="eager"
-          fetchpriority="high"
+        <!-- Static fallback (same geometry as the 3D scene, sized in --u = 1 design px at lg).
+             Always rendered, faded out once the 3D lanyard is running. -->
+        <div
+          class="absolute inset-0 transition-opacity duration-500 group-data-[lanyard=ready]:pointer-events-none group-data-[lanyard=ready]:opacity-0"
+        >
+          <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 bg-[#1c1c1c]"
+            style="width: calc(var(--u) * 16); height: calc(var(--u) * 179);"
+          >
+          </div>
+          <div
+            class="absolute left-1/2 -translate-x-1/2 bg-[#86868b]"
+            style="top: calc(var(--u) * 165); width: calc(var(--u) * 47); height: calc(var(--u) * 14);"
+          >
+          </div>
+          <div
+            class="absolute left-1/2 -translate-x-1/2 overflow-hidden bg-[#1c1c1c] shadow-[0_24px_50px_-16px_rgb(0_0_0/0.3)]"
+            style="top: calc(var(--u) * 179); width: calc(var(--u) * 300); height: calc(var(--u) * 410); border-radius: calc(var(--u) * 16);"
+          >
+            <span
+              class="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#080808]"
+              style="top: calc(var(--u) * 17); width: calc(var(--u) * 56); height: calc(var(--u) * 7);"
+            ></span>
+            <div
+              class="absolute overflow-hidden"
+              style="left: calc(var(--u) * 16); top: calc(var(--u) * 36); width: calc(var(--u) * 268); height: calc(var(--u) * 272); border-radius: calc(var(--u) * 8);"
+            >
+              <Image
+                src={profileImage}
+                alt={t('about.img.alt')}
+                widths={[320, 640]}
+                sizes="(min-width: 1024px) 268px, 240px"
+                class="h-full w-full object-cover object-[50%_20%] grayscale"
+                loading="eager"
+                fetchpriority="high"
+              />
+            </div>
+            <span
+              class="absolute bg-white/10"
+              style="left: calc(var(--u) * 16); right: calc(var(--u) * 16); top: calc(var(--u) * 362); height: 1px;"
+            ></span>
+            <span
+              class="absolute rounded-full bg-[#22c55e]"
+              style="left: calc(var(--u) * 14); top: calc(var(--u) * 379); width: calc(var(--u) * 10); height: calc(var(--u) * 10);"
+            ></span>
+            <span
+              class="absolute font-medium whitespace-nowrap text-zinc-300"
+              style="left: calc(var(--u) * 31); top: calc(var(--u) * 384); transform: translateY(-50%); font-size: calc(var(--u) * 12);"
+            >
+              {t('hero.status')}
+            </span>
+          </div>
+        </div>
+        <!-- Decorative 3D lanyard (client-only, lazy, skipped on reduced motion / no WebGL) -->
+        <Lanyard
+          client:only="react"
+          name="Christian Oller"
+          role="Software Developer"
+          site="christianoller.dev"
+          status={t('hero.status')}
+          photoUrl={cardPhoto.src}
         />
       </div>
     </div>
