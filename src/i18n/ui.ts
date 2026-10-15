@@ -21,6 +21,7 @@ export const ui = {
     'hero.description':
       'Especializado en transformar ideas en experiencias digitales robustas y escalables. Combino la precisión técnica del desarrollo con la sensibilidad del diseño para crear productos que no solo funcionan, sino que destacan.',
     'hero.button': 'Contactar',
+    'hero.status': 'Disponible para proyectos',
 
     // Home Sections
     'section.skills': 'Tecnologías Clave',
@@ -49,6 +50,11 @@ export const ui = {
     'services.testing.desc':
       'Garantía de calidad y velocidad mediante Vitest y optimización continua.',
 
+    // Home page
+    'home.meta.title': 'Christian Oller | Desarrollador de Software',
+    'home.meta.description':
+      'Portfolio de Christian Oller, desarrollador especializado en crear experiencias digitales únicas.',
+
     // About page
     'about.meta.title': 'Sobre mí | Christian Oller',
     'about.meta.description':
@@ -57,11 +63,12 @@ export const ui = {
     'about.img.alt': 'Foto de perfil de Christian Oller',
     'about.section.journey': 'Mi Trayectoria',
     'about.section.experience': 'Experiencia Profesional',
+    'about.intro':
+      'Soy un Desarrollador de Software con más de 2 años de experiencia. Mi enfoque combina la precisión técnica con la resolución creativa de problemas. Me he especializado en soluciones ERP, tecnología para aerolíneas y plataformas de consultoría medioambiental.',
 
     // Contact page
     'contact.meta.title': 'Contacto | Christian Oller',
-    'contact.meta.description':
-      '¿Tienes un proyecto en mente? Hablemos sobre cómo puedo ayudarte.',
+    'contact.meta.description': '¿Tienes un proyecto en mente? Hablemos sobre cómo puedo ayudarte.',
     'contact.heading': 'Trabajemos juntos.',
     'contact.intro':
       '¿Interesado en empezar un proyecto? Actualmente estoy disponible para trabajos freelance y abierto a nuevas oportunidades profesionales.',
@@ -99,6 +106,7 @@ export const ui = {
 
     // Accessibility
     'aria.menu': 'Menú de navegación',
+    'aria.theme': 'Cambiar modo oscuro',
     'aria.lang.es': 'Cambiar a Español',
     'aria.lang.en': 'Cambiar a Inglés',
 
@@ -116,8 +124,9 @@ export const ui = {
     'hero.greeting': "Hi, I'm",
     'hero.role': 'Software Developer',
     'hero.description':
-      'Specialized in transforming ideas into robust and scalable digital experiences. I combine technical precision with design sensibility to create products that don\'t just work — they stand out.',
+      "Specialized in transforming ideas into robust and scalable digital experiences. I combine technical precision with design sensibility to create products that don't just work — they stand out.",
     'hero.button': 'Contact Me',
+    'hero.status': 'Available for projects',
 
     // Home Sections
     'section.skills': 'Core Technologies',
@@ -137,14 +146,18 @@ export const ui = {
     'services.frontend.desc':
       'I build complex applications with Angular and React, creating modular and maintainable interfaces using TypeScript, optimizing performance and component reusability.',
     'services.backend.title': 'Backend Solutions',
-    'services.backend.desc':
-      'Robust server-side logic and API integration (SQL, PHP, Firebase).',
+    'services.backend.desc': 'Robust server-side logic and API integration (SQL, PHP, Firebase).',
     'services.uiux.title': 'UI/UX Implementation',
     'services.uiux.desc':
       'Translation of designs into pixel-perfect, accessible and responsive code (Tailwind, SASS).',
     'services.testing.title': 'Performance & Testing',
     'services.testing.desc':
       'Quality and speed assurance through Vitest and continuous optimization.',
+
+    // Home page
+    'home.meta.title': 'Christian Oller | Software Developer',
+    'home.meta.description':
+      'Portfolio of Christian Oller, a developer specialized in creating unique digital experiences.',
 
     // About page
     'about.meta.title': 'About | Christian Oller',
@@ -154,6 +167,8 @@ export const ui = {
     'about.img.alt': 'Profile photo of Christian Oller',
     'about.section.journey': 'My Journey',
     'about.section.experience': 'Professional Experience',
+    'about.intro':
+      'I am a Software Developer with over 2 years of experience. My approach combines technical precision with creative problem solving. I have specialized in ERP solutions, airline technology and environmental consulting platforms.',
 
     // Contact page
     'contact.meta.title': 'Contact | Christian Oller',
@@ -195,6 +210,7 @@ export const ui = {
 
     // Accessibility
     'aria.menu': 'Navigation menu',
+    'aria.theme': 'Toggle dark mode',
     'aria.lang.es': 'Switch to Spanish',
     'aria.lang.en': 'Switch to English',
 
