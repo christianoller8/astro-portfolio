@@ -6,6 +6,7 @@ import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils';
+import profileImage from '@/assets/images/profile.jpg';
 
 interface Props {
   title: string;
@@ -16,7 +17,7 @@ interface Props {
 const {
   title,
   description = 'Portfolio profesional de Christian. Desarrollador Full Stack & UI Designer.',
-  image = '/images/profile.jpg',
+  image = profileImage.src,
 } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);

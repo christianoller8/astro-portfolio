@@ -4,7 +4,7 @@ description: "Modernización del portal interno de gestión de tripulación para
 year: 2023
 client: "AeroGroup"
 tags: ["Angular", "RxJS", "SASS", "API Rest"]
-image: "/images/project-3.jpg"
+image: "../../../assets/images/project-3.jpg"
 featured: false
 ---
 

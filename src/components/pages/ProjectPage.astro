@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '@/layouts/Layout.astro';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import type { ui } from '@/i18n/ui';
@@ -18,7 +19,7 @@ const { Content } = await project.render();
 <Layout
   title={`${project.data.title} | ${t('projects.heading')}`}
   description={project.data.description}
-  image={project.data.image}
+  image={project.data.image.src}
 >
   <article class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 lg:px-20">
     <a
@@ -95,9 +96,11 @@ const { Content } = await project.render();
       class="mb-16 aspect-video w-full overflow-hidden rounded-xl bg-neutral-100 shadow-lg dark:bg-neutral-900"
       transition:name={`project-image-${project.slug}`}
     >
-      <img
+      <Image
         src={project.data.image}
         alt={project.data.title}
+        widths={[640, 960, 1280]}
+        sizes="(min-width: 1400px) 1400px, 100vw"
         loading="lazy"
         decoding="async"
         class="h-full w-full object-cover"

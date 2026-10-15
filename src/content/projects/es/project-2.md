@@ -4,7 +4,7 @@ description: "Dashboard interactivo para la gestión de tareas y análisis de pr
 year: 2023
 client: "StartUp Flow"
 tags: ["React", "TypeScript", "D3.js", "Firebase"]
-image: "/images/project-2.jpg"
+image: "../../../assets/images/project-2.jpg"
 featured: true
 ---
 

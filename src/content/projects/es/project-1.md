@@ -4,7 +4,7 @@ description: "Plataforma de comercio electrónico full-stack diseñada para cone
 year: 2024
 client: "EcoMarket Inc."
 tags: ["Next.js", "Stripe", "Tailwind CSS", "PostgreSQL"]
-image: "/images/project-1.jpg"
+image: "../../../assets/images/project-1.jpg"
 featured: true
 link: "https://github.com/christianoller/ecomarket"
 ---
