@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-/** Everything is authored at 1x CSS px (300 x 410 card) and rendered at 2x for sharpness. */
-const S = 2;
+/** Everything is authored at 1x CSS px (300 x 410 card) and rendered at 2.5x for sharpness. */
+const S = 2.5;
 export const CARD_W = 300 * S;
 export const CARD_H = 410 * S;
 const RADIUS = 16 * S;
@@ -38,7 +38,7 @@ function roundedRect(
   ctx.closePath();
 }
 
-/** Draws `img` into the rect using object-fit: cover semantics, anchored near the top (faces). */
+/** Draws `img` into the rect using object-fit: cover semantics, vertically anchored at `focusY` (0 = top, 1 = bottom). */
 function drawCover(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
@@ -46,12 +46,13 @@ function drawCover(
   y: number,
   w: number,
   h: number,
+  focusY = 0.43,
 ) {
   const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
   const sw = w / scale;
   const sh = h / scale;
   const sx = (img.naturalWidth - sw) / 2;
-  const sy = (img.naturalHeight - sh) * 0.2;
+  const sy = (img.naturalHeight - sh) * focusY;
   ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
 }
 
@@ -83,57 +84,45 @@ function drawFront(
   roundedRect(ctx, 0, 0, CARD_W, CARD_H, RADIUS);
   ctx.clip();
 
-  ctx.fillStyle = '#1c1c1c';
+  // Full-bleed photo on top, solid black info panel below (name, roles, status)
+  const photoH = 300 * S;
+  ctx.fillStyle = '#0d0d0d';
   ctx.fillRect(0, 0, CARD_W, CARD_H);
-
-  // Subtle diagonal sheen
-  const sheen = ctx.createLinearGradient(CARD_W, 0, 0, CARD_H);
-  sheen.addColorStop(0, 'rgba(255,255,255,0)');
-  sheen.addColorStop(0.16, 'rgba(255,255,255,0.075)');
-  sheen.addColorStop(0.4, 'rgba(255,255,255,0)');
-  sheen.addColorStop(0.75, 'rgba(255,255,255,0.05)');
-  sheen.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.fillStyle = sheen;
-  ctx.fillRect(0, 0, CARD_W, CARD_H);
-
-  drawSlot(ctx);
-
-  // Photo, inset 16px
-  const px = 16 * S;
-  const py = 36 * S;
-  const pw = CARD_W - 32 * S;
-  const ph = 272 * S;
-  ctx.save();
-  roundedRect(ctx, px, py, pw, ph, 8 * S);
-  ctx.clip();
   if (photo && photo.naturalWidth > 0) {
-    ctx.filter = 'grayscale(1)';
-    drawCover(ctx, photo, px, py, pw, ph);
-    ctx.filter = 'none';
+    drawCover(ctx, photo, 0, 0, CARD_W, photoH);
   } else {
-    ctx.fillStyle = '#27272a';
-    ctx.fillRect(px, py, pw, ph);
+    ctx.fillStyle = '#d4d4d8';
+    ctx.fillRect(0, 0, CARD_W, photoH);
   }
-  ctx.restore();
 
-  // Divider + availability status (the gap between photo and divider is intentionally blank)
-  ctx.fillStyle = 'rgba(255,255,255,0.09)';
-  ctx.fillRect(px, 362 * S, pw, 1 * S);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `400 ${22 * S}px ${SERIF}`;
+  ctx.fillText(content.name.toUpperCase(), 18 * S, 328 * S);
 
+  ctx.fillStyle = '#a1a1aa';
+  ctx.font = `500 ${9.5 * S}px ${SANS}`;
+  const spacing = 1.6 * S;
+  let x = 18 * S;
+  for (const char of content.role.toUpperCase()) {
+    ctx.fillText(char, x, 355 * S);
+    x += ctx.measureText(char).width + spacing;
+  }
+
+  const statusY = 385 * S;
   ctx.save();
   ctx.shadowColor = 'rgba(34,197,94,0.7)';
   ctx.shadowBlur = 8 * S;
   ctx.fillStyle = '#22c55e';
   ctx.beginPath();
-  ctx.arc(19 * S, 384 * S, 5 * S, 0, Math.PI * 2);
+  ctx.arc(21 * S, statusY, 3.5 * S, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  ctx.fillStyle = '#d4d4d8';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  ctx.font = `500 ${12 * S}px ${SANS}`;
-  ctx.fillText(content.status, 31 * S, 384 * S);
+  ctx.fillStyle = '#e4e4e7';
+  ctx.font = `600 ${11 * S}px ${SANS}`;
+  ctx.fillText(content.status, 32 * S, statusY);
 
   ctx.restore();
   drawEdge(ctx);
@@ -277,7 +266,7 @@ export function createCardTextures(content: CardContent) {
   img.src = content.photoUrl;
 
   if (document.fonts) {
-    Promise.all([document.fonts.load(`600 40px ${SERIF}`), document.fonts.load(`500 12px ${SANS}`)])
+    Promise.all([document.fonts.load(`600 40px ${SERIF}`), document.fonts.load(`600 11px ${SANS}`)])
       .then(redraw)
       .catch(() => {});
   }

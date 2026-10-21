@@ -18,10 +18,17 @@ export const ui = {
     // Hero
     'hero.greeting': 'Hola, soy',
     'hero.role': 'Desarrollador de Software',
+    'hero.headline': 'De la *idea* a un|*producto* que funciona.',
     'hero.description':
-      'Especializado en transformar ideas en experiencias digitales robustas y escalables. Combino la precisión técnica del desarrollo con la sensibilidad del diseño para crear productos que no solo funcionan, sino que destacan.',
-    'hero.button': 'Contactar',
+      'Me encargo del diseño, la implementación y la calidad. Entrego webs y apps cuidadas, rápidas y sin sorpresas.',
+    'hero.button': 'Cuéntame tu proyecto',
+    'hero.button.secondary': 'Ver proyectos',
     'hero.status': 'Disponible para proyectos',
+    'hero.work.design': 'Diseño UX / UI',
+    'hero.work.wordpress': 'Webs con WordPress',
+    'hero.work.web': 'Webs con Astro o React',
+    'hero.work.apps': 'Apps con Angular',
+    'hero.work.tests': 'Tests',
 
     // Home Sections
     'section.skills': 'Tecnologías Clave',
@@ -123,10 +130,17 @@ export const ui = {
     // Hero
     'hero.greeting': "Hi, I'm",
     'hero.role': 'Software Developer',
+    'hero.headline': 'From *idea* to a|*product* that works.',
     'hero.description':
-      "Specialized in transforming ideas into robust and scalable digital experiences. I combine technical precision with design sensibility to create products that don't just work — they stand out.",
-    'hero.button': 'Contact Me',
+      'I take care of design, implementation and quality. I deliver polished, fast websites and apps with no surprises.',
+    'hero.button': 'Tell me about your project',
+    'hero.button.secondary': 'View projects',
     'hero.status': 'Available for projects',
+    'hero.work.design': 'UX / UI design',
+    'hero.work.wordpress': 'WordPress websites',
+    'hero.work.web': 'Astro or React websites',
+    'hero.work.apps': 'Angular apps',
+    'hero.work.tests': 'Testing',
 
     // Home Sections
     'section.skills': 'Core Technologies',

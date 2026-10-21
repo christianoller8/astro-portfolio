@@ -21,10 +21,12 @@ const PX_PER_UNIT = 187.5;
 const REF_HEIGHT = 780;
 const VIEW_HEIGHT = REF_HEIGHT / PX_PER_UNIT;
 
-const CARD_WIDTH = 300 / PX_PER_UNIT;
-const CARD_HEIGHT = 410 / PX_PER_UNIT;
+/** The card artwork is authored at 300 x 410 px; it is displayed enlarged by this factor. */
+const CARD_SCALE = 1.15;
+const CARD_WIDTH = (300 * CARD_SCALE) / PX_PER_UNIT;
+const CARD_HEIGHT = (410 * CARD_SCALE) / PX_PER_UNIT;
 const CARD_DEPTH = 0.04;
-const CARD_RADIUS = 16 / PX_PER_UNIT;
+const CARD_RADIUS = (16 * CARD_SCALE) / PX_PER_UNIT;
 /** Where the strap ends, in card-local coordinates (the metal ring above the clip). */
 const CARD_ANCHOR_Y = CARD_HEIGHT / 2 + 0.107;
 /** Card top edge at rest: 179px below the top of the canvas. */
@@ -118,15 +120,20 @@ function updateStrapGeometry(geometry: THREE.BufferGeometry, points: THREE.Vecto
 }
 
 /** Keeps the orthographic zoom tied to the canvas height (see PX_PER_UNIT / REF_HEIGHT). */
-function CameraRig() {
+function CameraRig({ originX, baseHeight }: { originX: number; baseHeight: number }) {
   const camera = useThree((s) => s.camera);
+  const width = useThree((s) => s.size.width);
   const height = useThree((s) => s.size.height);
   const invalidate = useThree((s) => s.invalidate);
   useLayoutEffect(() => {
-    camera.zoom = height / VIEW_HEIGHT;
+    // Zoom follows the hero column height; any extra canvas height below it is free space
+    camera.zoom = baseHeight / VIEW_HEIGHT;
+    camera.position.y = VIEW_HEIGHT / 2 - height / 2 / camera.zoom;
+    // Shift the view so world x = 0 (the strap anchor) lands at `originX` px from the left edge
+    camera.position.x = (width / 2 - originX) / camera.zoom;
     camera.updateProjectionMatrix();
     invalidate();
-  }, [camera, height, invalidate]);
+  }, [camera, width, height, originX, baseHeight, invalidate]);
   return null;
 }
 
@@ -356,11 +363,22 @@ export interface LanyardSceneProps {
   content: CardContent;
   /** When false the render loop and physics are paused (offscreen / hidden tab). */
   active: boolean;
+  /** Horizontal position of the card's anchor, in px from the canvas' left edge. */
+  originX: number;
+  /** Height in px of the hero column the card is designed for (sets the zoom). */
+  baseHeight: number;
   onReady: () => void;
   onFail: () => void;
 }
 
-export default function LanyardScene({ content, active, onReady, onFail }: LanyardSceneProps) {
+export default function LanyardScene({
+  content,
+  active,
+  originX,
+  baseHeight,
+  onReady,
+  onFail,
+}: LanyardSceneProps) {
   return (
     <Canvas
       orthographic
@@ -379,7 +397,7 @@ export default function LanyardScene({ content, active, onReady, onFail }: Lanya
         });
       }}
     >
-      <CameraRig />
+      <CameraRig originX={originX} baseHeight={baseHeight} />
       <ambientLight intensity={Math.PI * 0.9} />
       <directionalLight position={[-2, 4, 6]} intensity={Math.PI * 1.1} />
       <Suspense fallback={null}>

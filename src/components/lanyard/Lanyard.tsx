@@ -58,6 +58,9 @@ export default function Lanyard({ name, role, site, status, photoUrl }: LanyardP
   const [inView, setInView] = useState(false);
   const [tabVisible, setTabVisible] = useState(true);
   const [failed, setFailed] = useState(false);
+  // The canvas spans the whole viewport width (so the card can be dragged anywhere) while the
+  // card stays centered on its hero column: `originX` is that column's center inside the canvas.
+  const [frame, setFrame] = useState({ left: 0, width: 0, originX: 0, extra: 0, baseHeight: 0 });
 
   const setMarker = useCallback((state: 'ready' | 'pending') => {
     document.querySelector('[data-lanyard]')?.setAttribute('data-lanyard', state);
@@ -79,6 +82,34 @@ export default function Lanyard({ name, role, site, status, photoUrl }: LanyardP
   }, []);
 
   const enabled = capable && !failed;
+
+  useEffect(() => {
+    const el = rootRef.current;
+    const column = el?.closest('[data-lanyard]');
+    if (!enabled || !el || !column) return;
+    const measure = () => {
+      const rect = column.getBoundingClientRect();
+      const width = document.documentElement.clientWidth;
+      // Also reach down to the bottom of the viewport so the card is not cut under the hero
+      const extra = Math.max(0, window.innerHeight - (rect.top + window.scrollY) - rect.height);
+      setFrame({
+        left: -rect.left,
+        width,
+        originX: rect.left + rect.width / 2,
+        extra,
+        baseHeight: rect.height,
+      });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(column);
+    observer.observe(document.documentElement);
+    window.addEventListener('resize', measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [enabled]);
 
   // Lazy load when near the viewport; track precise visibility to pause the loop.
   useEffect(() => {
@@ -114,14 +145,24 @@ export default function Lanyard({ name, role, site, status, photoUrl }: LanyardP
     <div
       ref={rootRef}
       aria-hidden="true"
-      style={{ position: 'absolute', inset: 0, overflow: 'hidden', touchAction: 'pan-y' }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        bottom: -frame.extra,
+        left: frame.left,
+        width: frame.width || '100%',
+        overflow: 'hidden',
+        touchAction: 'pan-y',
+      }}
     >
-      {near && (
+      {near && frame.width > 0 && (
         <SceneBoundary onError={handleFail}>
           <Suspense fallback={null}>
             <LanyardScene
               content={{ name, role, site, status, photoUrl }}
               active={inView && tabVisible}
+              originX={frame.originX}
+              baseHeight={frame.baseHeight}
               onReady={handleReady}
               onFail={handleFail}
             />

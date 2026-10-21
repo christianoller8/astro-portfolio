@@ -1,6 +1,6 @@
 ---
 import { Image, getImage } from 'astro:assets';
-import profileImage from '@/assets/images/profile.jpg';
+import cardImage from '@/assets/images/card.jpg';
 import Lanyard from '@/components/lanyard/Lanyard';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 
@@ -12,60 +12,39 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 // Small optimized copy of the photo, drawn onto the 3D card texture
-const cardPhoto = await getImage({ src: profileImage, width: 640, format: 'jpeg' });
+const work = [
+  { key: 'hero.work.design', tech: 'Figma · Procreate' },
+  { key: 'hero.work.wordpress', tech: 'PHP · SQL' },
+  { key: 'hero.work.web', tech: 'Tailwind · Next.js' },
+  { key: 'hero.work.apps', tech: 'Angular v8–v21' },
+  { key: 'hero.work.tests', tech: 'Cypress · Jasmine · Postman' },
+] as const;
+const cardPhoto = await getImage({ src: cardImage, width: 900, format: 'jpeg' });
 ---
 
 <section class="w-full pb-12 lg:pb-0">
-  <div class="flex flex-col items-center gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-0">
+  <div
+    class="mx-auto flex w-full max-w-[1400px] flex-col items-center gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-0 lg:px-20"
+  >
     <div
-      class="order-2 flex flex-col items-center space-y-8 px-6 text-center md:px-12 lg:h-[680px] lg:items-start lg:justify-center lg:pr-20 lg:pl-6 lg:text-left"
+      class="pointer-events-none relative z-10 order-2 flex flex-col items-center space-y-8 px-6 text-center md:px-12 lg:h-[780px] lg:items-start lg:justify-center lg:pt-28 lg:pr-0 lg:pl-[max(0px,calc(100%-34rem))] lg:text-left"
     >
-      <div class="space-y-4">
-        <span class="text-muted-foreground block text-lg tracking-wider italic"
-          >{t('hero.greeting')}</span
-        >
-
+      <div class="pointer-events-auto w-full space-y-6 lg:w-[34rem]">
         <h1
-          class="text-foreground font-serif text-4xl leading-tight uppercase md:text-6xl lg:text-[3.9rem]"
+          class="text-foreground font-serif text-4xl leading-[1.1] text-balance md:text-5xl lg:text-[3.4rem] lg:tracking-[-0.025em] lg:text-nowrap"
         >
-          Christian Oller
+          {
+            t('hero.headline')
+              .split('|')
+              .map((line) => (
+                <span class="block">
+                  {line
+                    .split('*')
+                    .map((part, i) => (i % 2 ? <em class="italic">{part}</em> : part))}
+                </span>
+              ))
+          }
         </h1>
-
-        <div class="flex items-center gap-2">
-          <span class="text-foreground text-xl font-bold md:text-2xl lg:text-[1.65rem]"
-            >Designer</span
-          >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            ><path
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-width="1.5"
-              d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"></path></svg
-          >
-          <span class="text-foreground text-xl font-bold md:text-2xl lg:text-[1.65rem]"
-            >Developer</span
-          >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            ><path
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-width="1.5"
-              d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"></path></svg
-          >
-          <span class="text-foreground text-xl font-bold md:text-2xl lg:text-[1.65rem]">QA</span>
-        </div>
 
         <p
           class="text-muted-foreground mx-auto max-w-[34rem] text-lg leading-relaxed text-pretty lg:mx-0"
@@ -74,35 +53,59 @@ const cardPhoto = await getImage({ src: profileImage, width: 640, format: 'jpeg'
         </p>
       </div>
 
-      <a
-        href={translatePath('/contact')}
-        class="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-medium transition-transform hover:scale-105"
+      <div
+        class="pointer-events-auto flex flex-wrap items-center justify-center gap-3 lg:justify-start"
       >
-        {t('hero.button')}
-        <svg
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="ml-2"
+        <a
+          href={translatePath('/contact')}
+          class="bg-foreground text-background hover:bg-foreground/90 inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-medium transition-transform hover:scale-105"
         >
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </a>
+          {t('hero.button')}
+          <svg
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="ml-2"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        <a
+          href={translatePath('/projects')}
+          class="border-foreground/30 text-foreground hover:bg-foreground/5 inline-flex items-center justify-center rounded-full border px-8 py-3 text-sm font-medium transition-colors"
+        >
+          {t('hero.button.secondary')}
+        </a>
+      </div>
+
+      <ul class="border-foreground/20 pointer-events-auto mt-6 w-full text-left lg:w-[34rem]">
+        {
+          work.map((item, i) => (
+            <li class="border-foreground/20 flex items-baseline gap-4 border-t py-3 last:border-b">
+              <span class="text-muted-foreground w-6 shrink-0 text-xs tracking-widest tabular-nums">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span class="text-foreground flex-1 text-base font-medium">{t(item.key)}</span>
+              <span class="text-muted-foreground text-sm">{item.tech}</span>
+            </li>
+          ))
+        }
+      </ul>
     </div>
 
     <!-- Lanyard column: the 3D canvas covers it from the header edge down past the card -->
     <div class="order-1 w-full lg:order-1">
       <div
         data-lanyard="pending"
-        class="group relative h-[480px] w-full md:h-[640px] lg:h-[780px]"
+        class="group relative h-[480px] w-full md:h-[640px] lg:-ml-20 lg:h-[780px] lg:w-[505px]"
         style="container-type: size; --u: calc(100cqh / 780);"
       >
         <!-- Static fallback (same geometry as the 3D scene, sized in --u = 1 design px at lg).
@@ -121,38 +124,42 @@ const cardPhoto = await getImage({ src: profileImage, width: 640, format: 'jpeg'
           >
           </div>
           <div
-            class="absolute left-1/2 -translate-x-1/2 overflow-hidden bg-[#1c1c1c] shadow-[0_24px_50px_-16px_rgb(0_0_0/0.3)]"
-            style="top: calc(var(--u) * 179); width: calc(var(--u) * 300); height: calc(var(--u) * 410); border-radius: calc(var(--u) * 16);"
+            class="absolute left-1/2 -translate-x-1/2 overflow-hidden bg-[#0d0d0d] shadow-[0_24px_50px_-16px_rgb(0_0_0/0.3)]"
+            style="top: calc(var(--u) * 179); width: calc(var(--u) * 300); height: calc(var(--u) * 410); border-radius: calc(var(--u) * 16); scale: 1.15; transform-origin: 50% 0;"
           >
-            <span
-              class="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#080808]"
-              style="top: calc(var(--u) * 17); width: calc(var(--u) * 56); height: calc(var(--u) * 7);"
-            ></span>
             <div
-              class="absolute overflow-hidden"
-              style="left: calc(var(--u) * 16); top: calc(var(--u) * 36); width: calc(var(--u) * 268); height: calc(var(--u) * 272); border-radius: calc(var(--u) * 8);"
+              class="absolute inset-x-0 top-0 overflow-hidden"
+              style="height: calc(var(--u) * 300);"
             >
               <Image
-                src={profileImage}
+                src={cardImage}
                 alt={t('about.img.alt')}
                 widths={[320, 640]}
-                sizes="(min-width: 1024px) 268px, 240px"
-                class="h-full w-full object-cover object-[50%_20%] grayscale"
+                sizes="(min-width: 1024px) 300px, 240px"
+                class="h-full w-full object-cover object-[50%_43%]"
                 loading="eager"
                 fetchpriority="high"
               />
             </div>
             <span
-              class="absolute bg-white/10"
-              style="left: calc(var(--u) * 16); right: calc(var(--u) * 16); top: calc(var(--u) * 362); height: 1px;"
-            ></span>
+              class="absolute font-serif whitespace-nowrap text-white uppercase"
+              style="left: calc(var(--u) * 18); top: calc(var(--u) * 328); transform: translateY(-50%); font-size: calc(var(--u) * 22);"
+            >
+              Christian Oller
+            </span>
+            <span
+              class="absolute font-medium whitespace-nowrap text-zinc-400 uppercase"
+              style="left: calc(var(--u) * 18); top: calc(var(--u) * 355); transform: translateY(-50%); font-size: calc(var(--u) * 9.5); letter-spacing: 0.17em;"
+            >
+              Designer × Developer × QA
+            </span>
             <span
               class="absolute rounded-full bg-[#22c55e]"
-              style="left: calc(var(--u) * 14); top: calc(var(--u) * 379); width: calc(var(--u) * 10); height: calc(var(--u) * 10);"
+              style="left: calc(var(--u) * 17.5); top: calc(var(--u) * 381.5); width: calc(var(--u) * 7); height: calc(var(--u) * 7);"
             ></span>
             <span
-              class="absolute font-medium whitespace-nowrap text-zinc-300"
-              style="left: calc(var(--u) * 31); top: calc(var(--u) * 384); transform: translateY(-50%); font-size: calc(var(--u) * 12);"
+              class="absolute font-semibold whitespace-nowrap text-zinc-200"
+              style="left: calc(var(--u) * 32); top: calc(var(--u) * 385); transform: translateY(-50%); font-size: calc(var(--u) * 11);"
             >
               {t('hero.status')}
             </span>
@@ -162,7 +169,7 @@ const cardPhoto = await getImage({ src: profileImage, width: 640, format: 'jpeg'
         <Lanyard
           client:only="react"
           name="Christian Oller"
-          role="Software Developer"
+          role="Designer × Developer × QA"
           site="christianoller.dev"
           status={t('hero.status')}
           photoUrl={cardPhoto.src}
