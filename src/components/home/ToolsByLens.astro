@@ -1,0 +1,122 @@
+---
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const columns = [
+  {
+    lens: 'design',
+    title: t('lens.design'),
+    tools: [
+      'Figma',
+      'Procreate',
+      lang === 'es' ? 'Wireframes y prototipos' : 'Wireframes and prototypes',
+    ],
+  },
+  {
+    lens: 'code',
+    title: t('lens.code'),
+    tools: [
+      'Angular (v8–v21)',
+      'TypeScript',
+      'Astro · React · Next.js',
+      'Tailwind CSS · SASS',
+      'WordPress · PHP · SQL',
+      'Git · Bitbucket',
+    ],
+  },
+  {
+    lens: 'qa',
+    title: t('lens.qa'),
+    tools: [
+      'Cypress',
+      'Jasmine · Karma',
+      'Postman',
+      lang === 'es' ? 'Tests unitarios y E2E' : 'Unit and E2E tests',
+    ],
+  },
+] as const;
+---
+
+<section class="tools wrap" data-cs="<section> ToolsByLens.astro">
+  <h2 class="t-head" data-reveal>{t('stack.title')}</h2>
+  <p class="t-lead tools-lead" data-reveal style="--reveal-i: 1">{t('stack.lead')}</p>
+
+  <div class="tools-grid">
+    {
+      columns.map((column, i) => (
+        <div class="tools-col" data-reveal style={`--reveal-i: ${i + 2}`}>
+          <h3 class="tools-title">{column.title}</h3>
+          <ul class="tools-list">
+            {column.tools.map((tool) => (
+              <li>{tool}</li>
+            ))}
+          </ul>
+          <button type="button" class="tools-try" data-lens-set={column.lens} aria-pressed="false">
+            {t('lens.label')} {column.title} <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .tools {
+    padding-top: clamp(5rem, 10vw, 9rem);
+  }
+  .tools-lead {
+    max-width: 40ch;
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .tools-title {
+    font-size: var(--step-lead);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+  .tools-list {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 0.85rem;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .tools-try {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    margin-top: 1.25rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--pencil);
+  }
+  .tools-try span {
+    transition: transform 0.25s var(--ease-out);
+  }
+  .tools-try:hover span {
+    transform: translateX(4px);
+  }
+  .tools-try[aria-pressed='true'] {
+    color: var(--ink);
+  }
+  @media (min-width: 768px) {
+    .tools-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+    }
+  }
+</style>

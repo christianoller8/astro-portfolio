@@ -1,0 +1,135 @@
+---
+// Fragmento de interfaz de Learnish (aprender inglés). Datos de ejemplo hasta tener capturas reales.
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  es: {
+    lesson: 'Lección 12 · Viajes',
+    progress: '7 de 10',
+    prompt: '¿Cómo se dice?',
+    word: 'Tengo ganas de verte',
+    answer: 'I’m looking forward to seeing you',
+    again: 'Repasar',
+    good: 'Lo sabía',
+    streak: '9 días seguidos',
+  },
+  en: {
+    lesson: 'Lesson 12 · Travel',
+    progress: '7 of 10',
+    prompt: 'How do you say it?',
+    word: 'Tengo ganas de verte',
+    answer: 'I’m looking forward to seeing you',
+    again: 'Review',
+    good: 'Got it',
+    streak: '9-day streak',
+  },
+}[lang];
+---
+
+<div class="ln" data-ui role="img" aria-label={`Learnish — ${copy.lesson}`}>
+  <div class="ln-top">
+    <span class="ln-logo">Learnish</span>
+    <span class="ln-streak">{copy.streak}</span>
+  </div>
+  <div class="ln-progress">
+    <span>{copy.lesson}</span>
+    <span>{copy.progress}</span>
+  </div>
+  <div class="ln-track" aria-hidden="true"><span></span></div>
+  <div class="ln-card">
+    <span class="ln-prompt">{copy.prompt}</span>
+    <span class="ln-word">{copy.word}</span>
+    <span class="ln-answer">{copy.answer}</span>
+  </div>
+  <div class="ln-actions">
+    <span class="ln-btn">{copy.again}</span>
+    <span class="ln-btn ln-btn--good">{copy.good}</span>
+  </div>
+</div>
+
+<style>
+  .ln {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 1.1rem 1.1rem;
+    font-size: var(--ui-size, 0.8125rem);
+    line-height: 1.3;
+    color: #17213f;
+    background: #f6f7fb;
+  }
+  .ln-top,
+  .ln-progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ln-logo {
+    font-size: 1.23em;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #17213f;
+  }
+  .ln-streak {
+    padding: 0.2rem 0.55rem;
+    font-weight: 600;
+    color: #3d3000;
+    background: #ffd84d;
+  }
+  .ln-progress {
+    color: #4a5372;
+  }
+  .ln-track {
+    height: 0.5rem;
+    background: #e3e6f0;
+  }
+  .ln-track span {
+    display: block;
+    width: 70%;
+    height: 100%;
+    background: #f2c200;
+  }
+  .ln-card {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.1rem 1rem;
+    background: #fff;
+    border: 1px solid #e3e6f0;
+  }
+  .ln-prompt {
+    color: #4a5372;
+  }
+  .ln-word {
+    font-size: 1.54em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .ln-answer {
+    padding-top: 0.5rem;
+    font-weight: 600;
+    color: #2e3f8f;
+    border-top: 1px dashed #d5d9e6;
+  }
+  .ln-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .ln-btn {
+    padding: 0.6rem;
+    text-align: center;
+    font-weight: 700;
+    color: #17213f;
+    background: #e3e6f0;
+  }
+  .ln-btn--good {
+    color: #2b2200;
+    background: #ffd84d;
+  }
+</style>

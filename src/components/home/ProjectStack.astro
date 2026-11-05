@@ -1,0 +1,164 @@
+---
+import ProjectVisual from '@/components/ui/ProjectVisual.astro';
+import { useTranslations, useTranslatedPath } from '@/i18n/utils';
+import { getSortedProjects } from '@/utils/projects';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const projects = await getSortedProjects(lang);
+---
+
+<section class="projects" data-cs="<section> ProjectStack.astro">
+  <div class="wrap projects-head">
+    <h2 class="t-head" data-reveal>{t('projects.title')}</h2>
+    <p class="t-lead projects-lead" data-reveal style="--reveal-i: 1">{t('projects.lead')}</p>
+  </div>
+
+  <ol class="wrap stack">
+    {
+      projects.map((project) => (
+        <li class="stack-item">
+          <a class="stack-card" href={translatePath(`/projects/${project.slug}`)}>
+            <div class="stack-meta">
+              <h3 class="stack-title">{project.data.title}</h3>
+              <p class="stack-desc">
+                {project.data.description}
+                <span class="stack-kind">
+                  {t(project.data.kind === 'app' ? 'project.kind.app' : 'project.kind.web')} ·{' '}
+                  {project.data.status}
+                </span>
+              </p>
+              <span class="stack-cta">
+                {t('projects.view')} <span aria-hidden="true">→</span>
+              </span>
+            </div>
+            <div class="stack-visual">
+              <ProjectVisual project={project} lang={lang} />
+            </div>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="wrap projects-all">
+    <a class="btn btn-quiet" href={translatePath('/projects')}>
+      {t('projects.all')}
+      <span class="btn-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .projects {
+    padding-top: clamp(5rem, 10vw, 9rem);
+  }
+  .projects-lead {
+    max-width: 42ch;
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  .stack {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .stack-card {
+    display: grid;
+    gap: 1.25rem;
+    padding: clamp(0.75rem, 1.6vw, 1.25rem);
+    background: var(--tint);
+    transition: background-color 0.3s var(--ease-out);
+  }
+  .stack-visual :global(.pv-clip) {
+    transition: transform 0.6s var(--ease-out);
+  }
+  .stack-card:hover .stack-visual :global(.pv-clip) {
+    transform: scale(0.985);
+  }
+  .stack-meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.25rem 0.25rem 0;
+  }
+  .stack-title {
+    font-size: var(--step-head);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .stack-desc {
+    max-width: 52ch;
+    color: var(--ink);
+  }
+  .stack-kind {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .stack-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: var(--step-small);
+    color: var(--pencil);
+  }
+  .stack-cta span {
+    transition: transform 0.25s var(--ease-out);
+  }
+  .stack-card:hover .stack-cta span {
+    transform: translateX(4px);
+  }
+  .projects-all {
+    margin-top: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .stack {
+      gap: 2rem;
+    }
+    .stack-meta {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) auto;
+      align-items: start;
+      gap: 2.5rem;
+    }
+    .stack-visual :global(.pv-clip) {
+      aspect-ratio: auto;
+      height: clamp(16rem, 44vh, 30rem);
+    }
+  }
+  /* Cada tarjeta crece un poco al entrar en pantalla, ligada al scroll (sin JavaScript) */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .stack-card {
+        animation: card-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+      }
+    }
+  }
+  @keyframes card-in {
+    from {
+      transform: scale(0.94);
+      opacity: 0.5;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stack-visual :global(.pv-clip),
+    .stack-cta span {
+      transition: none;
+    }
+  }
+</style>

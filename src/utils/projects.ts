@@ -35,13 +35,13 @@ async function getLocalizedProjects(lang: Lang): Promise<ProjectEntry[]> {
   return [...bySlug.values()];
 }
 
-/** All projects for a locale, newest first. */
+/** All projects for a locale, in the order set in their frontmatter. */
 export async function getSortedProjects(lang: Lang) {
   const projects = await getLocalizedProjects(lang);
-  return projects.sort((a, b) => b.data.year - a.data.year);
+  return projects.sort((a, b) => a.data.order - b.data.order);
 }
 
-/** Featured projects for a locale, newest first. */
+/** Featured projects for a locale, in order. */
 export async function getFeaturedProjects(lang: Lang) {
   const projects = await getSortedProjects(lang);
   return projects.filter((project) => project.data.featured);

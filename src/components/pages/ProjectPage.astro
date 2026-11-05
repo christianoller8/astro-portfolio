@@ -1,8 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
 import Layout from '@/layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import ProjectVisual from '@/components/ui/ProjectVisual.astro';
+import vistaloTablet from '@/assets/images/projects/vistalo-tablet.jpg';
+import vistaloMobile from '@/assets/images/projects/vistalo-mobile.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
+import { getSortedProjects } from '@/utils/projects';
 import type { ui } from '@/i18n/ui';
 
 interface Props {
@@ -14,103 +18,272 @@ const { lang, project } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const { Content } = await project.render();
+const { title, description, kind, status, role, stack, features, link, image } = project.data;
+
+const projects = await getSortedProjects(lang);
+const index = projects.findIndex((p) => p.slug === project.slug);
+const next = projects[(index + 1) % projects.length];
+
+// Capturas extra (reales) por proyecto: la misma web en otros tamaños de pantalla
+const extraShots =
+  project.slug === 'vistalo'
+    ? [
+        {
+          src: vistaloTablet,
+          alt:
+            lang === 'es'
+              ? 'La web de Vístalo en una tablet (768 px)'
+              : 'The Vístalo website on a tablet (768 px)',
+          label: 'Tablet · 768 px',
+        },
+        {
+          src: vistaloMobile,
+          alt:
+            lang === 'es'
+              ? 'La web de Vístalo en un móvil (390 px)'
+              : 'The Vístalo website on a phone (390 px)',
+          label: lang === 'es' ? 'Móvil · 390 px' : 'Phone · 390 px',
+        },
+      ]
+    : [];
+
+const facts = [
+  { label: t('project.role'), value: role },
+  {
+    label: t('project.status'),
+    value: `${t(kind === 'app' ? 'project.kind.app' : 'project.kind.web')} · ${status}`,
+  },
+  ...(stack.length ? [{ label: t('project.stack'), value: stack.join(' · ') }] : []),
+];
 ---
 
 <Layout
-  title={`${project.data.title} | ${t('projects.heading')}`}
-  description={project.data.description}
-  image={project.data.image.src}
+  title={`${title} · Christian Oller`}
+  description={description}
+  image={image?.src}
+  frame={`${t('nav.projects')} / ${title}`}
 >
-  <article class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 lg:px-20">
-    <a
-      href={translatePath('/projects')}
-      class="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center text-sm font-medium transition-colors dark:hover:text-white"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="mr-2"
-      >
-        <path d="m15 18-6-6 6-6"></path>
-      </svg>
-      {t('nav.back')}
-    </a>
-
-    <header class="mb-12">
-      <h1
-        class="text-foreground mb-8 font-serif text-5xl leading-tight font-bold md:text-7xl dark:text-white"
-      >
-        {project.data.title}
-      </h1>
-
-      <div
-        class="border-border/40 grid grid-cols-2 gap-8 border-y py-6 md:grid-cols-4 dark:border-neutral-800"
-      >
-        <div>
-          <span
-            class="text-muted-foreground mb-1 block text-xs tracking-wider uppercase dark:text-neutral-500"
+  <article data-cs="<article> ProjectPage.astro">
+    <header class="wrap project-head">
+      <a class="back link t-small" href={translatePath('/projects')}>← {t('project.back')}</a>
+      <h1 class="t-display project-title" data-ds="H1" data-ds-type data-reveal>{title}</h1>
+      <p class="t-lead project-lead" data-reveal style="--reveal-i: 1">{description}</p>
+      <dl class="facts" data-reveal style="--reveal-i: 2">
+        {
+          facts.map((fact) => (
+            <div>
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      {
+        link && (
+          <a
+            class="btn btn-primary visit"
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            data-reveal
+            style="--reveal-i: 3"
           >
-            {t('project.year')}
-          </span>
-          <span class="text-sm font-medium dark:text-neutral-200">
-            {project.data.year}
-          </span>
-        </div>
-
-        <div>
-          <span
-            class="text-muted-foreground mb-1 block text-xs tracking-wider uppercase dark:text-neutral-500"
-          >
-            {t('project.client')}
-          </span>
-          <span class="text-sm font-medium dark:text-neutral-200">
-            {project.data.client}
-          </span>
-        </div>
-
-        <div class="col-span-2 md:col-span-2">
-          <span
-            class="text-muted-foreground mb-1 block text-xs tracking-wider uppercase dark:text-neutral-500"
-          >
-            {t('project.tech')}
-          </span>
-          <div class="flex flex-wrap gap-2">
-            {
-              project.data.tags.map((tag) => (
-                <span class="text-sm font-medium dark:text-neutral-200">#{tag}</span>
-              ))
-            }
-          </div>
-        </div>
-      </div>
+            {t('project.visit')}
+            <span class="btn-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        )
+      }
     </header>
 
-    <div
-      class="mb-16 aspect-video w-full overflow-hidden rounded-xl bg-neutral-100 shadow-lg dark:bg-neutral-900"
-      transition:name={`project-image-${project.slug}`}
-    >
-      <Image
-        src={project.data.image}
-        alt={project.data.title}
-        widths={[640, 960, 1280]}
-        sizes="(min-width: 1400px) 1400px, 100vw"
-        loading="lazy"
-        decoding="async"
-        class="h-full w-full object-cover"
-      />
+    <div class="wrap project-visual" data-reveal>
+      <ProjectVisual project={project} lang={lang} eager />
     </div>
 
-    <div class="mx-auto max-w-3xl">
-      <div class="prose prose-lg prose-neutral dark:prose-invert max-w-none">
+    {
+      extraShots.length > 0 && (
+        <div class="wrap shots">
+          {extraShots.map((shot, i) => (
+            <figure
+              class="shot"
+              data-reveal
+              style={`--reveal-i: ${i}`}
+              data-ds={shot.label}
+              data-qa-host
+            >
+              <div class="shot-clip">
+                <Image
+                  src={shot.src}
+                  alt={shot.alt}
+                  widths={[390, 780]}
+                  sizes="(min-width: 1024px) 30vw, 50vw"
+                  loading="lazy"
+                  class="shot-img"
+                />
+              </div>
+            </figure>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="wrap project-body">
+      <div class="prose-block" data-reveal>
         <Content />
       </div>
+      <div class="features" data-reveal style="--reveal-i: 1">
+        <h2 class="features-title">{t('project.features')}</h2>
+        <ul>
+          {features.map((feature) => <li>{feature}</li>)}
+        </ul>
+      </div>
     </div>
+
+    {
+      next && next.slug !== project.slug && (
+        <nav class="wrap next" aria-label={t('project.next')}>
+          <a class="next-link" href={translatePath(`/projects/${next.slug}`)} data-reveal>
+            <span class="t-small next-label">{t('project.next')}</span>
+            <span class="next-title">
+              {next.data.title} <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        </nav>
+      )
+    }
   </article>
 </Layout>
+
+<style>
+  .project-head {
+    padding-top: clamp(1.5rem, 4vw, 3.5rem);
+  }
+  .back {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    color: var(--muted);
+  }
+  .project-title {
+    margin-top: 1rem;
+  }
+  .project-lead {
+    max-width: 38ch;
+    margin-top: 1.25rem;
+    color: var(--muted);
+  }
+  .facts {
+    display: grid;
+    gap: 1rem 2.5rem;
+    margin-top: 2rem;
+  }
+  .facts dt {
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .facts dd {
+    margin-top: 0.15rem;
+    font-weight: 600;
+  }
+  .visit {
+    margin-top: 2rem;
+  }
+  .project-visual {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .project-visual :global(.pv-clip) {
+    --ui-size: 1rem;
+    aspect-ratio: auto;
+    height: clamp(20rem, 66vh, 46rem);
+  }
+  .shots {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    margin-top: clamp(1rem, 2vw, 1.5rem);
+  }
+  .shot-clip {
+    overflow: hidden;
+    background: var(--tint);
+  }
+  .shot-img {
+    width: 100%;
+    height: auto;
+  }
+  .project-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .prose-block {
+    max-width: 62ch;
+    font-size: var(--step-lead);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .prose-block :global(p + p) {
+    margin-top: 1.1em;
+  }
+  .features-title {
+    font-size: var(--step-lead);
+    font-weight: 650;
+  }
+  .features ul {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .features li {
+    display: flex;
+    gap: 0.7rem;
+  }
+  .features li::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.55em;
+    background: var(--pencil);
+  }
+  .next {
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+  .next-link {
+    display: grid;
+    gap: 0.4rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--tint);
+    transition:
+      background-color 0.3s var(--ease-out),
+      color 0.3s var(--ease-out);
+  }
+  .next-link:hover {
+    background: var(--pencil);
+    color: var(--pencil-ink);
+  }
+  .next-link:hover .next-label {
+    color: var(--pencil-ink);
+  }
+  .next-label {
+    color: var(--muted);
+  }
+  .next-title {
+    font-size: var(--step-head);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+  @media (min-width: 768px) {
+    .facts {
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .project-body {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      gap: 4rem;
+    }
+  }
+</style>

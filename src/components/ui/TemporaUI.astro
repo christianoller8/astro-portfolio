@@ -1,0 +1,302 @@
+---
+// Fragmento de interfaz de Tempora (turnos de sanitarios), dibujado en HTML hasta tener capturas reales.
+// Los datos son de ejemplo. [data-sketch] marca lo que se dibuja en el boceto.
+interface Props {
+  lang: 'es' | 'en';
+  /** Muestra las notas a mano del boceto (solo en la escena del inicio) */
+  notes?: { filters: string; table: string; cta: string };
+}
+
+const { lang, notes } = Astro.props;
+
+const copy = {
+  es: {
+    date: 'Mar 5 nov',
+    nav: ['Turnos', 'Fichajes', 'Equipo', 'Informes'],
+    title: 'Turnos de hoy',
+    tabs: ['Hoy', 'Semana', 'Mes'],
+    cta: 'Nuevo turno',
+    stats: [
+      ['18', 'turnos'],
+      ['15', 'fichados'],
+      ['3', 'pendientes'],
+    ],
+    cols: ['Persona', 'Servicio', 'Turno', 'Estado'],
+    done: 'Fichado',
+    pending: 'Pendiente',
+    shifts: { m: 'Mañana · 8–15 h', t: 'Tarde · 15–22 h', n: 'Noche · 22–8 h' },
+    units: ['Urgencias', 'UCI', 'Planta 3', 'Urgencias'],
+  },
+  en: {
+    date: 'Tue 5 Nov',
+    nav: ['Shifts', 'Clock-ins', 'Team', 'Reports'],
+    title: "Today's shifts",
+    tabs: ['Today', 'Week', 'Month'],
+    cta: 'New shift',
+    stats: [
+      ['18', 'shifts'],
+      ['15', 'clocked in'],
+      ['3', 'pending'],
+    ],
+    cols: ['Person', 'Unit', 'Shift', 'Status'],
+    done: 'Clocked in',
+    pending: 'Pending',
+    shifts: { m: 'Morning · 8–15', t: 'Evening · 15–22', n: 'Night · 22–8' },
+    units: ['A&E', 'ICU', 'Ward 3', 'A&E'],
+  },
+}[lang];
+
+const rows = [
+  { name: 'Lucía Prieto', initials: 'LP', unit: copy.units[0], shift: copy.shifts.m, ok: true },
+  { name: 'Javier Ortega', initials: 'JO', unit: copy.units[1], shift: copy.shifts.t, ok: true },
+  { name: 'Marta Ruiz', initials: 'MR', unit: copy.units[2], shift: copy.shifts.n, ok: false },
+  { name: 'Daniel Soto', initials: 'DS', unit: copy.units[3], shift: copy.shifts.m, ok: true },
+];
+---
+
+<div class="tp" data-ui role="img" aria-label={`Tempora — ${copy.title}`}>
+  <div class="tp-top" data-sketch="box">
+    <span class="tp-logo" data-sketch="text">Tempora</span>
+    <span class="tp-date" data-sketch="text">{copy.date}</span>
+  </div>
+  <div class="tp-body">
+    <div class="tp-side" data-sketch="box">
+      {
+        copy.nav.map((item, i) => (
+          <span class:list={['tp-nav', { 'is-on': i === 0 }]} data-sketch="text">
+            {item}
+          </span>
+        ))
+      }
+    </div>
+    <div class="tp-main">
+      <div class="tp-head">
+        <span class="tp-title" data-sketch="text">{copy.title}</span>
+        <span class="tp-cta" data-sketch="box" data-sketch-note={notes?.cta}>+ {copy.cta}</span>
+      </div>
+      <div class="tp-tabs">
+        {
+          copy.tabs.map((tab, i) => (
+            <span
+              class:list={['tp-tab', { 'is-on': i === 0 }]}
+              data-sketch="box"
+              data-sketch-note={i === copy.tabs.length - 1 ? notes?.filters : undefined}
+            >
+              {tab}
+            </span>
+          ))
+        }
+      </div>
+      <div class="tp-stats">
+        {
+          copy.stats.map(([value, label]) => (
+            <span class="tp-stat" data-sketch="box">
+              <strong>{value}</strong> {label}
+            </span>
+          ))
+        }
+      </div>
+      <div class="tp-table" data-sketch="box" data-sketch-note={notes?.table}>
+        <div class="tp-row tp-row--head">
+          {copy.cols.map((col) => <span>{col}</span>)}
+        </div>
+        {
+          rows.map((row) => (
+            <div class="tp-row">
+              <span class="tp-person" data-sketch="text">
+                <i aria-hidden="true">{row.initials}</i>
+                {row.name}
+              </span>
+              <span data-sketch="text">{row.unit}</span>
+              <span data-sketch="text">{row.shift}</span>
+              <span class:list={['tp-chip', { 'is-pending': !row.ok }]} data-sketch="box">
+                {row.ok ? copy.done : copy.pending}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tp {
+    --tp-ink: #0f1d1b;
+    --tp-muted: #4b5b58;
+    --tp-line: #dfe7e5;
+    --tp-soft: #f2f7f6;
+    --tp-brand: #0f766e;
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-size: var(--ui-size, 0.8125rem);
+    line-height: 1.3;
+    color: var(--tp-ink);
+    background: #fff;
+    border: 1px solid var(--tp-line);
+  }
+  .tp-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--tp-line);
+  }
+  .tp-logo {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--tp-brand);
+  }
+  .tp-date {
+    color: var(--tp-muted);
+  }
+  .tp-body {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    min-height: 0;
+  }
+  .tp-side {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 0.9rem 0.75rem;
+    background: var(--tp-soft);
+  }
+  .tp-nav {
+    padding: 0.35rem 0.5rem;
+    color: var(--tp-muted);
+  }
+  .tp-nav.is-on {
+    color: #fff;
+    background: var(--tp-brand);
+  }
+  .tp-main {
+    display: grid;
+    align-content: start;
+    gap: 0.8rem;
+    padding: 0.9rem 1rem 1rem;
+    min-width: 0;
+  }
+  .tp-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .tp-title {
+    font-size: 1.3em;
+    font-weight: 700;
+  }
+  .tp-cta {
+    padding: 0.45rem 0.7rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--tp-brand);
+  }
+  .tp-tabs {
+    display: flex;
+    gap: 0.25rem;
+  }
+  .tp-tab {
+    padding: 0.3rem 0.65rem;
+    color: var(--tp-muted);
+    background: var(--tp-soft);
+  }
+  .tp-tab.is-on {
+    color: var(--tp-ink);
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--tp-brand);
+  }
+  .tp-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  .tp-stat {
+    padding: 0.55rem 0.7rem;
+    color: var(--tp-muted);
+    background: var(--tp-soft);
+  }
+  .tp-stat strong {
+    display: block;
+    font-size: 1.55em;
+    font-weight: 700;
+    color: var(--tp-ink);
+  }
+  .tp-table {
+    display: grid;
+  }
+  .tp-row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr 1.2fr 0.8fr;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.25rem;
+    border-bottom: 1px solid var(--tp-line);
+  }
+  .tp-row--head {
+    font-weight: 600;
+    color: var(--tp-muted);
+  }
+  .tp-person {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tp-person i {
+    display: inline-grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    font-style: normal;
+    font-size: 0.92em;
+    color: var(--tp-brand);
+    background: #d9efec;
+    border-radius: 50%;
+  }
+  .tp-chip {
+    justify-self: start;
+    padding: 0.15rem 0.5rem;
+    font-weight: 600;
+    color: #0b5e3b;
+    background: #def5e8;
+  }
+  .tp-chip.is-pending {
+    color: #7a4a00;
+    background: #fdeccc;
+  }
+  .tp-row > * {
+    min-width: 0;
+  }
+  @media (max-width: 640px) {
+    .tp-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tp-head {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tp-person {
+      white-space: normal;
+    }
+    .tp-person i {
+      display: none;
+    }
+    .tp-side {
+      display: none;
+    }
+    .tp-row {
+      grid-template-columns: 1.4fr 1fr 0.9fr;
+    }
+    .tp-row > :nth-child(2) {
+      display: none;
+    }
+  }
+</style>

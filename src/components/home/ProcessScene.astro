@@ -1,0 +1,308 @@
+---
+import TemporaUI from '@/components/ui/TemporaUI.astro';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const steps = [
+  { title: t('process.sketch.title'), body: t('process.sketch.body') },
+  { title: t('process.code.title'), body: t('process.code.body') },
+  { title: t('process.qa.title'), body: t('process.qa.body') },
+];
+
+const checks = [
+  t('process.check.overlap'),
+  t('process.check.contrast'),
+  t('process.check.keyboard'),
+  t('process.check.export'),
+];
+
+// Fragmento de código del componente de la tabla de turnos (Angular, control flow y signals)
+const code = [
+  `@Component({`,
+  `  selector: 'tp-shift-table',`,
+  `  template: \``,
+  `    @for (shift of shifts(); track shift.id) {`,
+  `      <tp-shift-row [shift]="shift" />`,
+  `    } @empty {`,
+  `      <tp-empty-state />`,
+  `    }`,
+  `  \`,`,
+  `})`,
+  `export class ShiftTable {`,
+  `  shifts = input.required<Shift[]>();`,
+  `}`,
+];
+---
+
+<section class="process" data-process data-phase="0" data-cs="<section> ProcessScene.astro">
+  <div class="wrap process-head">
+    <h2 class="t-head" data-reveal>{t('process.title')}</h2>
+    <p class="t-lead process-lead" data-reveal style="--reveal-i: 1">{t('process.lead')}</p>
+  </div>
+
+  <div class="process-track" data-process-track>
+    <div class="process-sticky">
+      <div class="wrap process-grid">
+        <ol class="process-steps">
+          {
+            steps.map((step, i) => (
+              <li class="process-step" data-step={i} data-active={i === 0 ? '' : undefined}>
+                <h3 class="process-step-title">
+                  <span class="process-step-mark" aria-hidden="true" />
+                  {step.title}
+                </h3>
+                <p class="process-step-body">{step.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+
+        <div class="process-stage">
+          <div class="process-screen" data-process-screen data-ds="Tempora · Turnos">
+            <div class="process-ui">
+              <TemporaUI
+                lang={lang}
+                notes={{
+                  filters: t('process.note.filters'),
+                  table: t('process.note.table'),
+                  cta: t('process.note.cta'),
+                }}
+              />
+            </div>
+          </div>
+
+          <div class="process-code" data-ui>
+            <p class="process-code-bar">
+              <span class="process-code-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <code>shift-table.component.ts</code>
+            </p>
+            <pre><code>{code.join('\n')}</code></pre>
+          </div>
+
+          <ul class="process-checks" data-ui>
+            {
+              checks.map((check, i) => (
+                <li style={`--i: ${i}`}>
+                  <svg class="process-check-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="m4 8.5 2.6 2.6L12 5.5" />
+                  </svg>
+                  {check}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process {
+    --p: 0;
+    position: relative;
+    padding-top: clamp(4rem, 9vw, 8rem);
+  }
+  .process-lead {
+    max-width: 40ch;
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  .process-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Pasos */
+  .process-steps {
+    display: grid;
+    gap: 1.75rem;
+    align-content: center;
+  }
+  .process-step-title {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: var(--step-lead);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+  .process-step-mark {
+    width: 0.65rem;
+    height: 0.65rem;
+    background: var(--line);
+    transition:
+      background-color 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out);
+  }
+  .process-step-body {
+    max-width: 36ch;
+    margin-top: 0.4rem;
+    color: var(--muted);
+  }
+  .process-step[data-active] .process-step-mark {
+    background: var(--pencil);
+    transform: rotate(45deg);
+  }
+
+  /* Escenario */
+  .process-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .process-screen {
+    position: relative;
+    height: clamp(24rem, 54vh, 34rem);
+  }
+  .process-ui {
+    height: 100%;
+    opacity: clamp(0, calc((var(--p) - 0.33) / 0.12), 1);
+  }
+  .process-screen :global(.process-sketch) {
+    opacity: clamp(0, calc((0.5 - var(--p)) / 0.12), 1);
+  }
+  .process-screen :global(.process-sketch path) {
+    stroke-dashoffset: clamp(0, calc(1 - (var(--p) * 4.2 - var(--k)) * 2.5), 1);
+  }
+  .process-screen :global(.process-sketch text) {
+    opacity: clamp(0, calc((var(--p) - 0.12 - var(--k) * 0.1) / 0.08), 1);
+  }
+
+  .process-code {
+    min-width: 0;
+    color: #e6e8ee;
+    background: #0e0f12;
+    opacity: clamp(0, calc((var(--p) - 0.4) / 0.1), 1);
+    transform: translateY(calc((1 - clamp(0, (var(--p) - 0.4) / 0.1, 1)) * 18px));
+  }
+  .process-code-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8125rem;
+    color: #a9afbd;
+    background: #1b1d22;
+  }
+  .process-code-bar code {
+    font-family: var(--font-mono);
+  }
+  .process-code-dots {
+    display: inline-flex;
+    gap: 0.3rem;
+  }
+  .process-code-dots i {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: #3a3e48;
+    border-radius: 50%;
+  }
+  .process-code pre {
+    margin: 0;
+    padding: 0.9rem 1rem 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    clip-path: inset(0 0 calc((1 - clamp(0, (var(--p) - 0.42) / 0.2, 1)) * 100%) 0);
+  }
+
+  .process-checks {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem;
+    color: var(--ink);
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .process-checks li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    opacity: clamp(0, calc((var(--p) - 0.68 - var(--i) * 0.07) / 0.05), 1);
+    transform: translateX(
+      calc((1 - clamp(0, (var(--p) - 0.68 - var(--i) * 0.07) / 0.05, 1)) * -10px)
+    );
+  }
+  .process-check-icon {
+    flex: none;
+    width: 1.35rem;
+    height: 1.35rem;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    background: var(--ok);
+  }
+  :global(html.dark) .process-check-icon {
+    stroke: #06140e;
+  }
+
+  /* Escritorio: la escena se queda fija mientras el scroll avanza las fases */
+  @media (min-width: 1024px) {
+    .process-grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      align-items: center;
+      gap: 4rem;
+    }
+    .process.is-pinned .process-track {
+      height: 230vh;
+    }
+    .process.is-pinned .process-sticky {
+      position: sticky;
+      top: calc(var(--toolbar-h) + var(--gutter));
+      display: flex;
+      align-items: center;
+      height: calc(100svh - var(--toolbar-h) - 2 * var(--gutter));
+    }
+    .process.is-pinned .process-grid {
+      margin-top: 0;
+    }
+    .process-stage {
+      display: block;
+    }
+    .process-code {
+      position: absolute;
+      right: -1.5rem;
+      bottom: -1.5rem;
+      width: min(26rem, 55%);
+    }
+    .process-checks {
+      position: absolute;
+      top: -1.25rem;
+      right: -1.5rem;
+      width: min(19rem, 42%);
+      opacity: clamp(0, calc((var(--p) - 0.66) / 0.04), 1);
+    }
+  }
+
+  /* Sin movimiento: el estado final, todo a la vista */
+  .process.is-static .process-ui,
+  .process.is-static .process-code,
+  .process.is-static .process-checks,
+  .process.is-static .process-checks li {
+    opacity: 1;
+    transform: none;
+  }
+  .process.is-static .process-code pre {
+    clip-path: none;
+  }
+  .process.is-static .process-screen :global(.process-sketch) {
+    display: none;
+  }
+</style>
+
+<script>
+  import '@/scripts/process';
+</script>

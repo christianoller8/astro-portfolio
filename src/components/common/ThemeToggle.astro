@@ -6,7 +6,7 @@ const t = useTranslations(getLangFromUrl(Astro.url));
 
 <button
   type="button"
-  class="theme-toggle-btn text-secondary hover:text-primary focus:ring-accent rounded-lg p-2 text-sm transition-colors focus:ring-2 focus:outline-none dark:text-neutral-400 dark:hover:text-white"
+  class="theme-toggle-btn text-muted hover:text-ink inline-grid size-10 place-items-center transition-colors"
   aria-label={t('aria.theme')}
 >
   <svg
@@ -51,7 +51,6 @@ const t = useTranslations(getLangFromUrl(Astro.url));
         }
       });
     };
-
 
     const isDark = document.documentElement.classList.contains('dark');
     updateIcons(isDark);

@@ -1,0 +1,143 @@
+---
+// Fragmento de interfaz de Vibora (reservas de pádel). Datos de ejemplo hasta tener capturas reales.
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+  es: {
+    title: 'Reservar pista',
+    day: 'Jueves 7',
+    courts: ['Pista 1', 'Pista 2', 'Pista 3'],
+    free: 'Libre',
+    taken: 'Ocupada',
+    mine: 'Tu reserva',
+    summary: 'Pista 2 · 19:30 · 90 min',
+    cta: 'Confirmar',
+  },
+  en: {
+    title: 'Book a court',
+    day: 'Thursday 7',
+    courts: ['Court 1', 'Court 2', 'Court 3'],
+    free: 'Free',
+    taken: 'Taken',
+    mine: 'Your booking',
+    summary: 'Court 2 · 19:30 · 90 min',
+    cta: 'Confirm',
+  },
+}[lang];
+
+const times = ['18:00', '19:30', '21:00'];
+// 0 libre · 1 ocupada · 2 seleccionada
+const grid = [
+  [1, 0, 1],
+  [0, 2, 1],
+  [1, 0, 0],
+];
+---
+
+<div class="vb" data-ui role="img" aria-label={`Vibora — ${copy.title}`}>
+  <div class="vb-top">
+    <span class="vb-logo">vibora</span>
+    <span class="vb-day">{copy.day}</span>
+  </div>
+  <p class="vb-title">{copy.title}</p>
+  <div class="vb-grid">
+    <span></span>
+    {copy.courts.map((court) => <span class="vb-court">{court}</span>)}
+    {
+      times.map((time, row) => (
+        <>
+          <span class="vb-time">{time}</span>
+          {grid[row].map((state) => (
+            <span class:list={['vb-slot', { 'is-taken': state === 1, 'is-mine': state === 2 }]}>
+              {state === 0 ? copy.free : state === 1 ? copy.taken : copy.mine}
+            </span>
+          ))}
+        </>
+      ))
+    }
+  </div>
+  <div class="vb-bar">
+    <span>{copy.summary}</span>
+    <span class="vb-cta">{copy.cta}</span>
+  </div>
+</div>
+
+<style>
+  .vb {
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    width: 100%;
+    height: 100%;
+    padding: 1rem 1.1rem 1.1rem;
+    font-size: var(--ui-size, 0.8125rem);
+    line-height: 1.3;
+    color: #eef5e6;
+    background: #11201a;
+  }
+  .vb-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .vb-logo {
+    font-weight: 800;
+    font-size: 1.23em;
+    letter-spacing: -0.03em;
+    color: #b9f26b;
+  }
+  .vb-day {
+    color: #b7c7bd;
+  }
+  .vb-title {
+    font-size: 1.38em;
+    font-weight: 700;
+  }
+  .vb-grid {
+    display: grid;
+    grid-template-columns: 3.2rem repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  .vb-court {
+    font-weight: 600;
+    color: #b7c7bd;
+  }
+  .vb-time {
+    align-self: center;
+    font-weight: 600;
+    color: #b7c7bd;
+  }
+  .vb-slot {
+    padding: 0.6rem 0.5rem;
+    font-weight: 600;
+    color: #dff7c2;
+    background: #1d3529;
+  }
+  .vb-slot.is-taken {
+    color: #8fa398;
+    background: #16271f;
+    text-decoration: line-through;
+  }
+  .vb-slot.is-mine {
+    color: #11201a;
+    background: #b9f26b;
+  }
+  .vb-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.6rem 0.6rem 0.8rem;
+    background: #1d3529;
+  }
+  .vb-cta {
+    padding: 0.45rem 0.8rem;
+    font-weight: 700;
+    color: #11201a;
+    background: #b9f26b;
+  }
+</style>

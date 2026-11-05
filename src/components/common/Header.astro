@@ -1,7 +1,8 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
-// Usamos ruta relativa segura
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
+import LensSwitch from '@/components/site/LensSwitch.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
+import { site, hasCV } from '@/data/site';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -14,161 +15,297 @@ const navItems = [
   { key: 'nav.contact', path: '/contact' },
 ] as const;
 
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (path: string) => {
-  const targetPath = translatePath(path);
-  const currentPath = Astro.url.pathname.replace(/\/$/, '');
-  const targetNormalized = targetPath.replace(/\/$/, '');
-
-  if (path === '/') return currentPath === targetNormalized;
-  return currentPath.startsWith(targetNormalized);
-};
-
-const getLinkClass = (path: string) => {
-  const base = 'text-sm uppercase transition-colors hover:text-primary hover:font-bold';
-  const active = 'text-primary font-bold';
-  const inactive = 'text-secondary';
-  return `${base} ${isActive(path) ? active : inactive}`;
+  const target = translatePath(path).replace(/\/$/, '') || '/';
+  if (path === '/') return current === target;
+  return current === target || current.startsWith(`${target}/`);
 };
 ---
 
-<header
-  class="border-border/40 bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-md transition-colors duration-300"
->
-  <div
-    class="mx-auto grid h-[67px] w-full max-w-[1400px] grid-cols-[1fr_auto] items-center px-6 md:grid-cols-[1fr_auto_1fr] md:px-12 lg:px-20"
-  >
-    <a
-      href={translatePath('/')}
-      aria-label={t('nav.home')}
-      class="text-foreground w-fit font-mono text-2xl leading-none font-normal tracking-[0.02em] whitespace-nowrap transition-opacity hover:opacity-70"
-    >
-      &lt;chris<span class="ml-[0.35em] text-[#3d9a48] [-webkit-text-stroke:1.5px_currentColor]"
-        >/</span
-      >&gt;
+<header class="toolbar" data-cs="<header> Header.astro">
+  <div class="toolbar-inner">
+    <a href={translatePath('/')} class="brand" aria-label={t('aria.home')}>
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Christian Oller</span>
     </a>
 
-    <nav class="hidden md:block">
-      <ul class="flex items-center">
+    <nav class="toolbar-nav" aria-label={t('nav.menu')}>
+      <ul>
         {
-          navItems.map((item, index) => (
-            <li class="flex items-center">
-              <a href={translatePath(item.path)} class={getLinkClass(item.path)}>
+          navItems.map((item) => (
+            <li>
+              <a
+                href={translatePath(item.path)}
+                class="nav-link"
+                aria-current={isActive(item.path) ? 'page' : undefined}
+              >
                 {t(item.key)}
               </a>
-
-              {/* separator */}
-              {index < navItems.length - 1 && (
-                <span
-                  class="px-3 text-xs text-neutral-300 select-none dark:text-neutral-700"
-                  aria-hidden="true"
-                >
-                  /
-                </span>
-              )}
             </li>
           ))
         }
       </ul>
     </nav>
 
-    <div class="flex items-center justify-end">
-      <div class="hidden h-5 items-center md:flex">
-        <div class="flex items-center gap-1 text-xs font-bold tracking-widest">
-          <a
-            href={translatePath(Astro.url.pathname, 'es')}
-            aria-label={t('aria.lang.es')}
-            class={`transition-colors hover:text-primary ${lang === 'es' ? 'text-primary' : 'text-muted-foreground'}`}
-          >
-            ES
-          </a>
-          <span class="px-1 text-neutral-300 dark:text-neutral-700" aria-hidden="true">/</span>
-          <a
-            href={translatePath(Astro.url.pathname, 'en')}
-            aria-label={t('aria.lang.en')}
-            class={`transition-colors hover:text-primary ${lang === 'en' ? 'text-primary' : 'text-muted-foreground'}`}
-          >
-            EN
-          </a>
-        </div>
-      </div>
+    <div class="toolbar-lens">
+      <LensSwitch variant="bar" lang={lang} />
+    </div>
 
-      <div
-        class="ml-8 hidden h-5 border-l border-neutral-300 pl-8 md:block dark:border-neutral-700"
+    <div class="toolbar-tools">
+      <div class="lang">
+        <a
+          href={translatePath(Astro.url.pathname, 'es')}
+          hreflang="es"
+          aria-label={t('aria.lang.es')}
+          aria-current={lang === 'es' ? 'true' : undefined}>ES</a
+        >
+        <a
+          href={translatePath(Astro.url.pathname, 'en')}
+          hreflang="en"
+          aria-label={t('aria.lang.en')}
+          aria-current={lang === 'en' ? 'true' : undefined}>EN</a
+        >
+      </div>
+      <ThemeToggle />
+      {
+        hasCV && (
+          <a class="btn btn-primary toolbar-cv" href={site.cv} download>
+            {t('nav.cv')}
+          </a>
+        )
+      }
+      <button
+        id="menu-btn"
+        class="menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t('aria.menu')}
+        data-label-open={t('aria.menu')}
+        data-label-close={t('aria.close')}
       >
-        <div class="flex h-full items-center">
-          <ThemeToggle />
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4 md:hidden">
-        <div
-          class="border-border/40 flex items-center gap-2 border-r pr-4 text-xs font-bold tracking-widest uppercase"
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 22 22"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          aria-hidden="true"
         >
-          <a
-            href={translatePath(Astro.url.pathname, 'es')}
-            aria-label={t('aria.lang.es')}
-            class={lang === 'es' ? 'text-primary' : 'text-muted-foreground'}>ES</a
-          >
-          <span class="text-neutral-300 dark:text-neutral-700" aria-hidden="true">/</span>
-          <a
-            href={translatePath(Astro.url.pathname, 'en')}
-            aria-label={t('aria.lang.en')}
-            class={lang === 'en' ? 'text-primary' : 'text-muted-foreground'}>EN</a
-          >
-        </div>
-        <ThemeToggle />
-        <button
-          id="mobile-menu-btn"
-          class="text-secondary hover:text-primary p-2"
-          aria-label={t('aria.menu')}
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            ><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"
-            ></line><line x1="4" x2="20" y1="18" y2="18"></line></svg
-          >
-        </button>
-      </div>
+          <path class="menu-line menu-line--top" d="M3 7.5h16"></path>
+          <path class="menu-line menu-line--bottom" d="M3 14.5h16"></path>
+        </svg>
+      </button>
     </div>
   </div>
 
-  <div
-    id="mobile-menu"
-    class="bg-background border-border/40 hidden border-t md:hidden dark:bg-neutral-950"
-    aria-hidden="true"
-  >
-    <nav class="container flex flex-col gap-6 p-6 text-sm font-medium">
-      {
-        navItems.map((item) => (
-          <a href={translatePath(item.path)} class={getLinkClass(item.path)}>
-            {t(item.key)}
-          </a>
-        ))
-      }
+  <div id="mobile-menu" class="mobile-menu" hidden>
+    <div class="mobile-lens">
+      <p class="t-small">{t('lens.label')}</p>
+      <LensSwitch variant="bar" lang={lang} />
+    </div>
+    <nav aria-label={t('nav.menu')}>
+      <ul>
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={translatePath(item.path)}
+                aria-current={isActive(item.path) ? 'page' : undefined}
+              >
+                {t(item.key)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </nav>
+    {
+      hasCV && (
+        <a class="btn btn-primary" href={site.cv} download>
+          {t('hero.cta.cv')}
+        </a>
+      )
+    }
   </div>
 </header>
 
-<script>
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  if (btn && menu) {
-    btn.addEventListener('click', () => {
-      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!isExpanded));
-      menu.setAttribute('aria-hidden', String(isExpanded));
-      menu.classList.toggle('hidden');
-    });
+<style>
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--canvas);
+    view-transition-name: toolbar;
   }
+  .toolbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: var(--toolbar-h);
+    padding-inline: var(--gutter);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    width: 0.75rem;
+    height: 0.75rem;
+    background: var(--pencil);
+    transition: transform 0.45s var(--ease-out);
+  }
+  .brand:hover .brand-mark {
+    transform: rotate(45deg) scale(0.9);
+  }
+
+  .toolbar-nav {
+    display: none;
+  }
+  .toolbar-nav ul {
+    display: flex;
+    gap: 0.125rem;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 0.85rem;
+    font-size: var(--step-small);
+    font-weight: 500;
+    color: var(--muted);
+    transition:
+      color 0.2s var(--ease-out),
+      background-color 0.2s var(--ease-out);
+  }
+  .nav-link:hover {
+    color: var(--ink);
+  }
+  .nav-link[aria-current='page'] {
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  .toolbar-lens {
+    display: none;
+    margin-left: auto;
+  }
+  .toolbar-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+  }
+  .lang {
+    display: flex;
+  }
+  .lang a {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .lang a:hover,
+  .lang a[aria-current='true'] {
+    color: var(--ink);
+  }
+  .toolbar-cv {
+    min-height: 2.5rem;
+    margin-left: 0.25rem;
+    padding-inline: 1rem;
+  }
+  .menu-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .menu-line {
+    transition: transform 0.3s var(--ease-out);
+    transform-origin: 11px 11px;
+  }
+  .menu-btn[aria-expanded='true'] .menu-line--top {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+  .menu-btn[aria-expanded='true'] .menu-line--bottom {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  .mobile-menu {
+    padding: 0.5rem var(--gutter) 1.5rem;
+  }
+  .mobile-lens {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--muted);
+  }
+  .mobile-menu ul {
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .mobile-menu a:not(.btn) {
+    display: block;
+    padding: 0.35rem 0;
+    font-size: var(--step-head);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--muted);
+  }
+  .mobile-menu a[aria-current='page'] {
+    color: var(--ink);
+  }
+
+  @media (min-width: 1024px) {
+    .toolbar-nav {
+      display: block;
+      margin-left: 1.5rem;
+    }
+    .toolbar-lens {
+      display: block;
+    }
+    .toolbar-tools {
+      margin-left: 0.75rem;
+    }
+    .menu-btn,
+    .mobile-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // La barra se vuelve a pintar en cada navegación: el botón se enlaza en cada carga, Escape una sola vez
+  const setOpen = (open: boolean) => {
+    const btn = document.getElementById('menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', (open ? btn.dataset.labelClose : btn.dataset.labelOpen) ?? '');
+    menu.hidden = !open;
+  };
+
+  document.addEventListener('astro:page-load', () => {
+    const btn = document.getElementById('menu-btn');
+    btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const menu = document.getElementById('mobile-menu');
+    if (event.key === 'Escape' && menu && !menu.hidden) {
+      setOpen(false);
+      document.getElementById('menu-btn')?.focus();
+    }
+  });
 </script>

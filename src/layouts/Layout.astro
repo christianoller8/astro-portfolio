@@ -1,27 +1,36 @@
 ---
-import '@fontsource/inter';
-import '@fontsource/playfair-display';
-import '@fontsource/playfair-display/400-italic.css';
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '@fontsource/architects-daughter';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
+import LensPanel from '../components/site/LensPanel.astro';
 import { ClientRouter } from 'astro:transitions';
-import { getLangFromUrl, useTranslatedPath } from '@/i18n/utils';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '@/i18n/utils';
 import profileImage from '@/assets/images/profile.jpg';
 
 interface Props {
   title: string;
   description?: string;
   image?: string;
+  /** Nombre del frame (la página) que aparece encima del artboard */
+  frame: string;
+  /** Solo el inicio lleva la intro del boceto */
+  intro?: boolean;
 }
 
 const {
   title,
-  description = 'Portfolio profesional de Christian. Desarrollador Full Stack & UI Designer.',
+  description = 'Christian Oller, frontend developer. Diseño, programo y pruebo interfaces.',
   image = profileImage.src,
+  frame,
+  intro = false,
 } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const esURL = new URL(useTranslatedPath('es')(Astro.url.pathname), Astro.site);
@@ -29,7 +38,7 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-intro={intro ? '1' : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,41 +66,78 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
-    <ClientRouter />
+    <ClientRouter fallback="swap" />
 
     <script is:inline>
-      const applyTheme = () => {
-        const theme = (() => {
-          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-            return localStorage.getItem('theme');
-          }
-          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-          }
-          return 'light';
-        })();
-
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      };
-
-      applyTheme();
-
-      document.addEventListener('astro:after-swap', applyTheme);
+      // Antes del primer pintado: tema, lente guardada, entradas y si toca la intro del boceto
+      (() => {
+        const root = document.documentElement;
+        const applyTheme = () => {
+          let theme = 'light';
+          try {
+            theme =
+              localStorage.getItem('theme') ||
+              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          } catch (e) {}
+          root.classList.toggle('dark', theme === 'dark');
+        };
+        const applyLens = () => {
+          try {
+            const lens = localStorage.getItem('lens');
+            if (lens) root.dataset.lens = lens;
+          } catch (e) {}
+        };
+        const markReveal = () => {
+          if (!('IntersectionObserver' in window)) return;
+          root.classList.add('reveal-ready');
+          setTimeout(() => {
+            if (!window.__revealInit) root.classList.remove('reveal-ready');
+          }, 3000);
+        };
+        applyTheme();
+        applyLens();
+        markReveal();
+        try {
+          const skip =
+            root.dataset.intro !== '1' ||
+            location.hash ||
+            sessionStorage.getItem('intro-done') ||
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+            (navigator.connection && navigator.connection.saveData) ||
+            navigator.webdriver;
+          if (!skip) root.classList.add('intro');
+          if (root.dataset.intro === '1') sessionStorage.setItem('intro-done', '1');
+        } catch (e) {}
+        document.addEventListener('astro:after-swap', () => {
+          applyTheme();
+          applyLens();
+          markReveal();
+        });
+      })();
     </script>
   </head>
 
-  <body
-    transition:animate="fade"
-    class="bg-background text-primary flex min-h-screen flex-col font-sans antialiased transition-colors duration-300"
-  >
+  <body class="antialiased">
+    <a
+      href="#main"
+      class="bg-pencil text-pencil-ink sr-only z-[70] px-4 py-3 font-semibold focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      >{t('aria.skip')}</a
+    >
     <Header />
-    <main class="flex-1">
-      <slot />
+    <main id="main" class="frame">
+      <p class="frame-label">{frame}</p>
+      <div class="artboard">
+        <slot />
+        <Footer />
+      </div>
     </main>
-    <Footer />
+    <LensPanel lang={lang} />
   </body>
 </html>
+
+<script>
+  import '@/scripts/reveal';
+  import '@/scripts/lenses';
+  import '@/scripts/frames';
+  import '@/scripts/intro';
+</script>

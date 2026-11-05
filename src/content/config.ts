@@ -1,17 +1,23 @@
 import { defineCollection, z } from 'astro:content';
 
 const projectsCollection = defineCollection({
-  type: 'content', // v2.5+ (o 'content' en versiones anteriores de Astro)
+  type: 'content',
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      description: z.string(), // Vital para el SEO y la preview
-      year: z.number(),
-      client: z.string(),
-      tags: z.array(z.string()),
-      image: image(), // Ruta relativa al asset (ej: '../../assets/images/project-1.jpg')
-      featured: z.boolean().default(false), // Importante para la Home
-      link: z.string().optional(), // Por si quieres poner un link al proyecto real
+      description: z.string(), // Una frase: qué es y para quién
+      kind: z.enum(['app', 'web']),
+      status: z.string(), // "En desarrollo", "Publicada"…
+      role: z.string(),
+      features: z.array(z.string()),
+      stack: z.array(z.string()).default([]), // Vacío hasta confirmarlo: la ficha lo oculta
+      ui: z.enum(['tempora', 'vibora', 'learnish']).optional(), // Fragmento de interfaz en HTML
+      image: image().optional(), // Captura real (tiene prioridad sobre `ui`)
+      imageAlt: z.string().optional(),
+      link: z.string().optional(),
+      year: z.number().optional(),
+      order: z.number(),
+      featured: z.boolean().default(true),
     }),
 });
 

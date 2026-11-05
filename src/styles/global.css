@@ -4,49 +4,481 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Reemplaza al plugin de JS */
-
-/* 1. Definimos las variables de color reactivas */
+/* Tokens: lienzo (canvas), papel del artboard, tinta y lápiz azul (docs/referencias/concepto.md) */
 @layer base {
   :root {
-    /* MODO CLARO (Valores por defecto) */
-    --bg-color: #e5e5e5;
-    --text-primary: #1a1a1a;
-    --text-secondary: #4a4a4a;
-    --border-accent: #d4d4d4;
-    --surface-color: #ffffff;
+    --canvas: #e8e9ec;
+    --paper: #ffffff;
+    --ink: #0e0f12;
+    --muted: #575a61;
+    --line: #d5d8de;
+    --tint: #f1f2f4;
+    --pencil: #2747f5;
+    --pencil-ink: #ffffff;
+    --pencil-soft: rgb(39 71 245 / 0.1);
+    --ok: #0b875d;
+    --warn: #b36b00;
+    --dot: rgb(14 15 18 / 0.14);
+
+    --step-small: 0.875rem;
+    --step-body: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);
+    --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    --step-head: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
+    --step-display: clamp(2.5rem, 0.6rem + 7.4vw, 7rem);
+
+    --toolbar-h: 3.5rem;
+    --gutter: clamp(0.75rem, 1.6vw, 1.5rem);
+    --pad: clamp(1.25rem, 4vw, 4rem);
+    --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --ease-frame: cubic-bezier(0.65, 0, 0.25, 1);
+    color-scheme: light;
   }
 
   :root.dark {
-    /* MODO OSCURO (Valores redefinidos) */
-    --bg-color: #2c2c2e;
-    /* Negro profundo */
-    --text-primary: #f5f5f5;
-    /* Blanco suave */
-    --text-secondary: #a3a3a3;
-    /* Gris claro */
-    --border-accent: #262626;
-    /* Borde oscuro */
-    --surface-color: #171717;
-    /* Superficie oscura */
+    --canvas: #0c0d10;
+    --paper: #16171b;
+    --ink: #eef0f3;
+    --muted: #a4a8b0;
+    --line: #30333a;
+    --tint: #202228;
+    --pencil: #7d93ff;
+    --pencil-ink: #0c0d10;
+    --pencil-soft: rgb(125 147 255 / 0.14);
+    --ok: #3ccf98;
+    --warn: #f0a63a;
+    --dot: rgb(238 240 243 / 0.12);
+    color-scheme: dark;
+  }
+
+  html {
+    background: var(--canvas);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--step-body);
+    line-height: 1.55;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--pencil);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--pencil);
+    color: var(--pencil-ink);
   }
 }
 
-/* 2. Mapeamos las variables a utilidades de Tailwind */
 @theme {
-  /* Colores: apuntan a las variables de arriba */
-  --color-background: var(--bg-color);
-  --color-primary: var(--text-primary);
-  --color-secondary: var(--text-secondary);
-  --color-accent: var(--border-accent);
-  --color-surface: var(--surface-color);
+  --color-canvas: var(--canvas);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-tint: var(--tint);
+  --color-pencil: var(--pencil);
+  --color-pencil-ink: var(--pencil-ink);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
 
-  /* Aliases used by components (foreground / muted-foreground / border) */
-  --color-foreground: var(--text-primary);
-  --color-muted-foreground: var(--text-secondary);
-  --color-border: var(--border-accent);
+  /* Alias que siguen usando algunos componentes */
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-primary: var(--ink);
+  --color-secondary: var(--muted);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--pencil);
+  --color-border: var(--line);
 
-  /* Tipografías */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+  --font-sans: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Architects Daughter', ui-rounded, cursive;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ---------- Tipografía ---------- */
+.t-display {
+  font-size: var(--step-display);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+.t-head {
+  font-size: var(--step-head);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.t-lead {
+  font-size: var(--step-lead);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.t-small {
+  font-size: var(--step-small);
+  line-height: 1.45;
+}
+
+/* ---------- Lienzo, frame y artboard ---------- */
+.frame {
+  padding: var(--gutter);
+  padding-top: 0;
+}
+/* El nombre del frame solo aparece con la lente Diseño, como en una herramienta de diseño */
+.frame-label {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+.frame-label::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--pencil);
+}
+html[data-lens='design'] .frame-label {
+  display: flex;
+}
+.artboard {
+  background: var(--paper);
+  min-height: calc(100svh - var(--toolbar-h) - var(--gutter));
+  overflow-x: clip;
+}
+.wrap {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: var(--step-small);
+  letter-spacing: 0.01em;
+  transition:
+    transform 0.25s var(--ease-out),
+    background-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out);
+}
+.btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+.btn-primary {
+  background: var(--pencil);
+  color: var(--pencil-ink);
+}
+.btn-primary:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn-quiet {
+  background: var(--tint);
+  color: var(--ink);
+}
+.btn-quiet:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn .btn-arrow {
+  transition: transform 0.25s var(--ease-out);
+}
+.btn:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+/* Enlace con subrayado que crece */
+.link {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.25s var(--ease-out);
+}
+.link:hover,
+.link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Entradas al hacer scroll ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s var(--ease-out),
+      transform 0.7s var(--ease-out);
+    transition-delay: calc(var(--reveal-i, 0) * 80ms);
+  }
+
+  .reveal-ready [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Lentes (data-ui: capas de herramienta, llevan sus propias líneas) ---------- */
+html[data-lens] [data-ds],
+html[data-lens] [data-cs],
+html[data-lens] [data-qa] {
+  position: relative;
+}
+
+html[data-lens='design'] .artboard {
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+html[data-lens='design'] [data-ds] {
+  outline: 1.5px solid var(--pencil);
+  outline-offset: 4px;
+}
+html[data-lens='design'] [data-ds]::after {
+  content: '';
+  position: absolute;
+  inset: -7.5px;
+  z-index: 30;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--paper), var(--paper)) 1.5px 1.5px / 5px 5px no-repeat,
+    linear-gradient(var(--pencil), var(--pencil)) 0 0 / 8px 8px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) calc(100% - 1.5px) 1.5px / 5px 5px no-repeat,
+    linear-gradient(var(--pencil), var(--pencil)) 100% 0 / 8px 8px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 1.5px calc(100% - 1.5px) / 5px 5px no-repeat,
+    linear-gradient(var(--pencil), var(--pencil)) 0 100% / 8px 8px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) calc(100% - 1.5px) calc(100% - 1.5px) / 5px 5px
+      no-repeat,
+    linear-gradient(var(--pencil), var(--pencil)) 100% 100% / 8px 8px no-repeat;
+}
+html[data-lens='design'] [data-ds]::before {
+  content: attr(data-ds) '  ' attr(data-ds-meta);
+  white-space: pre;
+  position: absolute;
+  left: -5px;
+  bottom: calc(100% + 9px);
+  z-index: 31;
+  padding: 0.2rem 0.45rem;
+  font:
+    500 0.8125rem/1.2 var(--font-sans),
+    sans-serif;
+  letter-spacing: 0;
+  color: var(--pencil-ink);
+  background: var(--pencil);
+  pointer-events: none;
+}
+
+html[data-lens='code'] [data-cs] {
+  outline: 1.5px dashed var(--pencil);
+  outline-offset: 3px;
+}
+html[data-lens='code'] [data-cs]::before {
+  content: attr(data-cs);
+  position: absolute;
+  left: -4px;
+  bottom: calc(100% + 7px);
+  z-index: 31;
+  padding: 0.15rem 0.4rem;
+  font:
+    500 0.8125rem/1.3 var(--font-mono),
+    monospace;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--paper);
+  background: var(--ink);
+  pointer-events: none;
+}
+
+html[data-lens='qa'] [data-qa] {
+  outline: 2px solid var(--ok);
+  outline-offset: 3px;
+}
+html[data-lens='qa'] [data-qa='warn'] {
+  outline-color: var(--warn);
+}
+html[data-lens='qa'] [data-qa]::after {
+  content: '✓ ' attr(data-qa-note);
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  transform: translateY(-100%);
+  z-index: 31;
+  padding: 0.15rem 0.45rem;
+  font:
+    600 0.8125rem/1.3 var(--font-sans),
+    sans-serif;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--ok);
+  pointer-events: none;
+}
+html.dark[data-lens='qa'] [data-qa]::after {
+  color: #06140e;
+}
+html[data-lens='qa'] [data-qa='warn']::after {
+  content: '! ' attr(data-qa-note);
+  background: var(--warn);
+}
+
+/* ---------- Intro: del boceto a la web ---------- */
+.sketch-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: visible;
+}
+.sketch-layer path {
+  fill: none;
+  stroke: var(--pencil);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.sketch-layer text {
+  font-family: var(--font-hand);
+  font-size: 15px;
+  fill: var(--pencil);
+  opacity: 0;
+}
+
+html.intro [data-ink] {
+  opacity: 0;
+  animation: ink-failsafe 0.01s 4s forwards;
+}
+html.intro.inking [data-ink] {
+  animation: ink-in 0.6s var(--ease-out) forwards;
+  animation-delay: calc(var(--ink-i, 0) * 70ms);
+}
+@keyframes ink-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+@keyframes ink-failsafe {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- Transición: zoom entre frames ---------- */
+::view-transition {
+  background-color: var(--canvas);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+::view-transition-group(root) {
+  animation-duration: 0.76s;
+}
+::view-transition-old(root) {
+  animation: frame-out 0.76s var(--ease-frame) both;
+  transform-origin: 50% 40%;
+}
+::view-transition-new(root) {
+  animation: frame-in 0.76s var(--ease-frame) both;
+  transform-origin: 50% 40%;
+}
+html.frame-back::view-transition-old(root) {
+  animation-name: frame-out-back;
+}
+html.frame-back::view-transition-new(root) {
+  animation-name: frame-in-back;
+}
+::view-transition-group(toolbar) {
+  animation: none;
+  z-index: 10;
+}
+::view-transition-old(toolbar) {
+  display: none;
+}
+::view-transition-new(toolbar) {
+  animation: none;
+}
+
+@keyframes frame-out {
+  0% {
+    transform: none;
+  }
+  38% {
+    transform: scale(0.86);
+  }
+  100% {
+    transform: translateX(-108%) scale(0.86);
+  }
+}
+@keyframes frame-in {
+  0% {
+    transform: translateX(108%) scale(0.86);
+  }
+  62% {
+    transform: scale(0.86);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes frame-out-back {
+  0% {
+    transform: none;
+  }
+  38% {
+    transform: scale(0.86);
+  }
+  100% {
+    transform: translateX(108%) scale(0.86);
+  }
+}
+@keyframes frame-in-back {
+  0% {
+    transform: translateX(-108%) scale(0.86);
+  }
+  62% {
+    transform: scale(0.86);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  html.frame-back::view-transition-old(root),
+  html.frame-back::view-transition-new(root) {
+    animation: none;
+  }
+  .btn,
+  .link,
+  .btn .btn-arrow {
+    transition: none;
+  }
 }

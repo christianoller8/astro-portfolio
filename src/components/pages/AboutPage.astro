@@ -1,8 +1,10 @@
 ---
 import { Image } from 'astro:assets';
-import profileImage from '@/assets/images/profile.jpg';
 import Layout from '@/layouts/Layout.astro';
+import ToolsByLens from '@/components/home/ToolsByLens.astro';
+import profileImage from '@/assets/images/profile.jpg';
 import { useTranslations } from '@/i18n/utils';
+import { site, hasCV } from '@/data/site';
 import type { ui } from '@/i18n/ui';
 
 interface Props {
@@ -12,159 +14,151 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-interface Job {
-  role: string;
-  company: string;
-  period: Record<keyof typeof ui, string>;
-  summary: Record<keyof typeof ui, string>;
-  highlights: Record<keyof typeof ui, string[]>;
-}
-
-const experience: Job[] = [
-  {
-    role: 'FullStack Developer',
-    company: 'Inology',
-    period: { es: 'Jun 2023 - Mar 2024', en: 'Jun 2023 - Mar 2024' },
-    summary: {
-      es: 'Desarrollo de aplicaciones ERP y soluciones de gestión horaria.',
-      en: 'Development of ERP applications and time-management solutions.',
-    },
-    highlights: {
-      es: [
-        'Mantenimiento de ERP con SQL.',
-        'Personalización de informes con Crystal Reports.',
-        'Gestión y administración de servidores.',
-        'Trato directo y consultoría con clientes.',
-      ],
-      en: [
-        'ERP maintenance with SQL.',
-        'Report customization with Crystal Reports.',
-        'Server management and administration.',
-        'Direct client communication and consulting.',
-      ],
-    },
-  },
-  {
-    role: 'Front-end Developer',
-    company: 'SM Medioambientales',
-    period: { es: 'Sep 2023 - Nov 2023', en: 'Sep 2023 - Nov 2023' },
-    summary: {
-      es: 'Soluciones web para consultoría ambiental.',
-      en: 'Web solutions for environmental consulting.',
-    },
-    highlights: {
-      es: [
-        'Mantenimiento web y optimización.',
-        'Diseño UI (HTML/CSS/JS).',
-        'Coordinación del rediseño completo de la plataforma.',
-        'Refactorización a tecnologías modernas (Tailwind/Bootstrap).',
-      ],
-      en: [
-        'Web maintenance and optimization.',
-        'UI design (HTML/CSS/JS).',
-        'Coordination of the full platform redesign.',
-        'Refactoring to modern technologies (Tailwind/Bootstrap).',
-      ],
-    },
-  },
-  {
-    role: 'Front-end Developer',
-    company: 'Vueling Airlines',
-    period: { es: 'Mar 2023 - May 2023', en: 'Mar 2023 - May 2023' },
-    summary: {
-      es: 'Innovación tecnológica y plataformas digitales para aerolíneas.',
-      en: 'Technology innovation and digital platforms for airlines.',
-    },
-    highlights: {
-      es: [
-        'Desarrollo Web con Angular.',
-        'Implementación robusta con TypeScript/JS.',
-        'Creación de aplicaciones dinámicas de alto tráfico.',
-        'Integración de APIs y testing exhaustivo con Postman.',
-      ],
-      en: [
-        'Web development with Angular.',
-        'Robust implementation with TypeScript/JS.',
-        'Building dynamic, high-traffic applications.',
-        'API integration and thorough testing with Postman.',
-      ],
-    },
-  },
-  {
-    role: 'Front-end Developer',
-    company: 'Pukkas',
-    period: { es: 'Ene 2022 - Ago 2022', en: 'Jan 2022 - Aug 2022' },
-    summary: {
-      es: 'Desarrollo de proyectos web a medida.',
-      en: 'Development of custom web projects.',
-    },
-    highlights: {
-      es: [
-        'Desarrollo Frontend de interfaces de usuario.',
-        'Integración de APIs externas y servicios web.',
-      ],
-      en: [
-        'Front-end development of user interfaces.',
-        'Integration of external APIs and web services.',
-      ],
-    },
-  },
+const principles = [
+  { title: t('about.principle1.title'), body: t('about.principle1.body') },
+  { title: t('about.principle2.title'), body: t('about.principle2.body') },
+  { title: t('about.principle3.title'), body: t('about.principle3.body') },
 ];
 ---
 
-<Layout title={t('about.meta.title')} description={t('about.meta.description')}>
-  <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
-    <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-20">
-      <div class="space-y-8 lg:sticky lg:top-24 lg:col-span-4">
-        <h1 class="font-serif text-4xl leading-tight font-bold md:text-5xl">
-          {t('about.heading')}
-        </h1>
+<Layout
+  title={t('about.meta.title')}
+  description={t('about.meta.description')}
+  frame={t('nav.about')}
+>
+  <section class="wrap about" data-cs="<section> AboutPage.astro">
+    <h1 class="t-display about-title" data-reveal data-ds="H1" data-ds-type>{t('about.title')}</h1>
 
-        <div
-          class="aspect-square w-full overflow-hidden rounded-2xl bg-neutral-100 shadow-xl dark:bg-neutral-800"
-        >
+    <div class="about-grid">
+      <div
+        class="about-photo"
+        data-ds={lang === 'es' ? 'Retrato' : 'Portrait'}
+        data-qa-host
+        data-reveal
+      >
+        <div class="about-photo-clip">
           <Image
             src={profileImage}
-            alt={t('about.img.alt')}
-            widths={[400, 800, 1200]}
-            sizes="(min-width: 1024px) 33vw, 100vw"
+            alt={t('hero.portrait.alt')}
+            widths={[480, 800]}
+            sizes="(min-width: 1024px) 36vw, 100vw"
             loading="eager"
-            decoding="async"
-            class="h-full w-full object-cover"
+            class="about-photo-img"
           />
         </div>
       </div>
-
-      <div class="prose prose-neutral text-secondary dark:prose-invert max-w-none lg:col-span-8">
-        <h2 class="text-foreground mb-6 font-serif text-3xl">{t('about.section.journey')}</h2>
-        <p class="mb-12 text-lg leading-relaxed text-pretty">
-          {t('about.intro')}
-        </p>
-
-        <h3 class="text-foreground mb-8 font-serif text-2xl">{t('about.section.experience')}</h3>
-
-        <div class="not-prose space-y-12">
-          {
-            experience.map((job) => (
-              <div class="relative border-l border-neutral-200 pl-8 dark:border-neutral-800">
-                <div class="absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full bg-neutral-400 dark:bg-neutral-600" />
-                <div class="mb-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
-                  <h4 class="text-foreground text-xl font-bold">{job.role}</h4>
-                  <span class="text-muted-foreground text-sm font-medium">
-                    {job.company} | {job.period[lang]}
-                  </span>
-                </div>
-                <p class="text-muted-foreground mb-4">{job.summary[lang]}</p>
-                <ul class="text-secondary ml-4 list-outside list-disc space-y-1 text-sm">
-                  {job.highlights[lang].map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))
-          }
-        </div>
+      <div class="about-text">
+        <p class="t-lead" data-reveal style="--reveal-i: 1">{t('about.p1')}</p>
+        <p data-reveal style="--reveal-i: 2">{t('about.p2')}</p>
+        <p data-reveal style="--reveal-i: 3">{t('about.p3')}</p>
       </div>
     </div>
   </section>
+
+  <section class="wrap principles" data-cs="<section> Principles">
+    <h2 class="t-head" data-reveal>{t('about.principles.title')}</h2>
+    <div class="principles-grid">
+      {
+        principles.map((item, i) => (
+          <div class="principle" data-reveal style={`--reveal-i: ${i + 1}`}>
+            <h3 class="principle-title">{item.title}</h3>
+            <p class="principle-body">{item.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <ToolsByLens lang={lang} />
+
+  <section class="wrap cv" data-cs="<section> CV">
+    <h2 class="t-head" data-reveal>{t('about.cv.title')}</h2>
+    {
+      hasCV ? (
+        <a class="btn btn-primary cv-btn" href={site.cv} download data-reveal>
+          {t('hero.cta.cv')}
+          <span class="btn-arrow" aria-hidden="true">
+            ↓
+          </span>
+        </a>
+      ) : (
+        <p class="t-lead cv-pending" data-reveal>
+          {t('about.cv.pending')}
+        </p>
+      )
+    }
+  </section>
 </Layout>
+
+<style>
+  .about {
+    padding-top: clamp(2rem, 5vw, 4.5rem);
+  }
+  .about-title {
+    max-width: 100%;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .about-photo {
+    max-width: 32rem;
+  }
+  .about-photo-clip {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--tint);
+  }
+  .about-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .about-text {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    max-width: 40rem;
+  }
+  .principles,
+  .cv {
+    padding-top: clamp(5rem, 10vw, 9rem);
+  }
+  .principles-grid {
+    display: grid;
+    gap: 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .principle {
+    padding: 1.5rem;
+    background: var(--tint);
+  }
+  .principle-title {
+    font-size: var(--step-lead);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+  .principle-body {
+    margin-top: 0.6rem;
+  }
+  .cv-btn {
+    margin-top: 1.75rem;
+  }
+  .cv-pending {
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  @media (min-width: 768px) {
+    .principles-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .about-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 4rem;
+    }
+  }
+</style>

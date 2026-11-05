@@ -1,6 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '@/layouts/Layout.astro';
+import ProjectVisual from '@/components/ui/ProjectVisual.astro';
 import { getSortedProjects } from '@/utils/projects';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import type { ui } from '@/i18n/ui';
@@ -12,68 +12,128 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
-
 const projects = await getSortedProjects(lang);
 ---
 
-<Layout title={t('projects.meta.title')} description={t('projects.meta.description')}>
-  <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
-    <div class="flex flex-col gap-12">
-      <div class="space-y-4">
-        <h1 class="font-serif text-4xl font-bold md:text-5xl lg:text-6xl">
-          {t('projects.heading')}
-        </h1>
-        <p class="text-muted-foreground max-w-2xl text-lg">
-          {t('projects.description')}
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-y-16 lg:grid-cols-3">
-        {
-          projects.map((project) => (
-            <a
-              href={translatePath(`/projects/${project.slug}`)}
-              class="group flex cursor-pointer flex-col gap-4"
-            >
-              <div class="relative aspect-video w-full overflow-hidden rounded-lg border border-transparent bg-neutral-200 transition-all duration-300 group-hover:shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
-                <Image
-                  src={project.data.image}
-                  alt={project.data.title}
-                  widths={[400, 800, 1200]}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                  loading="lazy"
-                  decoding="async"
-                  class="h-full w-full object-cover"
-                />
-                <div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                  <span class="sr-only">{t('projects.view')}</span>
-                </div>
-              </div>
-
-              <div class="space-y-1">
-                <div class="flex items-start justify-between">
-                  <h3 class="group-hover:text-primary font-serif text-2xl font-bold transition-colors dark:text-neutral-50 dark:group-hover:text-white">
-                    {project.data.title}
-                  </h3>
-                  <span class="border-border rounded-full border px-2 py-0.5 font-mono text-xs dark:border-neutral-800 dark:text-neutral-400">
-                    {project.data.year}
-                  </span>
-                </div>
-                <p class="text-muted-foreground text-sm dark:text-neutral-400">
-                  {project.data.client}
-                </p>
-                <div class="flex flex-wrap gap-2 pt-2">
-                  {project.data.tags.map((tag) => (
-                    <span class="text-muted-foreground/80 text-xs lowercase dark:text-neutral-500">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </div>
+<Layout
+  title={t('projects.meta.title')}
+  description={t('projects.meta.description')}
+  frame={t('nav.projects')}
+>
+  <section class="wrap page-head" data-cs="<section> ProjectsPage.astro">
+    <h1 class="t-display" data-reveal data-ds="H1" data-ds-type>{t('projects.title')}</h1>
+    <p class="t-lead page-lead" data-reveal style="--reveal-i: 1">{t('projects.page.lead')}</p>
   </section>
+
+  <ol class="wrap project-list">
+    {
+      projects.map((project, i) => (
+        <li class="project-row" data-reveal>
+          <a
+            class="project-visual"
+            href={translatePath(`/projects/${project.slug}`)}
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <ProjectVisual project={project} lang={lang} eager={i === 0} />
+          </a>
+          <div class="project-info">
+            <h2 class="project-title">
+              <a class="link" href={translatePath(`/projects/${project.slug}`)}>
+                {project.data.title}
+              </a>
+            </h2>
+            <p class="project-kind t-small">
+              {t(project.data.kind === 'app' ? 'project.kind.app' : 'project.kind.web')} ·{' '}
+              {project.data.status}
+            </p>
+            <p class="project-desc">{project.data.description}</p>
+            <ul class="project-features">
+              {project.data.features.slice(0, 3).map((feature) => (
+                <li>{feature}</li>
+              ))}
+            </ul>
+            <a class="btn btn-quiet project-cta" href={translatePath(`/projects/${project.slug}`)}>
+              {t('projects.view')}
+              <span class="btn-arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
 </Layout>
+
+<style>
+  .page-head {
+    padding-top: clamp(2rem, 5vw, 4.5rem);
+  }
+  .page-lead {
+    max-width: 40ch;
+    margin-top: 1.25rem;
+    color: var(--muted);
+  }
+  .project-list {
+    display: grid;
+    gap: clamp(4rem, 8vw, 7rem);
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .project-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+  }
+  .project-visual :global(.pv-clip) {
+    transition: transform 0.6s var(--ease-out);
+  }
+  .project-visual:hover :global(.pv-clip) {
+    transform: scale(0.985);
+  }
+  .project-title {
+    font-size: var(--step-head);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .project-kind {
+    margin-top: 0.6rem;
+    color: var(--muted);
+  }
+  .project-desc {
+    max-width: 44ch;
+    margin-top: 1.25rem;
+  }
+  .project-features {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    color: var(--muted);
+  }
+  .project-features li {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .project-features li::before {
+    content: '';
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-top: 0.55em;
+    background: var(--pencil);
+  }
+  .project-cta {
+    margin-top: 1.75rem;
+  }
+  @media (min-width: 1024px) {
+    .project-row {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: center;
+      gap: 3.5rem;
+    }
+    .project-row:nth-child(even) .project-visual {
+      order: 2;
+    }
+  }
+</style>

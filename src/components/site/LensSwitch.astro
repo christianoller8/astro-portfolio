@@ -1,0 +1,140 @@
+---
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+  /** bar: barra superior · dock: barra flotante en móvil · tray: bloque grande del hero */
+  variant: 'bar' | 'dock' | 'tray';
+}
+
+const { lang, variant } = Astro.props;
+const t = useTranslations(lang);
+
+const lenses = [
+  { id: 'design', key: '1', label: t('lens.design') },
+  { id: 'code', key: '2', label: t('lens.code') },
+  { id: 'qa', key: '3', label: t('lens.qa') },
+] as const;
+---
+
+<div
+  class:list={['lens-switch', `lens-switch--${variant}`]}
+  role="group"
+  aria-label={t('lens.label')}
+>
+  {
+    lenses.map((lens) => (
+      <button
+        type="button"
+        class="lens-btn"
+        data-lens-set={lens.id}
+        aria-pressed="false"
+        aria-keyshortcuts={lens.key}
+        title={`${lens.label} (${lens.key})`}
+      >
+        <svg
+          class="lens-icon"
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          aria-hidden="true"
+        >
+          {lens.id === 'design' && (
+            <>
+              <rect x="3" y="3" width="10" height="10" />
+              <rect x="1.5" y="1.5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="11.5" y="11.5" width="3" height="3" fill="currentColor" stroke="none" />
+            </>
+          )}
+          {lens.id === 'code' && <path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" />}
+          {lens.id === 'qa' && <path d="m2.5 8.5 3.5 3.5 7.5-8" />}
+        </svg>
+        <span>{lens.label}</span>
+        {variant === 'tray' && <kbd>{lens.key}</kbd>}
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .lens-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: var(--tint);
+  }
+  .lens-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--muted);
+    transition:
+      background-color 0.2s var(--ease-out),
+      color 0.2s var(--ease-out),
+      transform 0.2s var(--ease-out);
+  }
+  .lens-btn:hover {
+    color: var(--ink);
+  }
+  .lens-btn:active {
+    transform: scale(0.97);
+  }
+  .lens-btn[aria-pressed='true'] {
+    background: var(--pencil);
+    color: var(--pencil-ink);
+  }
+  .lens-icon {
+    flex: none;
+  }
+  kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    margin-left: 0.25rem;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--paper);
+  }
+  .lens-btn[aria-pressed='true'] kbd {
+    color: var(--pencil);
+  }
+
+  .lens-switch--tray {
+    flex-wrap: wrap;
+    padding: 4px;
+  }
+  .lens-switch--tray .lens-btn {
+    min-height: 3rem;
+    padding: 0 1rem;
+    font-size: var(--step-body);
+  }
+
+  .lens-switch--dock {
+    position: fixed;
+    left: 50%;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    z-index: 60;
+    transform: translateX(-50%);
+    background: var(--paper);
+    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.35);
+  }
+  .lens-switch--dock .lens-btn {
+    min-height: 2.75rem;
+  }
+  @media (min-width: 1024px) {
+    .lens-switch--dock {
+      display: none;
+    }
+  }
+</style>

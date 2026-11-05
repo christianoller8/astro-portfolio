@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import TemporaUI from './TemporaUI.astro';
+import ViboraUI from './ViboraUI.astro';
+import LearnishUI from './LearnishUI.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  lang: 'es' | 'en';
+  /** Prioridad de carga cuando la imagen está en la primera pantalla */
+  eager?: boolean;
+}
+
+const { project, lang, eager = false } = Astro.props;
+const { image, imageAlt, ui, title } = project.data;
+---
+
+<!-- La caja externa lleva las capas de las lentes; la interna recorta el contenido -->
+<div class="pv" data-ds={title} data-qa-host>
+  <div class="pv-clip">
+    {
+      image ? (
+        <Image
+          src={image}
+          alt={imageAlt ?? title}
+          widths={[640, 960, 1440]}
+          sizes="(min-width: 1024px) 60vw, 100vw"
+          loading={eager ? 'eager' : 'lazy'}
+          class="pv-img"
+        />
+      ) : ui === 'tempora' ? (
+        <TemporaUI lang={lang} />
+      ) : ui === 'vibora' ? (
+        <ViboraUI lang={lang} />
+      ) : (
+        <LearnishUI lang={lang} />
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .pv {
+    width: 100%;
+  }
+  .pv-clip {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--tint);
+  }
+  .pv-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+</style>

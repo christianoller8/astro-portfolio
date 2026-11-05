@@ -1,0 +1,101 @@
+---
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<!-- Panel flotante de la lente activa. Lo rellena src/scripts/lenses.ts con datos medidos en el navegador. -->
+<aside
+  class="lens-panel"
+  aria-live="polite"
+  data-lens-panel
+  data-i18n={JSON.stringify({
+    design: t('lens.design'),
+    code: t('lens.code'),
+    qa: t('lens.qa'),
+    designBody: t('lens.panel.design'),
+    codeBody: t('lens.panel.code'),
+    qaBody: t('lens.panel.qa'),
+    nodes: t('lens.stat.nodes'),
+    js: t('lens.stat.js'),
+    css: t('lens.stat.css'),
+    load: t('lens.stat.load'),
+    passed: t('lens.stat.passed'),
+    colors: t('lens.stat.colors'),
+    fonts: t('lens.stat.fonts'),
+    clear: t('lens.clear'),
+    hint: t('lens.hint'),
+  })}
+>
+  <div class="lens-panel-head">
+    <p class="lens-panel-title" data-lens-title></p>
+    <button type="button" class="lens-panel-close" data-lens-clear>{t('lens.clear')}</button>
+  </div>
+  <p class="lens-panel-body" data-lens-body></p>
+  <div class="lens-panel-stats" data-lens-stats></div>
+  <p class="lens-panel-hint">{t('lens.hint')}</p>
+</aside>
+
+<style>
+  .lens-panel {
+    position: fixed;
+    left: var(--gutter);
+    bottom: var(--gutter);
+    z-index: 55;
+    width: min(22rem, calc(100vw - 2 * var(--gutter)));
+    padding: 1rem 1.1rem 0.9rem;
+    color: var(--paper);
+    background: var(--ink);
+    box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.5);
+    transition:
+      opacity 0.25s var(--ease-out),
+      transform 0.25s var(--ease-out);
+  }
+  :global(html:not([data-lens])) .lens-panel {
+    display: none;
+  }
+  .lens-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .lens-panel-title {
+    font-weight: 700;
+  }
+  .lens-panel-close {
+    min-height: 2rem;
+    padding: 0 0.6rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .lens-panel-body {
+    margin-top: 0.4rem;
+    font-size: var(--step-small);
+    color: color-mix(in srgb, var(--paper) 80%, var(--ink));
+  }
+  .lens-panel-stats {
+    margin-top: 0.75rem;
+    font-size: var(--step-small);
+  }
+  .lens-panel-hint {
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, var(--paper) 70%, var(--ink));
+  }
+  @media (max-width: 1023px) {
+    .lens-panel {
+      bottom: calc(4.25rem + max(0.75rem, env(safe-area-inset-bottom)));
+    }
+    .lens-panel-hint {
+      display: none;
+    }
+  }
+</style>

@@ -9,226 +9,307 @@ export const defaultLang = 'es';
 
 export const ui = {
   es: {
+    // Navegación y barra
     'nav.home': 'Inicio',
-    'nav.about': 'Sobre mí',
     'nav.projects': 'Proyectos',
+    'nav.about': 'Sobre mí',
     'nav.contact': 'Contacto',
-    'nav.back': 'Volver a Proyectos',
+    'nav.cv': 'CV',
+    'nav.menu': 'Menú',
+    'aria.home': 'Christian Oller, inicio',
+    'aria.skip': 'Saltar al contenido',
+    'aria.lang.es': 'Cambiar a español',
+    'aria.lang.en': 'Cambiar a inglés',
+    'aria.theme': 'Cambiar entre tema claro y oscuro',
+    'aria.menu': 'Abrir menú',
+    'aria.close': 'Cerrar menú',
 
-    // Hero
-    'hero.greeting': 'Hola, soy',
-    'hero.role': 'Desarrollador de Software',
-    'hero.headline': 'De la *idea* a un|*producto* que funciona.',
-    'hero.description':
-      'Me encargo del diseño, la implementación y la calidad. Entrego webs y apps cuidadas, rápidas y sin sorpresas.',
-    'hero.button': 'Cuéntame tu proyecto',
-    'hero.button.secondary': 'Ver proyectos',
-    'hero.status': 'Disponible para proyectos',
-    'hero.work.design': 'Diseño UX / UI',
-    'hero.work.wordpress': 'Webs con WordPress',
-    'hero.work.web': 'Webs con Astro o React',
-    'hero.work.apps': 'Apps con Angular',
-    'hero.work.tests': 'Tests',
+    // Lentes
+    'lens.label': 'Ver la web como',
+    'lens.design': 'Diseño',
+    'lens.code': 'Código',
+    'lens.qa': 'QA',
+    'lens.clear': 'Vista normal',
+    'lens.hint': 'Atajos: 1, 2, 3 y Esc',
+    'lens.panel.design': 'Cajas, medidas y tipografía reales de cada bloque.',
+    'lens.panel.code': 'La etiqueta y el componente de cada bloque, y lo que pesa esta página.',
+    'lens.panel.qa': 'Comprobaciones de accesibilidad hechas ahora en tu navegador.',
+    'lens.stat.nodes': 'nodos en el DOM',
+    'lens.stat.js': 'de JavaScript',
+    'lens.stat.css': 'de CSS',
+    'lens.stat.load': 'hasta cargar',
+    'lens.stat.passed': 'comprobaciones superadas',
+    'lens.stat.colors': 'Colores',
+    'lens.stat.fonts': 'Tipografías',
 
-    // Home Sections
-    'section.skills': 'Tecnologías Clave',
-    'section.about': 'Creando experiencias digitales intuitivas y memorables',
-    'section.work': 'Proyectos Destacados',
-    'section.viewAll': 'Ver todos los proyectos',
-
-    // About Summary section
-    'about.summary.name': 'Hola, soy Christian Oller.',
-    'about.summary.body1':
-      'Me especializo en construir productos digitales que fusionan una estética cuidada con una funcionalidad robusta. Mi enfoque se basa en comprender las necesidades del usuario y traducirlas en interfaces visualmente atractivas y código eficiente.',
-    'about.summary.body2':
-      'Con una sólida base tanto en diseño como en desarrollo, actúo como puente entre la visión creativa y la ejecución técnica. Creo firmemente que un buen software no solo debe funcionar bien, sino que también debe sentirse bien al usarse.',
-
-    // Services section
-    'services.frontend.title': 'Arquitectura Frontend',
-    'services.frontend.desc':
-      'Desarrollo aplicaciones complejas con Angular y React. Creo interfaces modulares y mantenibles utilizando TypeScript, optimizando el rendimiento y la reutilización de componentes.',
-    'services.backend.title': 'Soluciones Backend',
-    'services.backend.desc':
-      'Lógica robusta del lado del servidor e integración de APIs (SQL, PHP, Firebase).',
-    'services.uiux.title': 'Implementación UI/UX',
-    'services.uiux.desc':
-      'Traducción de diseños a código pixel-perfect, accesible y responsive (Tailwind, SASS).',
-    'services.testing.title': 'Rendimiento y Testing',
-    'services.testing.desc':
-      'Garantía de calidad y velocidad mediante Vitest y optimización continua.',
-
-    // Home page
-    'home.meta.title': 'Christian Oller | Desarrollador de Software',
+    // Inicio
+    'home.meta.title': 'Christian Oller · Frontend developer',
     'home.meta.description':
-      'Portfolio de Christian Oller, desarrollador especializado en crear experiencias digitales únicas.',
+      'Christian Oller, frontend developer: diseño, programo en Angular, Astro o React y pruebo cada interfaz. Disponible en remoto desde España.',
+    'hero.role': 'Frontend developer',
+    'hero.lead':
+      'Diseño la interfaz, la programo en Angular, Astro o React y la pruebo antes de entregarla: de la idea a un producto que funciona.',
+    'hero.cta.projects': 'Ver proyectos',
+    'hero.cta.cv': 'Descargar CV',
+    'hero.cta.contact': 'Escríbeme',
+    'hero.status': 'Disponible para trabajar en remoto · España (CET)',
+    'hero.lens.title': 'Mira esta web como la veo yo',
+    'hero.portrait.alt': 'Retrato de Christian Oller',
+    'intro.note.nav': 'navegación',
+    'intro.note.title': 'titular',
+    'intro.note.photo': 'foto',
+    'intro.note.cta': 'acción',
+    'intro.done': 'Listo',
+    'intro.skip': 'Saltar intro',
 
-    // About page
-    'about.meta.title': 'Sobre mí | Christian Oller',
-    'about.meta.description':
-      'Conoce más sobre mi trayectoria como desarrollador Full Stack y mi experiencia profesional.',
-    'about.heading': 'Sobre mí',
-    'about.img.alt': 'Foto de perfil de Christian Oller',
-    'about.section.journey': 'Mi Trayectoria',
-    'about.section.experience': 'Experiencia Profesional',
-    'about.intro':
-      'Soy un Desarrollador de Software con más de 2 años de experiencia. Mi enfoque combina la precisión técnica con la resolución creativa de problemas. Me he especializado en soluciones ERP, tecnología para aerolíneas y plataformas de consultoría medioambiental.',
+    // Del boceto al producto
+    'process.title': 'Del boceto al producto',
+    'process.lead':
+      'Así construyo cada pantalla. Baja y mira cómo una de Tempora pasa por las tres fases.',
+    'process.sketch.title': 'Boceto',
+    'process.sketch.body':
+      'Antes de abrir el editor dibujo la pantalla: qué ve primero quien la usa, qué puede hacer y qué pasa cuando algo falla.',
+    'process.code.title': 'Código',
+    'process.code.body':
+      'La construyo con componentes accesibles y tipados, con sus estados de carga, vacío y error.',
+    'process.qa.title': 'QA',
+    'process.qa.body':
+      'La pruebo: tests unitarios con Jasmine, de extremo a extremo con Cypress y APIs con Postman. Si algo se rompe, lo veo yo antes que nadie.',
+    'process.note.filters': 'filtros por día',
+    'process.note.table': 'turnos de hoy',
+    'process.note.cta': 'acción principal',
+    'process.check.overlap': 'Crea un turno sin solapes',
+    'process.check.contrast': 'Contraste AA en toda la tabla',
+    'process.check.keyboard': 'Se usa solo con teclado',
+    'process.check.export': 'Exporta las horas del mes',
 
-    // Contact page
-    'contact.meta.title': 'Contacto | Christian Oller',
-    'contact.meta.description': '¿Tienes un proyecto en mente? Hablemos sobre cómo puedo ayudarte.',
-    'contact.heading': 'Trabajemos juntos.',
-    'contact.intro':
-      '¿Interesado en empezar un proyecto? Actualmente estoy disponible para trabajos freelance y abierto a nuevas oportunidades profesionales.',
-    'contact.label.email': 'Email',
-    'contact.label.social': 'Redes Sociales',
-    'contact.label.location': 'Ubicación',
-    'contact.location.value': 'Córdoba, España',
-    'contact.form.name': 'Nombre',
-    'contact.form.email': 'Email',
-    'contact.form.name.placeholder': 'Tu nombre',
-    'contact.form.email.placeholder': 'tu@email.com',
-    'contact.form.subject': 'Asunto',
-    'contact.form.subject.placeholder': 'Selecciona un tipo de proyecto',
-    'contact.form.subject.uiux': 'Diseño UI/UX',
-    'contact.form.subject.branding': 'Identidad de Marca',
-    'contact.form.subject.dev': 'Desarrollo Web',
-    'contact.form.subject.other': 'Otro',
-    'contact.form.message': 'Mensaje',
-    'contact.form.message.placeholder': 'Cuéntame un poco sobre tu proyecto...',
-    'contact.form.submit': 'Enviar Mensaje',
-
-    // Projects page
-    'projects.meta.title': 'Proyectos | Christian Oller',
+    // Proyectos
+    'projects.title': 'Proyectos',
+    'projects.lead':
+      'Tres apps propias que diseño, programo y pruebo de principio a fin, y la web de Vístalo.',
+    'projects.page.lead':
+      'Apps propias y webs publicadas. Cada una pasa por boceto, código y QA antes de enseñarse.',
+    'projects.view': 'Ver proyecto',
+    'projects.all': 'Todos los proyectos',
+    'projects.meta.title': 'Proyectos · Christian Oller',
     'projects.meta.description':
-      'Una colección de trabajos en desarrollo full-stack, diseño UI/UX y arquitectura de software.',
-    'projects.heading': 'Proyectos',
-    'projects.description':
-      'Una colección de trabajos en desarrollo full-stack, diseño UI/UX y arquitectura de software.',
-    'projects.view': 'Ver Proyecto',
+      'Tempora, Vibora, Learnish y Vístalo: apps y webs diseñadas, programadas y probadas por Christian Oller.',
+    'project.kind.app': 'App',
+    'project.kind.web': 'Web',
+    'project.role': 'Mi papel',
+    'project.status': 'Estado',
+    'project.stack': 'Con qué está hecho',
+    'project.features': 'Qué hace',
+    'project.visit': 'Visitar la web',
+    'project.next': 'Siguiente proyecto',
+    'project.back': 'Todos los proyectos',
 
-    // Project detail
-    'project.year': 'Año',
-    'project.client': 'Cliente',
-    'project.tech': 'Tecnologías',
+    // Herramientas por lente
+    'stack.title': 'Lo que uso, por lentes',
+    'stack.lead': 'Las mismas tres fases de cada pantalla, con sus herramientas.',
 
-    // Accessibility
-    'aria.menu': 'Menú de navegación',
-    'aria.theme': 'Cambiar modo oscuro',
-    'aria.lang.es': 'Cambiar a Español',
-    'aria.lang.en': 'Cambiar a Inglés',
+    // Pie: el reverso del artboard
+    'footer.title': '¿Hablamos?',
+    'footer.lead':
+      'Busco un equipo de producto en el que cuidar el frontend sea parte del trabajo.',
+    'footer.email': 'Escribir un email',
+    'footer.form': 'Ir al formulario',
+    'footer.credits':
+      'Bocetado con lápiz azul, programado con Astro y revisado con las tres lentes.',
 
-    // Footer
-    'footer.rights': 'Todos los derechos reservados.',
+    // Sobre mí
+    'about.meta.title': 'Sobre mí · Christian Oller',
+    'about.meta.description':
+      'Christian Oller, frontend developer que también diseña y prueba: Angular, Astro, React, Figma, Cypress y Jasmine. En remoto desde España.',
+    'about.title': 'Diseño, código y QA',
+    'about.p1':
+      'Soy frontend developer y llevo años construyendo aplicaciones con Angular, de la versión 8 a la 21. También hago webs con Astro, React y WordPress.',
+    'about.p2':
+      'Antes de programar, diseño: Figma para las interfaces y Procreate cuando toca dibujar. Después pruebo lo que hago con Jasmine, Cypress y Postman, porque una interfaz bonita que falla no sirve.',
+    'about.p3':
+      'En 2025 cofundé Vístalo con Eloi Cotonat, una agencia que hace webs, fotos y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
+    'about.principles.title': 'Cómo trabajo',
+    'about.principle1.title': 'Primero el boceto',
+    'about.principle1.body':
+      'Dibujo la pantalla antes de programarla. Equivocarse en papel es más barato.',
+    'about.principle2.title': 'Componentes que se entienden',
+    'about.principle2.body':
+      'Código tipado, accesible y con nombres claros, para que quien venga después pueda seguir.',
+    'about.principle3.title': 'Probado antes de entregar',
+    'about.principle3.body': 'Si una parte importa, tiene su test. Si falla, me entero yo primero.',
+    'about.cv.title': 'Mi trayectoria completa, en el CV',
+    'about.cv.pending': 'El CV en PDF estará aquí muy pronto.',
+
+    // Contacto
+    'contact.meta.title': 'Contacto · Christian Oller',
+    'contact.meta.description':
+      'Escribe a Christian Oller por una oferta de empleo o un proyecto frontend. Disponible en remoto desde España.',
+    'contact.title': 'Hablemos',
+    'contact.lead': '¿Tienes una oferta o un proyecto? Cuéntamelo y te contesto por email.',
+    'contact.name': 'Nombre',
+    'contact.email': 'Email',
+    'contact.company': 'Empresa (opcional)',
+    'contact.topic': 'Sobre qué',
+    'contact.topic.job': 'Oferta de empleo',
+    'contact.topic.freelance': 'Proyecto freelance',
+    'contact.topic.other': 'Otra cosa',
+    'contact.message': 'Mensaje',
+    'contact.send': 'Enviar mensaje',
+    'contact.check.name': 'Nombre escrito',
+    'contact.check.email': 'Email válido',
+    'contact.check.message': 'Mensaje de al menos 20 caracteres',
+    'contact.ready': 'Listo para enviar',
+    'contact.sending': 'Enviando…',
+    'contact.sent': 'Mensaje enviado. Te respondo por email.',
+    'contact.error': 'No se ha podido enviar. Escríbeme directamente:',
+    'contact.direct': 'O directamente',
+    'contact.mailto.subject': 'Contacto desde christianoller.dev',
   },
   en: {
     'nav.home': 'Home',
-    'nav.about': 'About',
     'nav.projects': 'Projects',
+    'nav.about': 'About',
     'nav.contact': 'Contact',
-    'nav.back': 'Back to Projects',
-
-    // Hero
-    'hero.greeting': "Hi, I'm",
-    'hero.role': 'Software Developer',
-    'hero.headline': 'From *idea* to a|*product* that works.',
-    'hero.description':
-      'I take care of design, implementation and quality. I deliver polished, fast websites and apps with no surprises.',
-    'hero.button': 'Tell me about your project',
-    'hero.button.secondary': 'View projects',
-    'hero.status': 'Available for projects',
-    'hero.work.design': 'UX / UI design',
-    'hero.work.wordpress': 'WordPress websites',
-    'hero.work.web': 'Astro or React websites',
-    'hero.work.apps': 'Angular apps',
-    'hero.work.tests': 'Testing',
-
-    // Home Sections
-    'section.skills': 'Core Technologies',
-    'section.about': 'Crafting meaningful brands & intuitive experiences',
-    'section.work': 'Selected Work',
-    'section.viewAll': 'View All Projects',
-
-    // About Summary section
-    'about.summary.name': "Hi, I'm Christian Oller.",
-    'about.summary.body1':
-      'I specialize in building digital products that merge refined aesthetics with robust functionality. My approach is based on understanding user needs and translating them into visually appealing interfaces and efficient code.',
-    'about.summary.body2':
-      'With a solid foundation in both design and development, I act as a bridge between creative vision and technical execution. I firmly believe that good software must not only work well, but also feel great to use.',
-
-    // Services section
-    'services.frontend.title': 'Frontend Architecture',
-    'services.frontend.desc':
-      'I build complex applications with Angular and React, creating modular and maintainable interfaces using TypeScript, optimizing performance and component reusability.',
-    'services.backend.title': 'Backend Solutions',
-    'services.backend.desc': 'Robust server-side logic and API integration (SQL, PHP, Firebase).',
-    'services.uiux.title': 'UI/UX Implementation',
-    'services.uiux.desc':
-      'Translation of designs into pixel-perfect, accessible and responsive code (Tailwind, SASS).',
-    'services.testing.title': 'Performance & Testing',
-    'services.testing.desc':
-      'Quality and speed assurance through Vitest and continuous optimization.',
-
-    // Home page
-    'home.meta.title': 'Christian Oller | Software Developer',
-    'home.meta.description':
-      'Portfolio of Christian Oller, a developer specialized in creating unique digital experiences.',
-
-    // About page
-    'about.meta.title': 'About | Christian Oller',
-    'about.meta.description':
-      'Learn more about my journey as a Full Stack developer and my professional experience.',
-    'about.heading': 'About Me',
-    'about.img.alt': 'Profile photo of Christian Oller',
-    'about.section.journey': 'My Journey',
-    'about.section.experience': 'Professional Experience',
-    'about.intro':
-      'I am a Software Developer with over 2 years of experience. My approach combines technical precision with creative problem solving. I have specialized in ERP solutions, airline technology and environmental consulting platforms.',
-
-    // Contact page
-    'contact.meta.title': 'Contact | Christian Oller',
-    'contact.meta.description': "Have a project in mind? Let's talk about how I can help you.",
-    'contact.heading': "Let's work together.",
-    'contact.intro':
-      "Interested in starting a project? I'm currently available for freelance work and open to new professional opportunities.",
-    'contact.label.email': 'Email',
-    'contact.label.social': 'Social Media',
-    'contact.label.location': 'Location',
-    'contact.location.value': 'Córdoba, Spain',
-    'contact.form.name': 'Name',
-    'contact.form.email': 'Email',
-    'contact.form.name.placeholder': 'Your name',
-    'contact.form.email.placeholder': 'your@email.com',
-    'contact.form.subject': 'Subject',
-    'contact.form.subject.placeholder': 'Select a project type',
-    'contact.form.subject.uiux': 'UI/UX Design',
-    'contact.form.subject.branding': 'Brand Identity',
-    'contact.form.subject.dev': 'Web Development',
-    'contact.form.subject.other': 'Other',
-    'contact.form.message': 'Message',
-    'contact.form.message.placeholder': 'Tell me a bit about your project...',
-    'contact.form.submit': 'Send Message',
-
-    // Projects page
-    'projects.meta.title': 'Projects | Christian Oller',
-    'projects.meta.description':
-      'A collection of work in full-stack development, UI/UX design and software architecture.',
-    'projects.heading': 'Projects',
-    'projects.description':
-      'A collection of work in full-stack development, UI/UX design and software architecture.',
-    'projects.view': 'View Project',
-
-    // Project detail
-    'project.year': 'Year',
-    'project.client': 'Client',
-    'project.tech': 'Technologies',
-
-    // Accessibility
-    'aria.menu': 'Navigation menu',
-    'aria.theme': 'Toggle dark mode',
+    'nav.cv': 'CV',
+    'nav.menu': 'Menu',
+    'aria.home': 'Christian Oller, home',
+    'aria.skip': 'Skip to content',
     'aria.lang.es': 'Switch to Spanish',
     'aria.lang.en': 'Switch to English',
+    'aria.theme': 'Toggle light and dark theme',
+    'aria.menu': 'Open menu',
+    'aria.close': 'Close menu',
 
-    // Footer
-    'footer.rights': 'All rights reserved.',
+    'lens.label': 'View this site as',
+    'lens.design': 'Design',
+    'lens.code': 'Code',
+    'lens.qa': 'QA',
+    'lens.clear': 'Normal view',
+    'lens.hint': 'Shortcuts: 1, 2, 3 and Esc',
+    'lens.panel.design': 'Real boxes, sizes and type of every block.',
+    'lens.panel.code': "Each block's tag and component, and what this page weighs.",
+    'lens.panel.qa': 'Accessibility checks running right now in your browser.',
+    'lens.stat.nodes': 'DOM nodes',
+    'lens.stat.js': 'of JavaScript',
+    'lens.stat.css': 'of CSS',
+    'lens.stat.load': 'to load',
+    'lens.stat.passed': 'checks passed',
+    'lens.stat.colors': 'Colours',
+    'lens.stat.fonts': 'Typefaces',
+
+    'home.meta.title': 'Christian Oller · Frontend developer',
+    'home.meta.description':
+      'Christian Oller, frontend developer: I design, build in Angular, Astro or React and test every interface. Available remotely from Spain.',
+    'hero.role': 'Frontend developer',
+    'hero.lead':
+      'I design the interface, build it in Angular, Astro or React and test it before it ships: from idea to a product that works.',
+    'hero.cta.projects': 'See projects',
+    'hero.cta.cv': 'Download CV',
+    'hero.cta.contact': 'Get in touch',
+    'hero.status': 'Available for remote work · Spain (CET)',
+    'hero.lens.title': 'See this site the way I do',
+    'hero.portrait.alt': 'Portrait of Christian Oller',
+    'intro.note.nav': 'navigation',
+    'intro.note.title': 'headline',
+    'intro.note.photo': 'photo',
+    'intro.note.cta': 'action',
+    'intro.done': 'Ready',
+    'intro.skip': 'Skip intro',
+
+    'process.title': 'From sketch to product',
+    'process.lead':
+      'This is how I build every screen. Scroll and watch one from Tempora go through all three stages.',
+    'process.sketch.title': 'Sketch',
+    'process.sketch.body':
+      'Before opening the editor I draw the screen: what people see first, what they can do and what happens when something fails.',
+    'process.code.title': 'Code',
+    'process.code.body':
+      'I build it with accessible, typed components, including loading, empty and error states.',
+    'process.qa.title': 'QA',
+    'process.qa.body':
+      'I test it: unit tests with Jasmine, end-to-end with Cypress and APIs with Postman. If something breaks, I see it before anyone else.',
+    'process.note.filters': 'filter by day',
+    'process.note.table': "today's shifts",
+    'process.note.cta': 'main action',
+    'process.check.overlap': 'Creates a shift with no overlaps',
+    'process.check.contrast': 'AA contrast across the table',
+    'process.check.keyboard': 'Works with the keyboard alone',
+    'process.check.export': "Exports the month's hours",
+
+    'projects.title': 'Projects',
+    'projects.lead':
+      'Three apps of my own that I design, build and test end to end, plus the Vístalo website.',
+    'projects.page.lead':
+      'My own apps and published websites. Each one goes through sketch, code and QA before it is shown.',
+    'projects.view': 'View project',
+    'projects.all': 'All projects',
+    'projects.meta.title': 'Projects · Christian Oller',
+    'projects.meta.description':
+      'Tempora, Vibora, Learnish and Vístalo: apps and websites designed, built and tested by Christian Oller.',
+    'project.kind.app': 'App',
+    'project.kind.web': 'Website',
+    'project.role': 'My role',
+    'project.status': 'Status',
+    'project.stack': 'Built with',
+    'project.features': 'What it does',
+    'project.visit': 'Visit the site',
+    'project.next': 'Next project',
+    'project.back': 'All projects',
+
+    'stack.title': 'What I use, lens by lens',
+    'stack.lead': 'The same three stages of every screen, with their tools.',
+
+    'footer.title': 'Shall we talk?',
+    'footer.lead':
+      "I'm looking for a product team where caring about the frontend is part of the job.",
+    'footer.email': 'Send an email',
+    'footer.form': 'Go to the form',
+    'footer.credits':
+      'Sketched in blue pencil, built with Astro and checked with all three lenses.',
+
+    'about.meta.title': 'About · Christian Oller',
+    'about.meta.description':
+      'Christian Oller, a frontend developer who also designs and tests: Angular, Astro, React, Figma, Cypress and Jasmine. Remote from Spain.',
+    'about.title': 'Design, code and QA',
+    'about.p1':
+      "I'm a frontend developer and I've spent years building applications with Angular, from version 8 to 21. I also make websites with Astro, React and WordPress.",
+    'about.p2':
+      "Before coding, I design: Figma for interfaces and Procreate when it's time to draw. Then I test what I build with Jasmine, Cypress and Postman, because a beautiful interface that breaks is no use.",
+    'about.p3':
+      'In 2025 I co-founded Vístalo with Eloi Cotonat, an agency that makes websites, photos and Google presence for small businesses. I work remotely from Spain.',
+    'about.principles.title': 'How I work',
+    'about.principle1.title': 'Sketch first',
+    'about.principle1.body': 'I draw the screen before coding it. Being wrong on paper is cheaper.',
+    'about.principle2.title': 'Components people can read',
+    'about.principle2.body':
+      'Typed, accessible code with clear names, so whoever comes next can carry on.',
+    'about.principle3.title': 'Tested before it ships',
+    'about.principle3.body': 'If a part matters, it has a test. If it breaks, I find out first.',
+    'about.cv.title': 'My full background, in my CV',
+    'about.cv.pending': 'The PDF CV will be here very soon.',
+
+    'contact.meta.title': 'Contact · Christian Oller',
+    'contact.meta.description':
+      'Write to Christian Oller about a job or a frontend project. Available remotely from Spain.',
+    'contact.title': "Let's talk",
+    'contact.lead': "Got a role or a project? Tell me about it and I'll reply by email.",
+    'contact.name': 'Name',
+    'contact.email': 'Email',
+    'contact.company': 'Company (optional)',
+    'contact.topic': 'About',
+    'contact.topic.job': 'Job offer',
+    'contact.topic.freelance': 'Freelance project',
+    'contact.topic.other': 'Something else',
+    'contact.message': 'Message',
+    'contact.send': 'Send message',
+    'contact.check.name': 'Name filled in',
+    'contact.check.email': 'Valid email',
+    'contact.check.message': 'Message of at least 20 characters',
+    'contact.ready': 'Ready to send',
+    'contact.sending': 'Sending…',
+    'contact.sent': "Message sent. I'll reply by email.",
+    'contact.error': "It couldn't be sent. Email me directly:",
+    'contact.direct': 'Or directly',
+    'contact.mailto.subject': 'Contact from christianoller.dev',
   },
 } as const;

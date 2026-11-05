@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { useTranslations } from '@/i18n/utils';
+import { site } from '@/data/site';
 import type { ui } from '@/i18n/ui';
 
 interface Props {
@@ -9,133 +10,386 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+const topics = [
+  { value: 'job', label: t('contact.topic.job') },
+  { value: 'freelance', label: t('contact.topic.freelance') },
+  { value: 'other', label: t('contact.topic.other') },
+];
 ---
 
-<Layout title={t('contact.meta.title')} description={t('contact.meta.description')}>
-  <section class="mx-auto w-full max-w-[1400px] px-6 py-12 md:px-12 md:py-24 lg:px-20">
-    <div class="grid grid-cols-1 gap-12 lg:grid-cols-[5fr_7fr] lg:gap-24">
-      <div class="space-y-8">
-        <div class="space-y-4">
-          <h1 class="font-serif text-4xl leading-tight font-bold md:text-5xl lg:text-6xl">
-            {t('contact.heading')}
-          </h1>
-          <p class="text-secondary max-w-md text-lg text-pretty">
-            {t('contact.intro')}
-          </p>
-        </div>
+<Layout
+  title={t('contact.meta.title')}
+  description={t('contact.meta.description')}
+  frame={t('nav.contact')}
+>
+  <section class="wrap contact" data-cs="<section> ContactPage.astro">
+    <h1 class="t-display" data-reveal data-ds="H1" data-ds-type>{t('contact.title')}</h1>
+    <p class="t-lead contact-lead" data-reveal style="--reveal-i: 1">{t('contact.lead')}</p>
 
-        <div class="space-y-6 pt-8">
-          <div class="space-y-2">
-            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">
-              {t('contact.label.email')}
-            </h3>
-            <a
-              href="mailto:contacto@christianoller.com"
-              class="text-secondary hover:text-primary text-xl transition-colors md:text-2xl"
-            >
-              contacto@christianoller.com
-            </a>
+    <div class="contact-grid">
+      <form
+        class="form"
+        data-contact-form
+        data-endpoint={site.formEndpoint}
+        data-email={site.email}
+        data-subject={t('contact.mailto.subject')}
+        data-ds={lang === 'es' ? 'Formulario' : 'Form'}
+        data-reveal
+        style="--reveal-i: 2"
+        novalidate
+      >
+        <fieldset class="topics">
+          <legend class="field-label">{t('contact.topic')}</legend>
+          <div class="topic-row">
+            {
+              topics.map((topic, i) => (
+                <label class="topic">
+                  <input type="radio" name="topic" value={topic.label} checked={i === 0} />
+                  <span>{topic.label}</span>
+                </label>
+              ))
+            }
           </div>
+        </fieldset>
 
-          <div class="space-y-2">
-            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">
-              {t('contact.label.social')}
-            </h3>
-            <ul class="text-secondary flex flex-col gap-2 text-lg">
-              <li>
-                <a
-                  href="https://github.com/christianoller8"
-                  target="_blank"
-                  rel="noreferrer"
-                  class="hover:text-primary transition-colors"
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.linkedin.com/in/christian-oller"
-                  target="_blank"
-                  rel="noreferrer"
-                  class="hover:text-primary transition-colors"
-                >
-                  LinkedIn
-                </a>
-              </li>
-            </ul>
+        <div class="field-row">
+          <div class="field" data-qa-host>
+            <label class="field-label" for="c-name">{t('contact.name')}</label>
+            <input id="c-name" name="name" autocomplete="name" required />
           </div>
-
-          <div class="space-y-2">
-            <h3 class="text-primary text-sm font-bold tracking-wide uppercase">
-              {t('contact.label.location')}
-            </h3>
-            <p class="text-secondary text-lg">{t('contact.location.value')}</p>
+          <div class="field" data-qa-host>
+            <label class="field-label" for="c-email">{t('contact.email')}</label>
+            <input id="c-email" name="email" type="email" autocomplete="email" required />
           </div>
         </div>
-      </div>
+        <div class="field" data-qa-host>
+          <label class="field-label" for="c-company">{t('contact.company')}</label>
+          <input id="c-company" name="company" autocomplete="organization" />
+        </div>
+        <div class="field" data-qa-host>
+          <label class="field-label" for="c-message">{t('contact.message')}</label>
+          <textarea id="c-message" name="message" rows="6" required aria-describedby="c-checks"
+          ></textarea>
+        </div>
 
-      <div class="bg-surface border-border/50 rounded-2xl border p-8 transition-colors md:p-12">
-        {/* Replace YOUR_FORM_ID at formspree.io/forms after creating your account */}
-        <form class="space-y-6" method="POST" action="https://formspree.io/f/YOUR_FORM_ID">
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <label class="flex flex-col gap-2">
-              <span class="text-primary text-sm font-medium">{t('contact.form.name')}</span>
-              <input
-                type="text"
-                name="name"
-                required
-                placeholder={t('contact.form.name.placeholder')}
-                class="bg-background border-border focus:border-primary focus:ring-primary placeholder:text-muted-foreground/50 h-12 w-full rounded-lg border px-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50 dark:placeholder:text-neutral-500"
-              />
-            </label>
+        <ul id="c-checks" class="checks" aria-live="polite">
+          <li data-check="name">
+            <svg class="chk" viewBox="0 0 16 16" aria-hidden="true"
+              ><path d="m4 8.5 2.6 2.6L12 5.5"></path></svg
+            >{t('contact.check.name')}
+          </li>
+          <li data-check="email">
+            <svg class="chk" viewBox="0 0 16 16" aria-hidden="true"
+              ><path d="m4 8.5 2.6 2.6L12 5.5"></path></svg
+            >{t('contact.check.email')}
+          </li>
+          <li data-check="message">
+            <svg class="chk" viewBox="0 0 16 16" aria-hidden="true"
+              ><path d="m4 8.5 2.6 2.6L12 5.5"></path></svg
+            >{t('contact.check.message')}
+          </li>
+        </ul>
 
-            <label class="flex flex-col gap-2">
-              <span class="text-primary text-sm font-medium">{t('contact.form.email')}</span>
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder={t('contact.form.email.placeholder')}
-                class="bg-background border-border focus:border-primary focus:ring-primary placeholder:text-muted-foreground/50 h-12 w-full rounded-lg border px-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50 dark:placeholder:text-neutral-500"
-              />
-            </label>
-          </div>
+        <div class="submit-row">
+          <button class="btn btn-primary send" type="submit" data-send>
+            <span data-send-label>{t('contact.send')}</span>
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+          <p class="t-small send-state" data-state role="status"></p>
+        </div>
+        <p
+          hidden
+          data-messages={JSON.stringify({
+            ready: t('contact.ready'),
+            sending: t('contact.sending'),
+            sent: t('contact.sent'),
+            error: t('contact.error'),
+          })}
+        >
+        </p>
+      </form>
 
-          <label class="flex flex-col gap-2">
-            <span class="text-primary text-sm font-medium">{t('contact.form.subject')}</span>
-            <select
-              name="subject"
-              class="bg-background border-border focus:border-primary focus:ring-primary text-secondary h-12 w-full rounded-lg border px-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50"
-            >
-              <option value="" disabled selected>{t('contact.form.subject.placeholder')}</option>
-              <option value="ui-ux">{t('contact.form.subject.uiux')}</option>
-              <option value="branding">{t('contact.form.subject.branding')}</option>
-              <option value="development">{t('contact.form.subject.dev')}</option>
-              <option value="other">{t('contact.form.subject.other')}</option>
-            </select>
-          </label>
-
-          <label class="flex flex-col gap-2">
-            <span class="text-primary text-sm font-medium">{t('contact.form.message')}</span>
-            <textarea
-              name="message"
-              rows="6"
-              required
-              placeholder={t('contact.form.message.placeholder')}
-              class="bg-background border-border focus:border-primary focus:ring-primary placeholder:text-muted-foreground/50 min-h-[150px] w-full resize-y rounded-lg border p-4 transition-all outline-none focus:ring-1 dark:border-neutral-700 dark:bg-neutral-800/50 dark:placeholder:text-neutral-500"
-            ></textarea>
-          </label>
-
-          <div class="pt-4">
-            <button
-              type="submit"
-              class="bg-primary text-background hover:bg-secondary/90 h-12 w-full rounded-lg px-8 font-medium shadow-lg transition-all duration-300 hover:shadow-xl md:w-auto"
-            >
-              {t('contact.form.submit')}
-            </button>
-          </div>
-        </form>
-      </div>
+      <aside class="direct" data-reveal style="--reveal-i: 3">
+        <h2 class="direct-title">{t('contact.direct')}</h2>
+        <ul class="direct-list">
+          <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li>
+            <a class="link" href={site.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          </li>
+          <li><a class="link" href={site.github} target="_blank" rel="noreferrer">GitHub ↗</a></li>
+        </ul>
+        <p class="t-small direct-status">
+          <span class="status-dot" aria-hidden="true"></span>{t('hero.status')}
+        </p>
+      </aside>
     </div>
   </section>
 </Layout>
+
+<style>
+  .contact {
+    padding-top: clamp(2rem, 5vw, 4.5rem);
+  }
+  .contact-lead {
+    max-width: 36ch;
+    margin-top: 1.25rem;
+    color: var(--muted);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .form {
+    display: grid;
+    gap: 1.25rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--tint);
+  }
+  .field-row {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field-label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.9rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    transition: border-color 0.2s var(--ease-out);
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--pencil);
+    outline: none;
+  }
+  .topics {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .topic-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .topic {
+    position: relative;
+  }
+  .topic input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+  }
+  .topic span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    transition:
+      background-color 0.2s var(--ease-out),
+      color 0.2s var(--ease-out);
+  }
+  .topic input:checked + span {
+    color: var(--pencil-ink);
+    background: var(--pencil);
+  }
+  .topic input:focus-visible + span {
+    outline: 2px solid var(--pencil);
+    outline-offset: 3px;
+  }
+  .checks {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+  .checks li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: color 0.2s var(--ease-out);
+  }
+  .chk {
+    flex: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: transparent;
+    stroke-width: 2;
+    background: var(--paper);
+    transition:
+      background-color 0.2s var(--ease-out),
+      stroke 0.2s var(--ease-out);
+  }
+  .checks li.is-ok {
+    color: var(--ink);
+  }
+  .checks li.is-ok .chk {
+    stroke: #fff;
+    background: var(--ok);
+  }
+  :global(html.dark) .checks li.is-ok .chk {
+    stroke: #06140e;
+  }
+  .submit-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .send {
+    position: relative;
+  }
+  .send.is-ready {
+    animation: halo 1.6s var(--ease-out) infinite;
+  }
+  @keyframes halo {
+    0% {
+      box-shadow: 0 0 0 0 var(--pencil-soft);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 12px transparent;
+    }
+  }
+  .send-state {
+    color: var(--muted);
+  }
+  .direct-title {
+    font-size: var(--step-lead);
+    font-weight: 650;
+  }
+  .direct-list {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 1rem;
+    font-size: var(--step-lead);
+  }
+  .direct-list a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+  .direct-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    color: var(--muted);
+  }
+  .status-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--ok);
+    border-radius: 50%;
+  }
+  @media (min-width: 640px) {
+    .field-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .contact-grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      gap: 4rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .send.is-ready {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Formulario con sus comprobaciones a la vista: cada regla se enciende al cumplirse.
+  // Sin endpoint configurado (PUBLIC_FORM_ENDPOINT) abre el correo con el mensaje ya escrito.
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+    if (!form) return;
+    const messages = JSON.parse(
+      form.querySelector<HTMLElement>('[data-messages]')?.dataset.messages ?? '{}',
+    ) as Record<string, string>;
+    const state = form.querySelector<HTMLElement>('[data-state]');
+    const send = form.querySelector<HTMLButtonElement>('[data-send]');
+    const field = (name: string) =>
+      form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+
+    const rules: Record<string, () => boolean> = {
+      name: () => field('name').value.trim().length > 1,
+      email: () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field('email').value.trim()),
+      message: () => field('message').value.trim().length >= 20,
+    };
+    const check = () => {
+      let all = true;
+      for (const [name, rule] of Object.entries(rules)) {
+        const ok = rule();
+        all &&= ok;
+        form.querySelector(`[data-check="${name}"]`)?.classList.toggle('is-ok', ok);
+      }
+      send?.classList.toggle('is-ready', all);
+      if (state && !form.dataset.sent) state.textContent = all ? messages.ready : '';
+      return all;
+    };
+
+    form.addEventListener('input', check);
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!check()) {
+        const firstBad = Object.keys(rules).find((name) => !rules[name]());
+        if (firstBad) field(firstBad).focus();
+        return;
+      }
+      const data = new FormData(form);
+      const endpoint = form.dataset.endpoint;
+      if (!endpoint) {
+        const body = `${data.get('message')}\n\n— ${data.get('name')} (${data.get('email')})${
+          data.get('company') ? ` · ${data.get('company')}` : ''
+        }`;
+        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(
+          `${form.dataset.subject} · ${data.get('topic')}`,
+        )}&body=${encodeURIComponent(body)}`;
+        return;
+      }
+      if (state) state.textContent = messages.sending;
+      send?.setAttribute('disabled', '');
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.dataset.sent = 'true';
+        form.reset();
+        check();
+        if (state) state.textContent = messages.sent;
+      } catch {
+        if (state) state.textContent = `${messages.error} ${form.dataset.email}`;
+      } finally {
+        send?.removeAttribute('disabled');
+      }
+    });
+  });
+</script>
