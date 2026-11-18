@@ -136,7 +136,10 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     >
     <Header />
     <main id="main" class="frame">
-      <p class="frame-label">{frame}</p>
+      <p class="frame-label kit-frame-name" aria-hidden="true">
+        {frame}
+        <span data-frame-size></span>
+      </p>
       <div class="artboard">
         <slot />
         <Footer />

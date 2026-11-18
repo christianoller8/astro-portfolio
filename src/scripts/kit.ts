@@ -113,6 +113,18 @@ function initCoords(signal: AbortSignal) {
   });
 }
 
+/** Tamaño real del frame (el artboard) junto a su nombre; se actualiza al cambiar el ancho o el alto. */
+function initFrameSize(signal: AbortSignal) {
+  const label = document.querySelector<HTMLElement>('[data-frame-size]');
+  const artboard = document.querySelector<HTMLElement>('.artboard');
+  if (!label || !artboard || !('ResizeObserver' in window)) return;
+  const observer = new ResizeObserver(() => {
+    label.textContent = `${Math.round(artboard.offsetWidth)} × ${Math.round(artboard.offsetHeight)}`;
+  });
+  observer.observe(artboard);
+  signal.addEventListener('abort', () => observer.disconnect());
+}
+
 let controller: AbortController | undefined;
 
 document.addEventListener('astro:page-load', () => {
@@ -121,7 +133,11 @@ document.addEventListener('astro:page-load', () => {
   const { signal } = controller;
   document.addEventListener('pointerover', (event) => measure(event.target), { signal });
   document.addEventListener('focusin', (event) => measure(event.target), { signal });
-  document.querySelectorAll('[data-sel].is-selected').forEach(measure);
+  // Las piezas que nacen seleccionadas (el retrato del hero) llevan su medida al día
+  const measureSelected = () => document.querySelectorAll('[data-sel].is-selected').forEach(measure);
+  measureSelected();
+  window.addEventListener('resize', measureSelected, { passive: true, signal });
+  initFrameSize(signal);
   initThreads(signal);
   initCoords(signal);
 });

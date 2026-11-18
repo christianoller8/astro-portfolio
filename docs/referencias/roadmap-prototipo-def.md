@@ -151,8 +151,28 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 
 ## E2 · Barra, lienzo y hero (la primera pantalla de 10)
 
-- [ ] **Lienzo** visible, con margen alrededor y el nombre del frame siempre a la vista.
-- [ ] **Barra agrupada**: caricatura y nombre · menú · lentes y "Ver lienzo" · ES/EN · modo · CV.
+- [x] **Lienzo** visible, con margen alrededor y el nombre del frame siempre a la vista (hecho
+  y aprobado el 18 nov):
+  - Margen de lienzo alrededor del frame: de 10 px en móvil a 40 px en pantallas anchas (unos 35 px
+    a 1440).
+  - Nombre del frame encima, a la izquierda, con su tamaño real ("Inicio 1371 × 7570"), que se
+    actualiza al cambiar el tamaño de la ventana. Antes solo salía con la lente Diseño.
+  - Capturas: `.taste-skill/def/e2-lienzo-hoja.jpg`.
+- [ ] **Barra agrupada**: caricatura y nombre · menú · lentes y "Ver lienzo" · ES/EN · modo · CV
+  (**hecha el 18 nov; pendiente de tu visto bueno**):
+  - Marca: la caricatura reducida (36 px de alto) y "made by chris" en una línea. Al pasar el
+    ratón o llegar con el teclado se selecciona con tiradores y la cabeza se inclina. Cambio
+    respecto al plan §5.1, que decía "Christian Oller": se usa la marca que elegiste después.
+  - Menú centrado entre la marca y las herramientas; la página actual va sobre papel.
+  - Grupo "vista": las tres lentes, un separador y "Ver lienzo" con su tecla M, en una bandeja.
+  - Grupo "preferencias": ES/EN, modo y CV.
+  - De 1024 a 1279 px las lentes y "Ver lienzo" se quedan en icono. Por debajo de 1024 px, la
+    barra lleva marca, ES/EN, modo y menú; el menú es una capa a pantalla completa con las
+    páginas arriba y las lentes, "Ver lienzo" y "Descargar CV" abajo, al alcance del pulgar.
+  - Pendiente: "Ver lienzo" todavía no hace nada (el lienzo navegable es de E3) y el botón de
+    CV enlaza a un PDF que aún no existe en `public/cv/`.
+  - Para E3 (lentes): con la lente Código, la etiqueta del primer bloque pisa el nombre del frame.
+  - Capturas: `.taste-skill/def/e2-barra-hoja-escritorio.jpg` y `e2-barra-hoja-movil.jpg`.
 - [ ] **Hero**:
   - Display en dos líneas y tu foto riendo como capa seleccionada.
   - La frase "Disfruto haciendo webs y apps. Se nota en el resultado.".

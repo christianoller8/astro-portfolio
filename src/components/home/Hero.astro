@@ -1,9 +1,8 @@
 ---
 import { Image } from 'astro:assets';
-import portrait from '@/assets/images/card.jpg';
-import LensSwitch from '@/components/site/LensSwitch.astro';
+import portrait from '@/assets/images/profile.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
-import { site, hasCV } from '@/data/site';
+import { site } from '@/data/site';
 
 interface Props {
   lang: 'es' | 'en';
@@ -14,22 +13,50 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 ---
 
-<!-- [data-intro-stage]: aquí se dibuja el boceto de la intro. [data-sketch] = qué se dibuja; [data-ink] = qué se entinta -->
+<!--
+  Hero (plan §5.2): el titular a todo el ancho y el retrato como capa seleccionada, con la segunda
+  línea cruzando por encima del jersey. El titular se funde con lo que tiene debajo (diferencia),
+  así se lee igual sobre el papel, sobre el blanco de la foto y sobre el negro del jersey.
+  [data-intro-stage], [data-sketch] y [data-ink] son los enganches de la intro.
+-->
 <section class="hero wrap" data-intro-stage data-cs="<section> Hero.astro">
-  <h1 class="hero-title t-display" data-ds="H1" data-ds-type>
-    <span class="block" data-sketch="text" data-ink style="--ink-i: 0">Christian Oller</span>
-    <span class="hero-role block" data-sketch="text" data-ink style="--ink-i: 1"
-      >{t('hero.role')}</span
-    >
-  </h1>
+  <div class="hero-stage">
+    <h1 class="hero-title" data-ds="H1" data-ds-type>
+      <span class="hero-name" data-sketch="text" data-ink style="--ink-i: 0">Christian Oller</span>
+      <span class="hero-role" data-sketch="text" data-ink style="--ink-i: 1">{t('hero.role')}</span>
+    </h1>
 
-  <div class="hero-grid">
+    <figure
+      class="hero-portrait is-selected"
+      data-sel
+      data-ds={lang === 'es' ? 'Retrato' : 'Portrait'}
+      data-qa-host
+      data-sketch="image"
+      data-sketch-note={t('intro.note.photo')}
+      data-ink
+      style="--ink-i: 2"
+    >
+      <figcaption class="hero-layer kit-frame-name" aria-hidden="true">{t('hero.layer')}</figcaption>
+      <div class="hero-portrait-clip">
+        <Image
+          src={portrait}
+          alt={t('hero.portrait.alt')}
+          widths={[420, 720, 1080]}
+          sizes="(min-width: 700px) 30vw, 100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="hero-portrait-img"
+        />
+      </div>
+    </figure>
+
     <div class="hero-copy">
-      <p class="t-lead hero-lead" data-sketch="text" data-ink style="--ink-i: 2">
-        {t('hero.lead')}
+      <p class="hero-phrase" data-sketch="text" data-ink style="--ink-i: 3">
+        <span>{t('hero.phrase.1')}</span>
+        <span>{t('hero.phrase.2')}</span>
       </p>
 
-      <div class="hero-actions" data-ink style="--ink-i: 3">
+      <div class="hero-actions" data-ink style="--ink-i: 4">
         <a
           class="btn btn-primary"
           href={translatePath('/projects')}
@@ -39,92 +66,130 @@ const translatePath = useTranslatedPath(lang);
           {t('hero.cta.projects')}
           <span class="btn-arrow" aria-hidden="true">→</span>
         </a>
-        {
-          hasCV ? (
-            <a class="btn btn-quiet" href={site.cv} download data-sketch="box">
-              {t('hero.cta.cv')}
-            </a>
-          ) : (
-            <a class="btn btn-quiet" href={translatePath('/contact')} data-sketch="box">
-              {t('hero.cta.contact')}
-            </a>
-          )
-        }
+        <a class="btn btn-quiet" href={site.cv} download data-sketch="box">
+          {t('hero.cta.cv')}
+        </a>
       </div>
 
-      <p class="hero-status t-small" data-sketch="text" data-ink style="--ink-i: 4">
+      <p class="hero-status t-small" data-sketch="text" data-ink style="--ink-i: 5">
         <span class="status-dot" aria-hidden="true"></span>
-        {t('hero.status')}
+        <span>{t('hero.status')}</span>
+        <time class="hero-clock" data-clock hidden></time>
       </p>
-
-      <div class="hero-lens" data-ink style="--ink-i: 5">
-        <p class="hero-lens-title">{t('hero.lens.title')}</p>
-        <LensSwitch variant="tray" lang={lang} />
-      </div>
-    </div>
-
-    <div
-      class="hero-portrait"
-      data-ds={lang === 'es' ? 'Retrato' : 'Portrait'}
-      data-qa-host
-      data-sketch="image"
-      data-sketch-note={t('intro.note.photo')}
-      data-ink
-      style="--ink-i: 3"
-    >
-      <div class="hero-portrait-clip">
-        <Image
-          src={portrait}
-          alt={t('hero.portrait.alt')}
-          widths={[480, 720, 960]}
-          sizes="(min-width: 1024px) 34vw, 100vw"
-          loading="eager"
-          fetchpriority="high"
-          class="hero-portrait-img"
-        />
-      </div>
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    padding-top: clamp(2rem, 5vw, 4.5rem);
+    /* El ancho del contenido manda en todo el hero: titular, retrato y solape */
+    container-type: inline-size;
+    padding-top: clamp(2.5rem, 5vw, 4.5rem);
     padding-bottom: clamp(3rem, 6vw, 5rem);
+    /* El contenedor aísla la mezcla: el papel tiene que estar dentro para que el titular se funda con él */
+    background: var(--paper);
+    /* El titular va en modo diferencia: estos tonos dan tinta y gris sobre el papel de cada modo */
+    --title-ink: #e5e5e5;
+    --title-muted: #b5b5b5;
   }
+  :global(:root.dark) .hero {
+    --title-ink: #ffffff;
+    --title-muted: #bababa;
+  }
+  .hero-stage {
+    position: relative;
+    /* "Frontend developer" ocupa casi todo el ancho; el nombre, unas siete décimas */
+    --d: 11.4cqi;
+    --photo-w: 29cqi;
+  }
+
+  /* --- Titular --- */
   .hero-title {
-    max-width: 100%;
+    position: relative;
+    z-index: 2;
+    font-size: var(--d);
+    font-weight: var(--wght-ink);
+    font-stretch: var(--wdth-ink);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+    color: var(--title-ink);
+    mix-blend-mode: difference;
+    pointer-events: none;
+  }
+  .hero-name,
+  .hero-role {
+    display: block;
   }
   .hero-role {
+    color: var(--title-muted);
+  }
+
+  /* --- Retrato: una capa seleccionada, con su nombre de archivo y su medida --- */
+  .hero-portrait {
+    position: absolute;
+    top: calc(-0.3 * var(--d));
+    right: 0;
+    z-index: 1;
+    width: var(--photo-w);
+  }
+  .hero-layer {
+    position: absolute;
+    bottom: calc(100% + 0.4rem);
+    left: 0;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .hero-portrait-clip {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  .hero-portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 0;
+  }
+
+  /* --- Frase, botones y disponibilidad --- */
+  .hero-copy {
+    position: relative;
+    z-index: 3;
+    max-width: 62cqi;
+    margin-top: clamp(1.75rem, 3.4cqi, 3rem);
+  }
+  .hero-phrase {
+    font-size: clamp(1.375rem, 2.7cqi, 2.125rem);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+  .hero-phrase span {
+    display: block;
+  }
+  .hero-phrase span + span {
     color: var(--muted);
-  }
-  @media (max-width: 639px) {
-    .hero-role {
-      font-size: 0.8em;
-    }
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2.5rem;
-    margin-top: clamp(2rem, 4vw, 3.5rem);
-  }
-  .hero-lead {
-    max-width: 34ch;
   }
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 2rem;
+    margin-top: clamp(1.5rem, 2.6cqi, 2.25rem);
   }
   .hero-status {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.6rem;
     margin-top: 1.5rem;
     color: var(--muted);
+  }
+  .hero-clock {
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-clock::before {
+    content: '· ';
   }
   .status-dot {
     width: 0.55rem;
@@ -138,43 +203,64 @@ const translatePath = useTranslatedPath(lang);
       opacity: 0.35;
     }
   }
-  .hero-lens {
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-  }
-  .hero-lens-title {
-    margin-bottom: 0.75rem;
-    color: var(--muted);
-  }
-  .hero-portrait {
-    align-self: end;
-    width: 100%;
-    max-width: 30rem;
-  }
-  .hero-portrait-clip {
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    background: var(--tint);
-  }
-  .hero-portrait-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 30%;
-  }
 
-  @media (min-width: 1024px) {
-    .hero-grid {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      align-items: end;
-      gap: 3rem;
+  /* --- Móvil: nombre y oficio a todo el ancho, el retrato debajo y los botones al alcance del pulgar --- */
+  @container (max-width: 640px) {
+    .hero-title {
+      font-size: 11.4cqi;
+    }
+    .hero-name {
+      font-size: 1.39em;
     }
     .hero-portrait {
-      justify-self: end;
+      position: relative;
+      top: auto;
+      width: 100%;
+      margin-top: 2.25rem;
+    }
+    .hero-portrait-clip {
+      aspect-ratio: 1 / 1;
+    }
+    .hero-copy {
+      max-width: none;
+      margin-top: 2.5rem;
+    }
+    .hero-actions .btn {
+      flex: 1 1 0;
+      white-space: nowrap;
     }
   }
+
   @media (prefers-reduced-motion: reduce) {
     .status-dot {
       animation: none;
     }
   }
 </style>
+
+<script>
+  // La hora de Madrid junto a la disponibilidad: "17:55 CET" (o CEST en verano)
+  let timer: number | undefined;
+
+  document.addEventListener('astro:page-load', () => {
+    window.clearInterval(timer);
+    const clock = document.querySelector<HTMLTimeElement>('[data-clock]');
+    if (!clock) return;
+    const time = new Intl.DateTimeFormat('es-ES', {
+      timeZone: 'Europe/Madrid',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+    const zone = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', timeZoneName: 'short' });
+    const tick = () => {
+      const now = new Date();
+      const abbr = zone.formatToParts(now).find((part) => part.type === 'timeZoneName')?.value ?? '';
+      clock.textContent = `${time.format(now)} ${abbr}`.trim();
+      clock.dateTime = now.toISOString();
+      clock.hidden = false;
+    };
+    tick();
+    timer = window.setInterval(tick, 15_000);
+  });
+</script>

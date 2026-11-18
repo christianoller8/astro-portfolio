@@ -45,7 +45,9 @@
     --wdth-ink: 100%;
 
     --toolbar-h: 3.5rem;
-    --gutter: clamp(0.75rem, 1.6vw, 1.5rem);
+    /* Margen de lienzo alrededor del frame: de 10 px en móvil a 40 px en pantallas anchas */
+    --gutter: clamp(0.625rem, 2.4vw, 2.5rem);
+    --frame-label-h: 2.25rem;
     --pad: clamp(1.25rem, 4vw, 4rem);
     /* Movimiento (plan §4.2): rápido en la mano, lento en la cámara */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -176,27 +178,15 @@
   padding: var(--gutter);
   padding-top: 0;
 }
-/* El nombre del frame solo aparece con la lente Diseño, como en una herramienta de diseño */
+/* El nombre del frame va siempre a la vista, fuera del artboard, como en una herramienta de diseño
+   (el aspecto es el de .kit-frame-name; el tamaño real lo escribe kit.ts) */
 .frame-label {
-  display: none;
   align-items: center;
-  gap: 0.5rem;
-  height: 2.25rem;
-  font-size: var(--step-small);
-  color: var(--muted);
-}
-.frame-label::before {
-  content: '';
-  width: 0.5rem;
-  height: 0.5rem;
-  background: var(--pencil);
-}
-html[data-lens='design'] .frame-label {
-  display: flex;
+  height: var(--frame-label-h);
 }
 .artboard {
   background: var(--paper);
-  min-height: calc(100svh - var(--toolbar-h) - var(--gutter));
+  min-height: calc(100svh - var(--toolbar-h) - var(--frame-label-h) - var(--gutter));
   overflow-x: clip;
 }
 .wrap {
