@@ -116,10 +116,13 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
             window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
             (navigator.connection && navigator.connection.saveData) ||
             navigator.webdriver;
-          if (!skip) root.classList.add('intro');
+          // intro-seen: en esta carga el titular ya entra con la intro, así que no se entinta aparte
+          if (!skip) root.classList.add('intro', 'intro-seen');
           if (root.dataset.intro === '1') sessionStorage.setItem('intro-done', '1');
         } catch (e) {}
         document.addEventListener('astro:after-swap', () => {
+          // arrived: se llega navegando desde otra página (el entintado espera a la transición)
+          root.classList.add('arrived');
           applyTheme();
           applyLens();
           markReveal();

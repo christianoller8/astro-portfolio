@@ -198,7 +198,17 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Pendiente: la intro antigua (boceto) sigue hasta que se cambie en E3.
   - Para E3 (lentes): el panel de la lente tapa la frase y los botones del hero a 1440 × 900.
   - Capturas: `.taste-skill/def/e2-hero-hoja-escritorio.jpg` y `e2-hero-hoja-movil-tablet.jpg`.
-- [ ] **Entintado del titular** en las visitas siguientes.
+- [ ] **Entintado del titular** en las visitas siguientes (**hecho el 18 nov; pendiente de tu
+  visto bueno**):
+  - Cuando no hay intro, las dos líneas nacen "a lápiz" (peso 200, anchura 75 % y grafito) y se
+    entintan en 600 ms hasta su peso y su ancho. Primero el nombre y 90 ms después el oficio,
+    que al ensancharse entra en la foto.
+  - La copia en claro de dentro de la foto se anima a la vez: medido en cinco instantes, las dos
+    coinciden al píxel.
+  - Al cargar la página empieza a los 150 ms; al llegar desde otra página espera 520 ms, a que
+    termine la transición.
+  - Con "reducir movimiento" no se anima. En la carga en que sale la intro tampoco.
+  - Capturas: `.taste-skill/def/e2-tinta-hoja.jpg` (seis fotogramas).
 - [ ] Revisado en escritorio, tablet y móvil.
 
 **Hecho cuando**: la primera pantalla pasa toda la rúbrica, incluida la prueba de los 5 segundos.

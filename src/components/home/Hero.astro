@@ -51,8 +51,8 @@ const translatePath = useTranslatedPath(lang);
               class="hero-portrait-img"
             />
             <div class="hero-title hero-title-over" aria-hidden="true">
-              <span class="hero-name">Christian Oller</span>
-              <span class="hero-role">{t('hero.role')}</span>
+              <span class="hero-name" style="--ink-i: 0">Christian Oller</span>
+              <span class="hero-role" style="--ink-i: 1">{t('hero.role')}</span>
             </div>
           </div>
         </div>
@@ -260,6 +260,27 @@ const translatePath = useTranslatedPath(lang);
     .hero-actions .btn {
       flex: 1 1 0;
       white-space: nowrap;
+    }
+  }
+
+  /* --- Entintado del titular (plan §4.3): en las visitas sin intro, las dos líneas nacen a lápiz
+     (finas, estrechas y en grafito) y se entintan en 600 ms. La copia de dentro de la foto hace lo
+     mismo a la vez, así las letras no se separan en el borde. --- */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html:not(.intro-seen)) .hero-title span {
+      animation: hero-ink var(--dur-ink) var(--ease-out) both;
+      animation-delay: calc(var(--ink-i, 0) * 90ms + 150ms);
+    }
+    /* Al llegar desde otra página, espera a que la cámara termine de moverse */
+    :global(html.arrived:not(.intro-seen)) .hero-title span {
+      animation-delay: calc(var(--ink-i, 0) * 90ms + 520ms);
+    }
+  }
+  @keyframes hero-ink {
+    from {
+      font-weight: var(--wght-pencil);
+      font-stretch: var(--wdth-pencil);
+      color: var(--graphite);
     }
   }
 
