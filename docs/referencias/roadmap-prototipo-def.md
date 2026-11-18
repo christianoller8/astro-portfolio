@@ -178,19 +178,23 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
       desarrollador y QA.
     - La foto no puede ser "una foto plana ahí tirada": como en la página "nosotros" de Vístalo.
   - Cómo ha quedado:
-    - **Escenario oscuro en los dos modos**: dentro del hero valen siempre los tonos del modo
-      oscuro (fondo `#171717`, texto `#f5f5f5`). En modo claro es un bloque oscuro sobre el frame
-      blanco; en oscuro se funde con el papel.
-    - **La foto** (`card.jpg`, la de la luz roja) va sin caja: sangra por arriba y por la derecha
-      y se desvanece hacia la izquierda y hacia abajo con una máscara. La cara queda junto a
-      "Christian Oller" y "Software developer" cruza por la chaqueta. Ya no lleva cuadro de
-      selección ni la copia en claro del titular (no hace falta: todo el fondo es oscuro).
+    - **Cada modo tiene su foto**, la que se funde con su papel, y siempre sin caja:
+      - **Oscuro**: `card.jpg` (la de la luz roja). Sangra por arriba y por la derecha y se
+        desvanece hacia la izquierda y hacia abajo con una máscara.
+      - **Claro**: `profile.jpg` (la de estudio riendo, fondo blanco). El blanco de la foto es
+        el papel y solo se desvanece por abajo. El titular va en modo de fusión "diferencia":
+        oscuro sobre el blanco y claro sobre el jersey negro. Primero se probó el hero oscuro
+        también en claro y pediste que en claro fuese claro.
+      - En los dos, la cara queda junto a "Christian Oller" y "Software developer" cruza por
+        el pecho. Al cambiar de modo cambia la foto.
+      - Para la fase técnica: las dos fotos van con carga diferida para que solo se descargue
+        la del modo activo; habrá que precargar la que toque.
     - **Los tres oficios**: "Diseñador × Desarrollador × QA" encima del nombre. Son botones: cada
       uno activa su lente (y la apaga al volver a pulsar), así el hero recupera la entrada a las
       lentes. Subrayado fino que se entinta al pasar el ratón y con la lente activa.
     - Debajo: la frase, "Ver proyectos", "Descargar CV" y la disponibilidad con la hora de Madrid.
     - Todo se mide en ancho del contenido (`cqi`): la composición es la misma de 700 a 1920 px.
-    - **Móvil**: la foto arriba a todo el ancho, el nombre montado sobre la chaqueta, después los
+    - **Móvil**: la foto arriba a todo el ancho, el nombre montado sobre el pecho, después los
       oficios, la frase y los botones. Cabe en la primera pantalla.
     - "Frontend developer" también se cambia en el título y la descripción de la página.
   - **CV**: el PDF está en `public/cv/christian-oller-cv.pdf` (18 nov).

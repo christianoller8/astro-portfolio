@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-import portrait from '@/assets/images/card.jpg';
+import portraitDark from '@/assets/images/card.jpg';
+import portraitLight from '@/assets/images/profile.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -21,10 +22,12 @@ const roles = [
 ---
 
 <!--
-  Hero: un escenario oscuro en los dos modos, con el retrato fundido en el fondo (referencia:
-  la página "nosotros" de Vístalo). La foto no va en una caja: sangra por arriba y por la derecha,
-  y se desvanece hacia la izquierda y hacia abajo. La cara queda junto al nombre y el oficio
-  cruza por la chaqueta.
+  Hero: el retrato va fundido en el fondo, sin caja (referencia: la página "nosotros" de Vístalo).
+  Cada modo tiene su foto, la que se funde con su papel:
+  - Oscuro: la de la luz roja (fondo oscuro). Sangra por arriba y por la derecha y se desvanece.
+  - Claro: la de estudio riendo (fondo blanco). El blanco de la foto es el papel; el titular va en
+    modo de fusión "diferencia" para leerse oscuro sobre el blanco y claro sobre el jersey negro.
+  En los dos, la cara queda junto al nombre y el oficio cruza por el pecho.
   [data-intro-stage], [data-sketch] y [data-ink] son los enganches de la intro.
 -->
 <section class="hero" data-intro-stage data-cs="<section> Hero.astro">
@@ -36,14 +39,22 @@ const roles = [
       data-ink
       style="--ink-i: 2"
     >
+      <!-- Solo se pinta (y solo se descarga) la del modo activo -->
       <Image
-        src={portrait}
+        src={portraitLight}
+        alt={t('hero.portrait.alt')}
+        widths={[640, 960, 1440]}
+        sizes="(min-width: 700px) 48vw, 100vw"
+        loading="lazy"
+        class="hero-photo-img hero-photo-img--light"
+      />
+      <Image
+        src={portraitDark}
         alt={t('hero.portrait.alt')}
         widths={[640, 960, 1342]}
         sizes="(min-width: 700px) 46vw, 100vw"
-        loading="eager"
-        fetchpriority="high"
-        class="hero-photo-img"
+        loading="lazy"
+        class="hero-photo-img hero-photo-img--dark"
       />
     </figure>
 
@@ -108,27 +119,18 @@ const roles = [
   .hero {
     position: relative;
     overflow: hidden;
-    /* Escenario oscuro en los dos modos: dentro del hero valen siempre los tonos del modo oscuro */
-    --paper: #171717;
-    --ink: #f5f5f5;
-    --muted: #a3a3a3;
-    --line: #3a3a3c;
-    --tint: #262626;
-    --graphite: #7c7c82;
-    --pencil: var(--ink);
-    --pencil-ink: var(--paper);
-    --ok: #22c55e;
-    color: var(--ink);
     background: var(--paper);
   }
   .hero-inner {
     position: relative;
     /* El ancho del contenido manda en todo el hero: titular, foto y solape */
     container-type: inline-size;
+    /* El contenedor aísla la fusión del titular: el papel tiene que estar dentro */
+    background: var(--paper);
   }
+  /* Sin z-index: el titular tiene que fundirse con la foto, que va justo antes en el HTML */
   .hero-stage {
     position: relative;
-    z-index: 1;
     /* "Software developer" llega casi al borde derecho; el nombre, a unas siete décimas del ancho.
        Con margen: por debajo de 96 px el eje óptico de Bricolage ensancha un poco las letras */
     --d: 12.6cqi;
@@ -137,20 +139,29 @@ const roles = [
   }
 
   /* --- Retrato: fundido en el fondo, sin caja --- */
+  /* La foto se coloca respecto al contenido: la cara cae a la derecha del nombre y por encima de
+     la segunda línea. Cada modo tiene su foto, con su encuadre. */
   .hero-photo {
     position: absolute;
-    /* La foto se coloca respecto al contenido: la cara cae a la derecha del nombre y por encima
-       de la segunda línea */
-    top: -12.6cqi;
-    left: calc(var(--pad) + 55.5cqi);
-    width: 50cqi;
-    aspect-ratio: 2 / 3;
     pointer-events: none;
+    /* Claro: la foto de estudio. Su fondo blanco es el papel; solo se desvanece por abajo */
+    top: 0.4cqi;
+    left: calc(var(--pad) + 53.8cqi);
+    width: 52cqi;
+    aspect-ratio: 1856 / 2304;
   }
   .hero-photo-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .hero-photo-img--light {
+    /* Lleva el blanco roto del fondo a blanco puro, para que no se note dónde empieza la foto */
+    filter: brightness(1.04) contrast(1.06);
+    mask-image: linear-gradient(180deg, #000 58%, transparent 84%);
+  }
+  .hero-photo-img--dark {
+    display: none;
     filter: brightness(0.9) saturate(0.95);
     /* Se desvanece a los lados y hacia abajo: no se ve ningún borde de foto */
     mask-image:
@@ -158,6 +169,19 @@ const roles = [
       linear-gradient(180deg, #000 62%, transparent 96%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
+  }
+  /* Oscuro: la foto de la luz roja. Sangra por arriba y por la derecha */
+  :global(:root.dark) .hero-photo {
+    top: -12.6cqi;
+    left: calc(var(--pad) + 55.5cqi);
+    width: 50cqi;
+    aspect-ratio: 2 / 3;
+  }
+  :global(:root.dark) .hero-photo-img--light {
+    display: none;
+  }
+  :global(:root.dark) .hero-photo-img--dark {
+    display: block;
   }
 
   /* --- Los tres oficios: cada uno activa su lente --- */
@@ -220,12 +244,23 @@ const roles = [
     line-height: 0.9;
     letter-spacing: -0.045em;
     white-space: nowrap;
+    /* Claro: en "diferencia", estos dos tonos dan tinta y gris sobre el blanco, y claro sobre el jersey */
+    color: #e5e5e5;
+    mix-blend-mode: difference;
   }
   .hero-name,
   .hero-role {
     display: block;
   }
   .hero-role {
+    color: #b5b5b5;
+  }
+  /* Oscuro: todo el fondo es oscuro, no hace falta fundir */
+  :global(:root.dark) .hero-title {
+    color: var(--ink);
+    mix-blend-mode: normal;
+  }
+  :global(:root.dark) .hero-role {
     color: #b4b4b4;
   }
 
@@ -283,22 +318,39 @@ const roles = [
 
   /* --- Móvil: la foto arriba, a todo el ancho, y el nombre montado sobre la chaqueta --- */
   @container (max-width: 640px) {
-    .hero-photo {
+    .hero-photo,
+    :global(:root.dark) .hero-photo {
       top: 0;
       left: 0;
       width: 100%;
+    }
+    /* Claro: de la cabeza al pecho; el nombre cae sobre el jersey y los oficios, ya debajo de la foto */
+    .hero-photo {
+      aspect-ratio: 1 / 0.9;
+    }
+    .hero-photo-img--light {
+      object-position: 50% 0;
+      mask-image: linear-gradient(180deg, #000 84%, transparent 100%);
+    }
+    .hero-stage {
+      padding-top: 55cqi;
+    }
+    :global(:root.dark) .hero-photo {
       aspect-ratio: 1 / 1.18;
     }
-    .hero-photo-img {
+    .hero-photo-img--dark {
       object-position: 50% 30%;
       mask-image: linear-gradient(180deg, #000 48%, transparent 92%);
     }
-    .hero-stage {
+    :global(:root.dark) .hero-stage {
       padding-top: 71cqi;
     }
     .hero-roles {
       order: 2;
       min-height: 0;
+      margin-top: 20cqi;
+    }
+    :global(:root.dark) .hero-roles {
       margin-top: 1.25rem;
     }
     .hero-stage {

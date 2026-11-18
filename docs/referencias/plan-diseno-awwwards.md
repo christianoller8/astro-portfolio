@@ -694,7 +694,7 @@ Detalle completo en el [informe, sección B2](informe-eloi-cotonat.md#b2-dónde-
 | D16 | Final de la intro | La caricatura viaja a la barra. |
 | D19 | Marca | La caricatura de Christian + "made by chris" en Bricolage Grotesque. Descartadas las 10 parejas de Adobe Fonts y "Christian Oller" como texto de la marca. |
 | D20 | Oficio del titular (18 nov) | "Software developer" en lugar de "Frontend developer": ya no hace solo webs ni solo frontend. Los tres oficios, "Diseñador × Desarrollador × QA" (viene de su portfolio anterior), van encima del nombre y cada uno activa su lente. |
-| D21 | Retrato del hero (18 nov) | Sustituye a "capa seleccionada en su rectángulo" (§3.5 y §5.2), que Christian vio como "una foto plana ahí tirada". Ahora el hero es un escenario oscuro en los dos modos y la foto (`card.jpg`, la de la luz roja) se funde en el fondo, como en la página "nosotros" de Vístalo: sangra por arriba y por la derecha y se desvanece hacia la izquierda y hacia abajo. |
+| D21 | Retrato del hero (18 nov) | Sustituye a "capa seleccionada en su rectángulo" (§3.5 y §5.2), que Christian vio como "una foto plana ahí tirada". La foto va fundida en el fondo, sin caja, como en la página "nosotros" de Vístalo. **Cada modo tiene su foto**, la que se funde con su papel: en oscuro, `card.jpg` (la de la luz roja), que sangra por arriba y por la derecha y se desvanece; en claro, `profile.jpg` (la de estudio riendo, fondo blanco), con el titular en modo de fusión "diferencia". Christian pidió expresamente que en modo claro el hero fuese claro. |
 
 ### Abierta
 
