@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import portraitDark from '@/assets/images/card.jpg';
-import portraitLight from '@/assets/images/profile.jpg';
+import portrait from '@/assets/images/card.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -22,41 +21,41 @@ const roles = [
 ---
 
 <!--
-  Hero: el retrato va fundido en el fondo, sin caja (referencia: la página "nosotros" de Vístalo).
-  Cada modo tiene su foto, la que se funde con su papel:
-  - Oscuro: la de la luz roja (fondo oscuro). Sangra por arriba y por la derecha y se desvanece.
-  - Claro: la de estudio riendo (fondo blanco). El blanco de la foto es el papel; el titular va en
-    modo de fusión "diferencia" para leerse oscuro sobre el blanco y claro sobre el jersey negro.
-  En los dos, la cara queda junto al nombre y el oficio cruza por el pecho.
+  Hero: el retrato (la foto de la luz roja, en los dos modos) va fundido en un fondo oscuro, sin
+  marco (referencia: la página "nosotros" de Vístalo).
+  - Oscuro: todo el hero es oscuro. La foto sangra por arriba y se desvanece hacia los lados.
+  - Claro: el hero es claro y la foto vive en un panel oscuro que ocupa la derecha de arriba abajo
+    y llega al borde del frame. El titular real queda debajo del panel; dentro va una copia en
+    claro, recortada por el panel y colocada en el mismo sitio, así cada letra cambia de tono
+    justo en el borde.
+  En los dos, la cara queda junto al nombre y el oficio cruza por la chaqueta.
   [data-intro-stage], [data-sketch] y [data-ink] son los enganches de la intro.
 -->
 <section class="hero" data-intro-stage data-cs="<section> Hero.astro">
   <div class="hero-inner wrap">
-    <figure
-      class="hero-photo"
+    <div
+      class="hero-panel"
       data-sketch="image"
       data-sketch-note={t('intro.note.photo')}
       data-ink
       style="--ink-i: 2"
     >
-      <!-- Solo se pinta (y solo se descarga) la del modo activo -->
       <Image
-        src={portraitLight}
-        alt={t('hero.portrait.alt')}
-        widths={[640, 960, 1440]}
-        sizes="(min-width: 700px) 48vw, 100vw"
-        loading="lazy"
-        class="hero-photo-img hero-photo-img--light"
-      />
-      <Image
-        src={portraitDark}
+        src={portrait}
         alt={t('hero.portrait.alt')}
         widths={[640, 960, 1342]}
         sizes="(min-width: 700px) 46vw, 100vw"
-        loading="lazy"
-        class="hero-photo-img hero-photo-img--dark"
+        loading="eager"
+        fetchpriority="high"
+        class="hero-photo-img"
       />
-    </figure>
+      <div class="hero-over" aria-hidden="true">
+        <div class="hero-title">
+          <span class="hero-name" style="--ink-i: 0">Christian Oller</span>
+          <span class="hero-role" style="--ink-i: 1">{t('hero.role')}</span>
+        </div>
+      </div>
+    </div>
 
     <div class="hero-stage">
       <ul class="hero-roles" aria-label={t('hero.roles.label')} data-ink style="--ink-i: 0">
@@ -125,63 +124,81 @@ const roles = [
     position: relative;
     /* El ancho del contenido manda en todo el hero: titular, foto y solape */
     container-type: inline-size;
-    /* El contenedor aísla la fusión del titular: el papel tiene que estar dentro */
-    background: var(--paper);
   }
-  /* Sin z-index: el titular tiene que fundirse con la foto, que va justo antes en el HTML */
-  .hero-stage {
-    position: relative;
+  .hero-stage,
+  .hero-panel {
     /* "Software developer" llega casi al borde derecho; el nombre, a unas siete décimas del ancho.
        Con margen: por debajo de 96 px el eje óptico de Bricolage ensancha un poco las letras */
     --d: 12.6cqi;
-    padding-top: clamp(1.75rem, 3.4cqi, 2.75rem);
+    --top: clamp(1.75rem, 3.4cqi, 2.75rem);
+    /* Dónde empieza la foto, medido desde el borde izquierdo del contenido */
+    --photo-x: 55.5cqi;
+  }
+  .hero-stage {
+    position: relative;
+    padding-top: var(--top);
     padding-bottom: clamp(2.5rem, 4.4cqi, 3.5rem);
   }
 
-  /* --- Retrato: fundido en el fondo, sin caja --- */
-  /* La foto se coloca respecto al contenido: la cara cae a la derecha del nombre y por encima de
-     la segunda línea. Cada modo tiene su foto, con su encuadre. */
-  .hero-photo {
+  /* --- Panel de la foto: ocupa la derecha del hero de arriba abajo y llega al borde del frame --- */
+  .hero-panel {
     position: absolute;
+    top: 0;
+    right: -50vw;
+    bottom: 0;
+    left: calc(var(--pad) + var(--photo-x));
+    /* Claro: un panel oscuro, del tono de la pared de la foto, por encima del titular real */
+    z-index: 1;
+    overflow: hidden;
+    background: #2a2a29;
     pointer-events: none;
-    /* Claro: la foto de estudio. Su fondo blanco es el papel; solo se desvanece por abajo */
-    top: 0.4cqi;
-    left: calc(var(--pad) + 53.8cqi);
-    width: 52cqi;
-    aspect-ratio: 1856 / 2304;
   }
+  /* La foto se coloca respecto al contenido: la cara cae a la derecha del nombre y por encima de
+     la segunda línea */
   .hero-photo-img {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: -12.6cqi;
+    left: 0;
+    width: 50cqi;
+    max-width: none;
+    height: auto;
+    aspect-ratio: 2 / 3;
     object-fit: cover;
-  }
-  .hero-photo-img--light {
-    /* Lleva el blanco roto del fondo a blanco puro, para que no se note dónde empieza la foto */
-    filter: brightness(1.04) contrast(1.06);
-    mask-image: linear-gradient(180deg, #000 58%, transparent 84%);
-  }
-  .hero-photo-img--dark {
-    display: none;
     filter: brightness(0.9) saturate(0.95);
-    /* Se desvanece a los lados y hacia abajo: no se ve ningún borde de foto */
+    /* Claro: se funde con el panel por la derecha y por abajo; a la izquierda, el borde del panel */
     mask-image:
-      linear-gradient(90deg, transparent 0, #000 30%, #000 82%, transparent 100%),
-      linear-gradient(180deg, #000 62%, transparent 96%);
+      linear-gradient(90deg, #000 64%, transparent 100%),
+      linear-gradient(180deg, #000 64%, transparent 97%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
-  /* Oscuro: la foto de la luz roja. Sangra por arriba y por la derecha */
-  :global(:root.dark) .hero-photo {
-    top: -12.6cqi;
-    left: calc(var(--pad) + 55.5cqi);
-    width: 50cqi;
-    aspect-ratio: 2 / 3;
+  /* La copia en claro del titular: mismo sitio y mismo tamaño que el real, recortada por el panel */
+  .hero-over {
+    position: absolute;
+    top: calc(var(--top) + 0.5 * var(--d));
+    left: calc(-1 * var(--photo-x));
+    width: 100cqi;
+    user-select: none;
   }
-  :global(:root.dark) .hero-photo-img--light {
+  .hero-over .hero-title {
+    color: #f5f5f5;
+  }
+  .hero-over .hero-role {
+    color: #d4d4d4;
+  }
+
+  /* Oscuro: no hay panel. La foto se desvanece también hacia la izquierda y el titular va encima */
+  :global(:root.dark) .hero-panel {
+    z-index: auto;
+    background: none;
+  }
+  :global(:root.dark) .hero-photo-img {
+    mask-image:
+      linear-gradient(90deg, transparent 0, #000 30%, #000 82%, transparent 100%),
+      linear-gradient(180deg, #000 62%, transparent 96%);
+  }
+  :global(:root.dark) .hero-over {
     display: none;
-  }
-  :global(:root.dark) .hero-photo-img--dark {
-    display: block;
   }
 
   /* --- Los tres oficios: cada uno activa su lente --- */
@@ -189,7 +206,8 @@ const roles = [
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    min-height: calc(0.5 * var(--d));
+    /* Alto fijo: de él depende que la copia del titular caiga en su sitio */
+    height: calc(0.5 * var(--d));
     font-size: clamp(1.0625rem, 1.9cqi, 1.5rem);
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -244,21 +262,13 @@ const roles = [
     line-height: 0.9;
     letter-spacing: -0.045em;
     white-space: nowrap;
-    /* Claro: en "diferencia", estos dos tonos dan tinta y gris sobre el blanco, y claro sobre el jersey */
-    color: #e5e5e5;
-    mix-blend-mode: difference;
   }
   .hero-name,
   .hero-role {
     display: block;
   }
   .hero-role {
-    color: #b5b5b5;
-  }
-  /* Oscuro: todo el fondo es oscuro, no hace falta fundir */
-  :global(:root.dark) .hero-title {
-    color: var(--ink);
-    mix-blend-mode: normal;
+    color: var(--muted);
   }
   :global(:root.dark) .hero-role {
     color: #b4b4b4;
@@ -266,7 +276,7 @@ const roles = [
 
   /* --- Frase, botones y disponibilidad --- */
   .hero-copy {
-    max-width: 62cqi;
+    max-width: 52cqi;
     margin-top: clamp(1.5rem, 3cqi, 2.5rem);
   }
   .hero-phrase {
@@ -316,42 +326,38 @@ const roles = [
     }
   }
 
-  /* --- Móvil: la foto arriba, a todo el ancho, y el nombre montado sobre la chaqueta --- */
+  /* --- Móvil: la foto arriba, a todo el ancho, y el nombre montado sobre la chaqueta.
+     En claro, el panel oscuro acaba justo debajo del titular; lo demás va sobre el papel. --- */
   @container (max-width: 640px) {
-    .hero-photo,
-    :global(:root.dark) .hero-photo {
-      top: 0;
+    .hero-stage,
+    .hero-panel {
+      --top: 71cqi;
+    }
+    .hero-panel,
+    :global(:root.dark) .hero-panel {
+      right: 0;
       left: 0;
+      z-index: auto;
+    }
+    /* Alto del panel en claro: hasta el titular (nombre y oficio, unos 25cqi) y un margen */
+    .hero-panel {
+      bottom: auto;
+      height: calc(var(--top) + 31cqi);
+    }
+    :global(:root.dark) .hero-panel {
+      bottom: 0;
+      height: auto;
+    }
+    .hero-photo-img,
+    :global(:root.dark) .hero-photo-img {
+      top: 0;
       width: 100%;
-    }
-    /* Claro: de la cabeza al pecho; el nombre cae sobre el jersey y los oficios, ya debajo de la foto */
-    .hero-photo {
-      aspect-ratio: 1 / 0.9;
-    }
-    .hero-photo-img--light {
-      object-position: 50% 0;
-      mask-image: linear-gradient(180deg, #000 84%, transparent 100%);
-    }
-    .hero-stage {
-      padding-top: 55cqi;
-    }
-    :global(:root.dark) .hero-photo {
       aspect-ratio: 1 / 1.18;
-    }
-    .hero-photo-img--dark {
       object-position: 50% 30%;
       mask-image: linear-gradient(180deg, #000 48%, transparent 92%);
     }
-    :global(:root.dark) .hero-stage {
-      padding-top: 71cqi;
-    }
-    .hero-roles {
-      order: 2;
-      min-height: 0;
-      margin-top: 20cqi;
-    }
-    :global(:root.dark) .hero-roles {
-      margin-top: 1.25rem;
+    .hero-over {
+      display: none;
     }
     .hero-stage {
       display: flex;
@@ -361,9 +367,22 @@ const roles = [
       order: 1;
       margin-top: 0;
       font-size: 11.2cqi;
+      color: #f5f5f5;
     }
     .hero-name {
       font-size: 1.39em;
+    }
+    .hero-role,
+    :global(:root.dark) .hero-role {
+      color: #b4b4b4;
+    }
+    .hero-roles {
+      order: 2;
+      height: auto;
+      margin-top: calc(6cqi + 1.25rem);
+    }
+    :global(:root.dark) .hero-roles {
+      margin-top: 1.25rem;
     }
     .hero-copy {
       order: 3;
@@ -377,7 +396,8 @@ const roles = [
   }
 
   /* --- Entintado del titular (plan §4.3): en las visitas sin intro, las dos líneas nacen a lápiz
-     (finas, estrechas y en grafito) y se entintan en 600 ms. --- */
+     (finas, estrechas y en grafito) y se entintan en 600 ms. La copia de dentro del panel hace lo
+     mismo a la vez, así las letras no se separan en el borde. --- */
   @media (prefers-reduced-motion: no-preference) {
     :global(html:not(.intro-seen)) .hero-title span {
       animation: hero-ink var(--dur-ink) var(--ease-out) both;
