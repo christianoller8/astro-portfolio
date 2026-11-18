@@ -110,13 +110,16 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
         applyLens();
         markReveal();
         try {
+          // ?intro en la URL la repite siempre: sirve para verla de nuevo sin abrir otra sesión
+          const replay = new URLSearchParams(location.search).has('intro');
           const skip =
             root.dataset.intro !== '1' ||
-            location.hash ||
-            sessionStorage.getItem('intro-done') ||
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-            (navigator.connection && navigator.connection.saveData) ||
-            navigator.webdriver;
+            (!replay &&
+              (location.hash ||
+                sessionStorage.getItem('intro-done') ||
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+                (navigator.connection && navigator.connection.saveData) ||
+                navigator.webdriver));
           // intro-seen: en esta carga el titular ya entra con la intro, así que no se entinta aparte
           if (!skip) root.classList.add('intro', 'intro-seen');
           if (root.dataset.intro === '1') sessionStorage.setItem('intro-done', '1');

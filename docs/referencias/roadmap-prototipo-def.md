@@ -243,6 +243,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
        web; a la vez, las piezas del hero entran una detrás de otra (suben 14 px con un fundido).
   - De Eloi se toma la mecánica (iris y entrada escalonada), no su lenguaje de cámara: sin
     visor, sin REC y sin flash.
+  - **Para repetirla**: abrir la home con `?intro` en la dirección (`/?intro`). Así sale siempre,
+    también al recargar; sin eso solo sale una vez por sesión.
   - Salidas: cualquier tecla o clic salta a la salida; sin intro con ancla en la URL, "reducir
     movimiento" o ahorro de datos; si el JavaScript falla, la pantalla se quita sola a los 7 s.
   - Las letras de la marca pasan a ser trazados (`src/data/lockup-text.json`, generado con
