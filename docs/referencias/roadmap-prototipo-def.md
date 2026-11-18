@@ -19,8 +19,8 @@
 | Plan y decisiones D1–D13 | Hecho (18 nov) |
 | E0 · Arranque | Hecho (18 nov). Por confirmar: texto de Vístalo y fechas de 2023 |
 | E1 · Sistema | Hecho (18 nov) |
-| **E2 · Barra, lienzo y hero** | **En curso** |
-| E3 · Momentos firma | Pendiente |
+| E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
+| **E3 · Momentos firma** | **En curso**: intro hecha y aprobada (19 nov) |
 | E4 · Páginas | Pendiente |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
@@ -172,7 +172,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Pendiente: "Ver lienzo" todavía no hace nada (el lienzo navegable es de E3).
   - Para E3 (lentes): con la lente Código, la etiqueta del primer bloque pisa el nombre del frame.
   - Capturas: `.taste-skill/def/e2-barra-hoja-escritorio.jpg` y `e2-barra-hoja-movil.jpg`.
-- [ ] **Hero** (**rehecho el 18 nov con tus dos cambios; pendiente de tu visto bueno**):
+- [x] **Hero** (rehecho el 18–19 nov con tus cambios; el 19 nov dijiste "de momento vamos a dejarlo así"):
   - Tus cambios (decisiones D20 y D21 del plan):
     - "Software developer" en lugar de "Frontend developer", y que se vea que eres diseñador,
       desarrollador y QA.
@@ -215,8 +215,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Sin tocar todavía: los textos de Sobre mí y Contacto siguen diciendo "frontend"; se
     revisan cuando toque esa página (E4).
   - Capturas: `.taste-skill/def/e2-hero-hoja-escritorio.jpg` y `e2-hero-hoja-movil-tablet.jpg`.
-- [ ] **Entintado del titular** en las visitas siguientes (**hecho el 18 nov; pendiente de tu
-  visto bueno**):
+- [x] **Entintado del titular** en las visitas siguientes (hecho el 18 nov; aceptado con el
+  hero el 19 nov):
   - Cuando no hay intro, las dos líneas nacen "a lápiz" (peso 200, anchura 75 % y grafito) y se
     entintan en 600 ms hasta su peso y su ancho. Primero el nombre y 90 ms después el oficio,
     que al ensancharse entra en la foto.
@@ -224,13 +224,18 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     termine la transición.
   - Con "reducir movimiento" no se anima. En la carga en que sale la intro tampoco.
   - Capturas: `.taste-skill/def/e2-tinta-hoja.jpg` (seis fotogramas).
-- [ ] Revisado en escritorio, tablet y móvil.
+- [x] Revisado en escritorio, tablet y móvil (19 nov):
+  - Primera pantalla comprobada a 1920, 1440, 1280, 1024, 768, 390 y 320 px, en claro y oscuro,
+    y en inglés a 1440, 768 y 390: nada desborda y la barra cabe en todos.
+  - Un arreglo: a 320 px los tres oficios partían en dos líneas; ahora bajan un punto de tamaño
+    y caben en una.
+  - Capturas: `.taste-skill/def/e2-revision-escritorio.jpg` y `e2-revision-movil.jpg`.
 
 **Hecho cuando**: la primera pantalla pasa toda la rúbrica, incluida la prueba de los 5 segundos.
 
 ## E3 · Momentos firma
 
-- [ ] **Intro** (**hecha el 19 nov, adelantada a petición tuya; pendiente de tu visto bueno**):
+- [x] **Intro** (hecha el 19 nov, adelantada a petición tuya; aprobada el 19 nov):
   - Lo que pediste: la animación del vídeo de `docs/videos/` y, después, la de eloicotonat.com.
   - La secuencia (unos 2,5–3 s; solo en la primera visita de la sesión):
     1. **Trazado** (800 ms): todos los contornos de la caricatura y de "made by chris" se dibujan
