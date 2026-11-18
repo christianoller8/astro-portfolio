@@ -169,30 +169,33 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - De 1024 a 1279 px las lentes y "Ver lienzo" se quedan en icono. Por debajo de 1024 px, la
     barra lleva marca, ES/EN, modo y menú; el menú es una capa a pantalla completa con las
     páginas arriba y las lentes, "Ver lienzo" y "Descargar CV" abajo, al alcance del pulgar.
-  - Pendiente: "Ver lienzo" todavía no hace nada (el lienzo navegable es de E3) y el botón de
-    CV enlaza a un PDF que aún no existe en `public/cv/`.
+  - Pendiente: "Ver lienzo" todavía no hace nada (el lienzo navegable es de E3).
   - Para E3 (lentes): con la lente Código, la etiqueta del primer bloque pisa el nombre del frame.
   - Capturas: `.taste-skill/def/e2-barra-hoja-escritorio.jpg` y `e2-barra-hoja-movil.jpg`.
-- [ ] **Hero** (**hecho el 18 nov; pendiente de tu visto bueno**):
-  - Display en dos líneas y tu foto riendo como capa seleccionada.
+- [x] **Hero** (hecho y aprobado el 18 nov; la foto se cambió después a petición tuya):
+  - Display en dos líneas y tu foto como capa seleccionada.
   - La frase "Disfruto haciendo webs y apps. Se nota en el resultado.".
   - Los botones "Ver proyectos" y "Descargar CV", y la disponibilidad con la hora.
   - Cómo ha quedado:
     - El titular ocupa todo el ancho del frame: "Frontend developer" llega al borde derecho y
       "Christian Oller" se queda a unas siete décimas. Todo se mide en ancho del hero (`cqi`), así
       que la composición es la misma de 700 a 1920 px.
-    - El retrato es `profile.jpg` (la foto de estudio riendo, ya en blanco y negro), recortado a
-      2:3 y siempre seleccionado: cuadro, tiradores, "retrato.jpg" y su medida real.
-    - **El solape**: "developer" cruza por encima del jersey. El titular va en modo de fusión
-      "diferencia", así que se lee oscuro sobre el blanco y claro sobre el negro, en los dos modos.
-      La cara queda siempre libre.
+    - **Retrato**: de momento, `card.jpg` (la foto de la luz roja, en color), que es la que
+      pediste el 18 nov. Se acerca un poco para que la cara quede arriba, sube por encima del
+      titular y va siempre seleccionada: cuadro, tiradores, "retrato.jpg" y su medida real.
+      La foto riendo de estudio (`profile.jpg`) sigue en el proyecto.
+    - **El solape**: "developer" cruza por encima de la chaqueta. El titular real queda debajo
+      de la foto y, dentro de la foto, va una copia en claro recortada por su marco: cada letra
+      cambia de tono justo en el borde. Funciona porque la foto es oscura; con una foto clara
+      hay que cambiar los tonos de la copia (`.hero-title-over`).
     - La hora es la de Madrid en directo, con CET o CEST según la época.
     - En móvil: nombre y oficio a todo el ancho (cada línea a su tamaño), el retrato cuadrado
       debajo y los botones al alcance del pulgar.
     - Se quita del hero el bloque "Mira esta web como la veo yo": las lentes ya están en la barra.
     - El texto anterior ("Diseño la interfaz, la programo…") sale del hero.
-  - Pendiente: "Descargar CV" enlaza a un PDF que aún no existe; la intro antigua (boceto) sigue
-    hasta que se cambie en E3.
+  - **CV**: el PDF ya está en `public/cv/christian-oller-cv.pdf` (18 nov), así que los botones de
+    la barra, el hero, Sobre mí y el pie descargan el archivo real.
+  - Pendiente: la intro antigua (boceto) sigue hasta que se cambie en E3.
   - Para E3 (lentes): el panel de la lente tapa la frase y los botones del hero a 1440 × 900.
   - Capturas: `.taste-skill/def/e2-hero-hoja-escritorio.jpg` y `e2-hero-hoja-movil-tablet.jpg`.
 - [ ] **Entintado del titular** en las visitas siguientes.

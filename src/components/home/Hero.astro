@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import portrait from '@/assets/images/profile.jpg';
+import portrait from '@/assets/images/card.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -15,8 +15,10 @@ const translatePath = useTranslatedPath(lang);
 
 <!--
   Hero (plan §5.2): el titular a todo el ancho y el retrato como capa seleccionada, con la segunda
-  línea cruzando por encima del jersey. El titular se funde con lo que tiene debajo (diferencia),
-  así se lee igual sobre el papel, sobre el blanco de la foto y sobre el negro del jersey.
+  línea cruzando por encima de la chaqueta. El titular real queda debajo de la foto; dentro de la
+  foto va una copia en claro, recortada por su marco y colocada en el mismo sitio, de modo que cada
+  letra cambia de tono justo en el borde. La foto es oscura: si se cambia por una clara, hay que
+  cambiar los tonos de .hero-title-over.
   [data-intro-stage], [data-sketch] y [data-ink] son los enganches de la intro.
 -->
 <section class="hero wrap" data-intro-stage data-cs="<section> Hero.astro">
@@ -42,12 +44,16 @@ const translatePath = useTranslatedPath(lang);
             <Image
               src={portrait}
               alt={t('hero.portrait.alt')}
-              widths={[420, 720, 1080]}
+              widths={[480, 800, 1200]}
               sizes="(min-width: 700px) 32vw, 100vw"
               loading="eager"
               fetchpriority="high"
               class="hero-portrait-img"
             />
+            <div class="hero-title hero-title-over" aria-hidden="true">
+              <span class="hero-name">Christian Oller</span>
+              <span class="hero-role">{t('hero.role')}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -88,20 +94,14 @@ const translatePath = useTranslatedPath(lang);
   .hero {
     /* El ancho del contenido manda en todo el hero: titular, retrato y solape */
     container-type: inline-size;
-    padding-top: clamp(2.5rem, 5vw, 4.5rem);
+    padding-top: clamp(2rem, 3vw, 2.75rem);
     padding-bottom: clamp(3rem, 6vw, 5rem);
-    /* El contenedor aísla la mezcla: el papel tiene que estar dentro para que el titular se funda con él */
-    background: var(--paper);
-    /* El titular va en modo diferencia: estos tonos dan tinta y gris sobre el papel de cada modo */
-    --title-ink: #e5e5e5;
-    --title-muted: #b5b5b5;
-  }
-  :global(:root.dark) .hero {
-    --title-ink: #ffffff;
-    --title-muted: #bababa;
   }
   .hero-stage {
     position: relative;
+    /* El retrato sube por encima del titular: así la cara queda junto al nombre y el oficio cruza la chaqueta */
+    --rise: calc(0.34 * var(--d));
+    padding-top: var(--rise);
     /* "Frontend developer" llega al borde derecho; el nombre, a unas siete décimas del ancho.
        Con margen: por debajo de 96 px el eje óptico de Bricolage ensancha un poco las letras */
     --d: 12.6cqi;
@@ -110,29 +110,38 @@ const translatePath = useTranslatedPath(lang);
 
   /* --- Titular --- */
   .hero-title {
-    position: relative;
-    z-index: 2;
     font-size: var(--d);
     font-weight: var(--wght-ink);
     font-stretch: var(--wdth-ink);
     line-height: 0.9;
     letter-spacing: -0.045em;
     white-space: nowrap;
-    color: var(--title-ink);
-    mix-blend-mode: difference;
   }
   .hero-name,
   .hero-role {
     display: block;
   }
   .hero-role {
-    color: var(--title-muted);
+    color: var(--muted);
+  }
+  /* La copia en claro que se ve dentro de la foto: mismo sitio, mismo tamaño */
+  .hero-title-over {
+    position: absolute;
+    top: var(--rise);
+    left: calc(var(--photo-w) - 100cqi);
+    width: 100cqi;
+    color: #f5f5f5;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-title-over .hero-role {
+    color: #d4d4d4;
   }
 
   /* --- Retrato: una capa seleccionada, con su nombre de archivo y su medida --- */
   .hero-portrait {
     position: absolute;
-    top: calc(-0.3 * var(--d));
+    top: 0;
     right: 0;
     z-index: 1;
     width: var(--photo-w);
@@ -144,17 +153,21 @@ const translatePath = useTranslatedPath(lang);
     font-weight: 500;
     white-space: nowrap;
   }
-  /* Más estrecho que la foto: recorta el blanco de los lados y deja sitio al nombre */
   .hero-portrait-clip {
+    position: relative;
     aspect-ratio: 2 / 3;
     overflow: hidden;
-    background: #ffffff;
+    background: #4b4a48;
   }
+  /* La foto se acerca un poco (se ve el 86 %) y se sube: la cara queda en la mitad de arriba */
   .hero-portrait-img {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: -16.3%;
+    left: -8.15%;
+    width: 116.3%;
+    max-width: none;
+    height: 116.3%;
     object-fit: cover;
-    object-position: 50% 0;
   }
 
   /* --- Frase, botones y disponibilidad --- */
@@ -219,14 +232,26 @@ const translatePath = useTranslatedPath(lang);
     .hero-name {
       font-size: 1.39em;
     }
+    .hero-stage {
+      padding-top: 0.5rem;
+    }
     .hero-portrait {
       position: relative;
-      top: auto;
       width: 100%;
       margin-top: 2.25rem;
     }
     .hero-portrait-clip {
       aspect-ratio: 1 / 1;
+    }
+    /* En cuadrado: a todo el ancho, de la frente a las manos */
+    .hero-portrait-img {
+      top: -27%;
+      left: 0;
+      width: 100%;
+      height: 150%;
+    }
+    .hero-title-over {
+      display: none;
     }
     .hero-copy {
       max-width: none;
