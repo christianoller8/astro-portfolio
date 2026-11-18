@@ -158,8 +158,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Nombre del frame encima, a la izquierda, con su tamaño real ("Inicio 1371 × 7570"), que se
     actualiza al cambiar el tamaño de la ventana. Antes solo salía con la lente Diseño.
   - Capturas: `.taste-skill/def/e2-lienzo-hoja.jpg`.
-- [ ] **Barra agrupada**: caricatura y nombre · menú · lentes y "Ver lienzo" · ES/EN · modo · CV
-  (**hecha el 18 nov; pendiente de tu visto bueno**):
+- [x] **Barra agrupada**: caricatura y nombre · menú · lentes y "Ver lienzo" · ES/EN · modo · CV
+  (hecha y aprobada el 18 nov):
   - Marca: la caricatura reducida (36 px de alto) y "made by chris" en una línea. Al pasar el
     ratón o llegar con el teclado se selecciona con tiradores y la cabeza se inclina. Cambio
     respecto al plan §5.1, que decía "Christian Oller": se usa la marca que elegiste después.
@@ -173,10 +173,28 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     CV enlaza a un PDF que aún no existe en `public/cv/`.
   - Para E3 (lentes): con la lente Código, la etiqueta del primer bloque pisa el nombre del frame.
   - Capturas: `.taste-skill/def/e2-barra-hoja-escritorio.jpg` y `e2-barra-hoja-movil.jpg`.
-- [ ] **Hero**:
+- [ ] **Hero** (**hecho el 18 nov; pendiente de tu visto bueno**):
   - Display en dos líneas y tu foto riendo como capa seleccionada.
   - La frase "Disfruto haciendo webs y apps. Se nota en el resultado.".
   - Los botones "Ver proyectos" y "Descargar CV", y la disponibilidad con la hora.
+  - Cómo ha quedado:
+    - El titular ocupa todo el ancho del frame: "Frontend developer" llega al borde derecho y
+      "Christian Oller" se queda a unas siete décimas. Todo se mide en ancho del hero (`cqi`), así
+      que la composición es la misma de 700 a 1920 px.
+    - El retrato es `profile.jpg` (la foto de estudio riendo, ya en blanco y negro), recortado a
+      2:3 y siempre seleccionado: cuadro, tiradores, "retrato.jpg" y su medida real.
+    - **El solape**: "developer" cruza por encima del jersey. El titular va en modo de fusión
+      "diferencia", así que se lee oscuro sobre el blanco y claro sobre el negro, en los dos modos.
+      La cara queda siempre libre.
+    - La hora es la de Madrid en directo, con CET o CEST según la época.
+    - En móvil: nombre y oficio a todo el ancho (cada línea a su tamaño), el retrato cuadrado
+      debajo y los botones al alcance del pulgar.
+    - Se quita del hero el bloque "Mira esta web como la veo yo": las lentes ya están en la barra.
+    - El texto anterior ("Diseño la interfaz, la programo…") sale del hero.
+  - Pendiente: "Descargar CV" enlaza a un PDF que aún no existe; la intro antigua (boceto) sigue
+    hasta que se cambie en E3.
+  - Para E3 (lentes): el panel de la lente tapa la frase y los botones del hero a 1440 × 900.
+  - Capturas: `.taste-skill/def/e2-hero-hoja-escritorio.jpg` y `e2-hero-hoja-movil-tablet.jpg`.
 - [ ] **Entintado del titular** en las visitas siguientes.
 - [ ] Revisado en escritorio, tablet y móvil.
 

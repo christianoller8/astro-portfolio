@@ -26,27 +26,30 @@ const translatePath = useTranslatedPath(lang);
       <span class="hero-role" data-sketch="text" data-ink style="--ink-i: 1">{t('hero.role')}</span>
     </h1>
 
+    <!-- Tres cajas: la posición (figure), la selección del kit y la que leen las lentes.
+         La selección y las lentes dibujan con ::before y ::after, así que no pueden compartir caja -->
     <figure
-      class="hero-portrait is-selected"
-      data-sel
-      data-ds={lang === 'es' ? 'Retrato' : 'Portrait'}
-      data-qa-host
+      class="hero-portrait"
       data-sketch="image"
       data-sketch-note={t('intro.note.photo')}
       data-ink
       style="--ink-i: 2"
     >
       <figcaption class="hero-layer kit-frame-name" aria-hidden="true">{t('hero.layer')}</figcaption>
-      <div class="hero-portrait-clip">
-        <Image
-          src={portrait}
-          alt={t('hero.portrait.alt')}
-          widths={[420, 720, 1080]}
-          sizes="(min-width: 700px) 30vw, 100vw"
-          loading="eager"
-          fetchpriority="high"
-          class="hero-portrait-img"
-        />
+      <div class="hero-portrait-sel is-selected" data-sel>
+        <div data-ds={lang === 'es' ? 'Retrato' : 'Portrait'} data-qa-host>
+          <div class="hero-portrait-clip">
+            <Image
+              src={portrait}
+              alt={t('hero.portrait.alt')}
+              widths={[420, 720, 1080]}
+              sizes="(min-width: 700px) 32vw, 100vw"
+              loading="eager"
+              fetchpriority="high"
+              class="hero-portrait-img"
+            />
+          </div>
+        </div>
       </div>
     </figure>
 
@@ -73,8 +76,9 @@ const translatePath = useTranslatedPath(lang);
 
       <p class="hero-status t-small" data-sketch="text" data-ink style="--ink-i: 5">
         <span class="status-dot" aria-hidden="true"></span>
-        <span>{t('hero.status')}</span>
-        <time class="hero-clock" data-clock hidden></time>
+        <span>
+          {t('hero.status')}<time class="hero-clock" data-clock hidden />
+        </span>
       </p>
     </div>
   </div>
@@ -98,9 +102,10 @@ const translatePath = useTranslatedPath(lang);
   }
   .hero-stage {
     position: relative;
-    /* "Frontend developer" ocupa casi todo el ancho; el nombre, unas siete décimas */
-    --d: 11.4cqi;
-    --photo-w: 29cqi;
+    /* "Frontend developer" llega al borde derecho; el nombre, a unas siete décimas del ancho.
+       Con margen: por debajo de 96 px el eje óptico de Bricolage ensancha un poco las letras */
+    --d: 12.6cqi;
+    --photo-w: 27cqi;
   }
 
   /* --- Titular --- */
@@ -115,7 +120,6 @@ const translatePath = useTranslatedPath(lang);
     white-space: nowrap;
     color: var(--title-ink);
     mix-blend-mode: difference;
-    pointer-events: none;
   }
   .hero-name,
   .hero-role {
@@ -140,8 +144,9 @@ const translatePath = useTranslatedPath(lang);
     font-weight: 500;
     white-space: nowrap;
   }
+  /* Más estrecho que la foto: recorta el blanco de los lados y deja sitio al nombre */
   .hero-portrait-clip {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 2 / 3;
     overflow: hidden;
     background: #ffffff;
   }
@@ -167,6 +172,7 @@ const translatePath = useTranslatedPath(lang);
   }
   .hero-phrase span {
     display: block;
+    text-wrap: balance;
   }
   .hero-phrase span + span {
     color: var(--muted);
@@ -189,7 +195,8 @@ const translatePath = useTranslatedPath(lang);
     font-variant-numeric: tabular-nums;
   }
   .hero-clock::before {
-    content: '· ';
+    content: ' · ';
+    white-space: pre;
   }
   .status-dot {
     width: 0.55rem;
@@ -207,7 +214,7 @@ const translatePath = useTranslatedPath(lang);
   /* --- Móvil: nombre y oficio a todo el ancho, el retrato debajo y los botones al alcance del pulgar --- */
   @container (max-width: 640px) {
     .hero-title {
-      font-size: 11.4cqi;
+      font-size: 11.2cqi;
     }
     .hero-name {
       font-size: 1.39em;
