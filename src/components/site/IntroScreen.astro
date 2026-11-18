@@ -1,0 +1,89 @@
+---
+// Pantalla de la intro (plan §4.3 A). Solo se ve con html.intro, que decide el <head> antes del
+// primer pintado: primera visita de la sesión, sin ancla en la URL, sin "reducir movimiento" y sin
+// ahorro de datos. El trazado empieza con CSS, sin esperar al JavaScript; las fases siguientes las
+// marca src/scripts/intro.ts con las clases is-filled e is-leaving.
+import Caricature from './Caricature.astro';
+---
+
+<div class="intro-screen" data-intro-screen aria-hidden="true">
+  <Caricature variant="lockup" class="intro-logo" />
+</div>
+
+<style>
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    place-items: center;
+    color: var(--ink);
+    background: var(--canvas);
+    clip-path: circle(150% at 50% 50%);
+  }
+  /* Si el JavaScript no llega, la pantalla se quita sola */
+  :global(html.intro) .intro-screen {
+    display: grid;
+    animation: intro-failsafe 0.01s 7s forwards;
+  }
+  .intro-screen :global(.intro-logo) {
+    width: clamp(15rem, 34vw, 30rem);
+    height: auto;
+  }
+
+  /* 1 · Trazado (800 ms): todos los contornos a la vez, en línea fina de grafito. Es la animación
+     del vídeo de referencia (docs/referencias/analisis-video-intro.md) */
+  .intro-screen :global(.car-halo),
+  .intro-screen :global(.car-paper),
+  .intro-screen :global(.car-tone) {
+    opacity: 0;
+    transition: opacity 200ms linear;
+  }
+  .intro-screen :global(.car-ink),
+  .intro-screen :global(.car-name path) {
+    fill-opacity: 0;
+    stroke: var(--graphite);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: intro-trace 800ms cubic-bezier(0.4, 0.1, 0.4, 1) forwards;
+    transition:
+      fill-opacity 200ms linear,
+      stroke-opacity 200ms linear 200ms;
+  }
+
+  /* 2 · Relleno (200 ms): se pintan el pelo, la barba y las letras; el contorno se retira después */
+  .intro-screen.is-filled :global(.car-halo),
+  .intro-screen.is-filled :global(.car-paper),
+  .intro-screen.is-filled :global(.car-tone) {
+    opacity: 1;
+  }
+  .intro-screen.is-filled :global(.car-ink),
+  .intro-screen.is-filled :global(.car-name path) {
+    fill-opacity: 1;
+    stroke-opacity: 0;
+  }
+
+  /* 3 · Salida: el iris se cierra sobre la marca y deja ver la web (la mecánica de eloicotonat.com) */
+  :global(html.intro) .intro-screen.is-leaving {
+    animation: intro-iris 850ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  }
+
+  @keyframes intro-trace {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes intro-iris {
+    to {
+      clip-path: circle(0% at 50% 50%);
+    }
+  }
+  @keyframes intro-failsafe {
+    to {
+      visibility: hidden;
+    }
+  }
+</style>

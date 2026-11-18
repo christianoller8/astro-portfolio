@@ -31,14 +31,12 @@ const roles = [
   Las dos tienen el mismo encuadre: la cara queda junto al nombre y el oficio cruza la chaqueta.
   card-light.jpg se genera con .taste-skill/recorte/ (person.swift saca la máscara de la persona
   con macOS y luz.cjs monta la versión clara).
-  [data-intro-stage], [data-sketch] y [data-ink] son los enganches de la intro.
+  [data-ink] marca las piezas que entran escalonadas al acabar la intro (--ink-i es su turno).
 -->
-<section class="hero" data-intro-stage data-cs="<section> Hero.astro">
+<section class="hero" data-cs="<section> Hero.astro">
   <div class="hero-inner wrap">
     <figure
       class="hero-photo"
-      data-sketch="image"
-      data-sketch-note={t('intro.note.photo')}
       data-ink
       style="--ink-i: 2"
     >
@@ -82,12 +80,12 @@ const roles = [
       </ul>
 
       <h1 class="hero-title" data-ds="H1" data-ds-type>
-        <span class="hero-name" data-sketch="text" data-ink style="--ink-i: 0">Christian Oller</span>
-        <span class="hero-role" data-sketch="text" data-ink style="--ink-i: 1">{t('hero.role')}</span>
+        <span class="hero-name" data-ink style="--ink-i: 0">Christian Oller</span>
+        <span class="hero-role" data-ink style="--ink-i: 1">{t('hero.role')}</span>
       </h1>
 
       <div class="hero-copy">
-        <p class="hero-phrase" data-sketch="text" data-ink style="--ink-i: 3">
+        <p class="hero-phrase" data-ink style="--ink-i: 3">
           <span>{t('hero.phrase.1')}</span>
           <span>{t('hero.phrase.2')}</span>
         </p>
@@ -96,18 +94,16 @@ const roles = [
           <a
             class="btn btn-primary"
             href={translatePath('/projects')}
-            data-sketch="box"
-            data-sketch-note={t('intro.note.cta')}
           >
             {t('hero.cta.projects')}
             <span class="btn-arrow" aria-hidden="true">→</span>
           </a>
-          <a class="btn btn-quiet" href={site.cv} download data-sketch="box">
+          <a class="btn btn-quiet" href={site.cv} download>
             {t('hero.cta.cv')}
           </a>
         </div>
 
-        <p class="hero-status t-small" data-sketch="text" data-ink style="--ink-i: 5">
+        <p class="hero-status t-small" data-ink style="--ink-i: 5">
           <span class="status-dot" aria-hidden="true"></span>
           <span>
             {t('hero.status')}<time class="hero-clock" data-clock hidden />

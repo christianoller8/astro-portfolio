@@ -360,11 +360,11 @@ cualquier tecla o clic).
 | Tiempo | Qué pasa |
 | --- | --- |
 | 0 ms | Lienzo liso, vacío. |
-| 0–800 ms | **Trazado**: todos los contornos de la caricatura y de "Christian Oller" se dibujan a la vez, con línea fina de grafito. |
+| 0–800 ms | **Trazado**: todos los contornos de la caricatura y de "made by chris" se dibujan a la vez, con línea fina de grafito. |
 | 800 ms → carga | **Espera en contorno** mientras carga la web: mínimo 300 ms y máximo 1,5 s. |
 | +200 ms | **Relleno**: el pelo, la barba y las letras se rellenan de tinta con un fundido. |
 | +400 ms | **Espera** con la marca terminada. |
-| +800 ms | **Salida** (D16): la marca viaja a su sitio en la barra superior mientras aparece la home. La alternativa, como en el vídeo, es que se desvanezca en su sitio; se decide al construirla en E3. |
+| +850 ms | **Salida** (19 nov, sustituye a D16): el iris se cierra sobre la marca y deja ver la home, y las piezas del hero entran escalonadas (suben 14 px con un fundido). Es la mecánica de la intro de eloicotonat.com, que Christian pidió expresamente; no se copian el visor, el REC ni el flash, que son el lenguaje de cámara de Eloi. |
 
 - **Duración total**: unos 2,5 s con carga normal.
 - **Visitas siguientes**: sin intro; el titular se entinta en 600 ms.
@@ -691,7 +691,7 @@ Detalle completo en el [informe, sección B2](informe-eloi-cotonat.md#b2-dónde-
 | D13 | Color funcional | Verde y rojo solo como estado. |
 | D14 | Quién dibuja la caricatura | Claude hace una primera versión en SVG a partir de tus fotos y la afinamos juntos. |
 | D15 | Web de "Cómo lo veo yo" | Una web de ejemplo neutra, diseñada para la sección. |
-| D16 | Final de la intro | La caricatura viaja a la barra. |
+| D16 | Final de la intro | ~~La caricatura viaja a la barra.~~ Cambiado el 19 nov: sale con el iris de eloicotonat.com (cierre en círculo sobre la marca) y el hero entra escalonado. |
 | D19 | Marca | La caricatura de Christian + "made by chris" en Bricolage Grotesque. Descartadas las 10 parejas de Adobe Fonts y "Christian Oller" como texto de la marca. |
 | D20 | Oficio del titular (18 nov) | "Software developer" en lugar de "Frontend developer": ya no hace solo webs ni solo frontend. Los tres oficios, "Diseñador × Desarrollador × QA" (viene de su portfolio anterior), van encima del nombre y cada uno activa su lente. |
 | D21 | Retrato del hero (18–19 nov) | Sustituye a "capa seleccionada en su rectángulo" (§3.5 y §5.2), que Christian vio como "una foto plana ahí tirada". La foto es la de la luz roja **en los dos modos** y va fundida en el fondo, sin caja ni panel, como en la página "nosotros" de Vístalo. En oscuro, la foto tal cual (`card.jpg`) se desvanece en el papel oscuro. En claro, el hero es claro y se usa una **versión "de día" de esa misma foto** (`card-light.jpg`): la pared pasa a blanco y se conservan la franja de luz roja y la sombra en la pared, que son las que evitan que la figura quede "de pegote". Descartado por él, en este orden: hero oscuro también en claro; una foto distinta por modo (`profile.jpg` en claro); panel oscuro con borde recto en claro; la figura recortada sola sobre blanco ("casi", pero "pegote"). |

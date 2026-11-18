@@ -567,12 +567,12 @@ const widths = [75, 85, 100];
   }
   /* Prueba del trazado: contorno fino en grafito y, después, relleno con fundido */
   .car-demo.is-outline :global(path),
-  .car-demo.is-outline :global(text) {
+  .car-demo.is-outline :global(.car-name path) {
     fill-opacity: 0;
   }
   /* Solo se traza la tinta y las letras; la silueta y el gris aparecen con el relleno */
   .car-demo.is-outline :global(.car-ink),
-  .car-demo.is-outline :global(text) {
+  .car-demo.is-outline :global(.car-name path) {
     stroke: var(--graphite);
     stroke-width: 6;
     stroke-linecap: round;
@@ -580,17 +580,13 @@ const widths = [75, 85, 100];
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
   }
-  .car-demo.is-outline :global(text) {
-    stroke-dasharray: 5000;
-    stroke-dashoffset: 5000;
-  }
   .car-demo.is-draw :global(.car-ink),
-  .car-demo.is-draw :global(text) {
+  .car-demo.is-draw :global(.car-name path) {
     stroke-dashoffset: 0;
     transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0.1, 0.4, 1);
   }
   .car-demo.is-fill :global(path),
-  .car-demo.is-fill :global(text) {
+  .car-demo.is-fill :global(.car-name path) {
     fill-opacity: 1;
     stroke-opacity: 0;
     transition:

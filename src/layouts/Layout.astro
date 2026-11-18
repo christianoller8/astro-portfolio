@@ -7,6 +7,7 @@ import '../styles/kit.css';
 import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
 import LensPanel from '../components/site/LensPanel.astro';
+import IntroScreen from '../components/site/IntroScreen.astro';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '@/i18n/utils';
 import profileImage from '@/assets/images/profile.jpg';
@@ -17,7 +18,7 @@ interface Props {
   image?: string;
   /** Nombre del frame (la página) que aparece encima del artboard */
   frame: string;
-  /** Solo el inicio lleva la intro del boceto */
+  /** Solo el inicio lleva la intro (la marca que se dibuja) */
   intro?: boolean;
   /** Páginas internas (la muestra del sistema): fuera de buscadores */
   noindex?: boolean;
@@ -80,7 +81,7 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     <ClientRouter fallback="swap" />
 
     <script is:inline>
-      // Antes del primer pintado: tema, lente guardada, entradas y si toca la intro del boceto
+      // Antes del primer pintado: tema, lente guardada, entradas y si toca la intro
       (() => {
         const root = document.documentElement;
         const applyTheme = () => {
@@ -149,6 +150,7 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
       </div>
     </main>
     <LensPanel lang={lang} />
+    {intro && <IntroScreen />}
   </body>
 </html>
 

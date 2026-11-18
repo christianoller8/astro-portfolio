@@ -5,7 +5,11 @@
 // cejas, ojos, nariz, boca…), cada una en su trazado para que la intro pueda trazarla y rellenarla.
 // En modo oscuro el dibujo no se invierte: conserva sus colores y lleva un halo claro alrededor.
 // Los trazados salen de src/data/caricature*.json (se generan con .taste-skill/letras/vectorize.cjs).
+// Las letras también son trazados, uno por letra (src/data/lockup-text.json, generado con
+// .taste-skill/letras/lockup-paths.mjs): así la intro las dibuja en contorno como el resto y la
+// marca no depende de que la fuente haya cargado.
 import full from '@/data/caricature.json';
+import lockupText from '@/data/lockup-text.json';
 import small from '@/data/caricature-mark.json';
 
 interface Props {
@@ -20,10 +24,10 @@ const { variant = 'head', class: className, label } = Astro.props;
 const art = variant === 'mark' ? small : full;
 const lockup = variant === 'lockup';
 
-// Composición con las letras: un cuarto de la altura de la cabeza de separación
+// Composición con las letras: un cuarto de la altura de la cabeza de separación.
+// (Las mismas medidas están en lockup-paths.mjs: si cambian aquí, hay que regenerar las letras.)
 const h = art.height;
 const textX = art.width + Math.round(h * 0.246);
-const madeSize = Math.round(h * 0.215);
 const chrisSize = Math.round(h * 0.646);
 const width = lockup ? textX + Math.round(chrisSize * 2) : art.width;
 ---
@@ -50,12 +54,8 @@ const width = lockup ? textX + Math.round(chrisSize * 2) : art.width;
   {
     lockup && (
       <g class="car-name">
-        <text class="car-made" x={textX} y={Math.round(h * 0.262)} style={`font-size: ${madeSize}px`}>
-          made by
-        </text>
-        <text class="car-chris" x={textX} y={Math.round(h * 0.796)} style={`font-size: ${chrisSize}px`}>
-          chris
-        </text>
+        {lockupText.made.map((d) => <path class="car-made" data-part="made-by" pathLength="1" d={d} />)}
+        {lockupText.chris.map((d) => <path class="car-chris" data-part="chris" pathLength="1" d={d} />)}
       </g>
     )
   }
@@ -79,16 +79,7 @@ const width = lockup ? textX + Math.round(chrisSize * 2) : art.width;
   .car-tone {
     fill: var(--car-tone);
   }
-  .car-name text {
-    font-family: var(--font-sans);
+  .car-name path {
     fill: currentColor;
-  }
-  .car-made {
-    font-weight: 400;
-    letter-spacing: -0.02em;
-  }
-  .car-chris {
-    font-weight: var(--wght-ink);
-    letter-spacing: -0.045em;
   }
 </style>

@@ -214,7 +214,6 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - **CV**: el PDF está en `public/cv/christian-oller-cv.pdf` (18 nov).
   - Sin tocar todavía: los textos de Sobre mí y Contacto siguen diciendo "frontend"; se
     revisan cuando toque esa página (E4).
-  - Pendiente: la intro antigua (boceto) sigue hasta que se cambie en E3.
   - Capturas: `.taste-skill/def/e2-hero-hoja-escritorio.jpg` y `e2-hero-hoja-movil-tablet.jpg`.
 - [ ] **Entintado del titular** en las visitas siguientes (**hecho el 18 nov; pendiente de tu
   visto bueno**):
@@ -231,8 +230,30 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 
 ## E3 · Momentos firma
 
-- [ ] **Intro "te dibujo"**: la caricatura en grafito, que se entinta y viaja a la barra, con todas
-  sus salidas.
+- [ ] **Intro** (**hecha el 19 nov, adelantada a petición tuya; pendiente de tu visto bueno**):
+  - Lo que pediste: la animación del vídeo de `docs/videos/` y, después, la de eloicotonat.com.
+  - La secuencia (unos 2,5–3 s; solo en la primera visita de la sesión):
+    1. **Trazado** (800 ms): todos los contornos de la caricatura y de "made by chris" se dibujan
+       a la vez, en línea fina de grafito, sobre el lienzo liso. Como en el vídeo.
+    2. **Espera en contorno** hasta que están las fuentes y la foto del hero (mínimo 300 ms,
+       máximo 1,5 s).
+    3. **Relleno** (200 ms): se pintan el pelo, la barba y las letras; el contorno se retira.
+    4. **Pausa** (400 ms) con la marca terminada.
+    5. **Salida de Eloi** (850 ms): el iris se cierra en círculo sobre la marca y deja ver la
+       web; a la vez, las piezas del hero entran una detrás de otra (suben 14 px con un fundido).
+  - De Eloi se toma la mecánica (iris y entrada escalonada), no su lenguaje de cámara: sin
+    visor, sin REC y sin flash.
+  - Salidas: cualquier tecla o clic salta a la salida; sin intro con ancla en la URL, "reducir
+    movimiento" o ahorro de datos; si el JavaScript falla, la pantalla se quita sola a los 7 s.
+  - Las letras de la marca pasan a ser trazados (`src/data/lockup-text.json`, generado con
+    `.taste-skill/letras/lockup-paths.mjs`): se dibujan en contorno como la caricatura y la
+    marca ya no depende de que la fuente haya cargado.
+  - La intro antigua (el boceto sobre el hero) se retira; `sketch.ts` sigue, lo usa la escena
+    "Del boceto al producto".
+  - Por decidir contigo: el contorno va en grafito (lápiz) y el relleno en tinta; en el vídeo
+    los dos son del mismo color.
+  - Capturas: `.taste-skill/def/e3-intro-hoja-claro.jpg` (16 fotogramas),
+    `e3-intro-hoja-oscuro-movil.jpg` y `e3-intro-hoja-movil.jpg`.
 - [ ] **Transición** con hilo de prototipo y paneo de derecha a izquierda (al revés hacia atrás).
 - [ ] **"Cómo lo veo yo"**: web → UX/UI → programador → QA, con las tecnologías de cada mirada.
 - [ ] **Morph** de la tarjeta de proyecto a su caso.
