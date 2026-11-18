@@ -172,39 +172,37 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Pendiente: "Ver lienzo" todavía no hace nada (el lienzo navegable es de E3).
   - Para E3 (lentes): con la lente Código, la etiqueta del primer bloque pisa el nombre del frame.
   - Capturas: `.taste-skill/def/e2-barra-hoja-escritorio.jpg` y `e2-barra-hoja-movil.jpg`.
-- [x] **Hero** (hecho y aprobado el 18 nov; la foto se cambió después a petición tuya):
-  - Display en dos líneas y tu foto como capa seleccionada.
-  - La frase "Disfruto haciendo webs y apps. Se nota en el resultado.".
-  - Los botones "Ver proyectos" y "Descargar CV", y la disponibilidad con la hora.
+- [ ] **Hero** (**rehecho el 18 nov con tus dos cambios; pendiente de tu visto bueno**):
+  - Tus cambios (decisiones D20 y D21 del plan):
+    - "Software developer" en lugar de "Frontend developer", y que se vea que eres diseñador,
+      desarrollador y QA.
+    - La foto no puede ser "una foto plana ahí tirada": como en la página "nosotros" de Vístalo.
   - Cómo ha quedado:
-    - El titular ocupa todo el ancho del frame: "Frontend developer" llega al borde derecho y
-      "Christian Oller" se queda a unas siete décimas. Todo se mide en ancho del hero (`cqi`), así
-      que la composición es la misma de 700 a 1920 px.
-    - **Retrato**: de momento, `card.jpg` (la foto de la luz roja, en color), que es la que
-      pediste el 18 nov. Se acerca un poco para que la cara quede arriba, sube por encima del
-      titular y va siempre seleccionada: cuadro, tiradores, "retrato.jpg" y su medida real.
-      La foto riendo de estudio (`profile.jpg`) sigue en el proyecto.
-    - **El solape**: "developer" cruza por encima de la chaqueta. El titular real queda debajo
-      de la foto y, dentro de la foto, va una copia en claro recortada por su marco: cada letra
-      cambia de tono justo en el borde. Funciona porque la foto es oscura; con una foto clara
-      hay que cambiar los tonos de la copia (`.hero-title-over`).
-    - La hora es la de Madrid en directo, con CET o CEST según la época.
-    - En móvil: nombre y oficio a todo el ancho (cada línea a su tamaño), el retrato cuadrado
-      debajo y los botones al alcance del pulgar.
-    - Se quita del hero el bloque "Mira esta web como la veo yo": las lentes ya están en la barra.
-    - El texto anterior ("Diseño la interfaz, la programo…") sale del hero.
-  - **CV**: el PDF ya está en `public/cv/christian-oller-cv.pdf` (18 nov), así que los botones de
-    la barra, el hero, Sobre mí y el pie descargan el archivo real.
+    - **Escenario oscuro en los dos modos**: dentro del hero valen siempre los tonos del modo
+      oscuro (fondo `#171717`, texto `#f5f5f5`). En modo claro es un bloque oscuro sobre el frame
+      blanco; en oscuro se funde con el papel.
+    - **La foto** (`card.jpg`, la de la luz roja) va sin caja: sangra por arriba y por la derecha
+      y se desvanece hacia la izquierda y hacia abajo con una máscara. La cara queda junto a
+      "Christian Oller" y "Software developer" cruza por la chaqueta. Ya no lleva cuadro de
+      selección ni la copia en claro del titular (no hace falta: todo el fondo es oscuro).
+    - **Los tres oficios**: "Diseñador × Desarrollador × QA" encima del nombre. Son botones: cada
+      uno activa su lente (y la apaga al volver a pulsar), así el hero recupera la entrada a las
+      lentes. Subrayado fino que se entinta al pasar el ratón y con la lente activa.
+    - Debajo: la frase, "Ver proyectos", "Descargar CV" y la disponibilidad con la hora de Madrid.
+    - Todo se mide en ancho del contenido (`cqi`): la composición es la misma de 700 a 1920 px.
+    - **Móvil**: la foto arriba a todo el ancho, el nombre montado sobre la chaqueta, después los
+      oficios, la frase y los botones. Cabe en la primera pantalla.
+    - "Frontend developer" también se cambia en el título y la descripción de la página.
+  - **CV**: el PDF está en `public/cv/christian-oller-cv.pdf` (18 nov).
+  - Sin tocar todavía: los textos de Sobre mí y Contacto siguen diciendo "frontend"; se
+    revisan cuando toque esa página (E4).
   - Pendiente: la intro antigua (boceto) sigue hasta que se cambie en E3.
-  - Para E3 (lentes): el panel de la lente tapa la frase y los botones del hero a 1440 × 900.
   - Capturas: `.taste-skill/def/e2-hero-hoja-escritorio.jpg` y `e2-hero-hoja-movil-tablet.jpg`.
 - [ ] **Entintado del titular** en las visitas siguientes (**hecho el 18 nov; pendiente de tu
   visto bueno**):
   - Cuando no hay intro, las dos líneas nacen "a lápiz" (peso 200, anchura 75 % y grafito) y se
     entintan en 600 ms hasta su peso y su ancho. Primero el nombre y 90 ms después el oficio,
     que al ensancharse entra en la foto.
-  - La copia en claro de dentro de la foto se anima a la vez: medido en cinco instantes, las dos
-    coinciden al píxel.
   - Al cargar la página empieza a los 150 ms; al llegar desde otra página espera 520 ms, a que
     termine la transición.
   - Con "reducir movimiento" no se anima. En la carga en que sale la intro tampoco.
