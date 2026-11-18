@@ -178,29 +178,30 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
       desarrollador y QA.
     - La foto no puede ser "una foto plana ahí tirada": como en la página "nosotros" de Vístalo.
   - Cómo ha quedado:
-    - **La foto es la de la luz roja (`card.jpg`) en los dos modos**, fundida en un fondo oscuro
-      y sin marco:
-      - **Oscuro**: todo el hero es oscuro. La foto sangra por arriba y se desvanece hacia los
-        lados y hacia abajo con una máscara.
-      - **Claro**: el hero es claro y la foto vive en un **panel oscuro** (del tono de la pared de
-        la foto) que ocupa la derecha de arriba abajo y llega al borde del frame. Dentro del
-        panel la foto se funde por la derecha y por abajo. El titular real queda debajo del
-        panel y dentro va una copia en claro, recortada por el panel: "Oller" y "developer"
-        cambian de tono justo en el borde. Medido: real y copia coinciden al píxel, también
-        durante el entintado.
-      - En los dos, la cara queda junto a "Christian Oller" y "Software developer" cruza por la
-        chaqueta.
-      - Camino recorrido el 18 nov (para no repetirlo): hero oscuro en los dos modos → lo
-        quisiste claro en claro; una foto por modo (la de estudio en claro) → quisiste la luz
-        roja en los dos.
+    - **La foto es la de la luz roja en los dos modos**, fundida en el fondo, sin caja ni panel:
+      - **Oscuro**: la foto entera (`card.jpg`). Sangra por arriba y se desvanece hacia los lados
+        y hacia abajo con una máscara.
+      - **Claro**: el hero es claro y se usa **tu figura recortada** de esa misma foto
+        (`card-cutout.png`, con transparencia), directamente sobre el blanco; solo se desvanece
+        por abajo. El titular va en modo de fusión "diferencia": oscuro sobre el blanco y claro
+        sobre la chaqueta.
+      - El recorte se hace con la segmentación de personas de macOS:
+        `.taste-skill/recorte/person.swift` saca la máscara y se aplica a `card.jpg`. Si se
+        cambia la foto, hay que repetirlo.
+      - En los dos, el mismo encuadre: la cara queda junto a "Christian Oller" y "Software
+        developer" cruza por la chaqueta.
+      - Camino recorrido (para no repetirlo): hero oscuro en los dos modos → lo quisiste claro
+        en claro; una foto por modo (la de estudio en claro) → quisiste la luz roja en los dos;
+        panel oscuro con borde recto en claro → no te gustó.
+      - Para la fase técnica: las dos imágenes van con carga diferida para que solo se descargue
+        la del modo activo; habrá que precargar la que toque.
     - **Los tres oficios**: "Diseñador × Desarrollador × QA" encima del nombre. Son botones: cada
       uno activa su lente (y la apaga al volver a pulsar), así el hero recupera la entrada a las
       lentes. Subrayado fino que se entinta al pasar el ratón y con la lente activa.
     - Debajo: la frase, "Ver proyectos", "Descargar CV" y la disponibilidad con la hora de Madrid.
     - Todo se mide en ancho del contenido (`cqi`): la composición es la misma de 700 a 1920 px.
     - **Móvil**: la foto arriba a todo el ancho, el nombre montado sobre la chaqueta, después
-      los oficios, la frase y los botones. En claro, el panel oscuro acaba justo debajo del
-      titular y lo demás va sobre el papel.
+      los oficios, la frase y los botones.
     - "Frontend developer" también se cambia en el título y la descripción de la página.
   - **CV**: el PDF está en `public/cv/christian-oller-cv.pdf` (18 nov).
   - Sin tocar todavía: los textos de Sobre mí y Contacto siguen diciendo "frontend"; se
