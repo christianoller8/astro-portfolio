@@ -179,20 +179,28 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     - La foto no puede ser "una foto plana ahí tirada": como en la página "nosotros" de Vístalo.
   - Cómo ha quedado:
     - **La foto es la de la luz roja en los dos modos**, fundida en el fondo, sin caja ni panel:
-      - **Oscuro**: la foto entera (`card.jpg`). Sangra por arriba y se desvanece hacia los lados
-        y hacia abajo con una máscara.
-      - **Claro**: el hero es claro y se usa **tu figura recortada** de esa misma foto
-        (`card-cutout.png`, con transparencia), directamente sobre el blanco; solo se desvanece
-        por abajo. El titular va en modo de fusión "diferencia": oscuro sobre el blanco y claro
-        sobre la chaqueta.
-      - El recorte se hace con la segmentación de personas de macOS:
-        `.taste-skill/recorte/person.swift` saca la máscara y se aplica a `card.jpg`. Si se
-        cambia la foto, hay que repetirlo.
+      - **Oscuro**: la foto tal cual (`card.jpg`). Sangra por arriba y se desvanece hacia los
+        lados y hacia abajo con una máscara.
+      - **Claro**: el hero es claro y se usa la **versión "de día" de esa misma foto**
+        (`card-light.jpg`): la pared pasa a blanco y se conservan la franja de luz roja y tu
+        sombra en la pared, más una sombra de ambiente muy suave alrededor de la silueta. Eso es
+        lo que evita el efecto "pegote" del recorte solo.
+      - En claro, "Software developer" va en modo de fusión "diferencia" (oscuro sobre el blanco,
+        claro sobre la chaqueta). "Christian Oller" va en tinta normal, porque pasa por la luz
+        roja y la diferencia lo teñía de azul. En móvil las dos líneas caen sobre la chaqueta y
+        van las dos en diferencia.
+      - Cómo se genera `card-light.jpg` (hay que repetirlo si cambia la foto), en
+        `.taste-skill/recorte/`:
+        1. `person.swift` saca la máscara de la persona con la segmentación de macOS.
+        2. `luz.cjs` pone la pared en blanco, conserva la franja roja (el exceso de rojo sobre
+           la pared), redibuja la sombra con la propia silueta (en la foto es solo un 5 % más
+           oscura que la pared y sale granulada si se extrae) y monta la figura encima.
       - En los dos, el mismo encuadre: la cara queda junto a "Christian Oller" y "Software
         developer" cruza por la chaqueta.
       - Camino recorrido (para no repetirlo): hero oscuro en los dos modos → lo quisiste claro
         en claro; una foto por modo (la de estudio en claro) → quisiste la luz roja en los dos;
-        panel oscuro con borde recto en claro → no te gustó.
+        panel oscuro con borde recto en claro → no te gustó; figura recortada sola → "casi",
+        pero quedaba de pegote y pediste la luz roja y la sombra.
       - Para la fase técnica: las dos imágenes van con carga diferida para que solo se descargue
         la del modo activo; habrá que precargar la que toque.
     - **Los tres oficios**: "Diseñador × Desarrollador × QA" encima del nombre. Son botones: cada

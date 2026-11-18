@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import portraitDark from '@/assets/images/card.jpg';
-import portraitLight from '@/assets/images/card-cutout.png';
+import portraitLight from '@/assets/images/card-light.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -24,12 +24,13 @@ const roles = [
 <!--
   Hero: el retrato (la foto de la luz roja, en los dos modos) va fundido en el fondo, sin caja ni
   panel (referencia: la página "nosotros" de Vístalo).
-  - Oscuro: la foto entera (card.jpg). Su pared oscura se desvanece en el papel oscuro.
-  - Claro: la misma foto con la figura recortada (card-cutout.png, con transparencia), directamente
-    sobre el papel blanco. El titular va en modo de fusión "diferencia": oscuro sobre el blanco y
-    claro sobre la chaqueta negra.
+  - Oscuro: la foto tal cual (card.jpg). Su pared oscura se desvanece en el papel oscuro.
+  - Claro: la misma foto "de día" (card-light.jpg): la pared pasa a blanco y se conservan la franja
+    de luz roja y la sombra en la pared. El titular va en modo de fusión "diferencia": oscuro sobre
+    el blanco y claro sobre la chaqueta negra.
   Las dos tienen el mismo encuadre: la cara queda junto al nombre y el oficio cruza la chaqueta.
-  El recorte se genera con .taste-skill/recorte/person.swift (la segmentación de personas de macOS).
+  card-light.jpg se genera con .taste-skill/recorte/ (person.swift saca la máscara de la persona
+  con macOS y luz.cjs monta la versión clara).
   [data-intro-stage], [data-sketch] y [data-ink] son los enganches de la intro.
 -->
 <section class="hero" data-intro-stage data-cs="<section> Hero.astro">
@@ -156,9 +157,14 @@ const roles = [
     height: 100%;
     object-fit: cover;
   }
-  /* Claro: la figura recortada, sobre el papel. Solo se desvanece por abajo */
+  /* Claro: la pared de la foto ya es blanca. La luz y la sombra se desvanecen a los lados, y la
+     figura, por abajo */
   .hero-photo-img--light {
-    mask-image: linear-gradient(180deg, #000 66%, transparent 92%);
+    mask-image:
+      linear-gradient(90deg, transparent 0, #000 18%, #000 90%, transparent 100%),
+      linear-gradient(180deg, #000 66%, transparent 92%);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
   }
   /* Oscuro: la foto entera. Se desvanece a los lados y hacia abajo: no se ve ningún borde */
   .hero-photo-img--dark {
@@ -237,24 +243,21 @@ const roles = [
     line-height: 0.9;
     letter-spacing: -0.045em;
     white-space: nowrap;
-    /* Claro: en "diferencia", estos dos tonos dan tinta y gris sobre el blanco, y claro sobre la chaqueta */
-    color: #e5e5e5;
-    mix-blend-mode: difference;
   }
   .hero-name,
   .hero-role {
     display: block;
   }
+  /* Claro: el oficio cruza la chaqueta, así que va en "diferencia": este tono da gris sobre el
+     blanco y claro sobre lo negro. El nombre no: pasa por la luz roja y la diferencia lo teñiría */
   .hero-role {
     color: #b5b5b5;
+    mix-blend-mode: difference;
   }
   /* Oscuro: todo el fondo es oscuro, no hace falta fundir */
-  :global(:root.dark) .hero-title {
-    color: var(--ink);
-    mix-blend-mode: normal;
-  }
   :global(:root.dark) .hero-role {
     color: #b4b4b4;
+    mix-blend-mode: normal;
   }
 
   /* --- Frase, botones y disponibilidad --- */
@@ -316,8 +319,8 @@ const roles = [
       left: 0;
       width: 100%;
     }
-    /* Claro: la figura recortada no tiene pared encima de la cabeza, así que se sube. La chaqueta
-       sigue entera bajo el titular y se desvanece después, antes de los oficios */
+    /* Claro: encima de la cabeza solo hay blanco, así que la foto se sube. La luz llega de borde a
+       borde; la chaqueta sigue entera bajo el titular y se desvanece después, antes de los oficios */
     .hero-photo {
       aspect-ratio: 1 / 1;
     }
@@ -358,6 +361,13 @@ const roles = [
     }
     .hero-name {
       font-size: 1.39em;
+      /* En móvil el nombre también cae sobre la chaqueta (y lejos de la luz roja) */
+      color: #e5e5e5;
+      mix-blend-mode: difference;
+    }
+    :global(:root.dark) .hero-name {
+      color: inherit;
+      mix-blend-mode: normal;
     }
     .hero-copy {
       order: 3;
