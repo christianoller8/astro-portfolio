@@ -111,7 +111,7 @@ function annotateDesign() {
 
 function designPanel(i18n: Record<string, string>) {
   const styles = getComputedStyle(root);
-  const tokens = ['--paper', '--ink', '--muted', '--pencil', '--canvas'].map((name) => ({
+  const tokens = ['--paper', '--ink', '--muted', '--graphite', '--canvas'].map((name) => ({
     name,
     value: styles.getPropertyValue(name).trim(),
   }));

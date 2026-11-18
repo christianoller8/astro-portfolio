@@ -160,7 +160,7 @@ const isActive = (path: string) => {
     width: 0.75rem;
     height: 0.75rem;
     background: var(--pencil);
-    transition: transform 0.45s var(--ease-out);
+    transition: transform var(--dur-ui) var(--ease-out);
   }
   .brand:hover .brand-mark {
     transform: rotate(45deg) scale(0.9);
@@ -182,8 +182,8 @@ const isActive = (path: string) => {
     font-weight: 500;
     color: var(--muted);
     transition:
-      color 0.2s var(--ease-out),
-      background-color 0.2s var(--ease-out);
+      color var(--dur-micro) var(--ease-out),
+      background-color var(--dur-micro) var(--ease-out);
   }
   .nav-link:hover {
     color: var(--ink);
@@ -231,7 +231,7 @@ const isActive = (path: string) => {
     height: 2.75rem;
   }
   .menu-line {
-    transition: transform 0.3s var(--ease-out);
+    transition: transform var(--dur-ui) var(--ease-out);
     transform-origin: 11px 11px;
   }
   .menu-btn[aria-expanded='true'] .menu-line--top {

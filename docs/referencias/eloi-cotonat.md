@@ -1,5 +1,9 @@
 # Eloi Cotonat — análisis de la web
 
+> **Instantánea del 5 de noviembre de 2026.** La web ha cambiado desde entonces (collage con fotos
+> impresas, modo revisión, letra a mano, 96 tests…). La referencia vigente y mucho más completa es
+> [informe-eloi-cotonat.md](informe-eloi-cotonat.md) (18 de noviembre de 2026).
+
 - URL: https://www.eloicotonat.com/
 - Fecha del análisis: 5 de noviembre de 2026
 - Cómo: navegación en el navegador integrado, lectura del código servido (scripts inline,

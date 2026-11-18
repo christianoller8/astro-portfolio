@@ -30,3 +30,8 @@ pnpm-debug.log*
 /playwright/.cache/
 /playwright/.auth/
 .taste-skill/
+
+# Material de referencia de terceros (vídeo, logo y lámina de letras): se queda en local
+docs/videos/
+docs/imgs/idea-logo-*.png
+docs/imgs/letras.jpeg

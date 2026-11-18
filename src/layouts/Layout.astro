@@ -1,9 +1,9 @@
 ---
-import '@fontsource-variable/bricolage-grotesque/opsz.css';
-import '@fontsource/architects-daughter';
+import '@fontsource-variable/bricolage-grotesque/standard.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
+import '../styles/kit.css';
 import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
 import LensPanel from '../components/site/LensPanel.astro';
@@ -19,6 +19,8 @@ interface Props {
   frame: string;
   /** Solo el inicio lleva la intro del boceto */
   intro?: boolean;
+  /** Páginas internas (la muestra del sistema): fuera de buscadores */
+  noindex?: boolean;
 }
 
 const {
@@ -27,6 +29,7 @@ const {
   image = profileImage.src,
   frame,
   intro = false,
+  noindex = false,
 } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
@@ -45,10 +48,18 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <link rel="canonical" href={canonicalURL} />
-    <link rel="alternate" hreflang="es-ES" href={esURL} />
-    <link rel="alternate" hreflang="en-US" href={enURL} />
-    <link rel="alternate" hreflang="x-default" href={esURL} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <link rel="canonical" href={canonicalURL} />
+          <link rel="alternate" hreflang="es-ES" href={esURL} />
+          <link rel="alternate" hreflang="en-US" href={enURL} />
+          <link rel="alternate" hreflang="x-default" href={esURL} />
+        </>
+      )
+    }
 
     <title>{title}</title>
     <meta name="title" content={title} />
@@ -140,4 +151,5 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
   import '@/scripts/lenses';
   import '@/scripts/frames';
   import '@/scripts/intro';
+  import '@/scripts/kit';
 </script>

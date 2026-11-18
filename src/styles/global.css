@@ -4,49 +4,81 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Tokens: lienzo (canvas), papel del artboard, tinta y lápiz azul (docs/referencias/concepto.md) */
+/* Tokens: lienzo (canvas), papel del artboard, tinta y grafito (docs/referencias/plan-diseno-awwwards.md §3.3).
+   Los neutros son los de christianoller.dev. --pencil es el acento de la interfaz (tinta) y --graphite,
+   el trazo del boceto. --ok y --fail solo marcan estado. */
 @layer base {
   :root {
-    --canvas: #e8e9ec;
+    --canvas: #e5e5e5;
     --paper: #ffffff;
-    --ink: #0e0f12;
-    --muted: #575a61;
-    --line: #d5d8de;
-    --tint: #f1f2f4;
-    --pencil: #2747f5;
-    --pencil-ink: #ffffff;
-    --pencil-soft: rgb(39 71 245 / 0.1);
-    --ok: #0b875d;
-    --warn: #b36b00;
-    --dot: rgb(14 15 18 / 0.14);
+    --ink: #1a1a1a;
+    --muted: #4a4a4a;
+    --line: #d4d4d4;
+    --tint: #f2f2f2;
+    --pencil: var(--ink);
+    --pencil-ink: var(--paper);
+    --pencil-soft: rgb(26 26 26 / 0.08);
+    --graphite: #8e8e93;
+    /* Caricatura: en claro usa la tinta y el papel de la página */
+    --car-ink: var(--ink);
+    --car-paper: var(--paper);
+    --car-tone: #bdbdbd;
+    --car-halo: none;
+    --ok: #16a34a;
+    --on-ok: #06140e;
+    --fail: #dc2626;
+    --on-fail: #ffffff;
+    --dot: rgb(26 26 26 / 0.14);
 
+    /* Escala de seis pasos: 14 · 17 · 22 · 32 · 56 · display */
     --step-small: 0.875rem;
     --step-body: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem);
-    --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    --step-lead: clamp(1.25rem, 1.15rem + 0.4vw, 1.375rem);
+    --step-title: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
     --step-head: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
-    --step-display: clamp(2.5rem, 0.6rem + 7.4vw, 7rem);
+    --step-display: clamp(2.5rem, 0.4rem + 8.4vw, 9rem);
+
+    /* Ejes de Bricolage: el lápiz es fino y estrecho; la tinta, firme y a su ancho */
+    --wght-pencil: 200;
+    --wdth-pencil: 75%;
+    --wght-ink: 650;
+    --wdth-ink: 100%;
 
     --toolbar-h: 3.5rem;
     --gutter: clamp(0.75rem, 1.6vw, 1.5rem);
     --pad: clamp(1.25rem, 4vw, 4rem);
-    --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-    --ease-frame: cubic-bezier(0.65, 0, 0.25, 1);
+    /* Movimiento (plan §4.2): rápido en la mano, lento en la cámara */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-camera: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+    --spring: linear(0, 0.35 12%, 0.81 28%, 1.03 44%, 1.01 60%, 1);
+    --dur-micro: 140ms;
+    --dur-ui: 260ms;
+    --dur-ink: 600ms;
+    --dur-camera: 800ms;
+    --stagger: 50ms;
+    --dist: 12px;
     color-scheme: light;
   }
 
   :root.dark {
-    --canvas: #0c0d10;
-    --paper: #16171b;
-    --ink: #eef0f3;
-    --muted: #a4a8b0;
-    --line: #30333a;
-    --tint: #202228;
-    --pencil: #7d93ff;
-    --pencil-ink: #0c0d10;
-    --pencil-soft: rgb(125 147 255 / 0.14);
-    --ok: #3ccf98;
-    --warn: #f0a63a;
-    --dot: rgb(238 240 243 / 0.12);
+    --canvas: #2c2c2e;
+    --paper: #171717;
+    --ink: #f5f5f5;
+    --muted: #a3a3a3;
+    --line: #3a3a3c;
+    --tint: #222222;
+    --pencil-soft: rgb(245 245 245 / 0.12);
+    --graphite: #7c7c82;
+    /* Caricatura: en oscuro conserva sus colores y gana un borde claro, como una pegatina */
+    --car-ink: #1a1a1a;
+    --car-paper: #f5f5f5;
+    --car-halo: #f5f5f5;
+    --ok: #22c55e;
+    --on-ok: #06140e;
+    --fail: #f87171;
+    --on-fail: #1a0606;
+    --dot: rgb(245 245 245 / 0.12);
     color-scheme: dark;
   }
 
@@ -61,6 +93,7 @@
     font-family: var(--font-sans);
     font-size: var(--step-body);
     line-height: 1.55;
+    font-optical-sizing: auto;
   }
 
   :focus-visible {
@@ -84,7 +117,7 @@
   --color-pencil: var(--pencil);
   --color-pencil-ink: var(--pencil-ink);
   --color-ok: var(--ok);
-  --color-warn: var(--warn);
+  --color-fail: var(--fail);
 
   /* Alias que siguen usando algunos componentes */
   --color-background: var(--paper);
@@ -96,22 +129,29 @@
   --color-border: var(--line);
 
   --font-sans: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-hand: 'Architects Daughter', ui-rounded, cursive;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 /* ---------- Tipografía ---------- */
 .t-display {
   font-size: var(--step-display);
-  font-weight: 600;
-  line-height: 0.95;
-  letter-spacing: -0.035em;
+  font-weight: var(--wght-ink);
+  font-stretch: var(--wdth-ink);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
 }
 .t-head {
   font-size: var(--step-head);
-  font-weight: 600;
+  font-weight: var(--wght-ink);
   line-height: 1.02;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.t-title {
+  font-size: var(--step-title);
+  font-weight: var(--wght-ink);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 .t-lead {
@@ -123,6 +163,12 @@
 .t-small {
   font-size: var(--step-small);
   line-height: 1.45;
+}
+/* Estado "lápiz" de un texto: fino, estrecho y en grafito. Al quitarlo, se entinta. */
+.t-pencil {
+  font-weight: var(--wght-pencil);
+  font-stretch: var(--wdth-pencil);
+  color: var(--graphite);
 }
 
 /* ---------- Lienzo, frame y artboard ---------- */
@@ -172,9 +218,9 @@ html[data-lens='design'] .frame-label {
   font-size: var(--step-small);
   letter-spacing: 0.01em;
   transition:
-    transform 0.25s var(--ease-out),
-    background-color 0.25s var(--ease-out),
-    color 0.25s var(--ease-out);
+    transform var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
 }
 .btn:active {
   transform: translateY(1px) scale(0.98);
@@ -184,7 +230,7 @@ html[data-lens='design'] .frame-label {
   color: var(--pencil-ink);
 }
 .btn-primary:hover {
-  background: var(--ink);
+  background: color-mix(in srgb, var(--ink) 80%, var(--paper));
   color: var(--paper);
 }
 .btn-quiet {
@@ -196,7 +242,7 @@ html[data-lens='design'] .frame-label {
   color: var(--paper);
 }
 .btn .btn-arrow {
-  transition: transform 0.25s var(--ease-out);
+  transition: transform var(--dur-micro) var(--ease-out);
 }
 .btn:hover .btn-arrow {
   transform: translateX(3px);
@@ -208,7 +254,7 @@ html[data-lens='design'] .frame-label {
   text-decoration-thickness: 1.5px;
   text-underline-offset: 0.22em;
   text-decoration-color: transparent;
-  transition: text-decoration-color 0.25s var(--ease-out);
+  transition: text-decoration-color var(--dur-micro) var(--ease-out);
 }
 .link:hover,
 .link:focus-visible {
@@ -219,11 +265,11 @@ html[data-lens='design'] .frame-label {
 @media (prefers-reduced-motion: no-preference) {
   .reveal-ready [data-reveal] {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(var(--dist));
     transition:
-      opacity 0.7s var(--ease-out),
-      transform 0.7s var(--ease-out);
-    transition-delay: calc(var(--reveal-i, 0) * 80ms);
+      opacity var(--dur-ink) var(--ease-out),
+      transform var(--dur-ink) var(--ease-out);
+    transition-delay: calc(var(--reveal-i, 0) * var(--stagger));
   }
 
   .reveal-ready [data-reveal].is-revealed {
@@ -308,7 +354,7 @@ html[data-lens='qa'] [data-qa] {
   outline-offset: 3px;
 }
 html[data-lens='qa'] [data-qa='warn'] {
-  outline-color: var(--warn);
+  outline-color: var(--fail);
 }
 html[data-lens='qa'] [data-qa]::after {
   content: '✓ ' attr(data-qa-note);
@@ -323,16 +369,14 @@ html[data-lens='qa'] [data-qa]::after {
     sans-serif;
   letter-spacing: 0;
   white-space: nowrap;
-  color: #fff;
+  color: var(--on-ok);
   background: var(--ok);
   pointer-events: none;
 }
-html.dark[data-lens='qa'] [data-qa]::after {
-  color: #06140e;
-}
 html[data-lens='qa'] [data-qa='warn']::after {
   content: '! ' attr(data-qa-note);
-  background: var(--warn);
+  color: var(--on-fail);
+  background: var(--fail);
 }
 
 /* ---------- Intro: del boceto a la web ---------- */
@@ -345,7 +389,7 @@ html[data-lens='qa'] [data-qa='warn']::after {
 }
 .sketch-layer path {
   fill: none;
-  stroke: var(--pencil);
+  stroke: var(--graphite);
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -353,9 +397,9 @@ html[data-lens='qa'] [data-qa='warn']::after {
   stroke-dashoffset: 1;
 }
 .sketch-layer text {
-  font-family: var(--font-hand);
-  font-size: 15px;
-  fill: var(--pencil);
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--muted);
   opacity: 0;
 }
 
@@ -364,8 +408,8 @@ html.intro [data-ink] {
   animation: ink-failsafe 0.01s 4s forwards;
 }
 html.intro.inking [data-ink] {
-  animation: ink-in 0.6s var(--ease-out) forwards;
-  animation-delay: calc(var(--ink-i, 0) * 70ms);
+  animation: ink-in var(--dur-ink) var(--ease-out) forwards;
+  animation-delay: calc(var(--ink-i, 0) * var(--stagger));
 }
 @keyframes ink-in {
   from {
@@ -397,14 +441,14 @@ html.intro.inking [data-ink] {
   background-size: 20px 20px;
 }
 ::view-transition-group(root) {
-  animation-duration: 0.76s;
+  animation-duration: var(--dur-camera);
 }
 ::view-transition-old(root) {
-  animation: frame-out 0.76s var(--ease-frame) both;
+  animation: frame-out var(--dur-camera) var(--ease-camera) both;
   transform-origin: 50% 40%;
 }
 ::view-transition-new(root) {
-  animation: frame-in 0.76s var(--ease-frame) both;
+  animation: frame-in var(--dur-camera) var(--ease-camera) both;
   transform-origin: 50% 40%;
 }
 html.frame-back::view-transition-old(root) {

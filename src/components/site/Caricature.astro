@@ -1,0 +1,94 @@
+---
+// La marca de la web: la caricatura que dibujó Christian (docs/imgs/caricatura-chris.jpeg), pasada a
+// SVG por formas, con "made by chris" en la letra de la web (plan §3.8).
+// Capas: la silueta de papel, el tono gris de la barba y las piezas de tinta (pelo y contorno,
+// cejas, ojos, nariz, boca…), cada una en su trazado para que la intro pueda trazarla y rellenarla.
+// En modo oscuro el dibujo no se invierte: conserva sus colores y lleva un halo claro alrededor.
+// Los trazados salen de src/data/caricature*.json (se generan con .taste-skill/letras/vectorize.cjs).
+import full from '@/data/caricature.json';
+import small from '@/data/caricature-mark.json';
+
+interface Props {
+  /** head: cabeza con todo el detalle · mark: versión simplificada para tamaños pequeños · lockup: cabeza + "made by chris" */
+  variant?: 'head' | 'mark' | 'lockup';
+  class?: string;
+  /** Texto alternativo; sin él, la marca es decorativa */
+  label?: string;
+}
+
+const { variant = 'head', class: className, label } = Astro.props;
+const art = variant === 'mark' ? small : full;
+const lockup = variant === 'lockup';
+
+// Composición con las letras: un cuarto de la altura de la cabeza de separación
+const h = art.height;
+const textX = art.width + Math.round(h * 0.246);
+const madeSize = Math.round(h * 0.215);
+const chrisSize = Math.round(h * 0.646);
+const width = lockup ? textX + Math.round(chrisSize * 2) : art.width;
+---
+
+<svg
+  class:list={['car', `car--${variant}`, className]}
+  viewBox={`0 0 ${width} ${h}`}
+  xmlns="http://www.w3.org/2000/svg"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <g class="car-head" fill-rule="evenodd">
+    {art.halo.map((d) => <path class="car-halo" data-part="halo" pathLength="1" d={d} />)}
+    {art.paper.map((d) => <path class="car-paper" data-part="silueta" pathLength="1" d={d} />)}
+    {art.tone.map((d, i) => <path class="car-tone" data-part={`barba-${i + 1}`} pathLength="1" d={d} />)}
+    {
+      art.ink.map((d, i) => (
+        <path class="car-ink" data-part={i === 0 ? 'pelo-y-contorno' : `trazo-${i}`} pathLength="1" d={d} />
+      ))
+    }
+  </g>
+
+  {
+    lockup && (
+      <g class="car-name">
+        <text class="car-made" x={textX} y={Math.round(h * 0.262)} style={`font-size: ${madeSize}px`}>
+          made by
+        </text>
+        <text class="car-chris" x={textX} y={Math.round(h * 0.796)} style={`font-size: ${chrisSize}px`}>
+          chris
+        </text>
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .car {
+    display: block;
+    overflow: visible;
+    color: var(--ink);
+  }
+  .car-halo {
+    fill: var(--car-halo);
+  }
+  .car-ink {
+    fill: var(--car-ink);
+  }
+  .car-paper {
+    fill: var(--car-paper);
+  }
+  .car-tone {
+    fill: var(--car-tone);
+  }
+  .car-name text {
+    font-family: var(--font-sans);
+    fill: currentColor;
+  }
+  .car-made {
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .car-chris {
+    font-weight: var(--wght-ink);
+    letter-spacing: -0.045em;
+  }
+</style>

@@ -140,8 +140,8 @@ const code = [
     height: 0.65rem;
     background: var(--line);
     transition:
-      background-color 0.3s var(--ease-out),
-      transform 0.3s var(--ease-out);
+      background-color var(--dur-ui) var(--ease-out),
+      transform var(--dur-ui) var(--ease-out);
   }
   .process-step-body {
     max-width: 36ch;
@@ -180,8 +180,8 @@ const code = [
 
   .process-code {
     min-width: 0;
-    color: #e6e8ee;
-    background: #0e0f12;
+    color: #e8e8e8;
+    background: #101010;
     opacity: clamp(0, calc((var(--p) - 0.4) / 0.1), 1);
     transform: translateY(calc((1 - clamp(0, (var(--p) - 0.4) / 0.1, 1)) * 18px));
   }
@@ -241,12 +241,9 @@ const code = [
     width: 1.35rem;
     height: 1.35rem;
     fill: none;
-    stroke: #fff;
+    stroke: var(--on-ok);
     stroke-width: 2;
     background: var(--ok);
-  }
-  :global(html.dark) .process-check-icon {
-    stroke: #06140e;
   }
 
   /* Escritorio: la escena se queda fija mientras el scroll avanza las fases */

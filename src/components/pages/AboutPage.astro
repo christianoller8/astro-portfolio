@@ -5,6 +5,7 @@ import ToolsByLens from '@/components/home/ToolsByLens.astro';
 import profileImage from '@/assets/images/profile.jpg';
 import { useTranslations } from '@/i18n/utils';
 import { site, hasCV } from '@/data/site';
+import { experience } from '@/data/experience';
 import type { ui } from '@/i18n/ui';
 
 interface Props {
@@ -53,6 +54,31 @@ const principles = [
         <p data-reveal style="--reveal-i: 3">{t('about.p3')}</p>
       </div>
     </div>
+  </section>
+
+  <section class="wrap jobs" data-cs="<section> Experience">
+    <h2 class="t-head" data-reveal>{t('about.experience.title')}</h2>
+    <ol class="jobs-list">
+      {
+        experience.map((job) => (
+          <li class="job" data-reveal>
+            <p class="job-period">{job.period[lang]}</p>
+            <div class="job-body">
+              <h3 class="job-role">
+                {job.role[lang]}
+                <span class="job-company">{job.company}</span>
+              </h3>
+              <p class="job-summary">{job.summary[lang]}</p>
+              <ul class="job-highlights">
+                {job.highlights[lang].map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </section>
 
   <section class="wrap principles" data-cs="<section> Principles">
@@ -122,9 +148,48 @@ const principles = [
     gap: 1.25rem;
     max-width: 40rem;
   }
+  .jobs,
   .principles,
   .cv {
     padding-top: clamp(5rem, 10vw, 9rem);
+  }
+  .jobs-list {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding: 0;
+    list-style: none;
+  }
+  .job {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .job-period {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .job-role {
+    font-size: var(--step-lead);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+  }
+  .job-company {
+    display: block;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .job-summary {
+    max-width: 40rem;
+    margin-top: 0.75rem;
+  }
+  .job-highlights {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 40rem;
+    margin-top: 0.75rem;
+    padding-left: 1.1rem;
+    color: var(--muted);
+    list-style: disc;
   }
   .principles-grid {
     display: grid;
@@ -151,6 +216,10 @@ const principles = [
     color: var(--muted);
   }
   @media (min-width: 768px) {
+    .job {
+      grid-template-columns: 12rem minmax(0, 1fr);
+      gap: 2rem;
+    }
     .principles-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }

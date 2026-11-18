@@ -1,0 +1,708 @@
+---
+// Página interna de muestra del sistema visual (no se enlaza ni se indexa).
+// Va creciendo con cada punto de la etapa E1 del roadmap: color, tipografía, movimiento, kit gráfico…
+import Layout from '@/layouts/Layout.astro';
+import Caricature from '@/components/site/Caricature.astro';
+
+const colors = [
+  { token: '--canvas', role: 'Lienzo', light: '#e5e5e5', dark: '#2c2c2e' },
+  { token: '--paper', role: 'Papel (frame)', light: '#ffffff', dark: '#171717' },
+  { token: '--ink', role: 'Tinta', light: '#1a1a1a', dark: '#f5f5f5' },
+  { token: '--muted', role: 'Secundario', light: '#4a4a4a', dark: '#a3a3a3' },
+  { token: '--tint', role: 'Tinte', light: '#f2f2f2', dark: '#222222' },
+  { token: '--line', role: 'Borde', light: '#d4d4d4', dark: '#3a3a3c' },
+  { token: '--graphite', role: 'Grafito (boceto)', light: '#8e8e93', dark: '#7c7c82' },
+  { token: '--ok', role: 'Estado: correcto', light: '#16a34a', dark: '#22c55e' },
+  { token: '--fail', role: 'Estado: fallo', light: '#dc2626', dark: '#f87171' },
+  { token: '--car-tone', role: 'Gris de la caricatura', light: '#bdbdbd', dark: '#bdbdbd' },
+];
+
+const sections = [
+  { id: 'sys-brand', name: 'Marca' },
+  { id: 'sys-color', name: 'Color' },
+  { id: 'sys-type', name: 'Tipografía' },
+  { id: 'sys-motion', name: 'Movimiento' },
+  { id: 'sys-kit', name: 'Kit gráfico' },
+];
+
+const scale = [
+  { cls: 't-display', name: 'Display', size: '40–144 px', sample: 'Christian Oller' },
+  { cls: 't-head', name: 'Titular', size: '36–56 px', sample: 'Disfruto haciendo webs y apps' },
+  { cls: 't-title', name: 'Título', size: '24–32 px', sample: 'Turnos y fichajes para sanitarios' },
+  { cls: 't-lead', name: 'Entrada', size: '20–22 px', sample: 'Diseño la interfaz, la programo y la pruebo antes de entregarla.' },
+  { cls: 't-body', name: 'Texto', size: '17–18 px', sample: 'Antes de abrir el editor dibujo la pantalla: qué ve primero quien la usa, qué puede hacer y qué pasa cuando algo falla.' },
+  { cls: 't-small', name: 'Pequeño', size: '14 px', sample: 'Disponible para trabajar en remoto · España (CET)' },
+];
+
+const curves = [
+  { token: '--ease-out', use: 'Entradas y selección' },
+  { token: '--ease-camera', use: 'Zoom y paneo del lienzo' },
+  { token: '--ease-in', use: 'Salidas rápidas' },
+  { token: '--spring', use: 'Tiradores e indicadores (muelle)' },
+];
+
+const durations = [
+  { token: '--dur-micro', value: '140 ms', use: 'Hover y pulsación' },
+  { token: '--dur-ui', value: '260 ms', use: 'Paneles y lentes' },
+  { token: '--dur-ink', value: '600 ms', use: 'Entintado y entradas' },
+  { token: '--dur-camera', value: '800 ms', use: 'Zoom entre frames' },
+];
+
+const badges = [
+  { text: 'Contraste 17,4:1', state: 'ok' },
+  { text: 'Objetivo táctil 48 px', state: 'ok' },
+  { text: 'alt presente', state: 'ok' },
+  { text: 'Contraste 2,9:1', state: 'fail' },
+  { text: '<h1> Hero.astro', state: undefined },
+];
+
+const weights = [200, 300, 400, 500, 650, 800];
+const widths = [75, 85, 100];
+---
+
+<Layout title="Sistema · Christian Oller" frame="Sistema" noindex>
+  <section class="wrap sys-head">
+    <h1 class="t-display">Sistema</h1>
+    <p class="t-lead sys-lead">
+      Muestra interna de la base visual. Cambia de modo con el botón de la barra para ver los dos.
+    </p>
+    <nav class="sys-index" aria-label="Secciones">
+      {sections.map((item) => <a class="btn btn-quiet" href={`#${item.id}`}>{item.name}</a>)}
+    </nav>
+  </section>
+
+  <section class="wrap sys-section" aria-labelledby="sys-brand">
+    <h2 class="t-head" id="sys-brand">Marca</h2>
+    <p class="t-lead sys-lead">
+      Tu caricatura, pasada a SVG por formas para poder trazar su contorno y rellenarla en la intro, con
+      «made by chris» en la letra de la web.
+    </p>
+
+    <div class="brand-hero car-demo" data-car-demo>
+      <Caricature variant="lockup" label="made by chris" />
+    </div>
+    <button class="btn btn-quiet kit-btn" type="button" data-car-play>Probar el trazado</button>
+    <p class="sys-note">Es solo una prueba de la construcción: la intro de verdad se monta en la etapa E3.</p>
+
+    <h3 class="t-title sys-sub">Cabeza</h3>
+    <div class="brand-row">
+      <div class="brand-tile"><Caricature class="car-w240" /></div>
+      <div class="brand-tile brand-tile-canvas"><Caricature class="car-w240" /></div>
+    </div>
+
+    <h3 class="t-title sys-sub">Versión reducida</h3>
+    <p class="sys-note">Simplificada, para la barra, el avatar y el favicon: 96, 48, 32, 24 y 16 px.</p>
+    <div class="brand-row brand-row-sizes">
+      {[96, 48, 32, 24, 16].map((size) => <Caricature variant="mark" class={`car-w${size}`} />)}
+    </div>
+  </section>
+
+  <section class="wrap sys-section" aria-labelledby="sys-color">
+    <h2 class="t-head" id="sys-color">Color</h2>
+    <ul class="swatches">
+      {
+        colors.map((c) => (
+          <li class="swatch">
+            <span class="swatch-chip" style={`background: var(${c.token})`} />
+            <span class="swatch-role">{c.role}</span>
+            <code class="swatch-token">{c.token}</code>
+            <span class="swatch-hex">
+              Claro {c.light} · Oscuro {c.dark}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap sys-section" aria-labelledby="sys-type">
+    <h2 class="t-head" id="sys-type">Tipografía</h2>
+    <p class="t-lead sys-lead">Bricolage Grotesque, con sus tres ejes: peso, anchura y tamaño óptico.</p>
+
+    <h3 class="t-title sys-sub">Escala</h3>
+    <ol class="scale">
+      {
+        scale.map((s) => (
+          <li class="scale-row">
+            <p class="scale-meta">
+              {s.name}
+              <span>{s.size}</span>
+            </p>
+            <p class={s.cls}>{s.sample}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h3 class="t-title sys-sub">Ejes</h3>
+    <div class="axes">
+      <div class="axis">
+        <p class="scale-meta">Peso <span>200–800</span></p>
+        <p class="axis-row">
+          {weights.map((w) => <span style={`font-weight: ${w}`}>Aa {w}</span>)}
+        </p>
+      </div>
+      <div class="axis">
+        <p class="scale-meta">Anchura <span>75–100 %</span></p>
+        <p class="axis-row">
+          {widths.map((w) => <span style={`font-stretch: ${w}%`}>Frontend {w}</span>)}
+        </p>
+      </div>
+    </div>
+
+    <h3 class="t-title sys-sub">Del lápiz a la tinta</h3>
+    <p class="sys-note">
+      El titular empieza fino, estrecho y en grafito, y se entinta animando los ejes de la fuente.
+    </p>
+    <p class="t-display ink-demo t-pencil" data-ink-demo>Frontend developer</p>
+    <button class="btn btn-primary ink-btn" type="button" data-ink-toggle aria-pressed="false">
+      Entintar
+    </button>
+  </section>
+
+  <section class="wrap sys-section" aria-labelledby="sys-motion">
+    <h2 class="t-head" id="sys-motion">Movimiento</h2>
+    <p class="t-lead sys-lead">Rápido en la mano, lento en la cámara. Pulsa para ver cada token.</p>
+
+    <h3 class="t-title sys-sub">Curvas</h3>
+    <p class="sys-note">Las cuatro recorren la misma distancia en 800 ms: cambia cómo aceleran y frenan.</p>
+    <div class="motion" data-motion>
+      {
+        curves.map((c) => (
+          <div class="motion-row">
+            <p class="scale-meta">
+              <code>{c.token}</code>
+              <span>{c.use}</span>
+            </p>
+            <div class="track">
+              <div class="runner" style={`transition: transform var(--dur-camera) var(${c.token})`}>
+                <span class="dot" />
+              </div>
+            </div>
+          </div>
+        ))
+      }
+      <button class="btn btn-quiet motion-btn" type="button" data-motion-toggle>Reproducir</button>
+    </div>
+
+    <h3 class="t-title sys-sub">Duraciones</h3>
+    <p class="sys-note">La misma curva de salida, con cada duración.</p>
+    <div class="motion" data-motion>
+      {
+        durations.map((d) => (
+          <div class="motion-row">
+            <p class="scale-meta">
+              <code>{d.token}</code>
+              <span>
+                {d.value} · {d.use}
+              </span>
+            </p>
+            <div class="track">
+              <div class="runner" style={`transition: transform var(${d.token}) var(--ease-out)`}>
+                <span class="dot" />
+              </div>
+            </div>
+          </div>
+        ))
+      }
+      <button class="btn btn-quiet motion-btn" type="button" data-motion-toggle>Reproducir</button>
+    </div>
+
+    <h3 class="t-title sys-sub">Entrada en grupo</h3>
+    <p class="sys-note">
+      Cada pieza sube 12 px (<code>--dist</code>) con 50 ms de diferencia (<code>--stagger</code>).
+    </p>
+    <div class="motion is-on" data-motion data-motion-replay>
+      <div class="group">
+        {[0, 1, 2, 3, 4, 5].map((i) => <span class="group-item" style={`--i: ${i}`} />)}
+      </div>
+      <button class="btn btn-quiet motion-btn" type="button" data-motion-toggle>Repetir</button>
+    </div>
+  </section>
+
+  <section class="wrap sys-section" aria-labelledby="sys-kit">
+    <h2 class="t-head" id="sys-kit">Kit gráfico</h2>
+    <p class="t-lead sys-lead">
+      El vocabulario de herramienta. Aparece por estados (hover, foco, lentes, transición), nunca como
+      decoración fija.
+    </p>
+
+    <h3 class="t-title sys-sub">Nombre de frame</h3>
+    <p class="sys-note">Fuera del artboard, arriba a la izquierda, con su tamaño real.</p>
+    <div class="kit-stage">
+      <p class="kit-frame-name">Inicio <span>1440 × 4210</span></p>
+      <div class="kit-mini"></div>
+    </div>
+
+    <h3 class="t-title sys-sub">Selección</h3>
+    <p class="sys-note">
+      Pasa el ratón o llega con el tabulador: ocho tiradores y la medida real. El foco de teclado es la
+      misma selección.
+    </p>
+    <div class="kit-row">
+      <a class="kit-card" href="#sys-kit" data-sel>
+        <span class="kit-card-shot"></span>
+        <span class="kit-card-name">Tarjeta de proyecto</span>
+      </a>
+      <div class="kit-card is-selected" data-sel>
+        <span class="kit-card-shot"></span>
+        <span class="kit-card-name">Seleccionada</span>
+      </div>
+    </div>
+
+    <h3 class="t-title sys-sub">Cotas y guías</h3>
+    <p class="sys-note">Distancias entre bloques con su valor y líneas de construcción en grafito.</p>
+    <div class="kit-stage kit-dims">
+      <span class="kit-guide" data-axis="x" style="top: 2rem"></span>
+      <span class="kit-guide" data-axis="y" style="left: 2rem"></span>
+      <div class="kit-dims-row">
+        <div class="kit-block"></div>
+        <span class="kit-dim" data-axis="x" style="width: 4rem"><b>64</b></span>
+        <div class="kit-block"></div>
+      </div>
+      <span class="kit-dim" data-axis="y" style="height: 3rem"><b>48</b></span>
+      <div class="kit-block kit-block-wide"></div>
+    </div>
+
+    <h3 class="t-title sys-sub">Hilo de prototipo</h3>
+    <p class="sys-note">Conecta dos frames: sale de un punto y llega con flecha. Guiará cada cambio de página.</p>
+    <div class="kit-stage kit-threads">
+      <div class="kit-thread-frame" id="thread-a">
+        <p class="kit-frame-name">Inicio</p>
+        <div class="kit-mini"></div>
+      </div>
+      <div class="kit-thread-frame kit-thread-frame-b" id="thread-b">
+        <p class="kit-frame-name">Proyectos</p>
+        <div class="kit-mini"></div>
+      </div>
+      <svg
+        class="kit-thread"
+        id="thread-demo"
+        aria-hidden="true"
+        data-thread-from="#thread-a .kit-mini"
+        data-thread-to="#thread-b .kit-mini"></svg>
+    </div>
+    <button class="btn btn-quiet kit-btn" type="button" data-thread-play="#thread-demo">Dibujar</button>
+
+    <h3 class="t-title sys-sub">Cursores</h3>
+    <p class="sys-note">
+      En la lente Diseño, cruceta con coordenadas. En el lienzo navegable, la mano de arrastrar.
+    </p>
+    <div class="kit-row">
+      <div class="kit-cursor" data-coords><span>Mueve el ratón aquí</span></div>
+      <div class="kit-cursor kit-pan"><span>Arrastra aquí</span></div>
+    </div>
+
+    <h3 class="t-title sys-sub">Insignias</h3>
+    <p class="sys-note">Valores medidos, con su estado. Son la voz de las lentes Código y QA.</p>
+    <div class="kit-badges">
+      {
+        badges.map((b) => (
+          <span class="kit-badge" data-state={b.state}>
+            {b.text}
+            {b.state && <span class="sr-only">{b.state === 'ok' ? 'correcto' : 'fallo'}</span>}
+          </span>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Demo del entintado: alterna el estado "lápiz" del titular de muestra
+  document.addEventListener('astro:page-load', () => {
+    const demo = document.querySelector('[data-ink-demo]');
+    const btn = document.querySelector<HTMLButtonElement>('[data-ink-toggle]');
+    if (!demo || !btn) return;
+    btn.addEventListener('click', () => {
+      const pencil = demo.classList.toggle('t-pencil');
+      btn.setAttribute('aria-pressed', String(!pencil));
+      btn.textContent = pencil ? 'Entintar' : 'Volver a lápiz';
+    });
+  });
+
+  // Prueba del trazado de la marca: contorno, espera, relleno
+  document.addEventListener('astro:page-load', () => {
+    const demo = document.querySelector<HTMLElement>('[data-car-demo]');
+    const play = document.querySelector('[data-car-play]');
+    if (!demo || !play) return;
+    let timers: number[] = [];
+    play.addEventListener('click', () => {
+      timers.forEach((t) => window.clearTimeout(t));
+      demo.classList.remove('is-draw', 'is-fill');
+      demo.classList.add('is-outline');
+      void demo.offsetWidth;
+      demo.classList.add('is-draw');
+      timers = [
+        window.setTimeout(() => demo.classList.add('is-fill'), 1100),
+        window.setTimeout(() => demo.classList.remove('is-outline', 'is-draw', 'is-fill'), 1900),
+      ];
+    });
+  });
+
+  // Demos de movimiento: ida y vuelta, o repetición desde el principio en la entrada en grupo
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-motion]').forEach((box) => {
+      box.querySelector('[data-motion-toggle]')?.addEventListener('click', () => {
+        if (!box.hasAttribute('data-motion-replay')) {
+          box.classList.toggle('is-on');
+          return;
+        }
+        box.classList.add('is-reset');
+        box.classList.remove('is-on');
+        void box.offsetWidth;
+        box.classList.remove('is-reset');
+        box.classList.add('is-on');
+      });
+    });
+  });
+</script>
+
+<style>
+  .sys-head {
+    padding-top: clamp(2rem, 5vw, 4.5rem);
+  }
+  .sys-lead {
+    max-width: 40rem;
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  .sys-index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+  .sys-section {
+    padding-top: clamp(4rem, 8vw, 7rem);
+    scroll-margin-top: var(--toolbar-h);
+  }
+  .sys-section:last-of-type {
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+  .sys-sub {
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .sys-note {
+    max-width: 40rem;
+    margin-top: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* Color */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 2rem 1.5rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding: 0;
+    list-style: none;
+  }
+  .swatch {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .swatch-chip {
+    height: 5rem;
+    margin-bottom: 0.6rem;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .swatch-role {
+    font-weight: 600;
+  }
+  .swatch-token {
+    font-family: var(--font-mono);
+    font-size: var(--step-small);
+  }
+  .swatch-hex {
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+
+  /* Tipografía */
+  .scale {
+    display: grid;
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+    margin-top: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  .scale-row {
+    display: grid;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .scale-row > :last-child {
+    max-width: 46rem;
+    overflow-wrap: anywhere;
+  }
+  .scale-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+  }
+  .scale-meta span {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .axes {
+    display: grid;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  .axis-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    margin-top: 0.5rem;
+    font-size: var(--step-title);
+    letter-spacing: -0.02em;
+  }
+  .ink-demo {
+    margin-top: 1.5rem;
+    transition:
+      font-weight var(--dur-ink) var(--ease-out),
+      font-stretch var(--dur-ink) var(--ease-out),
+      color var(--dur-ink) var(--ease-out);
+  }
+  .ink-btn {
+    margin-top: 1.5rem;
+  }
+  /* Movimiento */
+  .motion {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 46rem;
+    margin-top: 1.5rem;
+  }
+  .motion-row {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .motion code {
+    font-family: var(--font-mono);
+  }
+  .track {
+    padding: 0.5rem;
+    background: var(--tint);
+  }
+  .runner {
+    width: 100%;
+  }
+  .dot {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    background: var(--ink);
+  }
+  .motion.is-on .runner {
+    transform: translateX(calc(100% - 1rem));
+  }
+  .motion-btn {
+    justify-self: start;
+  }
+  .group {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .group-item {
+    aspect-ratio: 1;
+    background: var(--tint);
+    opacity: 0;
+    transform: translateY(var(--dist));
+    transition:
+      opacity var(--dur-ink) var(--ease-out),
+      transform var(--dur-ink) var(--ease-out);
+    transition-delay: calc(var(--i) * var(--stagger));
+  }
+  .motion.is-on .group-item {
+    opacity: 1;
+    transform: none;
+  }
+  .motion.is-reset .group-item {
+    transition: none;
+  }
+  /* Marca */
+  .brand-hero {
+    max-width: 40rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  .brand-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .brand-tile {
+    padding: 2rem;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .brand-tile-canvas {
+    background: var(--canvas);
+    box-shadow: none;
+  }
+  .brand-row-sizes {
+    gap: 2rem;
+  }
+  .brand-row :global(.car-w240) {
+    width: 15rem;
+  }
+  .brand-row :global(.car-w96) {
+    width: 6rem;
+  }
+  .brand-row :global(.car-w48) {
+    width: 3rem;
+  }
+  .brand-row :global(.car-w32) {
+    width: 2rem;
+  }
+  .brand-row :global(.car-w24) {
+    width: 1.5rem;
+  }
+  .brand-row :global(.car-w16) {
+    width: 1rem;
+  }
+  /* Prueba del trazado: contorno fino en grafito y, después, relleno con fundido */
+  .car-demo.is-outline :global(path),
+  .car-demo.is-outline :global(text) {
+    fill-opacity: 0;
+  }
+  /* Solo se traza la tinta y las letras; la silueta y el gris aparecen con el relleno */
+  .car-demo.is-outline :global(.car-ink),
+  .car-demo.is-outline :global(text) {
+    stroke: var(--graphite);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  .car-demo.is-outline :global(text) {
+    stroke-dasharray: 5000;
+    stroke-dashoffset: 5000;
+  }
+  .car-demo.is-draw :global(.car-ink),
+  .car-demo.is-draw :global(text) {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0.1, 0.4, 1);
+  }
+  .car-demo.is-fill :global(path),
+  .car-demo.is-fill :global(text) {
+    fill-opacity: 1;
+    stroke-opacity: 0;
+    transition:
+      fill-opacity 0.2s linear,
+      stroke-opacity 0.2s linear 0.2s;
+  }
+
+  /* Kit gráfico */
+  .kit-stage {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+    margin-top: 1.5rem;
+    padding: 2rem;
+    background: var(--canvas);
+    overflow: hidden;
+  }
+  .kit-mini {
+    width: min(16rem, 100%);
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+  }
+  .kit-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem 2.5rem;
+    margin-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+  .kit-card {
+    display: grid;
+    gap: 0.6rem;
+    width: min(16rem, 100%);
+    padding: 0.75rem;
+    background: var(--tint);
+  }
+  .kit-card-shot {
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+  }
+  .kit-card-name {
+    font-weight: 600;
+  }
+  .kit-dims {
+    gap: 0;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .kit-dims-row {
+    display: flex;
+    align-items: center;
+  }
+  .kit-block {
+    width: 6rem;
+    height: 4rem;
+    background: var(--tint);
+  }
+  .kit-block-wide {
+    width: 16rem;
+    max-width: 100%;
+  }
+  .kit-dims > .kit-dim {
+    margin-left: 2.6rem;
+  }
+  .kit-threads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 12vw, 9rem);
+    align-items: start;
+    max-width: 46rem;
+  }
+  .kit-thread-frame {
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .kit-thread-frame .kit-mini {
+    width: 100%;
+  }
+  .kit-thread-frame-b {
+    margin-top: 3rem;
+  }
+  .kit-btn {
+    margin-top: 1rem;
+  }
+  .kit-cursor {
+    display: grid;
+    place-items: center;
+    width: min(20rem, 100%);
+    height: 10rem;
+    color: var(--muted);
+    background: var(--tint);
+    overflow: hidden;
+  }
+  .kit-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .scale-row {
+      grid-template-columns: 12rem minmax(0, 1fr);
+      gap: 2rem;
+      align-items: baseline;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ink-demo,
+    .runner,
+    .group-item {
+      transition: none !important;
+    }
+  }
+</style>

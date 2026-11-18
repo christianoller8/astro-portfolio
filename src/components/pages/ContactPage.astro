@@ -169,7 +169,7 @@ const topics = [
     color: var(--ink);
     background: var(--paper);
     border: 1px solid var(--line);
-    transition: border-color 0.2s var(--ease-out);
+    transition: border-color var(--dur-micro) var(--ease-out);
   }
   .field textarea {
     resize: vertical;
@@ -207,8 +207,8 @@ const topics = [
     background: var(--paper);
     cursor: pointer;
     transition:
-      background-color 0.2s var(--ease-out),
-      color 0.2s var(--ease-out);
+      background-color var(--dur-micro) var(--ease-out),
+      color var(--dur-micro) var(--ease-out);
   }
   .topic input:checked + span {
     color: var(--pencil-ink);
@@ -228,7 +228,7 @@ const topics = [
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    transition: color 0.2s var(--ease-out);
+    transition: color var(--dur-micro) var(--ease-out);
   }
   .chk {
     flex: none;
@@ -239,18 +239,15 @@ const topics = [
     stroke-width: 2;
     background: var(--paper);
     transition:
-      background-color 0.2s var(--ease-out),
-      stroke 0.2s var(--ease-out);
+      background-color var(--dur-micro) var(--ease-out),
+      stroke var(--dur-micro) var(--ease-out);
   }
   .checks li.is-ok {
     color: var(--ink);
   }
   .checks li.is-ok .chk {
-    stroke: #fff;
+    stroke: var(--on-ok);
     background: var(--ok);
-  }
-  :global(html.dark) .checks li.is-ok .chk {
-    stroke: #06140e;
   }
   .submit-row {
     display: flex;

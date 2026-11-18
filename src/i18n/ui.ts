@@ -115,7 +115,7 @@ export const ui = {
     'footer.email': 'Escribir un email',
     'footer.form': 'Ir al formulario',
     'footer.credits':
-      'Bocetado con lápiz azul, programado con Astro y revisado con las tres lentes.',
+      'Bocetado a lápiz, programado con Astro y revisado con las tres lentes.',
 
     // Sobre mí
     'about.meta.title': 'Sobre mí · Christian Oller',
@@ -128,6 +128,7 @@ export const ui = {
       'Antes de programar, diseño: Figma para las interfaces y Procreate cuando toca dibujar. Después pruebo lo que hago con Jasmine, Cypress y Postman, porque una interfaz bonita que falla no sirve.',
     'about.p3':
       'En 2025 cofundé Vístalo con Eloi Cotonat, una agencia que hace webs, fotos y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
+    'about.experience.title': 'Trayectoria',
     'about.principles.title': 'Cómo trabajo',
     'about.principle1.title': 'Primero el boceto',
     'about.principle1.body':
@@ -265,7 +266,7 @@ export const ui = {
     'footer.email': 'Send an email',
     'footer.form': 'Go to the form',
     'footer.credits':
-      'Sketched in blue pencil, built with Astro and checked with all three lenses.',
+      'Sketched in pencil, built with Astro and checked with all three lenses.',
 
     'about.meta.title': 'About · Christian Oller',
     'about.meta.description':
@@ -277,6 +278,7 @@ export const ui = {
       "Before coding, I design: Figma for interfaces and Procreate when it's time to draw. Then I test what I build with Jasmine, Cypress and Postman, because a beautiful interface that breaks is no use.",
     'about.p3':
       'In 2025 I co-founded Vístalo with Eloi Cotonat, an agency that makes websites, photos and Google presence for small businesses. I work remotely from Spain.',
+    'about.experience.title': 'Experience',
     'about.principles.title': 'How I work',
     'about.principle1.title': 'Sketch first',
     'about.principle1.body': 'I draw the screen before coding it. Being wrong on paper is cheaper.',

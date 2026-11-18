@@ -219,26 +219,6 @@ The slug is the filename without the locale folder, so `my-project` is served at
 
 ---
 
-## Hero Lanyard (3D)
-
-A decorative, draggable 3D ID card hangs from a wide dark strap (with "christianoller.dev" text) in the left half of the home hero (physics with Rapier, rendering with React Three Fiber). It is a React island mounted with `client:only="react"` in `src/components/landing/Hero.astro`.
-
-- The static profile `<Image>` is always rendered. Once the 3D scene is running, the container gets `data-lanyard="ready"` and the image fades out (same box, no layout shift).
-- Nothing is rendered (static image stays) when `prefers-reduced-motion: reduce` is set or WebGL is unavailable. The heavy chunk (`LanyardScene`) is only fetched when the container is within 200px of the viewport; the render loop and physics pause when it is offscreen or the tab is hidden. `dpr` is capped at `[1, 1.5]`.
-- Touch: the canvas uses `touch-action: pan-y`, so vertical scrolling is never blocked.
-
-Files:
-
-- `src/components/lanyard/Lanyard.tsx`: wrapper (capability checks, IntersectionObserver, lazy import, error boundary).
-- `src/components/lanyard/LanyardScene.tsx`: canvas, physics chain (`useRopeJoint` / `useSphericalJoint`), camera-facing strap ribbon, orthographic camera, drag handling.
-- `src/components/lanyard/cardTexture.ts`: draws the card front/back, strap tile and soft shadow on 2D canvases.
-
-Change the card: edit the `name`, `role`, `site` props (the status line comes from the `hero.status` i18n key) passed to `<Lanyard>` in `Hero.astro`. The photo comes from `src/assets/images/profile.jpg` (`getImage` creates a 640px JPEG for the texture); swap that import to change it. Layout and colors of the faces are in `cardTexture.ts`.
-
-Dependencies: `@astrojs/react@4.4.2` (the 7.x line targets Astro 6), `react`/`react-dom@19.2.0`, `three@0.180.0`, `@react-three/fiber@9.4.0`, `@react-three/rapier@2.1.0`, `meshline@3.3.1`; dev: `@types/react`, `@types/react-dom`, `@types/three`.
-
----
-
 ## Design System
 
 Tailwind v4 is configured entirely in `src/styles/global.css` via `@theme` — there is no `tailwind.config.js`.
