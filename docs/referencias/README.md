@@ -42,6 +42,12 @@ momento sin volver a navegar por ellas.
   librería de Chrome de la skill (`scripts/lib/cdp.mjs`) y sirven para repetir el análisis con
   cualquier otra web de referencia.
 
+## Transición con el personaje
+
+- [transicion-personaje.md](transicion-personaje.md): la idea de Christian para el cambio de página
+  (su personaje empuja o arrastra la página), el análisis de la referencia (huyml.co) y qué dibujos
+  hacen falta.
+
 ## Regla de uso
 
 Las dos webs son de personas cercanas (la agencia de Christian y la web de su socio). El portfolio de
