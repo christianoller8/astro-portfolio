@@ -700,7 +700,7 @@ Detalle completo en el [informe, sección B2](informe-eloi-cotonat.md#b2-dónde-
 
 | # | Decisión | Opciones | Mi recomendación |
 | --- | --- | --- | --- |
-| D18 | Algo de three.js (lo pide Christian; se mira al final, en E5) | Una pieza 3D propia del concepto · nada | Por decidir al final. Ideas que encajarían: los frames del lienzo navegable en perspectiva 3D, o las capas de un proyecto separándose en el espacio ("vista explosionada"). La tarjeta colgante no vuelve. |
+| D18 | Algo de three.js (lo pide Christian; se mira al final, en E5) | Una pieza 3D propia del concepto · nada | **Decidido el 19 nov: la vista explosionada**, como cierre de "Cómo lo veo yo" (las cuatro capas de la web de ejemplo en el espacio). Antes: Ideas que encajarían: los frames del lienzo navegable en perspectiva 3D, o las capas de un proyecto separándose en el espacio ("vista explosionada"). La tarjeta colgante no vuelve. |
 | D17 | Laboratorio: una página con experimentos que haces por gusto | Sí, más adelante · no | Más adelante, cuando lo principal esté de 10: es la prueba más clara de que disfrutas. |
 
 ---

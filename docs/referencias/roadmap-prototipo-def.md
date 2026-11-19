@@ -558,7 +558,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
       lo que tiene el foco y lo sigue. Los campos de formulario conservan su propio estilo.
   - Todas se anulan con "reducir movimiento". Comprobadas en claro y oscuro con capturas a cámara
     lenta (`.taste-skill/def/e5/e5-microinteracciones.jpg`); 0 desbordes y la lente QA sin fallos.
-- [ ] Revisión completa en claro y en oscuro (**hecha el 19 nov; pendiente de tu visto bueno**).
+- [x] Revisión completa en claro y en oscuro (hecha y aprobada el 19 nov).
   - Repasadas en oscuro, sección a sección, las seis páginas a 1440 px (37 pantallas), y en los dos
     temas los estados: pie, las tres lentes sobre las páginas nuevas, menú de móvil y lente en móvil.
   - **Arreglado en oscuro**: los paneles de código (casos, "Cómo trabajo" y el árbol de "Cómo lo veo
@@ -572,8 +572,25 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     capturas de producto), y las franjas "en tinta" (pie, "Lo que más disfruté", la etapa actual)
     se invierten a claro, como estaba decidido.
   - Capturas: `.taste-skill/def/e5/e5-oscuro-arreglos.jpg` y `e5-lente-alineada.jpg`.
-- [ ] **Nota de Christian (18 nov)**: quiere incorporar algo de three.js. Se mira aquí, al final
-  (decisión D18 del plan): qué pieza 3D, dónde, y que salga del concepto del lienzo.
+- [ ] **Pieza de three.js (D18)** (**hecha el 19 nov; pendiente de tu visto bueno**). Elegiste la
+  "vista explosionada", como cierre de "Cómo lo veo yo" en el inicio.
+  - **"Y todo a la vez, en capas."** (`LayerStack.astro`, `src/scripts/layer-stack.ts`): la web de
+    ejemplo se separa en sus cuatro capas, puestas en el espacio: 01 Boceto, 02 Diseño, 03 Código
+    y 04 Pruebas. Se gira arrastrando (o con las flechas) y un control abre o cierra la separación.
+    Al entrar en pantalla las capas se separan solas; en reposo se mecen muy despacio.
+  - **Las capas no son imágenes guardadas**: se pintan en el navegador midiendo el HTML real de la
+    web de ejemplo (el boceto con los mismos trazos de la escena, el diseño repintado pieza a pieza
+    desde sus estilos, las etiquetas reales y las comprobaciones). Si cambia la demo o el tema,
+    cambian ellas.
+  - **Peso**: three.js son 173 KB (comprimido) y solo se descarga cuando la sección se acerca a la
+    pantalla; el resto de la web no lo carga. Solo se dibuja mientras se ve.
+  - **Alternativas**: sin WebGL, las cuatro capas se enseñan planas en una rejilla (probado). Con
+    "reducir movimiento" no se mecen. En táctil se gira a los lados y el scroll sigue siendo de la
+    página.
+  - Comprobado a 1440 px (claro y oscuro, inglés) y 390 px; al salir y volver de la página no deja
+    errores ni lienzos sueltos; 0 desbordes y la lente QA sin fallos. Capturas:
+    `.taste-skill/def/e5/e5-capas-3d.jpg` y `e5-capas-3d-movil.jpg`.
+  - No lo he podido ver moviéndose: el giro, el balanceo y la apertura a velocidad real los juzgas tú.
 - [ ] Inspector de la skill: 0 FAIL a 1440, 768 y 390 px.
 - [ ] Las 10 pruebas de la rúbrica.
 
