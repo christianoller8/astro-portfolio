@@ -7,6 +7,7 @@ const projectsCollection = defineCollection({
       title: z.string(),
       description: z.string(), // Una frase: qué es y para quién
       kind: z.enum(['app', 'web']),
+      format: z.enum(['desktop', 'mobile']).default('desktop'), // El marco en el lienzo de proyectos
       status: z.string(), // "En desarrollo", "Publicada"…
       role: z.string(),
       features: z.array(z.string()),

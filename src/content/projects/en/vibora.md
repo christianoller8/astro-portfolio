@@ -2,6 +2,7 @@
 title: 'Vibora'
 description: 'An app that manages padel court bookings: free slots, reservations and confirmations.'
 kind: 'app'
+format: 'mobile'
 status: 'In development'
 role: 'Design, development and QA'
 ui: 'vibora'

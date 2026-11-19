@@ -2,6 +2,7 @@
 title: 'Learnish'
 description: 'App para aprender inglés con lecciones cortas y repaso de vocabulario.'
 kind: 'app'
+format: 'mobile'
 status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
 ui: 'learnish'

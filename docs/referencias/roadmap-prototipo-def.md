@@ -21,7 +21,7 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **En curso**: Inicio completo hecho, pendiente de visto bueno (19 nov) |
+| **E4 · Páginas** | **En curso**: Inicio aprobado; Proyectos hecho, pendiente de visto bueno (19 nov) |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -374,8 +374,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 
 ## E4 · Páginas
 
-- [ ] **Inicio completo**: proyectos que se pueden tocar (una mini interacción en cada uno),
-  trayectoria resumida, contacto y pie (**hecho el 19 nov; pendiente de tu visto bueno**).
+- [x] **Inicio completo**: proyectos que se pueden tocar (una mini interacción en cada uno),
+  trayectoria resumida, contacto y pie (hecho y aprobado el 19 nov).
   - **Proyectos que se pueden tocar** (`ProjectStack.astro`, `src/scripts/project-demos.ts`). La
     tarjeta ya no es un enlace entero: se entra al caso por el título o por "Ver proyecto" (el
     morph sigue igual) y la interfaz de dentro responde:
@@ -398,7 +398,23 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Provisional: los datos de las demos son de ejemplo y los textos nuevos, por revisar. Faltan
     año y stack de Tempora, Vibora y Learnish, y sus imágenes reales (ver "Lo que necesito de ti").
   - Para la fase técnica: repetir las miniaturas del lienzo (la de Inicio ha cambiado).
-- [ ] **Proyectos**: el lienzo de proyectos y la vista en lista.
+- [ ] **Proyectos**: el lienzo de proyectos y la vista en lista (**hecho el 19 nov; pendiente de tu
+  visto bueno**).
+  - **Lienzo** (`ProjectsPage.astro`): una franja con el color y los puntos del lienzo, de lado a
+    lado del artboard, y en ella los cuatro proyectos como frames de un archivo de diseño, cada uno
+    en su formato: Tempora y Vístalo en escritorio (16:10), Vibora y Learnish en móvil. Cada frame
+    lleva su nombre encima ("Vibora · Móvil · 390 × 844") y un hilo de prototipo hasta la nota que
+    lleva a su caso (nombre, tipo, estado, una frase y "Ver caso").
+  - Al señalar un frame aparece la selección del kit con su medida, y el hilo se vuelve a dibujar.
+    El clic entra en el caso con el morph (el frame crece hasta ser la cabecera).
+  - Todo el tablero escala con el ancho (unidades `cqi`), incluida la interfaz de dentro: los
+    fragmentos de Tempora, Vibora y Learnish pasan de `rem` a `em` para escalar enteros.
+  - **Lista**: una línea por proyecto (número, nombre, frase, tipo, formato, estado y rol), que se
+    invierte a tinta al señalarla. La vista elegida se recuerda.
+  - Móvil y tablet estrecha: en el lienzo los frames van apilados con su nota debajo, sin hilos.
+  - Nuevo campo `format` (`desktop` o `mobile`) en cada proyecto.
+  - Comprobado a 1440 px (claro), 1024 px (oscuro, inglés) y 390 px; la lente QA da todo superado.
+    Capturas: `.taste-skill/def/e4/e4-proyectos-escritorio.jpg` y `e4-proyectos-movil.jpg`.
 - [ ] **Casos** con sus 9 apartados: Tempora, Vibora, Learnish y Vístalo.
 - [ ] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV.
 - [ ] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados.

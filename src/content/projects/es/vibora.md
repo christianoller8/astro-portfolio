@@ -2,6 +2,7 @@
 title: 'Vibora'
 description: 'App que gestiona las reservas de pistas de pádel: horarios libres, reservas y confirmaciones.'
 kind: 'app'
+format: 'mobile'
 status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
 ui: 'vibora'
