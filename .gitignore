@@ -29,7 +29,23 @@ pnpm-debug.log*
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-.taste-skill/
+# Carpeta de trabajo (capturas y pruebas): se queda en cada equipo…
+.taste-skill/*
+# …menos los guiones con los que se revisa la web y se generan algunas piezas
+!.taste-skill/eloi-1118/
+.taste-skill/eloi-1118/*
+!.taste-skill/eloi-1118/tools/
+!.taste-skill/recorte/
+.taste-skill/recorte/*
+!.taste-skill/recorte/*.cjs
+!.taste-skill/recorte/*.swift
+!.taste-skill/personaje/
+.taste-skill/personaje/*
+!.taste-skill/personaje/*.cjs
+!.taste-skill/letras/
+.taste-skill/letras/*
+!.taste-skill/letras/*.mjs
+!.taste-skill/letras/*.cjs
 
 # Material de referencia de terceros (vídeo, logo y lámina de letras): se queda en local
 docs/videos/

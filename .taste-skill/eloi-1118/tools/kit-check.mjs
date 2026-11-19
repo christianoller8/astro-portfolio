@@ -1,0 +1,24 @@
+// Estados interactivos del kit: hover de selección y cruceta con coordenadas.
+const [CDP, B, OUT] = process.argv.slice(2);
+const { Browser, sleep } = await import(CDP);
+const browser = await Browser.launch();
+const p = await browser.newPage({ width: 1440, height: 900 });
+await p.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
+const errors = [];
+browser.on(p.sessionId, 'Runtime.consoleAPICalled', (e) => { if (e.type === 'error') errors.push(e.args.map((a) => a.value).join(' ')); });
+await p.goto(B + '/sistema/', { settleMs: 1200 });
+const at = async (sel) => p.eval((s) => { const el = document.querySelector(s); el.scrollIntoView({ block: 'center', behavior: 'instant' }); const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, top: r.top, h: r.height }; }, sel);
+let c = await at('a.kit-card');
+await p.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: c.x, y: c.y });
+await sleep(600);
+await p.screenshot({ path: OUT + '/e1-kit-hover-seleccion.jpg', quality: 85 });
+console.log('sizes', await p.eval(() => [...document.querySelectorAll('[data-sel]')].map((e) => e.dataset.size)));
+c = await at('[data-coords]');
+await p.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: c.x - 40, y: c.y - 20 });
+await sleep(100);
+await p.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: c.x + 30, y: c.y + 10 });
+await sleep(500);
+await p.screenshot({ path: OUT + '/e1-kit-cursor.jpg', quality: 85 });
+console.log('coords', await p.eval(() => document.querySelector('.kit-coords')?.textContent), 'thread', await p.eval(() => document.querySelector('#thread-demo path')?.getAttribute('d')));
+console.log('errors', errors.length, p.consoleErrors);
+await browser.close(); process.exit(0);

@@ -1,0 +1,21 @@
+// Morph desde la tarjeta de la home (título y "Ver proyecto") y la web de Vístalo abierta en su marco.
+import { writeFileSync } from 'node:fs';
+const [CDP, dir, url, size] = process.argv.slice(2);
+const { Browser, sleep } = await import(CDP);
+const [w, h] = size.split('x').map(Number);
+const browser = await Browser.launch();
+const p = await browser.newPage({ width: w, height: h, mobile: w < 600, dsf: w < 600 ? 2 : 1 });
+await p.send('Page.addScriptToEvaluateOnNewDocument', { source: `try { localStorage.removeItem('lens'); } catch (e) {}; window.__errs = []; addEventListener('error', (e) => window.__errs.push(e.message));` });
+await p.goto(url, { settleMs: 2600 });
+await p.eval(() => document.querySelector('[data-demo="live"]').scrollIntoView({ block: 'center' })); await sleep(600);
+await p.eval(() => document.querySelector('[data-demo-live]').click()); await sleep(6000);
+console.log(JSON.stringify(await p.eval(() => { const f = document.querySelector('[data-demo="live"] iframe'); const s = f?.parentElement.getBoundingClientRect(); const r = f?.getBoundingClientRect(); return { iframe: !!f, marco: s && [Math.round(s.width), Math.round(s.height)], web: r && [Math.round(r.width), Math.round(r.height)], boton: document.querySelector('[data-demo-live]').textContent.trim() }; })));
+const { data } = await p.send('Page.captureScreenshot', { format: 'jpeg', quality: 80 }); writeFileSync(`${dir}/vistalo-viva-${w}.jpg`, Buffer.from(data, 'base64'));
+await p.eval(() => document.querySelector('[data-demo-live]').click()); await sleep(300);
+await p.eval(() => { const a = document.querySelector('.stack-item .stack-cta'); a.scrollIntoView({ block: 'center' }); a.click(); }); await sleep(2600);
+console.log(JSON.stringify(await p.eval(() => ({ path: location.pathname, h1: document.querySelector('h1')?.textContent.trim(), quedaIframe: !!document.querySelector('iframe'), errores: window.__errs }))));
+await p.eval(() => history.back()); await sleep(2600);
+console.log(JSON.stringify(await p.eval(() => ({ path: location.pathname, errores: window.__errs, demos: document.querySelectorAll('[data-demo]').length }))));
+await p.eval(() => document.querySelector('[data-demo-add]').click());
+console.log(JSON.stringify(await p.eval(() => ({ filasTrasVolver: document.querySelectorAll('[data-demo="tempora"] .tp-row:not(.tp-row--head)').length }))));
+await browser.close(); process.exit(0);
