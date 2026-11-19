@@ -278,7 +278,69 @@
   mask-image: var(--kit-cross);
 }
 
+/* ---------- Control segmentado: el indicador se desliza al segmento elegido (260 ms, muelle) ----------
+   kit.ts mide el segmento pulsado y deja su caja en --seg-x/y/w/h. */
+[data-seg] {
+  position: relative;
+}
+[data-seg] > * {
+  position: relative;
+}
+[data-seg]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--seg-w, 0);
+  height: var(--seg-h, 0);
+  background: var(--seg-bg, var(--pencil));
+  opacity: var(--seg-on, 0);
+  transform: translate(var(--seg-x, 0), var(--seg-y, 0));
+  pointer-events: none;
+}
+[data-seg].is-seg-ready::before {
+  transition:
+    transform var(--dur-ui) var(--spring),
+    width var(--dur-ui) var(--spring),
+    opacity var(--dur-micro) var(--ease-out);
+}
+/* Con el indicador en marcha, el segmento pulsado ya no pinta su propio fondo */
+[data-seg].is-seg > [aria-pressed='true'] {
+  background: none !important;
+}
+
+/* ---------- Foco con teclado: el mismo cuadro de selección que el hover ----------
+   Un único cuadro (lo mueve kit.ts) rodea lo que tiene el foco: 1 px de tinta y sus ocho tiradores. */
+.kit-focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  outline: 1px solid var(--ink);
+  background: var(--kit-handles);
+  /* Sobre fondos de tinta (el pie) el cuadro sigue viéndose */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--paper) 55%, transparent);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.96;
+  transition:
+    opacity var(--dur-micro) var(--ease-out),
+    scale var(--dur-ui) var(--spring);
+}
+.kit-focus.is-on {
+  opacity: 1;
+  scale: 1;
+}
+/* Con el cuadro en marcha sobra el contorno del navegador (los campos de formulario lo conservan) */
+html.kit-focus-on :focus-visible:not(input, textarea, select) {
+  outline: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  [data-seg].is-seg-ready::before,
+  .kit-focus {
+    transition: none;
+  }
   [data-sel]::before,
   [data-sel]::after,
   .kit-thread *,

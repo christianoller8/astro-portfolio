@@ -234,9 +234,9 @@
   background: var(--tint);
   color: var(--ink);
 }
+/* Secundario: al señalarlo, un paso de grafito claro (plan §4.4) */
 .btn-quiet:hover {
-  background: var(--ink);
-  color: var(--paper);
+  background: color-mix(in srgb, var(--graphite) 34%, var(--tint));
 }
 .btn .btn-arrow {
   transition: transform var(--dur-micro) var(--ease-out);
@@ -244,18 +244,88 @@
 .btn:hover .btn-arrow {
   transform: translateX(3px);
 }
+/* Descargar el CV: la flecha baja 4 px y vuelve, como una hoja saliendo de la impresora */
+a[download] .btn-arrow,
+a[download] svg {
+  transform: none;
+}
+a[download]:hover :is(.btn-arrow, svg),
+a[download]:focus-visible :is(.btn-arrow, svg) {
+  animation: cv-print 260ms var(--ease-out);
+}
+@keyframes cv-print {
+  50% {
+    transform: translateY(4px);
+  }
+}
 
-/* Enlace con subrayado que crece */
+/* Enlace de texto: un subrayado fino de grafito que se entinta de izquierda a derecha (200 ms).
+   Va como fondo para poder crecer; la altura se mide desde el centro de la caja, así vale igual
+   para un enlace en línea que para uno con zona táctil alta. */
 .link {
-  text-decoration-line: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 0.22em;
-  text-decoration-color: transparent;
-  transition: text-decoration-color var(--dur-micro) var(--ease-out);
+  text-decoration: none;
+  background:
+    linear-gradient(currentColor, currentColor) 0 calc(50% + 0.62em) / 0 2px no-repeat,
+    linear-gradient(var(--graphite), var(--graphite)) 0 calc(50% + 0.62em) / 100% 1px no-repeat;
+  transition: background-size 200ms var(--ease-out);
 }
 .link:hover,
 .link:focus-visible {
-  text-decoration-color: currentColor;
+  background-size:
+    100% 2px,
+    100% 1px;
+}
+
+/* ---------- Modo claro / oscuro en dos tiempos: primero el lienzo, después los frames ---------- */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 150ms linear 150ms,
+    color 150ms linear 150ms,
+    border-color 150ms linear 150ms,
+    outline-color 150ms linear 150ms,
+    fill 150ms linear 150ms,
+    stroke 150ms linear 150ms !important;
+}
+html.theme-switching body,
+html.theme-switching .toolbar,
+html.theme-switching .toolbar *,
+html.theme-switching .frame-label,
+html.theme-switching .frame-label * {
+  transition-delay: 0s !important;
+}
+
+/* Aviso que sale desde el puntero (copiar el email) */
+.kit-toast {
+  position: fixed;
+  z-index: 90;
+  padding: 0.2rem 0.55rem;
+  font: 500 0.8125rem/1.4 var(--font-mono);
+  white-space: nowrap;
+  color: var(--paper);
+  background: var(--ink);
+  pointer-events: none;
+  translate: -50% -100%;
+  animation: kit-toast 900ms var(--ease-out) forwards;
+}
+@keyframes kit-toast {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  22% {
+    opacity: 1;
+    transform: translateY(-14px) scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(-16px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
 }
 
 /* ---------- Entradas al hacer scroll ---------- */
@@ -378,6 +448,13 @@ html.frame-back::view-transition-group(pusher) {
 ::view-transition-new(pusher) {
   animation: none;
 }
+/* El cuadradito del enlace activo del menú se desliza hasta el nuevo enlace al cambiar de página */
+::view-transition-group(nav-ind) {
+  /* Por encima de la barra (que va fija, con z-index 10) */
+  z-index: 11;
+  animation-duration: 600ms;
+  animation-timing-function: var(--ease-camera);
+}
 ::view-transition-group(toolbar) {
   animation: none;
   z-index: 10;
@@ -493,6 +570,21 @@ html.canvas-open {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after,
+  .link {
+    transition: none !important;
+  }
+  a[download]:hover :is(.btn-arrow, svg),
+  a[download]:focus-visible :is(.btn-arrow, svg) {
+    animation: none;
+  }
+  .kit-toast {
+    animation-duration: 1ms;
+    animation-fill-mode: none;
+  }
+
   ::view-transition-old(root),
   ::view-transition-new(root),
   html.frame-back::view-transition-old(root),

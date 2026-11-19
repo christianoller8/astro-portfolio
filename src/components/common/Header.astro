@@ -43,6 +43,7 @@ const isActive = (path: string) => {
                 aria-current={isActive(item.path) ? 'page' : undefined}
               >
                 {t(item.key)}
+                {isActive(item.path) && <span class="nav-ind" aria-hidden="true" />}
               </a>
             </li>
           ))
@@ -245,6 +246,19 @@ const isActive = (path: string) => {
   }
   .nav-link:hover {
     color: var(--ink);
+  }
+  /* El cuadradito de selección del enlace activo: viaja de un enlace a otro con la transición */
+  .nav-link {
+    position: relative;
+  }
+  .nav-ind {
+    position: absolute;
+    bottom: 3px;
+    left: calc(50% - 2.5px);
+    width: 5px;
+    height: 5px;
+    background: var(--ink);
+    view-transition-name: nav-ind;
   }
   .nav-link[aria-current='page'] {
     color: var(--ink);

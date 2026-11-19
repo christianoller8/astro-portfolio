@@ -522,8 +522,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 
 ## E5 · Móvil y pulido
 
-- [ ] Composición propia a 390 px en todas las páginas (**revisado el 19 nov; pendiente de tu visto
-  bueno**).
+- [x] Composición propia a 390 px en todas las páginas (revisado y aprobado el 19 nov).
   - Repasadas, pantalla a pantalla, las seis páginas a 390 px: Inicio (11 pantallas), Proyectos (5),
     un caso (9), Sobre mí, Contacto (4) y el 404. La mayoría ya estaba compuesta para móvil al
     construirla en E4 (hero con el retrato como capa, interfaces enteras y a su formato, frames
@@ -537,7 +536,28 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     los dos (también en escritorio).
   - Comprobado en claro, oscuro e inglés; 0 desbordes en 108 combinaciones y la lente QA sin fallos.
     Capturas: `.taste-skill/def/e5/e5-movil-*.jpg`. Herramienta: `mobile-strip.mjs`.
-- [ ] Todas las microinteracciones del catálogo (§4.4 del plan).
+- [ ] Todas las microinteracciones del catálogo (§4.4 del plan) (**hecho el 19 nov; pendiente de tu
+  visto bueno**). De las doce del catálogo:
+  - **Ya estaba**: botón principal (el fondo se aclara, la flecha avanza 3 px, escala 0,98).
+  - **Sustituida por decisión tuya**: el cambio de idioma. El plan pedía un fundido; lo hace el
+    personaje empujando o arrastrando la página.
+  - **Hechas ahora**:
+    - *Enlace de texto*: subrayado fino de grafito que se entinta de izquierda a derecha (200 ms).
+    - *Botón secundario*: al señalarlo, un paso de grafito claro (antes se invertía a tinta).
+    - *Tarjeta de proyecto*: en el inicio, el frame de cada proyecto se selecciona (tiradores y
+      medida); en el lienzo de Proyectos, además, lo de dentro se acerca un 2 %.
+    - *Enlace activo del menú*: un cuadradito de selección bajo el enlace activo que se desliza
+      hasta el nuevo enlace durante la transición de página (600 ms).
+    - *Interruptor de lentes* (y el de Lienzo/Lista): el indicador se desliza al segmento elegido
+      (260 ms, muelle). Pieza del kit: `[data-seg]`.
+    - *Modo claro / oscuro*: en dos tiempos, primero el lienzo y la barra y después los frames.
+    - *Retrato* (Sobre mí): selección con su nombre de archivo y su tamaño.
+    - *Copiar el email*: una píldora "Copiado" sale desde el puntero (desde el botón, con teclado).
+    - *Botón de CV*: la flecha baja 4 px y vuelve, como una hoja saliendo de la impresora.
+    - *Foco con teclado*: un único cuadro de selección (1 px y ocho tiradores, el del hover) rodea
+      lo que tiene el foco y lo sigue. Los campos de formulario conservan su propio estilo.
+  - Todas se anulan con "reducir movimiento". Comprobadas en claro y oscuro con capturas a cámara
+    lenta (`.taste-skill/def/e5/e5-microinteracciones.jpg`); 0 desbordes y la lente QA sin fallos.
 - [ ] Revisión completa en claro y en oscuro.
 - [ ] **Nota de Christian (18 nov)**: quiere incorporar algo de three.js. Se mira aquí, al final
   (decisión D18 del plan): qué pieza 3D, dónde, y que salga del concepto del lienzo.

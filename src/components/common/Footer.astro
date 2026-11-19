@@ -37,7 +37,7 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
         hasCV && (
           <li>
             <a class="link" href={site.cv} download>
-              {t('hero.cta.cv')} ↓
+              {t('hero.cta.cv')} <span class="btn-arrow" aria-hidden="true">↓</span>
             </a>
           </li>
         )
@@ -92,6 +92,10 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
     gap: 0.75rem 2rem;
     font-size: var(--step-body);
   }
+  .back-links .btn-arrow {
+    display: inline-block;
+    margin-left: 0.3em;
+  }
   .back-links a {
     display: inline-flex;
     min-height: 2.5rem;
@@ -145,6 +149,16 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
     } catch {
       return;
     }
+    // Un aviso sale desde el puntero (o desde el botón, con teclado)
+    const box = btn.getBoundingClientRect();
+    const pointer = event instanceof MouseEvent && (event.clientX || event.clientY);
+    const toast = document.createElement('span');
+    toast.className = 'kit-toast';
+    toast.textContent = btn.dataset.copied ?? '';
+    toast.style.left = `${pointer ? event.clientX : box.left + box.width / 2}px`;
+    toast.style.top = `${pointer ? event.clientY - 6 : box.top}px`;
+    document.body.append(toast);
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
     const label = btn.textContent;
     btn.textContent = btn.dataset.copied ?? '';
     btn.classList.add('is-done');

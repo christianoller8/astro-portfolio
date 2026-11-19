@@ -70,7 +70,9 @@ const tests =
           }
         </dl>
       </div>
-      <figure class="about-photo" data-ds={lang === 'es' ? 'Retrato' : 'Portrait'} data-qa-host data-reveal>
+      {/* La selección va en un envoltorio: la figura lleva una máscara que la recortaría */}
+      <div class="about-photo-sel" data-sel data-sel-name="profile.jpg" data-reveal>
+      <figure class="about-photo" data-ds={lang === 'es' ? 'Retrato' : 'Portrait'} data-qa-host>
         <Image
           src={profileImage}
           alt={t('hero.portrait.alt')}
@@ -88,6 +90,7 @@ const tests =
           class="about-photo-img about-photo-img--dark"
         />
       </figure>
+      </div>
     </div>
   </section>
 
@@ -290,8 +293,10 @@ const tests =
     font-weight: 600;
   }
   /* El retrato, como capa: sobre papel su fondo blanco se funde (multiplicar) y el pie se desvanece */
-  .about-photo {
+  .about-photo-sel {
     max-width: 40rem;
+  }
+  .about-photo {
     -webkit-mask: linear-gradient(#000 78%, transparent);
     mask: linear-gradient(#000 78%, transparent);
   }
@@ -625,7 +630,7 @@ const tests =
 
   /* En móvil y tablet estrecha el retrato va justo debajo del título */
   @media (max-width: 899px) {
-    .about-photo {
+    .about-photo-sel {
       order: -1;
       max-width: 26rem;
       margin-top: -1rem;
@@ -637,7 +642,7 @@ const tests =
       align-items: start;
       gap: 2rem;
     }
-    .about-photo {
+    .about-photo-sel {
       justify-self: end;
       margin-top: -3.5rem;
     }

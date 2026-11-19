@@ -62,6 +62,10 @@ const t = useTranslations(getLangFromUrl(Astro.url));
       newBtn.addEventListener('click', () => {
         // Toggle Logic
         const isDarkNow = document.documentElement.classList.contains('dark');
+        // En dos tiempos (estilos en global.css): primero cambia el lienzo y después los frames
+        const root = document.documentElement;
+        root.classList.add('theme-switching');
+        window.setTimeout(() => root.classList.remove('theme-switching'), 340);
 
         if (isDarkNow) {
           document.documentElement.classList.remove('dark');

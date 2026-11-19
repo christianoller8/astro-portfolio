@@ -9,7 +9,96 @@ function measure(target: EventTarget | null) {
   const el = target instanceof Element ? target.closest<HTMLElement>('[data-sel]') : null;
   if (!el) return;
   const box = el.getBoundingClientRect();
-  el.dataset.size = `${Math.round(box.width)} × ${Math.round(box.height)}`;
+  // data-sel-name: el nombre de la capa (un archivo, por ejemplo) delante de la medida
+  const name = el.dataset.selName ? `${el.dataset.selName} · ` : '';
+  el.dataset.size = `${name}${Math.round(box.width)} × ${Math.round(box.height)}`;
+}
+
+/** Control segmentado ([data-seg]): deja la caja del segmento pulsado para el indicador deslizante. */
+function initSegments(signal: AbortSignal) {
+  const groups = [...document.querySelectorAll<HTMLElement>('[data-seg]')];
+  if (!groups.length) return;
+  const sync = (group: HTMLElement) => {
+    const on = group.querySelector<HTMLElement>(':scope > [aria-pressed="true"]');
+    // Si el control no está a la vista (el del menú de móvil, cerrado) no se puede medir: el segmento
+    // pulsado conserva su propio fondo hasta que se vea
+    if (!group.offsetWidth) {
+      group.classList.remove('is-seg');
+      return;
+    }
+    group.classList.add('is-seg');
+    if (!on) {
+      group.style.setProperty('--seg-on', '0');
+      return;
+    }
+    group.style.setProperty('--seg-x', `${on.offsetLeft}px`);
+    group.style.setProperty('--seg-y', `${on.offsetTop}px`);
+    group.style.setProperty('--seg-w', `${on.offsetWidth}px`);
+    group.style.setProperty('--seg-h', `${on.offsetHeight}px`);
+    group.style.setProperty('--seg-on', '1');
+  };
+  const all = () => groups.forEach(sync);
+  all();
+  // La primera colocación no se anima; a partir de ahí, sí
+  requestAnimationFrame(() => requestAnimationFrame(() => groups.forEach((group) => group.classList.add('is-seg-ready'))));
+  const observer = new MutationObserver((records) => {
+    for (const group of new Set(records.map((r) => (r.target as Element).closest<HTMLElement>('[data-seg]')))) if (group) sync(group);
+  });
+  for (const group of groups) observer.observe(group, { attributes: true, attributeFilter: ['aria-pressed'], subtree: true });
+  // También al cambiar de tamaño o al hacerse visible (el menú de móvil al abrirse)
+  const resizes = new ResizeObserver((entries) => entries.forEach((entry) => sync(entry.target as HTMLElement)));
+  groups.forEach((group) => resizes.observe(group));
+  document.fonts?.ready.then(() => !signal.aborted && all());
+  signal.addEventListener('abort', () => {
+    observer.disconnect();
+    resizes.disconnect();
+  });
+}
+
+/**
+ * Foco con teclado: un cuadro de selección (el del kit) rodea el elemento enfocado y lo sigue
+ * mientras tenga el foco. Las piezas con [data-sel] dibujan la suya y los campos de formulario
+ * conservan su propio estilo.
+ */
+function initFocusBox(signal: AbortSignal) {
+  const box = document.createElement('span');
+  box.className = 'kit-focus';
+  box.setAttribute('aria-hidden', 'true');
+  document.body.append(box);
+  document.documentElement.classList.add('kit-focus-on');
+  let target: Element | null = null;
+  let raf = 0;
+  const follow = () => {
+    if (!target?.isConnected) return hide();
+    const r = target.getBoundingClientRect();
+    const pad = 3;
+    box.style.transform = `translate(${n(r.left - pad)}px, ${n(r.top - pad)}px)`;
+    box.style.width = `${n(r.width + pad * 2)}px`;
+    box.style.height = `${n(r.height + pad * 2)}px`;
+    raf = requestAnimationFrame(follow);
+  };
+  const hide = () => {
+    cancelAnimationFrame(raf);
+    target = null;
+    box.classList.remove('is-on');
+  };
+  document.addEventListener(
+    'focusin',
+    (event) => {
+      const el = event.target instanceof Element ? event.target : null;
+      cancelAnimationFrame(raf);
+      if (!el || !el.matches(':focus-visible') || el.matches('input, textarea, select, [data-sel]')) return hide();
+      target = el;
+      follow();
+      box.classList.add('is-on');
+    },
+    { signal },
+  );
+  document.addEventListener('focusout', hide, { signal });
+  signal.addEventListener('abort', () => {
+    hide();
+    box.remove();
+  });
 }
 
 /**
@@ -138,6 +227,8 @@ document.addEventListener('astro:page-load', () => {
   measureSelected();
   window.addEventListener('resize', measureSelected, { passive: true, signal });
   initFrameSize(signal);
+  initSegments(signal);
+  initFocusBox(signal);
   initThreads(signal);
   initCoords(signal);
 });

@@ -58,7 +58,7 @@ const items = projects.map((project, i) => {
         <h1 class="t-display" data-reveal data-ds="H1" data-ds-type>{t('projects.title')}</h1>
         <p class="t-lead pp-lead" data-reveal style="--reveal-i: 1">{t('projects.page.lead')}</p>
       </div>
-      <div class="pp-mode" role="group" aria-label={t('projects.mode.label')} data-reveal style="--reveal-i: 2">
+      <div class="pp-mode" role="group" aria-label={t('projects.mode.label')} data-seg data-reveal style="--reveal-i: 2">
         <button type="button" class="pp-mode-btn" data-projects-mode="canvas" aria-pressed="true">
           <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <rect x="1.5" y="2.5" width="7" height="5"></rect>
@@ -241,6 +241,13 @@ const items = projects.map((project, i) => {
   .board-shot {
     display: block;
     background: var(--paper);
+  }
+  /* Al señalar el frame, lo de dentro se acerca un 2 % (plan §4.4) */
+  .board-shot :global(.pv-clip > *) {
+    transition: scale var(--dur-ui) var(--spring);
+  }
+  .board-shot:hover :global(.pv-clip > *) {
+    scale: 1.02;
   }
   .board-frame--mobile .board-shot {
     width: min(100%, 20rem);

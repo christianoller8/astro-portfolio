@@ -19,6 +19,7 @@ const lenses = [
 
 <div
   class:list={['lens-switch', `lens-switch--${variant}`]}
+  data-seg
   role="group"
   aria-label={t('lens.label')}
 >
@@ -133,6 +134,9 @@ const lenses = [
   }
   .lens-switch--dock .lens-btn:hover {
     color: var(--paper);
+  }
+  .lens-switch--dock {
+    --seg-bg: var(--paper);
   }
   .lens-switch--dock .lens-btn[aria-pressed='true'] {
     color: var(--ink);
