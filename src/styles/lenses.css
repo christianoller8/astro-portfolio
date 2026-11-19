@@ -133,11 +133,6 @@ html.intro .lens-layer {
   left: auto;
   transform: none;
 }
-/* Si la medida choca con otra, pasa dentro de la caja */
-.lm--sel.is-flip .lm-size {
-  top: auto;
-  bottom: 8px;
-}
 
 /* Guías: líneas de construcción discontinuas. Las de la columna recorren el artboard entero. */
 .lm--guide {
@@ -217,8 +212,8 @@ html.intro .lens-layer {
   background: var(--tint);
 }
 
-/* Etiquetas e insignias: encima de su caja, a la izquierda; lenses.ts las pasa al final de la caja
-   (is-end), dentro (is-in) o debajo (is-flip) cuando no caben */
+/* Etiquetas e insignias: encima de su caja, a la izquierda. lenses.ts las pasa al final de la caja
+   (is-end), al lado (is-side), dentro (is-in) o debajo (is-flip) cuando ahí tapan algo. */
 .lm-tag--node,
 .lm-badge {
   bottom: calc(100% + 4px);
@@ -227,6 +222,12 @@ html.intro .lens-layer {
 .is-end > :is(.lm-tag--node, .lm-badge) {
   right: 0;
   left: auto;
+}
+.is-side > :is(.lm-tag--node, .lm-badge) {
+  top: 50%;
+  bottom: auto;
+  left: calc(100% + 6px);
+  transform: translateY(-50%);
 }
 .is-in > :is(.lm-tag--node, .lm-badge) {
   top: 6px;

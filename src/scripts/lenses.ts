@@ -105,9 +105,10 @@ function syncButtons() {
 }
 
 /** Lo que no cuenta para las lentes: lo oculto, lo inerte (la web de ejemplo) y lo que no ocupa sitio */
-const visible = (el: Element) => {
+const visible = (el: Element, strict = true) => {
   const box = el.getBoundingClientRect();
-  if (!box.width || !box.height || el.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
+  // strict: lo que llega a un lector de pantalla (QA y Código). Diseño también marca lo decorativo.
+  if (!box.width || !box.height || el.closest(strict ? '[hidden], [inert], [aria-hidden="true"]' : '[hidden], [inert]')) return false;
   const cs = getComputedStyle(el);
   return cs.visibility !== 'hidden' && cs.display !== 'none';
 };
@@ -190,36 +191,69 @@ function place(onlyLive = false) {
   for (const mark of marks) if (!onlyLive || mark.live) mark.place(base, area);
 }
 
+/** Las piezas con contenido propio (texto, imágenes, campos): una etiqueta no debe taparlas */
+function contentBoxes(art: HTMLElement) {
+  const boxes: { el: Element; box: DOMRect }[] = [];
+  const walker = document.createTreeWalker(art, NodeFilter.SHOW_ELEMENT);
+  for (let el = walker.nextNode() as Element | null; el; el = walker.nextNode() as Element | null) {
+    if (el.closest('.lens-layer')) continue;
+    const own = el.matches('img, svg, input, textarea, select, button') || [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent?.trim());
+    if (!own) continue;
+    const box = el.getBoundingClientRect();
+    if (box.width && box.height) boxes.push({ el, box });
+  }
+  return boxes;
+}
+
 /**
- * Coloca cada etiqueta donde no pise a otra ni se salga del artboard: encima de su caja, dentro de
- * ella (si es grande) o debajo. Si no cabe en ningún sitio, se esconde y queda solo la caja.
+ * Coloca cada etiqueta donde no pise a otra, ni tape contenido, ni se salga del artboard. Prueba, por
+ * orden: encima de su caja (a la izquierda o al final), al lado, dentro (si la caja es grande) y
+ * debajo. Si no cabe en ningún sitio, se esconde y queda solo la caja.
  */
+const SPOTS = [[], ['is-end'], ['is-side'], ['is-in', 'is-end'], ['is-in'], ['is-flip'], ['is-flip', 'is-end']];
 function declutter() {
-  const art = artboard()?.getBoundingClientRect();
-  if (!layer || !art) return;
+  const artEl = artboard();
+  const art = artEl?.getBoundingClientRect();
+  if (!layer || !artEl || !art) return;
+  const content = contentBoxes(artEl);
   const taken: DOMRect[] = [];
-  const bad = (box: DOMRect) =>
+  const meets = (a: DOMRect, b: DOMRect, gap: number) =>
+    a.left < b.right + gap && a.right > b.left - gap && a.top < b.bottom - 2 && a.bottom > b.top + 2;
+  const bad = (box: DOMRect, el?: Element) =>
     box.top < art.top - 1 ||
     box.left < art.left - 1 ||
-    taken.some((t) => box.left < t.right + 4 && box.right > t.left - 4 && box.top < t.bottom + 1 && box.bottom > t.top - 1);
+    box.right > art.right + 1 ||
+    taken.some((t) => meets(box, t, 4)) ||
+    content.some(
+      (c) =>
+        c.el !== el &&
+        !c.el.contains(el ?? null) &&
+        // Sobre la propia imagen marcada sí puede ir su insignia
+        !(el?.contains(c.el) && c.el.matches('img, svg')) &&
+        meets(box, c.box, 0),
+    );
   for (const mark of marks) {
     const tag = mark.node.querySelector<HTMLElement>('.lm-tag');
     if (!tag || mark.node.hidden) continue;
-    mark.node.classList.remove('is-flip', 'is-in', 'is-end');
+    mark.node.classList.remove('is-flip', 'is-in', 'is-end', 'is-side');
     tag.hidden = false;
-    if (tag.getBoundingClientRect().right > art.right - 4) mark.node.classList.add('is-end');
+    // La etiqueta de un bloque (Código) y la medida de una selección (Diseño) tienen su sitio fijo
+    if (mark.node.matches('.lm--block, .lm--sel')) {
+      taken.push(tag.getBoundingClientRect());
+      continue;
+    }
     const roomy = mark.node.offsetHeight >= 72 && mark.node.offsetWidth >= tag.offsetWidth + 16;
-    const options = mark.node.matches('.lm--block') ? [''] : ['', ...(roomy ? ['is-in'] : []), 'is-flip'];
     let placed = false;
-    for (const option of options) {
-      if (option) mark.node.classList.add(option);
+    for (const spot of SPOTS) {
+      if (spot.includes('is-in') && !roomy) continue;
+      mark.node.classList.add(...spot);
       const box = tag.getBoundingClientRect();
-      if (!bad(box)) {
+      if (!bad(box, mark.el)) {
         taken.push(box);
         placed = true;
         break;
       }
-      if (option) mark.node.classList.remove(option);
+      mark.node.classList.remove(...spot);
     }
     tag.hidden = !placed;
   }
@@ -315,7 +349,7 @@ function buildDesign() {
   // Selecciones: las piezas marcadas en el HTML y los títulos de sección
   const picked = new Set<Element>();
   art.querySelectorAll<HTMLElement>('[data-ds]').forEach((el) => {
-    if (!visible(el)) return;
+    if (!visible(el, false)) return;
     picked.add(el);
     const value = el.hasAttribute('data-ds-type') ? typeOf(el) : sizeOf(el);
     const kind = el.hasAttribute('data-ds-type') ? 'lm--sel lm--type' : 'lm--sel';
@@ -404,7 +438,7 @@ function codeBar(i18n: Record<string, string>) {
     ...(load ? [[`${fmt(load / 1000, 2)} s`, i18n.load]] : []),
   ];
   // Las capas de la página: cada bloque con su componente; al pulsarlo, se va hasta él
-  const blocks = [...document.querySelectorAll<HTMLElement>('[data-cs]')].filter(visible);
+  const blocks = [...document.querySelectorAll<HTMLElement>('[data-cs]')].filter((el) => visible(el));
   targets = blocks;
   return [
     ...rows.map(([value, label]) => `<li class="lb-chip"><b>${value}</b> ${label}</li>`),
@@ -685,6 +719,22 @@ function qaBar(checks: Check[], i18n: Record<string, string>) {
   return [`<li class="lb-chip lb-score"><b>${passed}/${checks.length}</b> ${i18n.passed}</li>`, '<li class="lb-sep"></li>', ...chips].join('');
 }
 
+const signature = (checks: Check[]) => checks.map((c) => `${c.ok ? 1 : 0}${c.note ?? ''}`).join('|');
+
+/**
+ * Si al medir había colores a medio cambiar (una transición de color en curso), el contraste leído no
+ * es el definitivo: cuando terminan se comprueba otra vez y, si el resultado cambia, se repinta.
+ */
+function settleQa(before: string) {
+  const running = document
+    .getAnimations()
+    .filter((a) => a instanceof CSSTransition && /color/.test(a.transitionProperty) && a.playState === 'running');
+  if (!running.length) return;
+  Promise.allSettled(running.map((a) => a.finished)).then(() => {
+    if (currentLens() === 'qa' && signature(runChecks()) !== before) render();
+  });
+}
+
 /* ---------- Render ---------- */
 
 function render(animate = false) {
@@ -708,6 +758,7 @@ function render(animate = false) {
     const checks = runChecks();
     buildQa(checks);
     if (stats) stats.innerHTML = qaBar(checks, i18n);
+    settleQa(signature(checks));
   }
   if (stats) stats.scrollLeft = 0;
   place();

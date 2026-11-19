@@ -20,7 +20,7 @@
 | E0 · Arranque | Hecho (18 nov). Por confirmar: texto de Vístalo y fechas de 2023 |
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
-| **E3 · Momentos firma** | **En curso**: intro hecha y aprobada (19 nov) |
+| **E3 · Momentos firma** | **En curso**: todo hecho; solo falta tu visto bueno a las lentes (19 nov) |
 | E4 · Páginas | Pendiente |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
@@ -175,7 +175,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     barra lleva marca, ES/EN, modo y menú; el menú es una capa a pantalla completa con las
     páginas arriba y las lentes, "Ver lienzo" y "Descargar CV" abajo, al alcance del pulgar.
   - Pendiente: "Ver lienzo" todavía no hace nada (el lienzo navegable es de E3).
-  - Para E3 (lentes): con la lente Código, la etiqueta del primer bloque pisa el nombre del frame.
+  - Resuelto en E3 (lentes): con la lente Código, la etiqueta del primer bloque pisaba el nombre del
+    frame.
   - Capturas: `.taste-skill/def/e2-barra-hoja-escritorio.jpg` y `e2-barra-hoja-movil.jpg`.
 - [x] **Hero** (rehecho el 18–19 nov con tus cambios; el 19 nov dijiste "de momento vamos a dejarlo así"):
   - Tus cambios (decisiones D20 y D21 del plan):
@@ -307,8 +308,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     puente "Puedes ver toda esta web así" queda **oculto** porque no te convence (`showBridge` en
     `ViewScene.astro`).
   - Capturas: `.taste-skill/def/e3-como-lo-veo-escritorio.jpg` y `e3-como-lo-veo-movil.jpg`.
-- [ ] **Morph** de la tarjeta de proyecto a su caso (**hecho el 19 nov; pendiente de tu visto
-  bueno**):
+- [x] **Morph** de la tarjeta de proyecto a su caso (hecho y aprobado el 19 nov; las imágenes
+  reales de Tempora, Vibora y Learnish quedan pendientes para E4):
   - Al entrar en un proyecto desde la home o desde Proyectos, la imagen del proyecto crece hasta
     ser la cabecera del caso y el título viaja hasta el H1, en 700 ms; la página de detrás se funde.
   - Al volver ("← Todos los proyectos" o el botón de atrás), la imagen y el título regresan a su
@@ -345,7 +346,28 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Con "reducir movimiento" la cámara salta sin viaje.
   - Capturas: `.taste-skill/def/cmap/v1-hoja.jpg` (la secuencia) y `v1-hoja-otros.jpg` (oscuro,
     tablet y móvil).
-- [ ] **Lentes** con estética de herramienta (valores medidos, sin rotulador).
+- [ ] **Lentes** con estética de herramienta (valores medidos, sin rotulador) (**hechas el 19 nov;
+  pendientes de tu visto bueno**).
+  - Las marcas ya no se pintan sobre los elementos: van en una capa aparte dentro del frame
+    (`.lens-layer`), colocada midiendo cada pieza (`src/scripts/lenses.ts`, `src/styles/lenses.css`).
+    Las etiquetas buscan sitio solas: no se pisan, no tapan texto y no se salen del artboard.
+  - **Diseño**: selección del kit (1 px, ocho tiradores), nombre de capa, medida o tipografía real,
+    guías de la columna, cotas de márgenes y columna, e inspector con el ratón (caja, líneas de
+    construcción y medida de la pieza que hay bajo el puntero).
+  - **Código**: cada bloque con su etiqueta y su componente dentro de la esquina (ya no pisa el
+    nombre del frame), los títulos con la suya, e inspector con etiqueta, clase y tamaño.
+  - **QA**: cajas de 1 px e insignias con el valor medido (contraste, zona táctil, alt, etiqueta).
+    El contraste se vuelve a medir si al cargar había colores a medio cambiar.
+  - **Barra de estado** abajo en lugar del panel flotante (que tapaba la frase y los botones del
+    hero): cifras de la lente, capas de la página (al pulsar una, va hasta ella) y "Vista normal".
+    En móvil y tablet lleva el cambio de lente.
+  - Entrada: las cajas crecen desde el centro (160 ms, 20 ms de escalón), las guías se dibujan y
+    al cambiar de lente hay un cruce de 200 ms.
+  - De paso: la web de ejemplo de "Cómo lo veo yo" es inerte (no cuenta para QA ni se puede
+    tabular) y el botón "QA" del hero tiene 24 px de ancho mínimo en móvil.
+  - Comprobado: Inicio, Proyectos, un caso, Sobre mí y Contacto a 1440 px; Inicio en oscuro, en
+    inglés a 820 px y a 390 px en claro y oscuro; Contacto a 390 px. QA da todo superado en todas.
+  - Sin hacer: reglas en los bordes (el plan las daba como "posibles") y cruceta con coordenadas.
 
 **Hecho cuando**: cada momento, grabado a 0,25×, no tiene saltos, y nada recuerda a la firma de Eloi
 (prueba de Eloi).
