@@ -536,8 +536,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     los dos (también en escritorio).
   - Comprobado en claro, oscuro e inglés; 0 desbordes en 108 combinaciones y la lente QA sin fallos.
     Capturas: `.taste-skill/def/e5/e5-movil-*.jpg`. Herramienta: `mobile-strip.mjs`.
-- [ ] Todas las microinteracciones del catálogo (§4.4 del plan) (**hecho el 19 nov; pendiente de tu
-  visto bueno**). De las doce del catálogo:
+- [x] Todas las microinteracciones del catálogo (§4.4 del plan) (hecho y aprobado el 19 nov). De las
+  doce del catálogo:
   - **Ya estaba**: botón principal (el fondo se aclara, la flecha avanza 3 px, escala 0,98).
   - **Sustituida por decisión tuya**: el cambio de idioma. El plan pedía un fundido; lo hace el
     personaje empujando o arrastrando la página.
@@ -558,7 +558,20 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
       lo que tiene el foco y lo sigue. Los campos de formulario conservan su propio estilo.
   - Todas se anulan con "reducir movimiento". Comprobadas en claro y oscuro con capturas a cámara
     lenta (`.taste-skill/def/e5/e5-microinteracciones.jpg`); 0 desbordes y la lente QA sin fallos.
-- [ ] Revisión completa en claro y en oscuro.
+- [ ] Revisión completa en claro y en oscuro (**hecha el 19 nov; pendiente de tu visto bueno**).
+  - Repasadas en oscuro, sección a sección, las seis páginas a 1440 px (37 pantallas), y en los dos
+    temas los estados: pie, las tres lentes sobre las páginas nuevas, menú de móvil y lente en móvil.
+  - **Arreglado en oscuro**: los paneles de código (casos, "Cómo trabajo" y el árbol de "Cómo lo veo
+    yo") eran casi del mismo negro que el papel y se perdían; ahora suben un paso. El marco de
+    Learnish era un bloque muy claro; en oscuro baja a azul noche y solo brilla la pantalla de la app.
+  - **Arreglado en los dos temas (venía de las lentes)**: con una lente activa, las marcas quedaban
+    unos 12 px por debajo de los títulos que entran al hacer scroll. La regla que debía dejar todo
+    quieto bajo una lente no llegaba a aplicarse (selector mal escrito). Comprobado: 0 elementos
+    desplazados con la lente puesta.
+  - Sin cambios: las interfaces de Tempora y Vístalo conservan sus colores propios en oscuro (son
+    capturas de producto), y las franjas "en tinta" (pie, "Lo que más disfruté", la etapa actual)
+    se invierten a claro, como estaba decidido.
+  - Capturas: `.taste-skill/def/e5/e5-oscuro-arreglos.jpg` y `e5-lente-alineada.jpg`.
 - [ ] **Nota de Christian (18 nov)**: quiere incorporar algo de three.js. Se mira aquí, al final
   (decisión D18 del plan): qué pieza 3D, dónde, y que salga del concepto del lienzo.
 - [ ] Inspector de la skill: 0 FAIL a 1440, 768 y 390 px.

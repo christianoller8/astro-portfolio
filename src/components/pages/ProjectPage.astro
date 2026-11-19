@@ -466,6 +466,10 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     min-width: 0;
     background: #121212;
   }
+  /* En oscuro el papel ya es casi negro: el panel sube un paso para no perderse */
+  :global(:root.dark) .code-panel {
+    background: #242426;
+  }
   .code-file {
     padding: 0.7rem 1rem;
     font: 500 0.8125rem/1.3 var(--font-mono);

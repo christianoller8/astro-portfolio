@@ -100,6 +100,10 @@ const host = link ? new URL(link).host : '';
   .pv--learnish .pv-clip {
     background: #e7eaf5;
   }
+  /* En oscuro, el fondo de Learnish baja para que solo brille la pantalla de la app */
+  :global(:root.dark) .pv--learnish .pv-clip {
+    background: #1c1f2e;
+  }
   .pv--vibora .pv-clip > :global(*),
   .pv--learnish .pv-clip > :global(*) {
     justify-self: center;

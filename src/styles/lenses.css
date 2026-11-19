@@ -18,6 +18,7 @@ html[data-lens] main.frame {
   padding-bottom: calc(var(--gutter) + var(--lens-bar-h));
 }
 /* Una lente es una vista de herramienta: todo está ya en su sitio, sin entradas al hacer scroll */
+html[data-lens].reveal-ready [data-reveal],
 html[data-lens] .reveal-ready [data-reveal] {
   opacity: 1;
   transform: none;
