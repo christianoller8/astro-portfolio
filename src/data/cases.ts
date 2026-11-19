@@ -205,7 +205,7 @@ export const cases: Record<string, CaseContent> = {
       { es: 'Respeta reducir movimiento', en: 'Respects reduced motion' },
     ],
     enjoyed: {
-      title: { es: 'Toda la web sale de una idea.', en: 'The whole site comes from one idea.' },
+      title: { es: 'Toda la web sale de una idea.', en: 'It all comes from one idea.' },
       body: { es: 'partir del nombre y hacerla con Eloi, cada uno en lo suyo.', en: 'starting from the name and making it with Eloi, each of us on our own part.' },
     },
   },

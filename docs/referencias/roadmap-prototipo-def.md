@@ -22,7 +22,7 @@
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
-| **E5 · Móvil y pulido** | **En curso** |
+| **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -591,8 +591,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     errores ni lienzos sueltos; 0 desbordes y la lente QA sin fallos. Capturas:
     `.taste-skill/def/e5/e5-capas-3d.jpg` y `e5-capas-3d-movil.jpg`.
   - No lo he podido ver moviéndose: el giro, el balanceo y la apertura a velocidad real los juzgas tú.
-- [ ] Inspector de la skill: 0 FAIL a 1440, 768 y 390 px (**hecho el 19 nov; pendiente de tu visto
-  bueno**).
+- [x] Inspector de la skill: 0 FAIL a 1440, 768 y 390 px (hecho y aprobado el 19 nov).
   - **De 46 FAIL a 0** en catorce páginas (las ocho en español y seis en inglés), a los tres anchos,
     con dos excepciones declaradas (abajo). Informes en `.taste-skill/def/e5/insp4/`.
   - **Lo que se ha arreglado de verdad**:
@@ -626,7 +625,36 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Tras los cambios: 0 desbordes en 108 combinaciones y la lente QA sin fallos.
   - **Textos que he cambiado** (provisionales, como el resto): los titulares de "Lo que más
     disfruté" de los cuatro casos y el titular de la web de ejemplo.
-- [ ] Las 10 pruebas de la rúbrica.
+- [ ] Las 10 pruebas de la rúbrica (**pasadas el 19 nov; pendiente de tu visto bueno**). Ocho pasan,
+  una pasa con una excepción que decidiste tú y una no pasa al pie de la letra:
+  1. **Competidor** · pasa (juicio mío). Nadie más tiene el lienzo con sus frames, las tres lentes,
+     tu personaje moviendo las páginas y la web separada en capas.
+  2. **Póster** · pasa. La sección más floja era "Lo que uso, por lentes" (tres columnas de texto):
+     ahora los tres oficios van en grande.
+  3. **5 segundos** · pasa. Con la intro, el nombre, el oficio, "Ver proyectos" y "Descargar CV"
+     están a la vista a los 3,4 s (medido en fotogramas); sin intro, a los 0,2 s.
+  4. **Cámara lenta** · pasa. Regrabadas la intro, la transición con el personaje y el morph después
+     de todos los cambios de E5: sin saltos. En el morph hay un instante de doble imagen del título
+     durante el cruce (ya estaba). Lienzo, lentes y capas 3D se revisaron al construirlos.
+  5. **Coherencia** · pasa. Hover de tarjetas y retrato, foco con teclado, lentes y selección de
+     frames usan el mismo cuadro de 1 px con ocho tiradores; los hilos unen frames en Proyectos,
+     casos y 404.
+  6. **Densidad** · **no pasa al pie de la letra**. Pide dos tamaños más el display por pantalla y
+     hay entre 3 y 5. Lo que sí se ha hecho: los tamaños sueltos que fui metiendo en E4 (hasta 7
+     por pantalla) se han reducido a la escala de seis del sistema (pequeño, cuerpo, entradilla,
+     título, cabecera y display); no quedan numeraciones ni etiquetas sobre títulos (salvo el
+     nombre del frame); y los chips de tecnología de la cronología pasan a una línea de texto.
+     Quedan como píldoras las notas "Pruébalo…", las anotaciones de las decisiones y "actual".
+  7. **Eloi** · pasa, con una excepción tuya: la intro se cierra con un iris, que está en su lista
+     de firma; lo pediste expresamente. He alejado dos parecidos: el título gigante de Contacto ya
+     no es "Hablemos" (ahora "Escríbeme" / "Say hello") y el ejemplo de test ya no es un `.spec`.
+  8. **Inspector** · pasa: 0 FAIL en catorce páginas, con tres excepciones declaradas.
+  9. **Móvil** · pasa (revisión de E5).
+  10. **Memoria** · pasa (juicio mío): el lienzo y las lentes están siempre en la barra. En móvil
+      van dentro del menú, así que ahí se recuerdan menos; el personaje y las capas 3D sí se ven.
+  - Medidas con `.taste-skill/eloi-1118/tools/rubric.mjs`; fotogramas en
+    `.taste-skill/def/e5/e5-rubrica-*.jpg`. Tras los cambios: 0 desbordes en 108 combinaciones.
+  - **Textos que he cambiado** (provisionales): el título de Contacto y un titular en inglés.
 
 **Hecho cuando**: pasa toda la rúbrica. Ahí el diseño está de 10.
 

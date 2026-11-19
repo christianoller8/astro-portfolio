@@ -315,7 +315,7 @@ html.theme-switching .frame-label * {
   position: fixed;
   z-index: 90;
   padding: 0.2rem 0.55rem;
-  font: 600 0.8125rem/1.4 var(--font-sans);
+  font: 600 var(--step-small)/1.4 var(--font-sans);
   white-space: nowrap;
   color: var(--paper);
   background: var(--ink);

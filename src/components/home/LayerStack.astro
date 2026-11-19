@@ -72,7 +72,7 @@ const layers = [
   }
   .ls-title {
     max-width: 15ch;
-    font-size: clamp(2rem, 4.6vw, 4rem);
+    font-size: var(--step-head);
     font-weight: 650;
     line-height: 0.98;
     letter-spacing: -0.04em;
@@ -91,7 +91,7 @@ const layers = [
     gap: 0.6rem;
     max-width: 18rem;
     margin-top: 2rem;
-    font: 600 0.8125rem/1.3 var(--font-sans);
+    font: 600 var(--step-small)/1.3 var(--font-sans);
     color: var(--muted);
   }
   /* El control de separación, con el aspecto del kit: una línea y un tirador cuadrado */
@@ -170,7 +170,7 @@ const layers = [
     top: 0;
     left: 0;
     padding: 0.15rem 0.45rem;
-    font: 600 0.8125rem/1.3 var(--font-sans);
+    font: 600 var(--step-small)/1.3 var(--font-sans);
     white-space: nowrap;
     color: var(--paper);
     background: var(--ink);
@@ -187,7 +187,7 @@ const layers = [
     position: absolute;
     right: 0;
     bottom: 0;
-    font: 600 0.8125rem/1.3 var(--font-sans);
+    font: 600 var(--step-small)/1.3 var(--font-sans);
     color: var(--muted);
   }
 
@@ -206,7 +206,7 @@ const layers = [
   .ls-flat li {
     display: grid;
     gap: 0.4rem;
-    font: 600 0.8125rem/1.3 var(--font-sans);
+    font: 600 var(--step-small)/1.3 var(--font-sans);
     color: var(--muted);
   }
   .ls-flat :global(canvas) {

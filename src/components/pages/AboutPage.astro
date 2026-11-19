@@ -133,12 +133,11 @@ const tests =
                   ))}
                 </ul>
               </details>
-              <ul class="job-stack" aria-label={t('project.stack')}>
-                {job.angular && <li class="job-angular">{job.angular}</li>}
-                {job.stack.map((tool) => (
-                  <li>{tool}</li>
-                ))}
-              </ul>
+              <p class="job-stack">
+                {job.angular && <b class="job-angular">{job.angular}</b>}
+                {job.angular && job.stack.length > 0 && ' · '}
+                {job.stack.join(' · ')}
+              </p>
             </div>
           </li>
         ))
@@ -187,7 +186,7 @@ const tests =
               {item.kind === 'test' && (
                 <div class="ex-test">
                   <p class="ex-test-name">
-                    <code>button.spec.ts</code>
+                    <code>button.test.ts</code>
                   </p>
                   <ul>
                     {tests.map((test) => (
@@ -265,7 +264,7 @@ const tests =
   }
   .about-lead {
     /* Un párrafo de presentación, no un titular: hasta 36 px */
-    font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+    font-size: var(--step-title);
     font-weight: 600;
     line-height: 1.14;
     letter-spacing: -0.03em;
@@ -290,7 +289,7 @@ const tests =
     background: var(--tint);
   }
   .about-facts dt {
-    font: 600 0.8125rem/1.5 var(--font-sans);
+    font: 600 var(--step-small)/1.5 var(--font-sans);
     color: var(--muted);
   }
   .about-facts dd {
@@ -337,7 +336,7 @@ const tests =
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    font: 600 0.8125rem/1.3 var(--font-sans);
+    font: 600 var(--step-small)/1.3 var(--font-sans);
     color: var(--muted);
   }
   .jobs-thread i {
@@ -373,7 +372,7 @@ const tests =
     flex-wrap: wrap;
     align-items: center;
     gap: 0.3rem 1rem;
-    font: 600 0.8125rem/1.4 var(--font-sans);
+    font: 600 var(--step-small)/1.4 var(--font-sans);
     font-variant-numeric: tabular-nums;
     color: var(--muted);
   }
@@ -388,7 +387,7 @@ const tests =
     background: var(--ink);
   }
   .job-company {
-    font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+    font-size: var(--step-title);
     font-weight: 650;
     line-height: 1;
     letter-spacing: -0.035em;
@@ -422,7 +421,7 @@ const tests =
     display: none;
   }
   .job-more summary span {
-    font: 600 0.75rem/1 var(--font-sans);
+    font: 600 var(--step-small)/1 var(--font-sans);
     color: var(--muted);
   }
   .job-more summary::after {
@@ -451,17 +450,13 @@ const tests =
     background: var(--graphite);
   }
   .job-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    margin-top: 1.1rem;
+    margin-top: 1rem;
+    font-size: var(--step-small);
+    font-weight: 600;
   }
-  .job-stack li {
-    padding: 0.15rem 0.5rem;
-    font: 600 0.8125rem/1.4 var(--font-sans);
-    background: var(--paper);
-  }
+  /* Angular, el hilo: en tinta dentro de la línea del stack */
   .job-stack .job-angular {
+    padding: 0.1rem 0.4rem;
     color: var(--paper);
     background: var(--ink);
   }
@@ -486,7 +481,7 @@ const tests =
   }
   .study-period,
   .study-place {
-    font: 600 0.8125rem/1.5 var(--font-sans);
+    font: 600 var(--step-small)/1.5 var(--font-sans);
     color: var(--muted);
   }
   .study-name {
@@ -506,7 +501,7 @@ const tests =
     gap: 1.5rem;
   }
   .principle-title {
-    font-size: clamp(1.75rem, 3.6vw, 3rem);
+    font-size: var(--step-head);
     font-weight: 650;
     line-height: 1.02;
     letter-spacing: -0.035em;
@@ -611,7 +606,7 @@ const tests =
     background: linear-gradient(var(--ink), var(--ink)) 0 0 / calc(var(--v) * 100%) 100% no-repeat, var(--line);
   }
   .lang-level {
-    font: 600 0.8125rem/1.3 var(--font-sans);
+    font: 600 var(--step-small)/1.3 var(--font-sans);
     text-align: right;
     color: var(--muted);
   }
@@ -620,7 +615,7 @@ const tests =
   }
   .cv-title {
     max-width: 16ch;
-    font-size: clamp(1.75rem, 3.6vw, 3rem);
+    font-size: var(--step-head);
     font-weight: 650;
     line-height: 1.02;
     letter-spacing: -0.035em;
