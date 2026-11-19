@@ -54,29 +54,29 @@ const copy = {
   data-demo-data={interactive ? JSON.stringify({ cards, of: copy.of }) : undefined}
 >
   <div class="ln-top">
-    <span class="ln-logo">Learnish</span>
-    <span class="ln-streak">{copy.streak}</span>
+    <span class="ln-logo" data-sketch="text">Learnish</span>
+    <span class="ln-streak" data-sketch="box">{copy.streak}</span>
   </div>
   <div class="ln-progress">
     <span>{copy.lesson}</span>
     <span data-demo-progress>{copy.progress}</span>
   </div>
-  <div class="ln-track" aria-hidden="true"><span data-demo-bar></span></div>
-  <div class="ln-card" data-demo-card>
-    <span class="ln-prompt">{copy.prompt}</span>
-    <span class="ln-word" data-demo-word>{copy.word}</span>
+  <div class="ln-track" data-sketch="box" aria-hidden="true"><span data-demo-bar></span></div>
+  <div class="ln-card" data-sketch="box" data-demo-card>
+    <span class="ln-prompt" data-sketch="text">{copy.prompt}</span>
+    <span class="ln-word" data-sketch="text" data-demo-word>{copy.word}</span>
     {
       interactive ? (
         <>
           <button type="button" class="ln-reveal" data-demo-reveal>
             {copy.reveal}
           </button>
-          <span class="ln-answer" data-demo-answer hidden>
+          <span class="ln-answer" data-sketch="text" data-demo-answer hidden>
             {copy.answer}
           </span>
         </>
       ) : (
-        <span class="ln-answer">{copy.answer}</span>
+        <span class="ln-answer" data-sketch="text">{copy.answer}</span>
       )
     }
   </div>
@@ -84,17 +84,17 @@ const copy = {
     {
       interactive ? (
         <>
-          <button type="button" class="ln-btn" data-demo-next="again" disabled>
+          <button type="button" class="ln-btn" data-sketch="box" data-demo-next="again" disabled>
             {copy.again}
           </button>
-          <button type="button" class="ln-btn ln-btn--good" data-demo-next="good" disabled>
+          <button type="button" class="ln-btn ln-btn--good" data-sketch="box" data-demo-next="good" disabled>
             {copy.good}
           </button>
         </>
       ) : (
         <>
-          <span class="ln-btn">{copy.again}</span>
-          <span class="ln-btn ln-btn--good">{copy.good}</span>
+          <span class="ln-btn" data-sketch="box">{copy.again}</span>
+          <span class="ln-btn ln-btn--good" data-sketch="box">{copy.good}</span>
         </>
       )
     }

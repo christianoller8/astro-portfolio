@@ -21,7 +21,7 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **En curso**: Inicio aprobado; Proyectos hecho, pendiente de visto bueno (19 nov) |
+| **E4 · Páginas** | **En curso**: Inicio y Proyectos aprobados; casos hechos con contenido provisional (19 nov) |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -398,8 +398,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Provisional: los datos de las demos son de ejemplo y los textos nuevos, por revisar. Faltan
     año y stack de Tempora, Vibora y Learnish, y sus imágenes reales (ver "Lo que necesito de ti").
   - Para la fase técnica: repetir las miniaturas del lienzo (la de Inicio ha cambiado).
-- [ ] **Proyectos**: el lienzo de proyectos y la vista en lista (**hecho el 19 nov; pendiente de tu
-  visto bueno**).
+- [x] **Proyectos**: el lienzo de proyectos y la vista en lista (hecho y aprobado el 19 nov).
   - **Lienzo** (`ProjectsPage.astro`): una franja con el color y los puntos del lienzo, de lado a
     lado del artboard, y en ella los cuatro proyectos como frames de un archivo de diseño, cada uno
     en su formato: Tempora y Vístalo en escritorio (16:10), Vibora y Learnish en móvil. Cada frame
@@ -415,7 +414,33 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Nuevo campo `format` (`desktop` o `mobile`) en cada proyecto.
   - Comprobado a 1440 px (claro), 1024 px (oscuro, inglés) y 390 px; la lente QA da todo superado.
     Capturas: `.taste-skill/def/e4/e4-proyectos-escritorio.jpg` y `e4-proyectos-movil.jpg`.
-- [ ] **Casos** con sus 9 apartados: Tempora, Vibora, Learnish y Vístalo.
+- [ ] **Casos** con sus 9 apartados: Tempora, Vibora, Learnish y Vístalo (**plantilla hecha el
+  19 nov con contenido provisional; pendiente de tu visto bueno y de tu contenido real**).
+  - Plantilla en `ProjectPage.astro`; textos en `src/data/cases.ts`; comportamiento en
+    `src/scripts/case.ts`. Cada apartado lleva su número y su composición:
+    1. **Cabecera** (destino del morph): nombre, frase, rol, estado, stack y enlace si los hay.
+    2. **El problema**: el texto del `.md`, en grande.
+    3. **Del boceto a la tinta**: la pantalla clave se dibuja a lápiz con el scroll y después se
+       entinta, con un medidor "grafito → tinta 0–100 %". Vístalo no lo lleva (no hay boceto).
+    4. **Decisiones**: tres, cada una con su anotación de herramienta.
+    5. **Código**: el fragmento real que mueve la pieza de esta página (sale de
+       `project-demos.ts` al compilar, no está copiado a mano) y, al lado, la pieza que se toca.
+    6. **Pruebas**: en las apps, cinco comprobaciones calculadas en vivo sobre esa pieza
+       (contraste, zona táctil, nombres, teclado y texto mínimo). En Vístalo, insignias fijas.
+    7. **Resultado**: "Qué hace" en filas; en Vístalo, además, las capturas de tablet y móvil.
+    8. **Lo que más disfruté**: una franja en tinta con la frase en grande.
+    9. **Siguiente proyecto**: el nombre, un hilo de prototipo y el frame del siguiente.
+  - Comprobado: Tempora (1440 claro), Vibora (1440 oscuro), Vístalo (1440 inglés) y Learnish
+    (390); la lente QA da todo superado en los cuatro. Capturas en `.taste-skill/def/e4/`
+    (`e4-caso-tempora.jpg`, `e4-caso-vibora-oscuro.jpg`, `e4-caso-vistalo-en.jpg`,
+    `e4-caso-learnish-movil.jpg`).
+  - **Provisional, para que lo revises** (ver también "Lo que necesito de ti"):
+    - Las frases de "Lo que más disfruté" las he escrito yo: tienen que ser tuyas.
+    - Las decisiones describen lo que se ve en cada pantalla de ejemplo, no decisiones tuyas.
+    - El código es el de la demo de esta web, no el de las apps: cuando me pases un fragmento
+      real de cada proyecto, se cambia.
+    - Las pruebas en vivo miden la pieza de esta página, no la app real.
+    - Faltan año, stack y enlaces de Tempora, Vibora y Learnish, y sus imágenes reales.
 - [ ] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV.
 - [ ] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados.
 - [ ] **404**: "Frame no encontrado", con la caricatura buscándolo.

@@ -1,75 +1,76 @@
 ---
+// Caso de un proyecto (plan §5.4). Nueve apartados, cada uno con su composición:
+// cabecera (destino del morph) · problema · boceto que se entinta · decisiones · código con la pieza
+// al lado · pruebas · resultado · lo que más disfruté · siguiente proyecto.
+// El texto del problema es el cuerpo del .md; el resto, src/data/cases.ts (provisional).
 import type { CollectionEntry } from 'astro:content';
-import Layout from '@/layouts/Layout.astro';
 import { Image } from 'astro:assets';
+import { Code } from 'astro:components';
+import Layout from '@/layouts/Layout.astro';
 import ProjectVisual from '@/components/ui/ProjectVisual.astro';
+import TemporaUI from '@/components/ui/TemporaUI.astro';
+import ViboraUI from '@/components/ui/ViboraUI.astro';
+import LearnishUI from '@/components/ui/LearnishUI.astro';
 import vistaloTablet from '@/assets/images/projects/vistalo-tablet.jpg';
 import vistaloMobile from '@/assets/images/projects/vistalo-mobile.jpg';
+import demosSource from '@/scripts/project-demos.ts?raw';
+import { cases, caseLabels } from '@/data/cases';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { getSortedProjects } from '@/utils/projects';
-import type { ui } from '@/i18n/ui';
+import type { ui as uiStrings } from '@/i18n/ui';
 
 interface Props {
-  lang: keyof typeof ui;
+  lang: keyof typeof uiStrings;
   project: CollectionEntry<'projects'>;
 }
 
 const { lang, project } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const L = caseLabels[lang];
 const { Content } = await project.render();
-const { title, description, kind, status, role, stack, features, link, image } = project.data;
+const { title, description, kind, status, role, stack, features, link, image, ui, year, format } = project.data;
+const content = cases[project.slug];
+const mobile = format === 'mobile';
 
 const projects = await getSortedProjects(lang);
 const index = projects.findIndex((p) => p.slug === project.slug);
 const next = projects[(index + 1) % projects.length];
 
-// Capturas extra (reales) por proyecto: la misma web en otros tamaños de pantalla
-const extraShots =
+// El código real de la pieza que se toca en esta página: su apartado de project-demos.ts
+const sections = demosSource.split(/\/\* -{10} (.+?) -{10} \*\/\n/);
+const at = sections.findIndex((part) => part.toLowerCase().startsWith(title.toLowerCase()));
+const code = at > -1 ? sections[at + 1].trim() : '';
+
+// Capturas reales de la web publicada en otros tamaños de pantalla
+const shots =
   project.slug === 'vistalo'
     ? [
-        {
-          src: vistaloTablet,
-          alt:
-            lang === 'es'
-              ? 'La web de Vístalo en una tablet (768 px)'
-              : 'The Vístalo website on a tablet (768 px)',
-          label: 'Tablet · 768 px',
-        },
-        {
-          src: vistaloMobile,
-          alt:
-            lang === 'es'
-              ? 'La web de Vístalo en un móvil (390 px)'
-              : 'The Vístalo website on a phone (390 px)',
-          label: lang === 'es' ? 'Móvil · 390 px' : 'Phone · 390 px',
-        },
+        { src: vistaloTablet, alt: lang === 'es' ? 'La web de Vístalo en una tablet (768 px)' : 'The Vístalo website on a tablet (768 px)', label: 'Tablet · 768 px' },
+        { src: vistaloMobile, alt: lang === 'es' ? 'La web de Vístalo en un móvil (390 px)' : 'The Vístalo website on a phone (390 px)', label: lang === 'es' ? 'Móvil · 390 px' : 'Phone · 390 px' },
       ]
     : [];
 
 const facts = [
   { label: t('project.role'), value: role },
-  {
-    label: t('project.status'),
-    value: `${t(kind === 'app' ? 'project.kind.app' : 'project.kind.web')} · ${status}`,
-  },
+  { label: t('project.status'), value: [t(kind === 'app' ? 'project.kind.app' : 'project.kind.web'), status, year].filter(Boolean).join(' · ') },
   ...(stack.length ? [{ label: t('project.stack'), value: stack.join(' · ') }] : []),
 ];
+
+// Numeración de los apartados que tiene este caso (la web publicada no tiene boceto)
+const present = ['problem', ...(ui ? ['sketch'] : []), 'decisions', 'code', 'tests', 'result', 'enjoyed'];
+const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0')} · ${L[key as 'problem']}`;
 ---
 
-<Layout
-  title={`${title} · Christian Oller`}
-  description={description}
-  image={image?.src}
-  frame={`${t('nav.projects')} / ${title}`}
->
-  <article data-cs="<article> ProjectPage.astro">
-    <header class="wrap project-head">
+<Layout title={`${title} · Christian Oller`} description={description} image={image?.src} frame={`${t('nav.projects')} / ${title}`}>
+  <article class="case" data-cs="<article> ProjectPage.astro">
+    <!-- 01 · Cabecera -->
+    <header class="wrap case-head">
       <a class="back link t-small" href={translatePath('/projects')}>← {t('project.back')}</a>
-      <h1 class="t-display project-title" data-ds="H1" data-ds-type data-reveal data-morph-title={project.slug}>
+      <h1 class="t-display case-title" data-ds="H1" data-ds-type data-reveal data-morph-title={project.slug}>
         {title}
       </h1>
-      <p class="t-lead project-lead" data-reveal style="--reveal-i: 1">{description}</p>
+      <p class="t-lead case-lead" data-reveal style="--reveal-i: 1">{description}</p>
       <dl class="facts" data-reveal style="--reveal-i: 2">
         {
           facts.map((fact) => (
@@ -82,14 +83,7 @@ const facts = [
       </dl>
       {
         link && (
-          <a
-            class="btn btn-primary visit"
-            href={link}
-            target="_blank"
-            rel="noreferrer"
-            data-reveal
-            style="--reveal-i: 3"
-          >
+          <a class="btn btn-primary visit" href={link} target="_blank" rel="noreferrer" data-reveal style="--reveal-i: 3">
             {t('project.visit')}
             <span class="btn-arrow" aria-hidden="true">
               ↗
@@ -99,60 +93,179 @@ const facts = [
       }
     </header>
 
-    <div class="wrap project-visual" data-reveal>
+    <div class="wrap case-visual" data-reveal>
       <div data-morph-visual={project.slug}>
         <ProjectVisual project={project} lang={lang} eager />
       </div>
     </div>
 
+    <!-- El problema: dos o tres frases en grande -->
+    <section class="wrap case-problem">
+      <h2 class="case-tag" data-reveal>{tag('problem')}</h2>
+      <div class="problem-text" data-reveal style="--reveal-i: 1">
+        <Content />
+      </div>
+    </section>
+
+    <!-- Boceto que se entinta con el scroll -->
     {
-      extraShots.length > 0 && (
-        <div class="wrap shots">
-          {extraShots.map((shot, i) => (
-            <figure
-              class="shot"
-              data-reveal
-              style={`--reveal-i: ${i}`}
-              data-ds={shot.label}
-              data-qa-host
-            >
-              <div class="shot-clip">
-                <Image
-                  src={shot.src}
-                  alt={shot.alt}
-                  widths={[390, 780]}
-                  sizes="(min-width: 1024px) 30vw, 50vw"
-                  loading="lazy"
-                  class="shot-img"
-                />
-              </div>
-            </figure>
-          ))}
-        </div>
+      ui && (
+        <section class="case-sketch-band" data-case-sketch>
+          <div class="wrap sketch-grid">
+            <div class="sketch-copy">
+              <h2 class="case-tag">{tag('sketch')}</h2>
+              <p class="sketch-lead">{L.sketchLead}</p>
+              <p class="sketch-meter" aria-hidden="true">
+                <span>{L.pencil}</span>
+                <i />
+                <span>
+                  {L.ink} <b data-case-ink>100 %</b>
+                </span>
+              </p>
+            </div>
+            <div class:list={['sketch-screen', mobile && 'sketch-screen--mobile']} data-case-screen>
+              {ui === 'tempora' ? <TemporaUI lang={lang} /> : ui === 'vibora' ? <ViboraUI lang={lang} /> : <LearnishUI lang={lang} />}
+            </div>
+          </div>
+        </section>
       )
     }
 
-    <div class="wrap project-body">
-      <div class="prose-block" data-reveal>
-        <Content />
-      </div>
-      <div class="features" data-reveal style="--reveal-i: 1">
-        <h2 class="features-title">{t('project.features')}</h2>
-        <ul>
-          {features.map((feature) => <li>{feature}</li>)}
-        </ul>
-      </div>
-    </div>
+    <!-- Decisiones, con su anotación de herramienta -->
+    {
+      content && (
+        <section class="wrap case-decisions">
+          <h2 class="case-tag" data-reveal>{tag('decisions')}</h2>
+          <ol class="decisions">
+            {content.decisions.map((decision, i) => (
+              <li class="decision" data-reveal style={`--reveal-i: ${i}`}>
+                <p class="decision-note">{decision.note[lang]}</p>
+                <h3 class="decision-title">{decision.title[lang]}</h3>
+                <p class="decision-body">{decision.body[lang]}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
 
+    <!-- Código: el fragmento real, con la pieza que mueve al lado -->
+    {
+      code && (
+        <section class="wrap case-code">
+          <div class="code-head">
+            <h2 class="case-tag" data-reveal>{tag('code')}</h2>
+            <p class="code-lead" data-reveal style="--reveal-i: 1">{L.codeLead}</p>
+          </div>
+          <div class="code-grid">
+            <div class="code-panel" data-reveal>
+              <p class="code-file">src/scripts/project-demos.ts</p>
+              <Code code={code} lang="ts" theme="vitesse-dark" />
+            </div>
+            <div class:list={['code-demo', mobile && 'code-demo--mobile']} data-case-demo data-reveal style="--reveal-i: 1">
+              <p class="code-try">
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                  <path d="M3 1.5l9.5 6.2-4.1.9 2.4 4.6-1.9 1-2.4-4.7L3.6 12.6z" />
+                </svg>
+                {t(`projects.try.${project.slug}` as 'projects.try.tempora')}
+              </p>
+              <ProjectVisual project={project} lang={lang} interactive />
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Pruebas, en insignias -->
+    <section class="wrap case-tests">
+      <h2 class="case-tag" data-reveal>{tag('tests')}</h2>
+      <p class="tests-lead" data-reveal style="--reveal-i: 1">{content?.tests ? L.testsStatic : L.testsLive}</p>
+      {
+        content?.tests ? (
+          <ul class="tests" data-reveal style="--reveal-i: 2">
+            {content.tests.map((test) => (
+              <li>
+                <span class="kit-badge" data-state="ok">
+                  {test[lang]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <ul class="tests tests--live" data-case-checks data-i18n={JSON.stringify(L.checks)} data-reveal style="--reveal-i: 2" />
+        )
+      }
+    </section>
+
+    <!-- Resultado -->
+    <section class="wrap case-result">
+      <h2 class="case-tag" data-reveal>{tag('result')}</h2>
+      <div class="result-grid">
+        <div>
+          <h3 class="result-title" data-reveal>{L.features}</h3>
+          <ol class="features">
+            {features.map((feature, i) => (
+              <li data-reveal style={`--reveal-i: ${i}`}>
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                {feature}
+              </li>
+            ))}
+          </ol>
+        </div>
+        {
+          shots.length > 0 && (
+            <div class="shots">
+              {shots.map((shot, i) => (
+                <figure class="shot" data-reveal style={`--reveal-i: ${i}`} data-ds={shot.label} data-qa-host>
+                  <div class="shot-clip">
+                    <Image src={shot.src} alt={shot.alt} widths={[390, 780]} sizes="(min-width: 1024px) 30vw, 50vw" loading="lazy" class="shot-img" />
+                  </div>
+                  <figcaption class="shot-label">{shot.label}</figcaption>
+                </figure>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <!-- Lo que más disfruté: el reverso, en tinta -->
+    {
+      content && (
+        <section class="case-enjoyed">
+          <div class="wrap">
+            <h2 class="case-tag">{tag('enjoyed')}</h2>
+            <p class="enjoyed-text" data-reveal>
+              {content.enjoyed[lang]}
+            </p>
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Siguiente proyecto: un hilo de prototipo hacia el siguiente frame -->
     {
       next && next.slug !== project.slug && (
-        <nav class="wrap next" aria-label={t('project.next')}>
-          <a class="next-link" href={translatePath(`/projects/${next.slug}`)} data-reveal>
-            <span class="t-small next-label">{t('project.next')}</span>
-            <span class="next-title">
+        <nav class="wrap case-next" aria-label={L.next}>
+          <div class="next-copy" id="next-from">
+            <p class="case-tag">
+              {String(present.length + 2).padStart(2, '0')} · {L.next}
+            </p>
+            <a class="next-title" href={translatePath(`/projects/${next.slug}`)}>
               {next.data.title} <span aria-hidden="true">→</span>
-            </span>
+            </a>
+          </div>
+          <a
+            class:list={['next-frame', next.data.format === 'mobile' && 'next-frame--mobile']}
+            id="next-to"
+            href={translatePath(`/projects/${next.slug}`)}
+            tabindex="-1"
+            aria-hidden="true"
+            data-sel
+          >
+            <ProjectVisual project={next} lang={lang} />
           </a>
+          <svg class="kit-thread next-thread" data-thread-from="#next-from" data-thread-to="#next-to" aria-hidden="true" />
         </nav>
       )
     }
@@ -160,7 +273,8 @@ const facts = [
 </Layout>
 
 <style>
-  .project-head {
+  /* El pie va pegado a la franja de tinta del último apartado con contenido propio */
+  .case-head {
     padding-top: clamp(1.5rem, 4vw, 3.5rem);
   }
   .back {
@@ -169,10 +283,10 @@ const facts = [
     align-items: center;
     color: var(--muted);
   }
-  .project-title {
+  .case-title {
     margin-top: 1rem;
   }
-  .project-lead {
+  .case-lead {
     max-width: 38ch;
     margin-top: 1.25rem;
     color: var(--muted);
@@ -193,20 +307,267 @@ const facts = [
   .visit {
     margin-top: 2rem;
   }
-  .project-visual {
+  .case-visual {
     margin-top: clamp(2.5rem, 5vw, 4rem);
   }
-  .project-visual :global(.pv-clip) {
+  .case-visual :global(.pv-clip) {
     --ui-size: 1rem;
     aspect-ratio: auto;
     height: clamp(20rem, 66vh, 46rem);
+  }
+
+  /* Nombre de cada apartado: como el de un frame, con su número */
+  .case-tag {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .case-problem,
+  .case-decisions,
+  .case-code,
+  .case-tests,
+  .case-result,
+  .case-next {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  /* ---------- El problema ---------- */
+  .problem-text {
+    max-width: 30ch;
+    margin-top: 1.25rem;
+    font-size: clamp(1.6rem, 3.6vw, 3rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .problem-text :global(p + p) {
+    margin-top: 0.8em;
+    color: var(--muted);
+  }
+
+  /* ---------- Boceto que se entinta ---------- */
+  .case-sketch-band {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3rem, 6vw, 5rem);
+    background: var(--tint);
+  }
+  .sketch-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  .sketch-lead {
+    max-width: 26ch;
+    margin-top: 1rem;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .sketch-meter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 22rem;
+    margin-top: 1.5rem;
+    font: 500 0.8125rem/1 var(--font-mono);
+    color: var(--muted);
+  }
+  .sketch-meter i {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(var(--ink), var(--ink)) 0 0 / calc(var(--ink, 1) * 100%) 100% no-repeat, var(--line);
+  }
+  .sketch-meter b {
+    display: inline-block;
+    min-width: 3.25rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .sketch-screen {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+    --ui-size: clamp(0.6875rem, 1.25vw, 0.9375rem);
+  }
+  .sketch-screen--mobile {
+    justify-self: center;
+    width: min(100%, 22rem);
+    aspect-ratio: auto;
+    --ui-size: 0.875rem;
+  }
+  /* La interfaz aparece (se entinta) según avanza --ink; el boceto se dibuja con --draw y se va */
+  .sketch-screen > :global([data-ui]) {
+    opacity: var(--ink, 1);
+  }
+  .sketch-screen :global(.case-sketch) {
+    opacity: calc(1 - var(--ink, 1));
+  }
+  .sketch-screen :global(.case-sketch path) {
+    stroke-dashoffset: clamp(0, calc(1 - (var(--draw, 1) * 1.25 - var(--k)) * 4), 1);
+  }
+
+  /* ---------- Decisiones ---------- */
+  .decisions {
+    display: grid;
+    gap: 3px;
+    margin-top: 1.25rem;
+  }
+  .decision {
+    padding: 1.25rem 1.25rem 1.5rem;
+    background: var(--tint);
+  }
+  .decision-note {
+    display: inline-block;
+    padding: 0.15rem 0.45rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--paper);
+    background: var(--ink);
+  }
+  .decision-title {
+    margin-top: 1.5rem;
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-weight: 650;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .decision-body {
+    max-width: 40ch;
+    margin-top: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ---------- Código ---------- */
+  .code-lead {
+    max-width: 44ch;
+    margin-top: 1rem;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .code-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.75rem 1.5rem;
+    margin-top: 2rem;
+  }
+  .code-panel {
+    min-width: 0;
+    background: #121212;
+  }
+  .code-file {
+    padding: 0.7rem 1rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: #a3a3a3;
+  }
+  .code-panel :global(pre) {
+    max-height: 30rem;
+    margin: 0;
+    padding: 0.25rem 1rem 1.25rem;
+    overflow: auto;
+    font: 400 0.8125rem/1.6 var(--font-mono);
+    background: transparent !important;
+    tab-size: 2;
+  }
+  .code-demo {
+    position: relative;
+    align-self: start;
+    min-width: 0;
+  }
+  .code-demo--mobile {
+    justify-self: center;
+    width: min(100%, 24rem);
+  }
+  .code-demo :global(.pv:not(.pv--live) .pv-clip) {
+    aspect-ratio: auto;
+  }
+  .code-demo--mobile :global(.pv-clip) {
+    --ui-size: 0.875rem;
+  }
+  .code-try {
+    position: absolute;
+    bottom: calc(100% + 0.4rem);
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.55rem 0.25rem 0.45rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    white-space: nowrap;
+    color: var(--paper);
+    background: var(--ink);
+  }
+
+  /* ---------- Pruebas ---------- */
+  .tests-lead {
+    max-width: 44ch;
+    margin-top: 1rem;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .tests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+  .tests--live {
+    display: grid;
+    gap: 3px;
+  }
+  .tests--live :global(li) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--tint);
+  }
+  .tests--live :global(.kit-badge) {
+    background: var(--paper);
+  }
+
+  /* ---------- Resultado ---------- */
+  .result-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    margin-top: 1.25rem;
+  }
+  .result-title {
+    font-size: clamp(1.6rem, 3.6vw, 3rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .features {
+    display: grid;
+    gap: 3px;
+    margin-top: 1.5rem;
+  }
+  .features li {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding: 1rem 1.25rem;
+    font-size: var(--step-lead);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    background: var(--tint);
+  }
+  .features li span {
+    flex: none;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    letter-spacing: 0;
+    color: var(--muted);
   }
   .shots {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     align-items: start;
     gap: clamp(1rem, 2vw, 1.5rem);
-    margin-top: clamp(1rem, 2vw, 1.5rem);
   }
   .shot-clip {
     overflow: hidden;
@@ -216,78 +577,140 @@ const facts = [
     width: 100%;
     height: auto;
   }
-  .project-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 3rem;
-    margin-top: clamp(3rem, 6vw, 5rem);
-  }
-  .prose-block {
-    max-width: 62ch;
-    font-size: var(--step-lead);
-    line-height: 1.45;
-    letter-spacing: -0.01em;
-  }
-  .prose-block :global(p + p) {
-    margin-top: 1.1em;
-  }
-  .features-title {
-    font-size: var(--step-lead);
-    font-weight: 650;
-  }
-  .features ul {
-    display: grid;
-    gap: 0.6rem;
-    margin-top: 1rem;
-  }
-  .features li {
-    display: flex;
-    gap: 0.7rem;
-  }
-  .features li::before {
-    content: '';
-    flex: none;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-top: 0.55em;
-    background: var(--pencil);
-  }
-  .next {
-    margin-top: clamp(4rem, 8vw, 7rem);
-  }
-  .next-link {
-    display: grid;
-    gap: 0.4rem;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    background: var(--tint);
-    transition:
-      background-color var(--dur-ui) var(--ease-out),
-      color var(--dur-ui) var(--ease-out);
-  }
-  .next-link:hover {
-    background: var(--pencil);
-    color: var(--pencil-ink);
-  }
-  .next-link:hover .next-label {
-    color: var(--pencil-ink);
-  }
-  .next-label {
+  .shot-label {
+    margin-top: 0.5rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
     color: var(--muted);
   }
-  .next-title {
-    font-size: var(--step-head);
+
+  /* ---------- Lo que más disfruté ---------- */
+  .case-enjoyed {
+    margin-top: clamp(4.5rem, 9vw, 8rem);
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+    color: var(--paper);
+    background: var(--ink);
+  }
+  .case-enjoyed .case-tag {
+    color: color-mix(in srgb, var(--paper) 72%, var(--ink));
+  }
+  .enjoyed-text {
+    max-width: 24ch;
+    margin-top: 1.5rem;
+    font-size: clamp(2rem, 5.2vw, 4.5rem);
     font-weight: 650;
-    letter-spacing: -0.03em;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  /* ---------- Siguiente proyecto ---------- */
+  .case-next {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+  }
+  .next-copy {
+    justify-self: start;
+  }
+  .next-title {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: clamp(2.25rem, 6vw, 5rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .next-title span {
+    display: inline-block;
+    transition: transform var(--dur-micro) var(--ease-out);
+  }
+  .next-title:hover span {
+    transform: translateX(6px);
+  }
+  .next-frame {
+    display: block;
+    background: var(--paper);
+  }
+  .next-frame--mobile {
+    width: min(100%, 18rem);
+  }
+  .next-frame--mobile :global(.pv-clip) {
+    aspect-ratio: auto;
+  }
+  .next-thread {
+    display: none;
+  }
+
+  /* En móvil y tablet: la interfaz de la cabecera a su alto natural y, en Código, la pieza antes
+     que su código (es lo que se toca) */
+  @media (max-width: 1023px) {
+    .case-visual :global(.pv[class*='pv--']:not(.pv--live) .pv-clip) {
+      height: auto;
+    }
+    .code-demo {
+      order: -1;
+      margin-top: 1.5rem;
+    }
   }
   @media (min-width: 768px) {
     .facts {
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
     }
+    .decisions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .tests--live {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
   @media (min-width: 1024px) {
-    .project-body {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
-      gap: 4rem;
+    .sketch-grid {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      align-items: center;
+      gap: 3rem;
+    }
+    .code-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: start;
+    }
+    /* Con capturas (la web publicada): la lista a un lado y las pantallas al otro */
+    .result-grid:has(.shots) {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 3.5rem;
+    }
+    .case-next {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(4rem, 12vw, 12rem);
+    }
+    .next-title {
+      white-space: nowrap;
+    }
+    .next-frame {
+      justify-self: end;
+      width: min(100%, 34rem);
+    }
+    .next-frame--mobile {
+      width: 16rem;
+    }
+    .next-frame :global(.pv .pv-clip) {
+      --ui-size: 0.6875rem;
+    }
+    .next-frame--mobile :global(.pv .pv-clip) {
+      --ui-size: 0.59rem;
+    }
+    .next-thread {
+      display: block;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .next-title span {
+      transition: none;
     }
   }
 </style>
+
+<script>
+  import '@/scripts/case';
+  import '@/scripts/project-demos';
+</script>

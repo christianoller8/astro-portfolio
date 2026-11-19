@@ -55,21 +55,22 @@ const grid = [
     : undefined}
 >
   <div class="vb-top">
-    <span class="vb-logo">vibora</span>
-    <span class="vb-day">{copy.day}</span>
+    <span class="vb-logo" data-sketch="text">vibora</span>
+    <span class="vb-day" data-sketch="text">{copy.day}</span>
   </div>
-  <p class="vb-title">{copy.title}</p>
+  <p class="vb-title" data-sketch="text">{copy.title}</p>
   <div class="vb-grid">
     <span></span>
-    {copy.courts.map((court) => <span class="vb-court">{court}</span>)}
+    {copy.courts.map((court) => <span class="vb-court" data-sketch="text">{court}</span>)}
     {
       times.map((time, row) => (
         <>
-          <span class="vb-time">{time}</span>
+          <span class="vb-time" data-sketch="text">{time}</span>
           {grid[row].map((state, col) =>
             interactive && state !== 1 ? (
               <button
                 type="button"
+                data-sketch="box"
                 class:list={['vb-slot', { 'is-mine': state === 2 }]}
                 aria-pressed={state === 2 ? 'true' : 'false'}
                 data-demo-slot={`${copy.courts[col]} · ${time}`}
@@ -77,7 +78,8 @@ const grid = [
                 {state === 0 ? copy.free : copy.mine}
               </button>
             ) : (
-              <span class:list={['vb-slot', { 'is-taken': state === 1, 'is-mine': state === 2 }]}>
+              <span data-sketch="box"
+                class:list={['vb-slot', { 'is-taken': state === 1, 'is-mine': state === 2 }]}>
                 {state === 0 ? copy.free : state === 1 ? copy.taken : copy.mine}
               </span>
             ),
@@ -86,7 +88,7 @@ const grid = [
       ))
     }
   </div>
-  <div class="vb-bar">
+  <div class="vb-bar" data-sketch="box">
     <span data-demo-summary>{copy.summary}</span>
     {
       interactive ? (
