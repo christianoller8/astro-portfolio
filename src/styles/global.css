@@ -189,6 +189,13 @@
   min-height: calc(100svh - var(--toolbar-h) - var(--frame-label-h) - var(--gutter));
   overflow-x: clip;
 }
+/* 404: el frame que no existe. Sin papel: solo su contorno discontinuo sobre el lienzo. */
+.artboard--missing {
+  display: grid;
+  background: none;
+  outline: 1.5px dashed var(--graphite);
+  outline-offset: -1.5px;
+}
 .wrap {
   width: 100%;
   max-width: 82rem;

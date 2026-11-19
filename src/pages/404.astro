@@ -1,0 +1,326 @@
+---
+// 404 (plan §5.7): "Frame no encontrado". El artboard es un frame vacío de borde discontinuo con la
+// ruta pedida como nombre; salen hilos de prototipo hacia las páginas que sí existen y el personaje
+// lo busca, mirando a un lado y a otro. Un solo archivo sirve a los dos idiomas: el servidor no sabe
+// cuál toca, así que van los dos textos y se enseña el que corresponde a la ruta (/en/…).
+import Layout from '@/layouts/Layout.astro';
+import Character from '@/components/character/Character.astro';
+
+const copy = {
+  es: {
+    title: 'Frame no encontrado',
+    lead: ['La ruta', 'no está en este archivo. Puede que se haya movido o que nunca existiera.'],
+    home: 'Volver al inicio',
+    canvas: 'Ver el lienzo',
+    exist: 'Los frames que sí existen',
+    pages: [
+      { key: 'home', path: '/', name: 'Inicio' },
+      { key: 'projects', path: '/projects', name: 'Proyectos' },
+      { key: 'about', path: '/about', name: 'Sobre mí' },
+      { key: 'contact', path: '/contact', name: 'Contacto' },
+    ],
+  },
+  en: {
+    title: 'Frame not found',
+    lead: ['The path', 'is not in this file. It may have moved, or it never existed.'],
+    home: 'Back to home',
+    canvas: 'View the canvas',
+    exist: 'The frames that do exist',
+    pages: [
+      { key: 'home', path: '/en', name: 'Home' },
+      { key: 'projects', path: '/en/projects', name: 'Projects' },
+      { key: 'about', path: '/en/about', name: 'About' },
+      { key: 'contact', path: '/en/contact', name: 'Contact' },
+    ],
+  },
+};
+const langs = ['es', 'en'] as const;
+---
+
+<Layout title="404 · Christian Oller" description="Frame no encontrado" frame="404" missing>
+  <section class="wrap nf" data-nf>
+    {
+      langs.map((lang) => (
+        <div class="nf-grid" data-nf-lang={lang} lang={lang} hidden={lang !== 'es'}>
+          <div class="nf-copy" id={`nf-from-${lang}`}>
+            <p class="nf-code">404</p>
+            <h1 class="nf-title">{copy[lang].title}</h1>
+            <p class="nf-lead">
+              {copy[lang].lead[0]} <code data-nf-path>/…</code> {copy[lang].lead[1]}
+            </p>
+            <div class="nf-actions">
+              <a class="btn btn-primary" href={copy[lang].pages[0].path}>
+                {copy[lang].home}
+                <span class="btn-arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+              <button type="button" class="btn btn-quiet" data-canvas-open>
+                {copy[lang].canvas}
+                <kbd>M</kbd>
+              </button>
+            </div>
+          </div>
+
+          <nav class="nf-frames" aria-label={copy[lang].exist}>
+            <p class="nf-frames-title">{copy[lang].exist}</p>
+            <ul>
+              {copy[lang].pages.map((page) => (
+                <li>
+                  <a class="nf-frame" id={`nf-to-${lang}-${page.key}`} href={page.path} data-thread-hover={`#nf-thread-${lang}-${page.key}`}>
+                    <span class="kit-frame-name nf-frame-name">{page.name}</span>
+                    <span class="nf-shot" data-sel>
+                      <img class="nf-img nf-img--light" src={`/canvas/${lang}-${page.key}-light.jpg`} width="685" height="854" loading="lazy" alt="" />
+                      <img class="nf-img nf-img--dark" src={`/canvas/${lang}-${page.key}-dark.jpg`} width="685" height="854" loading="lazy" alt="" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {copy[lang].pages.map((page) => (
+            <svg
+              class="kit-thread nf-thread"
+              id={`nf-thread-${lang}-${page.key}`}
+              data-thread-from={`#nf-from-${lang}`}
+              data-thread-to={`#nf-to-${lang}-${page.key} .nf-shot`}
+              aria-hidden="true"
+            />
+          ))}
+        </div>
+      ))
+    }
+
+    <div class="nf-seeker" data-nf-seeker aria-hidden="true">
+      <Character class="nf-chr" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .nf {
+    position: relative;
+    display: grid;
+    align-content: center;
+    padding-block: clamp(2rem, 4vw, 3rem);
+  }
+  .nf-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
+  }
+  .nf-grid[hidden] {
+    display: none;
+  }
+  .nf-copy {
+    justify-self: start;
+    max-width: 38rem;
+  }
+  .nf-code {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .nf-title {
+    margin-top: 0.75rem;
+    font-size: clamp(2.75rem, 8.2vw, 7rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+  }
+  .nf-lead {
+    max-width: 32ch;
+    margin-top: 1.5rem;
+    font-size: var(--step-lead);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .nf-lead code {
+    padding: 0.1rem 0.4rem;
+    font: 500 0.875em/1.4 var(--font-mono);
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+    color: var(--paper);
+    background: var(--ink);
+  }
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .nf-actions kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.4rem;
+    height: 1.4rem;
+    font: 600 0.8125rem/1 var(--font-sans);
+    color: var(--muted);
+    background: var(--paper);
+  }
+  .nf-actions :global(.btn-quiet) {
+    background: var(--paper);
+  }
+
+  /* Los frames que sí existen */
+  .nf-frames-title {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .nf-frames ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+    margin-top: 1rem;
+  }
+  .nf-frame {
+    display: block;
+  }
+  .nf-frame-name {
+    margin-bottom: 0.4rem;
+  }
+  .nf-shot {
+    display: block;
+    aspect-ratio: 2 / 1;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  /* La selección del kit lleva tiradores por fuera: el recorte va en la imagen */
+  .nf-shot[data-sel] {
+    overflow: visible;
+  }
+  .nf-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  .nf-img--dark,
+  :global(:root.dark) .nf-img--light {
+    display: none;
+  }
+  :global(:root.dark) .nf-img--dark {
+    display: block;
+  }
+  .nf-thread {
+    display: none;
+  }
+
+  /* El personaje, de pie sobre el borde de abajo del frame, buscándolo */
+  .nf-seeker {
+    position: absolute;
+    bottom: 1.5px;
+    left: 50%;
+    transition: scale 260ms var(--ease-out);
+  }
+  .nf-seeker.is-left {
+    scale: -1 1;
+  }
+  .nf-seeker :global(.nf-chr) {
+    --h: clamp(10rem, 27vh, 15rem);
+  }
+  :global(:root.dark) .nf-seeker :global(.nf-chr) {
+    filter: drop-shadow(0 0 1px rgb(245 245 245 / 0.5));
+  }
+
+  /* En móvil y tablet estrecha, el personaje tiene su sitio debajo de los frames */
+  @media (max-width: 899px) {
+    .nf {
+      padding-bottom: clamp(12rem, 30vh, 17rem);
+    }
+  }
+  @media (min-width: 900px) {
+    .nf-seeker {
+      left: 52%;
+    }
+    .nf-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(11rem, 15rem);
+      align-items: center;
+      gap: clamp(4rem, 14vw, 14rem);
+    }
+    .nf-frames ul {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.1rem;
+    }
+    .nf-thread {
+      display: block;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nf-seeker {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { applyPose, searching } from '@/scripts/character';
+  import { drawThread, playThread } from '@/scripts/kit';
+
+  document.addEventListener('astro:page-load', () => {
+    const section = document.querySelector<HTMLElement>('[data-nf]');
+    if (!section) return;
+
+    // El idioma lo dice la ruta; la ruta pedida pasa a ser el nombre del frame
+    const lang = /^\/en(\/|$)/.test(location.pathname) ? 'en' : 'es';
+    document.documentElement.lang = lang;
+    section.querySelectorAll<HTMLElement>('[data-nf-lang]').forEach((el) => (el.hidden = el.dataset.nfLang !== lang));
+    const path = decodeURIComponent(location.pathname);
+    section.querySelectorAll('[data-nf-path]').forEach((el) => (el.textContent = path));
+    const label = document.querySelector('.frame-label');
+    if (label?.firstChild) label.firstChild.textContent = `${path} `;
+
+    // Los hilos se miden con su idioma a la vista
+    const redraw = () =>
+      section.querySelectorAll<SVGSVGElement>('svg[data-thread-from]').forEach((svg) => {
+        const from = document.querySelector(svg.dataset.threadFrom ?? '');
+        const to = document.querySelector(svg.dataset.threadTo ?? '');
+        if (from && to && svg.clientWidth) {
+          drawThread(svg, from, to);
+          svg.classList.add('is-drawn');
+        }
+      });
+    redraw();
+    document.fonts?.ready.then(redraw);
+    const controller = new AbortController();
+    window.addEventListener('resize', redraw, { passive: true, signal: controller.signal });
+    section.addEventListener(
+      'pointerover',
+      (event) => {
+        const el = (event.target as Element).closest<HTMLElement>('[data-thread-hover]');
+        if (!el || el.contains((event as PointerEvent).relatedTarget as Node | null)) return;
+        const svg = document.querySelector<SVGSVGElement>(el.dataset.threadHover ?? '');
+        if (svg?.clientWidth) playThread(svg);
+      },
+      { signal: controller.signal },
+    );
+
+    // El personaje otea: se mece despacio y cada pocos segundos se gira a mirar al otro lado
+    const seeker = section.querySelector<HTMLElement>('[data-nf-seeker]');
+    const chr = seeker?.querySelector<HTMLElement>('.chr');
+    let raf = 0;
+    if (seeker && chr) {
+      chr.dataset.face = 'calm';
+      chr.dataset.hands = 'open';
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) applyPose(chr, searching(0));
+      else {
+        const tick = (now: number) => {
+          applyPose(chr, searching((now / 1000) * 70));
+          seeker.classList.toggle('is-left', Math.floor(now / 3600) % 2 === 1);
+          raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      }
+    }
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        cancelAnimationFrame(raf);
+        controller.abort();
+      },
+      { once: true },
+    );
+  });
+</script>

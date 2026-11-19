@@ -23,6 +23,8 @@ interface Props {
   frame: string;
   /** Solo el inicio lleva la intro (la marca que se dibuja) */
   intro?: boolean;
+  /** 404: el artboard es un frame vacío (sin papel ni pie) */
+  missing?: boolean;
   /** Páginas internas (la muestra del sistema): fuera de buscadores */
   noindex?: boolean;
 }
@@ -33,6 +35,7 @@ const {
   image = profileImage.src,
   frame,
   intro = false,
+  missing = false,
   noindex = false,
 } = Astro.props;
 
@@ -150,9 +153,9 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
         {frame}
         <span data-frame-size></span>
       </p>
-      <div class="artboard">
+      <div class:list={['artboard', missing && 'artboard--missing']}>
         <slot />
-        <Footer />
+        {!missing && <Footer />}
       </div>
     </main>
     <LensPanel lang={lang} />

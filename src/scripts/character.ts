@@ -11,6 +11,24 @@ export function standing(): Pose {
   return { torso: 0, head: 0, hood: 0, cords: 0, near: { ...limbs }, far: { ...limbs, upperArm: -5, forearm: 74, hand: 78 } };
 }
 
+/**
+ * Buscando (404): de pie, algo inclinado, con la mano de delante de visera sobre los ojos. `phase`
+ * en grados: el cuerpo y la cabeza se mecen despacio mientras otea.
+ */
+export function searching(phase: number): Pose {
+  const sway = sin(phase);
+  const torso = 7 + 2 * sway;
+  return {
+    torso,
+    head: 2 + 6 * sin(phase - 40),
+    hood: torso * 0.5,
+    cords: 3 * sin(phase - 90),
+    // El codo sube por delante y el antebrazo vuelve hacia la frente: la mano queda de visera
+    near: { upperArm: -132 + 3 * sway, forearm: -105 + 3 * sway, hand: -4 + 2 * sway, thigh: -5, shin: 3, shoe: 0 },
+    far: { upperArm: 8, forearm: 82, hand: 86, thigh: 7, shin: 9, shoe: 0 },
+  };
+}
+
 /** Una pierna del ciclo de andar. `phase` en grados */
 function leg(phase: number, mean: number, swing: number, flex: number): Pick<Limbs, 'thigh' | 'shin' | 'shoe' | 'bent'> {
   const thigh = mean + swing * sin(phase);

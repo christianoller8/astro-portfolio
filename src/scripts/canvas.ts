@@ -28,9 +28,11 @@ function initCanvas() {
   const flight = () => (reduce.matches ? 0 : 800);
 
   const here = (location.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/').replace(/\/$/, '');
-  const current = frames.find((frame) => frame.dataset.canvasFrame === here) ?? frames[0];
+  // En una ruta que no existe (404) ningún frame es "aquí": el lienzo se abre ya alejado
+  const found = frames.find((frame) => frame.dataset.canvasFrame === here);
+  const current = found ?? frames[0];
   frames.forEach((frame) => frame.toggleAttribute('aria-current', false));
-  current.setAttribute('aria-current', 'page');
+  if (found) current.setAttribute('aria-current', 'page');
 
   let camera: Camera = { x: 0, y: 0, k: 1 };
   let open = false;
@@ -89,10 +91,10 @@ function initCanvas() {
       current.scrollIntoView({ block: 'center' });
     } else {
       // Sale de la página actual y se aleja hasta ver el archivo entero
-      apply(fitFrame(current));
+      apply(found ? fitFrame(current) : fitAll());
       void overlay.offsetWidth;
       overlay.classList.add('is-open');
-      requestAnimationFrame(() => apply(fitAll(), true));
+      if (found) requestAnimationFrame(() => apply(fitAll(), true));
     }
     current.focus({ preventScroll: true });
   };
@@ -106,7 +108,7 @@ function initCanvas() {
       lock(false);
       trigger?.focus({ preventScroll: true });
     };
-    if (grid.matches) {
+    if (grid.matches || !found) {
       overlay.classList.remove('is-open');
       timer = window.setTimeout(done, 180);
       return;
@@ -121,7 +123,7 @@ function initCanvas() {
 
   /** Entra en un frame: la cámara se acerca hasta él y entonces se cambia de página, sin otra transición */
   const enter = (frame: HTMLAnchorElement) => {
-    if (frame === current) {
+    if (frame === found) {
       hide();
       return;
     }

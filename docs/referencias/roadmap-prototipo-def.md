@@ -21,7 +21,7 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **En curso**: Inicio, Proyectos y Sobre mí aprobados; casos (contenido provisional) y Contacto hechos (19 nov) |
+| **E4 · Páginas** | **En curso**: todo hecho menos la revisión del inglés; casos con contenido provisional (19 nov) |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -397,7 +397,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     `e4-inicio-movil.jpg`.
   - Provisional: los datos de las demos son de ejemplo y los textos nuevos, por revisar. Faltan
     año y stack de Tempora, Vibora y Learnish, y sus imágenes reales (ver "Lo que necesito de ti").
-  - Para la fase técnica: repetir las miniaturas del lienzo (la de Inicio ha cambiado).
+  - Las miniaturas del lienzo se repitieron el 19 nov, con el 404.
 - [x] **Proyectos**: el lienzo de proyectos y la vista en lista (hecho y aprobado el 19 nov).
   - **Lienzo** (`ProjectsPage.astro`): una franja con el color y los puntos del lienzo, de lado a
     lado del artboard, y en ella los cuatro proyectos como frames de un archivo de diseño, cada uno
@@ -467,8 +467,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - **Por confirmar**: el CV dice Angular "v8–v18" y la web dice "de la 8 a la 21" (lo dejé en 21,
     como me dijiste). La web sigue diciendo "Remoto · España" (el CV pone Córdoba). El "80.000
     usuarios" de Accenture sale del CV. La sesión de fotos nueva sigue pendiente.
-- [ ] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados (**hecho el
-  19 nov; pendiente de tu visto bueno**).
+- [x] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados (hecho y aprobado
+  el 19 nov).
   - **La frase**: "Hablemos" a tamaño de póster y, debajo, la pregunta en grande.
   - **Los datos**, en filas: email con botón "Copiar", LinkedIn, GitHub y el estado.
   - **El formulario como componente dentro de su frame**, sobre una franja del lienzo. El nombre
@@ -482,7 +482,24 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     `?estado=enviado` (usa datos de ejemplo).
   - Comprobado a 1440 px (claro, y oscuro en inglés) y 390 px (claro y oscuro); la lente QA da todo
     superado. Capturas: `.taste-skill/def/e4/e4-contacto-escritorio.jpg` y `e4-contacto-movil.jpg`.
-- [ ] **404**: "Frame no encontrado", con la caricatura buscándolo.
+- [ ] **404**: "Frame no encontrado", con la caricatura buscándolo (**hecho el 19 nov; pendiente de
+  tu visto bueno**).
+  - `src/pages/404.astro`. El artboard no tiene papel: es un frame vacío de borde discontinuo sobre
+    el lienzo, y su nombre (arriba, donde va siempre) es la ruta que se pidió.
+  - Dentro: "Frame no encontrado", la ruta, "Volver al inicio" y "Ver el lienzo". A la derecha, los
+    cuatro frames que sí existen, con hilos de prototipo que salen del texto hacia cada uno (se
+    vuelven a dibujar al señalarlos).
+  - El personaje articulado, de pie sobre el borde de abajo del frame, otea con la mano de visera
+    y cada pocos segundos se gira a mirar al otro lado (pose nueva `searching()` en
+    `src/scripts/character.ts`).
+  - Un solo archivo sirve a los dos idiomas: lleva los dos textos y enseña el que toca según la
+    ruta empiece o no por `/en`. La barra de arriba sale siempre en español (limitación de un 404
+    estático).
+  - El lienzo navegable, abierto desde un 404, ya no marca "Estás aquí" en ningún frame.
+  - **Miniaturas del lienzo repetidas** (las 32 de `public/canvas` y `canvas-sizes.json`): ahora
+    enseñan los diseños nuevos de Inicio, Proyectos, casos, Sobre mí y Contacto.
+  - Comprobado a 1440 px (claro, y oscuro en inglés), 820 px y 390 px. Capturas:
+    `.taste-skill/def/e4/e4-404-escritorio.jpg` y `e4-404-movil.jpg`.
 - [ ] **Inglés** al mismo nivel que el español.
 
 **Hecho cuando**: cada pantalla pasa la prueba del póster (un protagonista claro).
