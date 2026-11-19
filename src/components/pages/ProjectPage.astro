@@ -66,7 +66,9 @@ const facts = [
   <article data-cs="<article> ProjectPage.astro">
     <header class="wrap project-head">
       <a class="back link t-small" href={translatePath('/projects')}>← {t('project.back')}</a>
-      <h1 class="t-display project-title" data-ds="H1" data-ds-type data-reveal>{title}</h1>
+      <h1 class="t-display project-title" data-ds="H1" data-ds-type data-reveal data-morph-title={project.slug}>
+        {title}
+      </h1>
       <p class="t-lead project-lead" data-reveal style="--reveal-i: 1">{description}</p>
       <dl class="facts" data-reveal style="--reveal-i: 2">
         {
@@ -98,7 +100,9 @@ const facts = [
     </header>
 
     <div class="wrap project-visual" data-reveal>
-      <ProjectVisual project={project} lang={lang} eager />
+      <div data-morph-visual={project.slug}>
+        <ProjectVisual project={project} lang={lang} eager />
+      </div>
     </div>
 
     {

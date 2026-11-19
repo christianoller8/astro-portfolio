@@ -25,7 +25,7 @@ const projects = await getSortedProjects(lang);
         <li class="stack-item">
           <a class="stack-card" href={translatePath(`/projects/${project.slug}`)}>
             <div class="stack-meta">
-              <h3 class="stack-title">{project.data.title}</h3>
+              <h3 class="stack-title" data-morph-title={project.slug}>{project.data.title}</h3>
               <p class="stack-desc">
                 {project.data.description}
                 <span class="stack-kind">
@@ -37,7 +37,7 @@ const projects = await getSortedProjects(lang);
                 {t('projects.view')} <span aria-hidden="true">→</span>
               </span>
             </div>
-            <div class="stack-visual">
+            <div class="stack-visual" data-morph-visual={project.slug}>
               <ProjectVisual project={project} lang={lang} />
             </div>
           </a>

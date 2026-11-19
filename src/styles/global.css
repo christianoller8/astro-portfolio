@@ -483,6 +483,56 @@ html.frame-back::view-transition-group(pusher) {
   animation: none;
 }
 
+/* --- De la tarjeta al caso (plan §4.3 D): en vez de panear, la imagen del proyecto crece hasta
+   ser la cabecera del caso y el título viaja hasta el H1; lo demás se funde. Al volver, regresan a
+   su tarjeta. frames.ts pone html.is-morph y da nombre a las dos piezas que viajan. --- */
+html.is-morph::view-transition-old(root) {
+  /* La página que sale se queda debajo, quieta, hasta que la nueva la tapa: así no asoma el lienzo */
+  animation: none;
+}
+html.is-morph::view-transition-new(root) {
+  animation: morph-in 420ms var(--ease-out) 80ms both;
+}
+html.is-morph::view-transition-group(pusher) {
+  display: none;
+}
+::view-transition-group(morph-visual),
+::view-transition-group(morph-title) {
+  animation-duration: 700ms;
+  animation-timing-function: var(--ease-camera);
+  z-index: 4;
+}
+/* Las dos versiones de cada pieza se relevan pronto y rápido: la interfaz se maqueta distinto a cada
+   tamaño y, si se cruzaran despacio, se verían las dos a la vez */
+::view-transition-old(morph-visual),
+::view-transition-old(morph-title) {
+  animation: morph-out 240ms linear both;
+  mix-blend-mode: normal;
+}
+::view-transition-new(morph-visual),
+::view-transition-new(morph-title) {
+  animation: morph-in 240ms linear both;
+  mix-blend-mode: normal;
+}
+/* La imagen ocupa siempre toda su caja: no se deforma aunque cambie de proporción */
+::view-transition-old(morph-visual),
+::view-transition-new(morph-visual) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+@keyframes morph-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes morph-in {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes pan-out {
   to {
     translate: calc(-100vw - var(--pusher-gap)) 0;
@@ -529,6 +579,11 @@ html.frame-back::view-transition-group(pusher) {
   }
   ::view-transition-group(pusher) {
     display: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
   .btn,
   .link,

@@ -1,12 +1,37 @@
-// Transición entre páginas (docs/referencias/transicion-personaje.md): decide la dirección del
-// paneo según el orden del menú y mueve al personaje, que empuja la página al ir hacia delante y
-// tira de ella al volver. El paneo en sí está en global.css (::view-transition-*).
+// Transición entre páginas. Dos modos, y la animación de cada uno está en global.css
+// (::view-transition-*):
+// - Paneo con el personaje (docs/referencias/transicion-personaje.md): decide la dirección según el
+//   orden del menú y mueve al personaje, que empuja la página al avanzar y tira de ella al volver.
+// - Morph de la tarjeta al caso (plan §4.3 D): entre una lista de proyectos (la home o Proyectos)
+//   y el caso de uno de ellos, la imagen y el título viajan de la tarjeta a la cabecera y vuelven.
 import type { TransitionBeforePreparationEvent, TransitionBeforeSwapEvent } from 'astro:transitions/client';
 import { animate } from './character';
 
 const ORDER = ['/', '/projects', '/about', '/contact'];
 let back = false;
 let frame = 0;
+/** El proyecto cuya tarjeta y cuyo caso se están transformando, o null si la transición es un paneo */
+let morph: string | null = null;
+let traverse = false;
+
+const plain = (url: URL) => url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
+const caseOf = (url: URL) => plain(url).match(/^\/projects\/([^/]+)$/)?.[1] ?? null;
+const isList = (url: URL) => ['/', '/projects'].includes(plain(url));
+
+/**
+ * Da nombre de transición a la imagen y al título de un proyecto en el documento actual.
+ * Devuelve la imagen, o null si no está (entonces no hay morph).
+ */
+function tag(slug: string, near?: Element | null) {
+  const within = (selector: string) =>
+    near?.closest('li, article')?.querySelector<HTMLElement>(selector) ?? document.querySelector<HTMLElement>(selector);
+  const visual = within(`[data-morph-visual="${slug}"]`);
+  const title = within(`[data-morph-title="${slug}"]`);
+  if (!visual) return null;
+  visual.style.viewTransitionName = 'morph-visual';
+  if (title) title.style.viewTransitionName = 'morph-title';
+  return { visual, title };
+}
 
 function rank(url: URL) {
   const path = url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
@@ -34,22 +59,29 @@ const reads = (name: string) => getComputedStyle(document.documentElement).getPr
 const ms = (value: string) => (value.endsWith('ms') ? parseFloat(value) : parseFloat(value) * 1000);
 
 const language = (url: URL) => (/^\/en(\/|$)/.test(url.pathname) ? 'en' : 'es');
+const canAnimate = () =>
+  'startViewTransition' in document && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.addEventListener('astro:before-preparation', (event) => {
-  const { from, to, direction } = event as TransitionBeforePreparationEvent;
+  const { from, to, direction, navigationType, sourceElement } = event as TransitionBeforePreparationEvent;
+  morph = null;
+  traverse = navigationType === 'traverse';
   // Cambio de idioma: ir al inglés es avanzar (empuja) y volver al español es regresar (arrastra)
   if (language(from) !== language(to)) {
     back = language(to) === 'es';
     return;
   }
+  // De una lista a un caso, o de vuelta: morph. Las piezas de la página que sale se nombran ya,
+  // antes de que el navegador le haga la foto
+  const slug = caseOf(to) && isList(from) ? caseOf(to) : caseOf(from) && isList(to) ? caseOf(from) : null;
+  if (slug && canAnimate() && tag(slug, sourceElement)) morph = slug;
   const delta = rank(to) - rank(from);
   back = delta < 0 || (delta === 0 && direction === 'back');
 });
 
 document.addEventListener('astro:before-swap', (event) => {
   const transition = (event as TransitionBeforeSwapEvent).viewTransition;
-  const animated =
-    'startViewTransition' in document && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const animated = canAnimate();
   cancelAnimationFrame(frame);
 
   // El swap reemplaza los atributos de <html>: las clases se ponen justo después, antes de animar
@@ -59,6 +91,28 @@ document.addEventListener('astro:before-swap', (event) => {
       const root = document.documentElement;
       root.classList.toggle('frame-back', back);
       if (!animated) return;
+
+      if (morph) {
+        const target = tag(morph);
+        if (target) {
+          root.classList.add('is-morph');
+          // Las piezas que llegan no hacen además su entrada escalonada: se quedarían a medio camino
+          for (const el of [target.visual, target.title]) {
+            el?.removeAttribute('data-reveal');
+            el?.closest('[data-reveal]')?.removeAttribute('data-reveal');
+          }
+          // Al volver a una lista con un enlace (no con "atrás"), se baja hasta la tarjeta
+          if (caseOf(new URL(location.href)) === null && !traverse) {
+            target.visual.scrollIntoView({ block: 'center', behavior: 'instant' });
+          }
+          transition.finished.finally(() => {
+            root.classList.remove('is-morph');
+            target.visual.style.viewTransitionName = '';
+            if (target.title) target.title.style.viewTransitionName = '';
+          });
+          return;
+        }
+      }
       root.classList.add('is-panning');
 
       const chr = document.querySelector<HTMLElement>('[data-pusher] .chr');

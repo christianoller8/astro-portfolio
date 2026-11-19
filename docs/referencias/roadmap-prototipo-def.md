@@ -269,8 +269,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Detalle de cómo está hecho, capturas y la lista de lo que falta para afinarlo:
     [transicion-personaje.md](transicion-personaje.md).
   - Página de pruebas del muñeco: `/personaje`.
-- [ ] **"Cómo lo veo yo"**: web → UX/UI → programador → QA, con las tecnologías de cada mirada
-  (**hecha el 19 nov; pendiente de tu visto bueno**):
+- [x] **"Cómo lo veo yo"**: web → UX/UI → programador → QA, con las tecnologías de cada mirada
+  (hecha y aprobada el 19 nov):
   - Titular: "Tú ves una web. Yo la veo así."
   - **La web de ejemplo** (D15): "Norte", una landing inventada de café por suscripción, hecha en
     HTML real dentro de un frame ("norte.cafe · 1280 × 800"). Lleva sus propios colores (crema,
@@ -302,7 +302,20 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     puente "Puedes ver toda esta web así" queda **oculto** porque no te convence (`showBridge` en
     `ViewScene.astro`).
   - Capturas: `.taste-skill/def/e3-como-lo-veo-escritorio.jpg` y `e3-como-lo-veo-movil.jpg`.
-- [ ] **Morph** de la tarjeta de proyecto a su caso.
+- [ ] **Morph** de la tarjeta de proyecto a su caso (**hecho el 19 nov; pendiente de tu visto
+  bueno**):
+  - Al entrar en un proyecto desde la home o desde Proyectos, la imagen del proyecto crece hasta
+    ser la cabecera del caso y el título viaja hasta el H1, en 700 ms; la página de detrás se funde.
+  - Al volver ("← Todos los proyectos" o el botón de atrás), la imagen y el título regresan a su
+    tarjeta. Si vuelves con el enlace, la lista baja sola hasta esa tarjeta.
+  - **Convive con el personaje**: el morph solo se usa entre una lista y un caso. El resto de
+    cambios de página (menú, idioma, de un caso al siguiente) siguen con el paneo y el personaje.
+  - Cómo está hecho: `frames.ts` da nombre de transición a las dos piezas justo antes de navegar
+    (`[data-morph-visual]` y `[data-morph-title]`) y pone `html.is-morph`; la animación está en
+    `global.css`.
+  - Con "reducir movimiento" no hay morph.
+  - Capturas a cámara lenta: `.taste-skill/def/e3-morph-ida.jpg`, `e3-morph-vuelta.jpg` y
+    `e3-morph-movil.jpg`.
 - [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil.
 - [ ] **Lentes** con estética de herramienta (valores medidos, sin rotulador).
 

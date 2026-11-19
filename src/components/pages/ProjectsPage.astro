@@ -34,11 +34,12 @@ const projects = await getSortedProjects(lang);
             href={translatePath(`/projects/${project.slug}`)}
             tabindex="-1"
             aria-hidden="true"
+            data-morph-visual={project.slug}
           >
             <ProjectVisual project={project} lang={lang} eager={i === 0} />
           </a>
           <div class="project-info">
-            <h2 class="project-title">
+            <h2 class="project-title" data-morph-title={project.slug}>
               <a class="link" href={translatePath(`/projects/${project.slug}`)}>
                 {project.data.title}
               </a>
