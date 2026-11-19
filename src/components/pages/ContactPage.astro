@@ -11,6 +11,14 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+// Los cuatro estados del componente, dibujados al lado del formulario
+const states = [
+  { id: 'empty', label: t('contact.state.empty') },
+  { id: 'typing', label: t('contact.state.typing') },
+  { id: 'valid', label: t('contact.state.valid') },
+  { id: 'sent', label: t('contact.state.sent') },
+];
+
 const topics = [
   { value: 'job', label: t('contact.topic.job') },
   { value: 'freelance', label: t('contact.topic.freelance') },
@@ -23,11 +31,47 @@ const topics = [
   description={t('contact.meta.description')}
   frame={t('nav.contact')}
 >
+  <!-- La frase y los datos -->
   <section class="wrap contact" data-cs="<section> ContactPage.astro">
-    <h1 class="t-display" data-reveal data-ds="H1" data-ds-type>{t('contact.title')}</h1>
-    <p class="t-lead contact-lead" data-reveal style="--reveal-i: 1">{t('contact.lead')}</p>
+    <h1 class="contact-title" data-reveal data-ds="H1" data-ds-type>{t('contact.title')}</h1>
+    <div class="contact-top">
+      <p class="contact-lead" data-reveal style="--reveal-i: 1">{t('contact.lead')}</p>
+      <ul class="data" data-reveal style="--reveal-i: 2">
+        <li class="data-row">
+          <span class="data-label">Email</span>
+          <a class="data-value" href={`mailto:${site.email}`}>{site.email}</a>
+          <button type="button" class="data-action" data-copy={site.email} data-copied={t('footer.copied')}>
+            {t('footer.copy')}
+          </button>
+        </li>
+        <li class="data-row">
+          <span class="data-label">LinkedIn</span>
+          <a class="data-value" href={site.linkedin} target="_blank" rel="noreferrer">christian-oller</a>
+          <span class="data-arrow" aria-hidden="true">↗</span>
+        </li>
+        <li class="data-row">
+          <span class="data-label">GitHub</span>
+          <a class="data-value" href={site.github} target="_blank" rel="noreferrer">christianoller8</a>
+          <span class="data-arrow" aria-hidden="true">↗</span>
+        </li>
+        <li class="data-row">
+          <span class="data-label">{t('contact.data.status')}</span>
+          <span class="data-value data-value--status">
+            <span class="status-dot" aria-hidden="true"></span>{t('hero.status')}
+          </span>
+        </li>
+      </ul>
+    </div>
+  </section>
 
-    <div class="contact-grid">
+  <!-- El formulario, como un componente dentro de su frame, con sus cuatro estados dibujados -->
+  <section class="form-band" data-form-band data-form-state="empty" data-cs="<section> ContactForm">
+    <div class="wrap form-grid">
+      <div class="form-frame" data-reveal>
+        <p class="kit-frame-name form-name" aria-hidden="true">
+          {t('contact.frame')}
+          <span data-form-state-name>{states[0].label}</span>
+        </p>
       <form
         class="form"
         data-contact-form
@@ -35,10 +79,9 @@ const topics = [
         data-email={site.email}
         data-subject={t('contact.mailto.subject')}
         data-ds={lang === 'es' ? 'Formulario' : 'Form'}
-        data-reveal
-        style="--reveal-i: 2"
         novalidate
       >
+        <div class="form-fields" data-form-fields>
         <fieldset class="topics">
           <legend class="field-label">{t('contact.topic')}</legend>
           <div class="topic-row">
@@ -98,6 +141,15 @@ const topics = [
           </button>
           <p class="t-small send-state" data-state role="status"></p>
         </div>
+        </div>
+
+        {/* Estado "enviado": sustituye a los campos */}
+        <div class="form-sent" data-form-sent hidden>
+          <span class="form-sent-mark" aria-hidden="true"></span>
+          <p class="form-sent-title" tabindex="-1" data-form-sent-title>{t('contact.sent.title')}</p>
+          <p class="form-sent-body">{t('contact.sent.body')}</p>
+          <button type="button" class="btn btn-quiet" data-form-again>{t('contact.again')}</button>
+        </div>
         <p
           hidden
           data-messages={JSON.stringify({
@@ -109,44 +161,161 @@ const topics = [
         >
         </p>
       </form>
+      </div>
 
-      <aside class="direct" data-reveal style="--reveal-i: 3">
-        <h2 class="direct-title">{t('contact.direct')}</h2>
-        <ul class="direct-list">
-          <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
-          <li>
-            <a class="link" href={site.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
-          </li>
-          <li><a class="link" href={site.github} target="_blank" rel="noreferrer">GitHub ↗</a></li>
-        </ul>
-        <p class="t-small direct-status">
-          <span class="status-dot" aria-hidden="true"></span>{t('hero.status')}
-        </p>
-      </aside>
+      <div class="states" data-reveal style="--reveal-i: 1" aria-hidden="true">
+        <p class="states-title">{t('contact.states')}</p>
+        <ol class="states-list">
+          {
+            states.map((state) => (
+              <li class="state" data-state-thumb={state.id} data-label={state.label}>
+                <div class="state-shot">
+                  {state.id === 'sent' ? (
+                    <>
+                      <i class="s-mark" />
+                      <i class="s-line s-line--wide" />
+                      <i class="s-line" />
+                    </>
+                  ) : (
+                    <>
+                      <i class="s-field" />
+                      <i class="s-field" />
+                      <i class="s-field s-field--tall" />
+                      <i class="s-btn" />
+                    </>
+                  )}
+                </div>
+                <p class="state-name">
+                  {state.label}
+                  <span class="state-now">{t('contact.state.now')}</span>
+                </p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
     </div>
   </section>
 </Layout>
 
 <style>
+  /* ---------- La frase y los datos ---------- */
   .contact {
-    padding-top: clamp(2rem, 5vw, 4.5rem);
+    padding-top: clamp(1.5rem, 4vw, 3.5rem);
+  }
+  .contact-title {
+    font-size: clamp(4rem, 19vw, 17rem);
+    font-weight: 700;
+    line-height: 0.82;
+    letter-spacing: -0.06em;
+    margin-left: -0.04em;
+  }
+  .contact-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
   }
   .contact-lead {
-    max-width: 36ch;
-    margin-top: 1.25rem;
+    max-width: 18ch;
+    font-size: clamp(1.6rem, 3.2vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .data {
+    display: grid;
+    gap: 3px;
+  }
+  .data-row {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    min-height: 3.75rem;
+    padding: 0.6rem 1rem;
+    background: var(--tint);
+  }
+  .data-label {
+    font: 500 0.8125rem/1.3 var(--font-mono);
     color: var(--muted);
   }
-  .contact-grid {
+  .data-value {
+    overflow: hidden;
+    font-size: var(--step-lead);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  a.data-value {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--dur-micro) var(--ease-out);
+  }
+  a.data-value:hover {
+    text-decoration-color: currentColor;
+  }
+  .data-value--status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: normal;
+  }
+  .data-action {
+    min-width: 4.75rem;
+    min-height: 2rem;
+    padding: 0 0.7rem;
+    font: 500 0.8125rem/1 var(--font-mono);
+    color: var(--paper);
+    background: var(--ink);
+    transition: opacity var(--dur-micro) var(--ease-out);
+  }
+  .data-action:hover {
+    opacity: 0.85;
+  }
+  .data-arrow {
+    font-size: 1.125rem;
+    color: var(--muted);
+  }
+  .status-dot {
+    flex: none;
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--ok);
+    border-radius: 50%;
+  }
+
+  /* ---------- El formulario en su frame, sobre el lienzo ---------- */
+  .form-band {
+    margin-top: clamp(4rem, 8vw, 7rem);
+    padding-block: clamp(3rem, 6vw, 5rem);
+    background-color: var(--canvas);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+    background-size: 20px 20px;
+  }
+  /* El pie (tinta) va pegado a la franja del lienzo */
+  :global(main:has(.form-band) .artboard-back) {
+    margin-top: 0;
+  }
+  .form-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 3rem;
-    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .form-name {
+    margin-bottom: 0.5rem;
   }
   .form {
     display: grid;
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    background: var(--paper);
+  }
+  .form-fields {
+    display: grid;
     gap: 1.25rem;
-    padding: clamp(1.25rem, 3vw, 2rem);
-    background: var(--tint);
   }
   .field-row {
     display: grid;
@@ -273,65 +442,260 @@ const topics = [
   .send-state {
     color: var(--muted);
   }
-  .direct-title {
-    font-size: var(--step-lead);
-    font-weight: 650;
+  /* Un campo con contenido válido lo dice en su borde */
+  .field input:not(:placeholder-shown):valid,
+  .field textarea.is-ok {
+    border-color: var(--ink);
   }
-  .direct-list {
+
+  /* Estado "enviado" */
+  .form-sent {
     display: grid;
-    gap: 0.25rem;
-    margin-top: 1rem;
+    justify-items: start;
+    gap: 0.75rem;
+    min-height: 22rem;
+    align-content: center;
+  }
+  .form-sent[hidden] {
+    display: none;
+  }
+  .form-sent-mark {
+    width: 3.25rem;
+    height: 3.25rem;
+    background: var(--ok);
+    -webkit-mask: var(--kit-check) center / contain no-repeat;
+    mask: var(--kit-check) center / contain no-repeat;
+    animation: sent-in 420ms var(--spring) both;
+  }
+  .form-sent-title {
+    font-size: clamp(2rem, 4.4vw, 3.5rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    outline: none;
+  }
+  .form-sent-body {
+    margin-bottom: 0.75rem;
     font-size: var(--step-lead);
-  }
-  .direct-list a {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-  }
-  .direct-status {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 1.5rem;
     color: var(--muted);
   }
-  .status-dot {
-    width: 0.55rem;
-    height: 0.55rem;
+  @keyframes sent-in {
+    from {
+      opacity: 0;
+      scale: 0.6;
+    }
+  }
+
+  /* ---------- Los cuatro estados, dibujados ---------- */
+  .states-title {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .states-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+    margin-top: 1rem;
+  }
+  .state-shot {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 6%;
+    aspect-ratio: 4 / 3;
+    padding: 9%;
+    background: var(--paper);
+    outline: 1px solid transparent;
+    transition: outline-color var(--dur-micro) var(--ease-out);
+  }
+  .state-shot i {
+    display: block;
+  }
+  .s-field {
+    height: 16%;
+    min-height: 0.8rem;
+    border: 1px solid var(--line);
+    background: linear-gradient(var(--ink), var(--ink)) 8% 50% / 0 3px no-repeat;
+  }
+  .s-field--tall {
+    height: 30%;
+    background-position: 8% 30%;
+  }
+  .s-btn {
+    width: 38%;
+    height: 14%;
+    min-height: 0.7rem;
+    background: var(--line);
+  }
+  /* escribiendo: el primer campo con texto y el segundo con el foco y el cursor */
+  [data-state-thumb='typing'] .s-field:nth-child(1) {
+    border-color: var(--ink);
+    background-size: 42% 3px;
+  }
+  [data-state-thumb='typing'] .s-field:nth-child(2) {
+    border-color: var(--ink);
+    background: linear-gradient(var(--ink), var(--ink)) 8% 50% / 2px 60% no-repeat;
+  }
+  /* válido: todo escrito y el botón, en tinta */
+  [data-state-thumb='valid'] .s-field {
+    border-color: var(--ink);
+    background-size: 46% 3px;
+  }
+  [data-state-thumb='valid'] .s-field:nth-child(2) {
+    background-size: 62% 3px;
+  }
+  [data-state-thumb='valid'] .s-field--tall {
+    background:
+      linear-gradient(var(--ink), var(--ink)) 8% 26% / 74% 3px no-repeat,
+      linear-gradient(var(--ink), var(--ink)) 8% 58% / 52% 3px no-repeat;
+  }
+  [data-state-thumb='valid'] .s-btn {
+    background: var(--ink);
+  }
+  /* enviado */
+  [data-state-thumb='sent'] .state-shot {
+    align-content: center;
+  }
+  .s-mark {
+    width: 22%;
+    aspect-ratio: 1;
     background: var(--ok);
-    border-radius: 50%;
+    -webkit-mask: var(--kit-check) center / contain no-repeat;
+    mask: var(--kit-check) center / contain no-repeat;
+  }
+  .s-line {
+    width: 40%;
+    height: 3px;
+    background: var(--line);
+  }
+  .s-line--wide {
+    width: 66%;
+    height: 6px;
+    background: var(--ink);
+  }
+  .state-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .state-now {
+    display: none;
+    padding: 0.05rem 0.4rem;
+    font: 500 0.75rem/1.4 var(--font-mono);
+    color: var(--paper);
+    background: var(--ink);
+  }
+  /* El estado en el que está ahora el formulario: seleccionado, como en la herramienta */
+  .form-band[data-form-state='empty'] [data-state-thumb='empty'] .state-shot,
+  .form-band[data-form-state='typing'] [data-state-thumb='typing'] .state-shot,
+  .form-band[data-form-state='valid'] [data-state-thumb='valid'] .state-shot,
+  .form-band[data-form-state='sent'] [data-state-thumb='sent'] .state-shot {
+    outline-color: var(--ink);
+    background-image: var(--kit-handles);
+  }
+  .form-band[data-form-state='empty'] [data-state-thumb='empty'] .state-name,
+  .form-band[data-form-state='typing'] [data-state-thumb='typing'] .state-name,
+  .form-band[data-form-state='valid'] [data-state-thumb='valid'] .state-name,
+  .form-band[data-form-state='sent'] [data-state-thumb='sent'] .state-name {
+    color: var(--ink);
+  }
+  .form-band[data-form-state='empty'] [data-state-thumb='empty'] .state-now,
+  .form-band[data-form-state='typing'] [data-state-thumb='typing'] .state-now,
+  .form-band[data-form-state='valid'] [data-state-thumb='valid'] .state-now,
+  .form-band[data-form-state='sent'] [data-state-thumb='sent'] .state-now {
+    display: inline-block;
+  }
+
+  /* En móvil cada dato va en dos líneas: la etiqueta (y su acción) arriba y el valor, entero, debajo */
+  @media (max-width: 639px) {
+    .data-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.35rem 1rem;
+      padding-block: 0.8rem;
+    }
+    .data-value {
+      grid-area: 2 / 1 / 3 / 3;
+      font-size: 1.0625rem;
+    }
   }
   @media (min-width: 640px) {
     .field-row {
       grid-template-columns: 1fr 1fr;
     }
+    .states-list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
   @media (min-width: 1024px) {
-    .contact-grid {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    .contact-top {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      align-items: end;
+      gap: 3rem;
+    }
+    .form-grid {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
+      align-items: start;
       gap: 4rem;
+    }
+    .states {
+      position: sticky;
+      top: calc(var(--toolbar-h) + 2rem);
+      padding-top: 1.7rem;
+    }
+    .states-list {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+    .state-shot {
+      aspect-ratio: 16 / 9;
+      padding: 6% 8%;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .send.is-ready {
+    .send.is-ready,
+    .form-sent-mark {
       animation: none;
     }
   }
 </style>
 
 <script>
-  // Formulario con sus comprobaciones a la vista: cada regla se enciende al cumplirse.
+  // Formulario con sus comprobaciones a la vista: cada regla se enciende al cumplirse y el estado
+  // del componente (vacío, escribiendo, válido, enviado) se marca en los dibujos de al lado.
   // Sin endpoint configurado (PUBLIC_FORM_ENDPOINT) abre el correo con el mensaje ya escrito.
+  // Para ver un estado sin escribir: ?estado=vacio | escribiendo | valido | enviado
   document.addEventListener('astro:page-load', () => {
     const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
-    if (!form) return;
-    const messages = JSON.parse(
-      form.querySelector<HTMLElement>('[data-messages]')?.dataset.messages ?? '{}',
-    ) as Record<string, string>;
+    const band = form?.closest<HTMLElement>('[data-form-band]');
+    if (!form || !band) return;
+    const messages = JSON.parse(form.querySelector<HTMLElement>('[data-messages]')?.dataset.messages ?? '{}') as Record<string, string>;
     const state = form.querySelector<HTMLElement>('[data-state]');
     const send = form.querySelector<HTMLButtonElement>('[data-send]');
-    const field = (name: string) =>
-      form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+    const fields = form.querySelector<HTMLElement>('[data-form-fields]');
+    const sent = form.querySelector<HTMLElement>('[data-form-sent]');
+    const stateName = band.querySelector<HTMLElement>('[data-form-state-name]');
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+    // Para que :placeholder-shown distinga un campo vacío de uno escrito
+    for (const name of ['name', 'email', 'company', 'message']) field(name).placeholder ||= ' ';
+
+    const setState = (next: 'empty' | 'typing' | 'valid' | 'sent') => {
+      band.dataset.formState = next;
+      const label = band.querySelector<HTMLElement>(`[data-state-thumb="${next}"]`)?.dataset.label;
+      if (stateName && label) stateName.textContent = label;
+    };
+    const showSent = (on: boolean) => {
+      if (!fields || !sent) return;
+      fields.hidden = on;
+      sent.hidden = !on;
+      if (on) {
+        setState('sent');
+        sent.querySelector<HTMLElement>('[data-form-sent-title]')?.focus({ preventScroll: true });
+      }
+    };
 
     const rules: Record<string, () => boolean> = {
       name: () => field('name').value.trim().length > 1,
@@ -345,12 +709,22 @@ const topics = [
         all &&= ok;
         form.querySelector(`[data-check="${name}"]`)?.classList.toggle('is-ok', ok);
       }
+      field('message').classList.toggle('is-ok', rules.message());
       send?.classList.toggle('is-ready', all);
-      if (state && !form.dataset.sent) state.textContent = all ? messages.ready : '';
+      if (state) state.textContent = all ? messages.ready : '';
+      const any = ['name', 'email', 'company', 'message'].some((name) => field(name).value.trim());
+      if (sent?.hidden !== false) setState(all ? 'valid' : any ? 'typing' : 'empty');
       return all;
     };
 
     form.addEventListener('input', check);
+    form.addEventListener('click', (event) => {
+      if (!(event.target as Element).closest('[data-form-again]')) return;
+      form.reset();
+      showSent(false);
+      check();
+      field('name').focus();
+    });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!check()) {
@@ -361,32 +735,31 @@ const topics = [
       const data = new FormData(form);
       const endpoint = form.dataset.endpoint;
       if (!endpoint) {
-        const body = `${data.get('message')}\n\n— ${data.get('name')} (${data.get('email')})${
-          data.get('company') ? ` · ${data.get('company')}` : ''
-        }`;
-        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(
-          `${form.dataset.subject} · ${data.get('topic')}`,
-        )}&body=${encodeURIComponent(body)}`;
+        const body = `${data.get('message')}\n\n— ${data.get('name')} (${data.get('email')})${data.get('company') ? ` · ${data.get('company')}` : ''}`;
+        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(`${form.dataset.subject} · ${data.get('topic')}`)}&body=${encodeURIComponent(body)}`;
         return;
       }
       if (state) state.textContent = messages.sending;
       send?.setAttribute('disabled', '');
       try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          body: data,
-          headers: { Accept: 'application/json' },
-        });
+        const response = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
         if (!response.ok) throw new Error(String(response.status));
-        form.dataset.sent = 'true';
-        form.reset();
-        check();
-        if (state) state.textContent = messages.sent;
+        showSent(true);
       } catch {
         if (state) state.textContent = `${messages.error} ${form.dataset.email}`;
       } finally {
         send?.removeAttribute('disabled');
       }
     });
+
+    // Vista previa de un estado (para revisar el diseño)
+    const preview = new URLSearchParams(location.search).get('estado');
+    if (preview === 'escribiendo' || preview === 'valido' || preview === 'enviado') {
+      field('name').value = 'Laura Vidal';
+      field('email').value = preview === 'escribiendo' ? 'laura@' : 'laura@estudio.example';
+      if (preview !== 'escribiendo') field('message').value = 'Buscamos a alguien que diseñe y programe la nueva web del estudio.';
+    }
+    check();
+    if (preview === 'enviado') showSent(true);
   });
 </script>

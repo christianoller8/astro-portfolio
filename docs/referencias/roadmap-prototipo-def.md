@@ -21,7 +21,7 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **En curso**: Inicio y Proyectos aprobados; casos (contenido provisional) y Sobre mí hechos (19 nov) |
+| **E4 · Páginas** | **En curso**: Inicio, Proyectos y Sobre mí aprobados; casos (contenido provisional) y Contacto hechos (19 nov) |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -441,8 +441,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
       real de cada proyecto, se cambia.
     - Las pruebas en vivo miden la pieza de esta página, no la app real.
     - Faltan año, stack y enlaces de Tempora, Vibora y Learnish, y sus imágenes reales.
-- [ ] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV
-  (**hecho el 19 nov; pendiente de tu visto bueno**).
+- [x] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV
+  (hecho y aprobado el 19 nov).
   - **Trayectoria real, del CV**: por fin pude leer el PDF. `src/data/experience.ts` tenía cinco
     etapas con fechas distintas; ahora lleva las siete del CV, con tus frases resumidas:
     Vístalo (2025 – actualidad), Accenture (ene – ago 2026), VHIR · Vall d'Hebron (sep 2024 –
@@ -467,7 +467,21 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - **Por confirmar**: el CV dice Angular "v8–v18" y la web dice "de la 8 a la 21" (lo dejé en 21,
     como me dijiste). La web sigue diciendo "Remoto · España" (el CV pone Córdoba). El "80.000
     usuarios" de Accenture sale del CV. La sesión de fotos nueva sigue pendiente.
-- [ ] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados.
+- [ ] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados (**hecho el
+  19 nov; pendiente de tu visto bueno**).
+  - **La frase**: "Hablemos" a tamaño de póster y, debajo, la pregunta en grande.
+  - **Los datos**, en filas: email con botón "Copiar", LinkedIn, GitHub y el estado.
+  - **El formulario como componente dentro de su frame**, sobre una franja del lienzo. El nombre
+    del frame dice en qué estado está ("Formulario · Válido") y, al lado, los cuatro estados van
+    dibujados en miniatura (vacío, escribiendo, válido y enviado), con el actual seleccionado y
+    marcado "ahora". Cambian solos mientras escribes.
+  - Estado **enviado** diseñado: un panel con "Mensaje enviado" y "Escribir otro" sustituye a los
+    campos. Hoy solo se ve al enviar con un endpoint configurado (fase técnica); sin él, el
+    formulario sigue abriendo tu correo con el mensaje escrito.
+  - Para revisar cada estado sin escribir: `/contact/?estado=escribiendo`, `?estado=valido` o
+    `?estado=enviado` (usa datos de ejemplo).
+  - Comprobado a 1440 px (claro, y oscuro en inglés) y 390 px (claro y oscuro); la lente QA da todo
+    superado. Capturas: `.taste-skill/def/e4/e4-contacto-escritorio.jpg` y `e4-contacto-movil.jpg`.
 - [ ] **404**: "Frame no encontrado", con la caricatura buscándolo.
 - [ ] **Inglés** al mismo nivel que el español.
 
