@@ -87,6 +87,10 @@ la cabeza de esfuerzo, de perfil, con rótulos).
   blanco y los rótulos y guarda un PNG transparente por pieza en `src/assets/character/`. El blanco
   de la piel y de la suela se conserva; el borde se trata como línea negra con transparencia, para
   que no quede filo blanco sobre fondos oscuros.
+- **Copia de las imágenes del avatar** en `docs/imgs/avatar/` (lo pidió Christian el 19 nov): las
+  once piezas recortadas, la hoja de piezas sobre gris (`piezas-recortadas.jpg`) y los ciclos en
+  ocho fases (`ciclos-ocho-fases.jpg`). La web usa las de `src/assets/character/`; si se
+  regeneran las piezas, hay que volver a copiarlas aquí.
 - **Muñeco**: `src/data/character-rig.ts` (escala, pivote y articulaciones de cada pieza) y
   `src/components/character/Character.astro` (las piezas anidadas por sus articulaciones). El brazo
   y la pierna de detrás son copias, un punto más oscuras.
