@@ -197,3 +197,8 @@ para ir a un idioma y que vuelves al que tenías con la otra animación.
   (un fundido del texto sin mover la maqueta).
 - Está en `frames.ts`: si cambia el idioma, manda el idioma; si no, el orden del menú.
 - Muestra: `docs/imgs/avatar/transicion-idioma.jpg`.
+
+## Velocidad (19 nov)
+
+Christian la quiso "un pelín más lenta": la duración pasa de 1350 ms a **1600 ms** (`--dur-pan` en
+`global.css`; `frames.ts` la lee de ahí, así que es el único sitio que hay que tocar).
