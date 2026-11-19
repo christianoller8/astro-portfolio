@@ -261,15 +261,43 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     los dos son del mismo color.
   - Capturas: `.taste-skill/def/e3-intro-hoja-claro.jpg` (16 fotogramas),
     `e3-intro-hoja-oscuro-movil.jpg` y `e3-intro-hoja-movil.jpg`.
-- [ ] **Transición** con paneo y **tu personaje empujando o arrastrando la página** (idea tuya del
-  19 nov; sustituye al hilo de prototipo). **Primera versión hecha el 19 nov con tus piezas;
-  pendiente de tu visto bueno y de piezas mejores.**
+- [x] **Transición** con paneo y **tu personaje empujando o arrastrando la página** (idea tuya del
+  19 nov; sustituye al hilo de prototipo). Hecha y aprobada el 19 nov, con tu segunda lámina, el
+  cambio de idioma con dirección y 2 s de duración.
   - Hacia delante en el menú, todo panea a la izquierda y el personaje empuja la página que sale.
     Hacia atrás, panea a la derecha y tira de la que entra.
   - Detalle de cómo está hecho, capturas y la lista de lo que falta para afinarlo:
     [transicion-personaje.md](transicion-personaje.md).
   - Página de pruebas del muñeco: `/personaje`.
-- [ ] **"Cómo lo veo yo"**: web → UX/UI → programador → QA, con las tecnologías de cada mirada.
+- [ ] **"Cómo lo veo yo"**: web → UX/UI → programador → QA, con las tecnologías de cada mirada
+  (**hecha el 19 nov; pendiente de tu visto bueno**):
+  - Titular: "Tú ves una web. Yo la veo así."
+  - **La web de ejemplo** (D15): "Norte", una landing inventada de café por suscripción, hecha en
+    HTML real dentro de un frame ("norte.cafe · 1280 × 800"). Lleva sus propios colores (crema,
+    marrón y mostaza), que solo viven dentro del frame.
+  - **Las cuatro fases**, que cambian según el texto que vas leyendo al bajar:
+    0. La web terminada.
+    1. Como diseñador: la web se queda en fantasma, se dibuja el boceto de cada bloque, sale la
+       retícula de 12 columnas y dos piezas quedan seleccionadas con su medida. Figma · Procreate.
+    2. Como desarrollador: cada bloque lleva su etiqueta real (`<header>`, `<h1>`, `<button>`…)
+       y aparece el árbol de la página. Angular · React · Next.js · Astro · TypeScript ·
+       Tailwind · SASS.
+    3. Como QA: cinco comprobaciones con su valor (contraste del botón, zona táctil, texto
+       alternativo, orden de los títulos y enlaces con nombre). Cypress · Karma y Jasmine ·
+       Postman.
+  - **Nada está dibujado a mano**: el boceto, las medidas, las etiquetas, el árbol y las
+    comprobaciones se calculan en el navegador a partir del HTML de la web de ejemplo. Las medidas
+    se dan a 1280 px, que es el tamaño al que está "diseñada".
+  - **Puente a las lentes**: "Puedes ver toda esta web así", con tres botones que activan la lente
+    de Diseño, Código o QA en todo el portfolio.
+  - **Escritorio**: los textos a la izquierda y el frame fijo a la derecha. **Móvil y tablet**: el
+    frame fijo arriba y los textos pasando por debajo; el árbol y las comprobaciones van bajo el
+    texto de su paso.
+  - **Orden de la home**: hero → proyectos → "Cómo lo veo yo", como en el plan. Salen de la home
+    "Del boceto al producto" y "Herramientas por lente" (los componentes siguen en el proyecto;
+    el primero vuelve en el caso de Tempora).
+  - Con "reducir movimiento" los cambios de fase son inmediatos.
+  - Capturas: `.taste-skill/def/e3-como-lo-veo-escritorio.jpg` y `e3-como-lo-veo-movil.jpg`.
 - [ ] **Morph** de la tarjeta de proyecto a su caso.
 - [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil.
 - [ ] **Lentes** con estética de herramienta (valores medidos, sin rotulador).

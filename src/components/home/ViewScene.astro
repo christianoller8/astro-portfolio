@@ -1,0 +1,633 @@
+---
+// "Cómo lo veo yo" (plan §4.3 E): una web de ejemplo dentro de un frame que, al bajar, se ve con las
+// tres miradas de Christian. La web es HTML real (una landing inventada, "Norte"); todo lo que se
+// pinta encima sale de su propio DOM y lo calcula src/scripts/view-scene.ts:
+//   1 · diseñador: el boceto de cada bloque, la retícula y dos piezas seleccionadas con su medida.
+//   2 · desarrollador: la etiqueta de cada bloque y el árbol de la página.
+//   3 · QA: comprobaciones con su valor, medidas en el navegador de quien mira.
+// La fase activa (data-phase) la marca el paso de texto que está en el centro de la pantalla.
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const steps = [0, 1, 2, 3].map((i) => ({
+  title: t(`view.step.${i}.title` as Parameters<typeof t>[0]),
+  body: t(`view.step.${i}.body` as Parameters<typeof t>[0]),
+  tools: i > 0 ? t(`view.step.${i}.tools` as Parameters<typeof t>[0]) : '',
+}));
+const features = [1, 2, 3].map((i) => ({
+  title: t(`view.demo.f${i}.title` as Parameters<typeof t>[0]),
+  body: t(`view.demo.f${i}.body` as Parameters<typeof t>[0]),
+}));
+const lenses = [
+  { id: 'design', label: t('lens.design') },
+  { id: 'code', label: t('lens.code') },
+  { id: 'qa', label: t('lens.qa') },
+];
+---
+
+<section
+  class="vs"
+  data-view-scene
+  data-phase="0"
+  data-cs="<section> ViewScene.astro"
+  data-i18n={JSON.stringify({
+    contrast: t('view.check.contrast'),
+    target: t('view.check.target'),
+    alt: t('view.check.alt'),
+    headings: t('view.check.headings'),
+    links: t('view.check.links'),
+    yes: t('view.check.yes'),
+    no: t('view.check.no'),
+  })}
+>
+  <div class="wrap vs-head">
+    <h2 class="t-head" data-reveal>{t('view.title')}</h2>
+    <p class="t-lead vs-lead" data-reveal style="--reveal-i: 1">{t('view.lead')}</p>
+  </div>
+
+  <div class="wrap vs-grid">
+    <div class="vs-stage">
+      <p class="kit-frame-name vs-frame-name" aria-hidden="true">
+        {t('view.frame')}
+        <span>1280 × 800</span>
+      </p>
+
+      <div class="vs-frame" data-view-frame>
+        <!-- La web de ejemplo: HTML real. [data-sketch] dice cómo se boceta cada pieza; [data-tag], cuáles se etiquetan -->
+        <div class="demo" data-view-demo>
+          <header class="demo-top" data-tag>
+            <a class="demo-brand" href="#" tabindex="-1" data-sketch="box">Norte</a>
+            <nav class="demo-nav" data-tag>
+              <a href="#" tabindex="-1" data-sketch="text">{t('view.demo.nav.1')}</a>
+              <a href="#" tabindex="-1" data-sketch="text">{t('view.demo.nav.2')}</a>
+              <a href="#" tabindex="-1" data-sketch="text">{t('view.demo.nav.3')}</a>
+            </nav>
+            <button class="demo-login" type="button" tabindex="-1" data-sketch="box">{t('view.demo.login')}</button>
+          </header>
+
+          <main class="demo-main">
+            <section class="demo-hero">
+              <div class="demo-copy">
+                <h1 data-sketch="text" data-tag>{t('view.demo.h1')}</h1>
+                <p data-sketch="text" data-tag>{t('view.demo.p')}</p>
+                <div class="demo-actions">
+                  <button class="demo-cta" type="button" tabindex="-1" data-sketch="box" data-tag data-view-cta
+                    >{t('view.demo.cta')}</button
+                  >
+                  <a class="demo-link" href="#" tabindex="-1" data-sketch="text">{t('view.demo.link')}</a>
+                </div>
+              </div>
+              <figure class="demo-art" data-sketch="image" data-tag data-view-art>
+                <svg viewBox="0 0 320 260" role="img" aria-label={t('view.demo.alt')}>
+                  <rect x="0" y="0" width="320" height="260" fill="#efe4d0"></rect>
+                  <ellipse cx="160" cy="232" rx="128" ry="12" fill="#dccdb2"></ellipse>
+                  <path d="M70 62h104l12 168H58z" fill="#2a1f14"></path>
+                  <path d="M70 62h104l-6-26H76z" fill="#463423"></path>
+                  <rect x="86" y="104" width="72" height="72" fill="#c8862a"></rect>
+                  <path d="M104 152v-28l36 28v-28" fill="none" stroke="#2a1f14" stroke-width="7"></path>
+                  <path d="M200 150h70v36a35 35 0 0 1-70 0z" fill="#faf6ee"></path>
+                  <path d="M270 160h10a14 14 0 0 1 0 28h-12" fill="none" stroke="#faf6ee" stroke-width="9"></path>
+                  <path d="M206 150h58" stroke="#2a1f14" stroke-width="6"></path>
+                  <path d="M222 132c-8-12 8-16 0-28M246 132c-8-12 8-16 0-28" fill="none" stroke="#b8a888" stroke-width="5" stroke-linecap="round"></path>
+                </svg>
+              </figure>
+            </section>
+
+            <section class="demo-how">
+              <h2 data-sketch="text">{t('view.demo.h2')}</h2>
+              <div class="demo-steps">
+                {
+                  features.map((feature) => (
+                    <article data-sketch="box" data-tag="in">
+                      <h3>{feature.title}</h3>
+                      <p>{feature.body}</p>
+                    </article>
+                  ))
+                }
+              </div>
+            </section>
+          </main>
+        </div>
+
+        <!-- Capas que rellena el script: retícula, etiquetas y marcas de QA -->
+        <div class="vs-columns" aria-hidden="true">{Array.from({ length: 12 }).map(() => <i />)}</div>
+        <div class="vs-overlay" data-view-overlay aria-hidden="true"></div>
+      </div>
+
+      {/* En escritorio los paneles van sobre el frame; en móvil y tablet, bajo el texto de su paso */}
+      <div class="vs-panel vs-panel--stage vs-tree" aria-hidden="true">
+        <p class="vs-panel-title">{t('view.tree')}</p>
+        <pre data-view-tree></pre>
+      </div>
+
+      <div class="vs-panel vs-panel--stage vs-checks" aria-hidden="true">
+        <p class="vs-panel-title">{t('view.checks')}</p>
+        <ul data-view-checks></ul>
+      </div>
+    </div>
+
+    <ol class="vs-steps">
+      {
+        steps.map((step, i) => (
+          <li class="vs-step" data-view-step={i}>
+            <h3 class="vs-step-title">
+              <span class="vs-step-mark" aria-hidden="true" />
+              {step.title}
+            </h3>
+            <p class="vs-step-body">{step.body}</p>
+            {step.tools && (
+              <p class="vs-step-tools">
+                <span>{t('view.tools')}</span> {step.tools}
+              </p>
+            )}
+            {i === 2 && (
+              <div class="vs-panel vs-panel--inline vs-tree" aria-hidden="true">
+                <p class="vs-panel-title">{t('view.tree')}</p>
+                <pre data-view-tree />
+              </div>
+            )}
+            {i === 3 && (
+              <div class="vs-panel vs-panel--inline vs-checks" aria-hidden="true">
+                <p class="vs-panel-title">{t('view.checks')}</p>
+                <ul data-view-checks />
+              </div>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div class="wrap vs-bridge">
+    <h3 class="t-title" data-reveal>{t('view.bridge.title')}</h3>
+    <p class="vs-bridge-body" data-reveal style="--reveal-i: 1">{t('view.bridge.body')}</p>
+    <div class="vs-bridge-actions" data-reveal style="--reveal-i: 2">
+      {
+        lenses.map((lens) => (
+          <button type="button" class="btn btn-quiet" data-lens-set={lens.id} aria-pressed="false">
+            {lens.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .vs {
+    padding-top: clamp(4rem, 9vw, 8rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .vs-lead {
+    max-width: 44ch;
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  .vs-grid {
+    position: relative;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  /* --- Escenario: se queda fijo mientras pasan los cuatro textos --- */
+  .vs-stage {
+    position: sticky;
+    top: var(--toolbar-h);
+    z-index: 5;
+    padding-block: 0.5rem 1rem;
+    background: var(--paper);
+  }
+  .vs-frame-name {
+    height: 1.9rem;
+    align-items: center;
+  }
+  .vs-frame {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #faf6ee;
+    box-shadow: 0 0 0 1px var(--line);
+  }
+
+  /* --- La web de ejemplo. Todo va en cqi: es una página de 1280 px vista más pequeña --- */
+  .demo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 2.6cqi 4.4cqi 3cqi;
+    font-family: var(--font-sans);
+    color: #2a1f14;
+    transition: opacity 500ms var(--ease-out);
+  }
+  .demo-top {
+    display: flex;
+    align-items: center;
+    gap: 3cqi;
+  }
+  .demo-brand {
+    font-size: 2.5cqi;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .demo-nav {
+    display: flex;
+    gap: 2.6cqi;
+    margin-left: auto;
+    font-size: 1.45cqi;
+    font-weight: 500;
+  }
+  .demo-login {
+    padding: 0.8cqi 1.6cqi;
+    font-size: 1.45cqi;
+    font-weight: 600;
+    box-shadow: 0 0 0 0.12cqi #2a1f14 inset;
+  }
+  .demo-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 3.4cqi;
+  }
+  .demo-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 4cqi;
+  }
+  .demo-hero h1 {
+    font-size: 5cqi;
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .demo-hero p {
+    max-width: 30em;
+    margin-top: 1.8cqi;
+    font-size: 1.75cqi;
+    line-height: 1.4;
+    color: #5c4b3a;
+  }
+  .demo-actions {
+    display: flex;
+    align-items: center;
+    gap: 2.4cqi;
+    margin-top: 2.6cqi;
+  }
+  .demo-cta {
+    padding: 1.15cqi 2.2cqi;
+    font-size: 1.6cqi;
+    font-weight: 700;
+    color: #faf6ee;
+    background: #2a1f14;
+  }
+  .demo-link {
+    font-size: 1.6cqi;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .demo-art svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .demo-how h2 {
+    font-size: 1.9cqi;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .demo-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.6cqi;
+    margin-top: 1.2cqi;
+  }
+  .demo-steps article {
+    padding: 1.3cqi 1.5cqi;
+    background: #f1e8d8;
+  }
+  .demo-steps h3 {
+    font-size: 1.5cqi;
+    font-weight: 700;
+  }
+  .demo-steps p {
+    margin-top: 0.3cqi;
+    font-size: 1.25cqi;
+    line-height: 1.35;
+    color: #5c4b3a;
+  }
+
+  /* --- 1 · Diseñador: la web se queda en fantasma, se dibuja el boceto y sale la retícula --- */
+  .vs[data-phase='1'] .demo {
+    opacity: 0.07;
+  }
+  .vs-frame :global(.sketch-layer) {
+    z-index: 2;
+  }
+  .vs-frame :global(.sketch-layer path) {
+    stroke: #6b6b70;
+    transition: stroke-dashoffset 700ms var(--ease-out);
+    transition-delay: 0ms;
+  }
+  .vs[data-phase='1'] .vs-frame :global(.sketch-layer path) {
+    stroke-dashoffset: 0;
+    transition-delay: calc(var(--k) * 500ms + 120ms);
+  }
+  .vs-columns {
+    position: absolute;
+    inset: 0 4.4cqi;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.6cqi;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out);
+  }
+  .vs-columns i {
+    background: rgb(200 134 42 / 0.1);
+  }
+  .vs[data-phase='1'] .vs-columns {
+    opacity: 1;
+    transition-delay: 250ms;
+  }
+
+  /* --- Capa de marcas: selecciones, etiquetas y comprobaciones (las crea el script) --- */
+  .vs-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
+  .vs-overlay :global(.vs-mark) {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-out);
+  }
+  /* Selección con su medida (diseñador) */
+  .vs-overlay :global(.vs-mark--sel) {
+    outline: 1px solid #1a1a1a;
+  }
+  .vs-overlay :global(.vs-mark--sel b) {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 50%;
+    padding: 0.1rem 0.4rem;
+    font: 500 0.75rem/1.3 var(--font-mono);
+    white-space: nowrap;
+    color: #ffffff;
+    background: #1a1a1a;
+    translate: -50% 0;
+  }
+  .vs[data-phase='1'] .vs-overlay :global(.vs-mark--sel) {
+    opacity: 1;
+    transition-delay: 620ms;
+  }
+  /* Etiqueta de cada bloque (desarrollador) */
+  .vs-overlay :global(.vs-mark--tag) {
+    outline: 1px dashed rgb(42 31 20 / 0.5);
+  }
+  /* La etiqueta va encima de la caja, por fuera, para no tapar el texto */
+  .vs-overlay :global(.vs-mark--tag b) {
+    position: absolute;
+    bottom: 100%;
+    left: -1px;
+    padding: 0.05rem 0.35rem;
+    font: 500 0.6875rem/1.35 var(--font-mono);
+    white-space: nowrap;
+    color: #faf6ee;
+    background: #2a1f14;
+  }
+  /* En las tarjetas no hay sitio encima: va dentro, en la esquina */
+  .vs-overlay :global(.vs-mark--tag[data-in] b) {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: auto;
+  }
+  .vs[data-phase='2'] .vs-overlay :global(.vs-mark--tag) {
+    opacity: 1;
+    transition-delay: calc(var(--i) * 45ms + 120ms);
+  }
+  /* Lo que se ha comprobado (QA) */
+  .vs-overlay :global(.vs-mark--ok) {
+    outline: 2px solid var(--ok);
+    outline-offset: 2px;
+  }
+  .vs[data-phase='3'] .vs-overlay :global(.vs-mark--ok) {
+    opacity: 1;
+    transition-delay: calc(var(--i) * 90ms + 150ms);
+  }
+
+  /* --- Paneles: el árbol de la página y las comprobaciones --- */
+  .vs-panel {
+    position: absolute;
+    z-index: 6;
+    min-width: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition:
+      opacity 350ms var(--ease-out),
+      transform 450ms var(--ease-out);
+  }
+  .vs-panel-title {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .vs-tree {
+    right: 0;
+    bottom: 0;
+    width: min(17.5rem, 62%);
+    color: #e8e8e8;
+    background: #101010;
+  }
+  .vs-tree .vs-panel-title {
+    color: #a9afbd;
+    background: #1b1d22;
+  }
+  .vs-tree pre {
+    margin: 0;
+    padding: 0.7rem 0.9rem 0.85rem;
+    overflow: hidden;
+    font: 400 0.75rem/1.5 var(--font-mono);
+  }
+  .vs[data-phase='2'] .vs-tree,
+  .vs[data-phase='3'] .vs-checks {
+    opacity: 1;
+    transform: none;
+    transition-delay: 220ms;
+  }
+  /* Móvil y tablet: el panel va en el texto de su paso, en el flujo */
+  .vs-panel--stage {
+    display: none;
+  }
+  .vs-panel--inline {
+    position: static;
+    width: min(100%, 22rem);
+    margin-top: 1.25rem;
+  }
+  .vs-panel--inline.vs-tree pre {
+    column-count: 2;
+    column-gap: 1rem;
+  }
+  .vs-checks {
+    right: 0;
+    bottom: 0;
+    width: min(21rem, 78%);
+    color: var(--ink);
+    background: var(--paper);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .vs-checks .vs-panel-title {
+    color: var(--muted);
+    background: var(--tint);
+  }
+  .vs-checks ul {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.7rem 0.85rem 0.85rem;
+  }
+  .vs-checks :global(li) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  /* --- Los cuatro textos: cada uno ocupa su tramo de scroll --- */
+  .vs-steps {
+    position: relative;
+  }
+  .vs-step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 62svh;
+    padding-block: 1.5rem;
+    opacity: 0.32;
+    transition: opacity var(--dur-ui) var(--ease-out);
+  }
+  .vs-step[data-active] {
+    opacity: 1;
+  }
+  .vs-step-title {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: var(--step-title);
+    font-weight: var(--wght-ink);
+    letter-spacing: -0.03em;
+  }
+  .vs-step-mark {
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    background: var(--line);
+    transition:
+      background-color var(--dur-ui) var(--ease-out),
+      transform var(--dur-ui) var(--spring);
+  }
+  .vs-step[data-active] .vs-step-mark {
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+  .vs-step-body {
+    max-width: 30ch;
+    margin-top: 0.6rem;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+  }
+  .vs-step-tools {
+    max-width: 34ch;
+    margin-top: 1rem;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .vs-step-tools span {
+    margin-right: 0.35rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* --- Puente a las lentes --- */
+  .vs-bridge {
+    margin-top: clamp(1rem, 3vw, 2.5rem);
+  }
+  .vs-bridge-body {
+    margin-top: 0.5rem;
+    color: var(--muted);
+  }
+  .vs-bridge-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+  }
+  .vs-bridge-actions .btn[aria-pressed='true'] {
+    color: var(--pencil-ink);
+    background: var(--pencil);
+  }
+
+  /* Escritorio: los textos a la izquierda y el escenario fijo a la derecha */
+  @media (min-width: 1024px) {
+    .vs-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      align-items: start;
+      gap: 4rem;
+    }
+    .vs-stage {
+      top: calc(var(--toolbar-h) + (100svh - var(--toolbar-h) - min(72svh, 36rem)) / 2);
+      grid-column: 2;
+      grid-row: 1;
+      padding-block: 0 2.5rem;
+    }
+    .vs-steps {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .vs-step {
+      min-height: 78svh;
+    }
+    .vs-panel--stage {
+      display: block;
+    }
+    .vs-panel--inline {
+      display: none;
+    }
+    .vs-tree {
+      right: -1.25rem;
+      bottom: 0.75rem;
+    }
+    .vs-checks {
+      right: -1.25rem;
+      bottom: 0.75rem;
+    }
+  }
+
+  /* Sin movimiento: los cambios de fase son inmediatos */
+  @media (prefers-reduced-motion: reduce) {
+    .demo,
+    .vs-columns,
+    .vs-panel,
+    .vs-step,
+    .vs-frame :global(.sketch-layer path),
+    .vs-overlay :global(.vs-mark) {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  import '@/scripts/view-scene';
+</script>

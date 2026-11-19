@@ -1,9 +1,8 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/home/Hero.astro';
-import ProcessScene from '@/components/home/ProcessScene.astro';
 import ProjectStack from '@/components/home/ProjectStack.astro';
-import ToolsByLens from '@/components/home/ToolsByLens.astro';
+import ViewScene from '@/components/home/ViewScene.astro';
 import { useTranslations } from '@/i18n/utils';
 import type { ui } from '@/i18n/ui';
 
@@ -21,8 +20,8 @@ const t = useTranslations(lang);
   frame={t('nav.home')}
   intro
 >
+  {/* Orden del plan §5.2: primero los resultados (proyectos) y después "Cómo lo veo yo" */}
   <Hero lang={lang} />
-  <ProcessScene lang={lang} />
   <ProjectStack lang={lang} />
-  <ToolsByLens lang={lang} />
+  <ViewScene lang={lang} />
 </Layout>
