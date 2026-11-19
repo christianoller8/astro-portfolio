@@ -8,6 +8,7 @@ import Header from '../components/common/Header.astro';
 import Footer from '../components/common/Footer.astro';
 import LensPanel from '../components/site/LensPanel.astro';
 import IntroScreen from '../components/site/IntroScreen.astro';
+import Pusher from '../components/character/Pusher.astro';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '@/i18n/utils';
 import profileImage from '@/assets/images/profile.jpg';
@@ -154,6 +155,7 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     </main>
     <LensPanel lang={lang} />
     {intro && <IntroScreen />}
+    <Pusher />
   </body>
 </html>
 

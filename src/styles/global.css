@@ -426,28 +426,51 @@ html.intro {
   }
 }
 
-/* ---------- Transición: zoom entre frames ---------- */
+/* ---------- Transición entre páginas: paneo con el personaje ----------
+   Las páginas son frames puestos en fila sobre el lienzo, con un hueco entre uno y otro. Al navegar,
+   la cámara panea: hacia delante todo va a la izquierda y el personaje, en el hueco, empuja la
+   página que sale; hacia atrás todo va a la derecha y tira de la página que entra.
+   La dirección (html.frame-back) y el movimiento del personaje los pone src/scripts/frames.ts. */
+:root {
+  --pusher-h: clamp(11rem, min(46vh, 60vw), 27.5rem);
+  --pusher-gap: calc(var(--pusher-h) * 0.98);
+  --dur-pan: 1350ms;
+  --ease-pan: cubic-bezier(0.62, 0.02, 0.34, 1);
+}
 ::view-transition {
   background-color: var(--canvas);
   background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
   background-size: 20px 20px;
 }
-::view-transition-group(root) {
-  animation-duration: var(--dur-camera);
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
 }
 ::view-transition-old(root) {
-  animation: frame-out var(--dur-camera) var(--ease-camera) both;
-  transform-origin: 50% 40%;
+  animation: pan-out var(--dur-pan) var(--ease-pan) both;
 }
 ::view-transition-new(root) {
-  animation: frame-in var(--dur-camera) var(--ease-camera) both;
-  transform-origin: 50% 40%;
+  animation: pan-in var(--dur-pan) var(--ease-pan) both;
 }
 html.frame-back::view-transition-old(root) {
-  animation-name: frame-out-back;
+  animation-name: pan-out-back;
 }
 html.frame-back::view-transition-new(root) {
-  animation-name: frame-in-back;
+  animation-name: pan-in-back;
+}
+/* El hueco donde va el personaje: pegado al canto derecho de la página de la izquierda */
+::view-transition-group(pusher) {
+  animation: pusher-fwd var(--dur-pan) var(--ease-pan) both;
+  z-index: 5;
+}
+html.frame-back::view-transition-group(pusher) {
+  animation-name: pusher-back;
+}
+::view-transition-old(pusher) {
+  display: none;
+}
+::view-transition-new(pusher) {
+  animation: none;
 }
 ::view-transition-group(toolbar) {
   animation: none;
@@ -460,48 +483,40 @@ html.frame-back::view-transition-new(root) {
   animation: none;
 }
 
-@keyframes frame-out {
-  0% {
-    transform: none;
-  }
-  38% {
-    transform: scale(0.86);
-  }
-  100% {
-    transform: translateX(-108%) scale(0.86);
+@keyframes pan-out {
+  to {
+    translate: calc(-100vw - var(--pusher-gap)) 0;
   }
 }
-@keyframes frame-in {
-  0% {
-    transform: translateX(108%) scale(0.86);
-  }
-  62% {
-    transform: scale(0.86);
-  }
-  100% {
-    transform: none;
+@keyframes pan-in {
+  from {
+    translate: calc(100vw + var(--pusher-gap)) 0;
   }
 }
-@keyframes frame-out-back {
-  0% {
-    transform: none;
-  }
-  38% {
-    transform: scale(0.86);
-  }
-  100% {
-    transform: translateX(108%) scale(0.86);
+@keyframes pan-out-back {
+  to {
+    translate: calc(100vw + var(--pusher-gap)) 0;
   }
 }
-@keyframes frame-in-back {
-  0% {
-    transform: translateX(-108%) scale(0.86);
+@keyframes pan-in-back {
+  from {
+    translate: calc(-100vw - var(--pusher-gap)) 0;
   }
-  62% {
-    transform: scale(0.86);
+}
+@keyframes pusher-fwd {
+  from {
+    translate: 100vw 0;
   }
-  100% {
-    transform: none;
+  to {
+    translate: calc(-1 * var(--pusher-gap)) 0;
+  }
+}
+@keyframes pusher-back {
+  from {
+    translate: calc(-1 * var(--pusher-gap)) 0;
+  }
+  to {
+    translate: 100vw 0;
   }
 }
 
@@ -511,6 +526,9 @@ html.frame-back::view-transition-new(root) {
   html.frame-back::view-transition-old(root),
   html.frame-back::view-transition-new(root) {
     animation: none;
+  }
+  ::view-transition-group(pusher) {
+    display: none;
   }
   .btn,
   .link,

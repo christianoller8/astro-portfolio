@@ -261,10 +261,14 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     los dos son del mismo color.
   - Capturas: `.taste-skill/def/e3-intro-hoja-claro.jpg` (16 fotogramas),
     `e3-intro-hoja-oscuro-movil.jpg` y `e3-intro-hoja-movil.jpg`.
-- [ ] **Transición** con paneo de derecha a izquierda (al revés hacia atrás) y **tu personaje
-  empujando o arrastrando la página** (idea tuya del 19 nov; sustituye al hilo de prototipo).
-  Análisis, opciones y piezas que hacen falta: [transicion-personaje.md](transicion-personaje.md).
-  A la espera de tus dibujos.
+- [ ] **Transición** con paneo y **tu personaje empujando o arrastrando la página** (idea tuya del
+  19 nov; sustituye al hilo de prototipo). **Primera versión hecha el 19 nov con tus piezas;
+  pendiente de tu visto bueno y de piezas mejores.**
+  - Hacia delante en el menú, todo panea a la izquierda y el personaje empuja la página que sale.
+    Hacia atrás, panea a la derecha y tira de la que entra.
+  - Detalle de cómo está hecho, capturas y la lista de lo que falta para afinarlo:
+    [transicion-personaje.md](transicion-personaje.md).
+  - Página de pruebas del muñeco: `/personaje`.
 - [ ] **"Cómo lo veo yo"**: web → UX/UI → programador → QA, con las tecnologías de cada mirada.
 - [ ] **Morph** de la tarjeta de proyecto a su caso.
 - [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil.

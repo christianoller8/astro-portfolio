@@ -1,0 +1,104 @@
+---
+// Página interna de pruebas del personaje articulado (fuera de buscadores y del sitemap).
+import Layout from '@/layouts/Layout.astro';
+import Character from '@/components/character/Character.astro';
+---
+
+<Layout title="Personaje · pruebas" frame="Personaje" noindex>
+  <section class="wrap lab">
+    <h1 class="t-head">Personaje</h1>
+    <p class="t-lead">El muñeco articulado, de pie y en sus dos ciclos. Página interna de pruebas.</p>
+    <div class="lab-row">
+      {
+        ['standing', 'pushing', 'pulling'].map((mode) => (
+          <figure class="lab-cell" data-mode={mode}>
+            <div class="lab-stage">
+              <span class="lab-wall" />
+              <Character class="lab-chr" />
+            </div>
+            <figcaption class="t-small">{mode}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+    <div class="lab-row lab-row--frames" data-frames></div>
+  </section>
+</Layout>
+
+<style>
+  .lab {
+    padding-block: 3rem 5rem;
+  }
+  .lab-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .lab-stage {
+    position: relative;
+    height: 30rem;
+    background: var(--tint);
+    overflow: hidden;
+  }
+  /* El suelo y el centro del escenario: el personaje se cuelga de ese punto */
+  .lab-stage :global(.lab-chr) {
+    --h: 380px;
+    position: absolute;
+    left: 45%;
+    bottom: 2.5rem;
+  }
+  .lab-wall {
+    position: absolute;
+    top: 0;
+    bottom: 2.5rem;
+    left: 78%;
+    width: 2px;
+    background: var(--line);
+  }
+  .lab-stage::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 2.5rem;
+    left: 0;
+    height: 2px;
+    background: var(--line);
+  }
+  @media (max-width: 800px) {
+    .lab-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { applyPose, pulling, pushing, standing } from '@/scripts/character';
+
+  document.addEventListener('astro:page-load', () => {
+    const cells = [...document.querySelectorAll<HTMLElement>('.lab-cell')];
+    if (!cells.length) return;
+    // ?fase=120 congela los ciclos en esa fase (para las capturas)
+    const fixed = new URLSearchParams(location.search).get('fase');
+    const draw = (phase: number) => {
+      for (const cell of cells) {
+        const chr = cell.querySelector<HTMLElement>('.chr')!;
+        const mode = cell.dataset.mode;
+        chr.dataset.face = mode === 'standing' ? 'calm' : 'effort';
+        chr.dataset.hands = mode === 'pulling' ? 'fist' : 'open';
+        applyPose(chr, mode === 'pushing' ? pushing(phase) : mode === 'pulling' ? pulling(phase) : standing());
+      }
+    };
+    if (fixed !== null) {
+      draw(+fixed);
+      return;
+    }
+    let raf = 0;
+    const tick = (now: number) => {
+      draw((now / 1000) * 360 * 1.1);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    document.addEventListener('astro:before-swap', () => cancelAnimationFrame(raf), { once: true });
+  });
+</script>

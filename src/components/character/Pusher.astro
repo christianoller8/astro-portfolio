@@ -1,0 +1,61 @@
+---
+// El personaje de la transición entre páginas. Vive en el hueco de lienzo que queda entre la página
+// que sale y la que entra, y solo se ve mientras dura el cambio (html.is-panning).
+// El hueco se desplaza con las páginas (::view-transition-group(pusher), en global.css); las
+// piernas y los brazos los mueve src/scripts/frames.ts.
+import Character from './Character.astro';
+---
+
+<div class="pusher" data-pusher aria-hidden="true">
+  <div class="pusher-stage">
+    <Character class="pusher-chr" />
+  </div>
+</div>
+
+<style>
+  .pusher {
+    position: fixed;
+    top: 0;
+    /* Empieza un margen de lienzo antes: así las manos llegan al canto del frame, no al del lienzo */
+    left: calc(-1 * var(--gutter));
+    z-index: 90;
+    width: calc(var(--pusher-gap) + var(--gutter));
+    height: 100dvh;
+    pointer-events: none;
+    opacity: 0;
+    view-transition-name: pusher;
+  }
+  :global(html.is-panning) .pusher {
+    opacity: 1;
+  }
+  /* El personaje mira a la izquierda: sus manos llegan al borde izquierdo del hueco, que es el
+     canto de la página que empuja (o del que tira) */
+  .pusher-stage {
+    position: absolute;
+    bottom: max(5vh, 1.5rem);
+    left: calc(var(--pusher-h) * 0.47);
+    transform: scaleX(-1);
+  }
+  /* Al tirar, los puños quedan más cerca del cuerpo: se acerca para que agarren el canto */
+  :global(html.frame-back) .pusher-stage {
+    left: calc(var(--pusher-h) * 0.25);
+  }
+  .pusher-stage :global(.pusher-chr) {
+    --h: var(--pusher-h);
+  }
+  /* En oscuro, un filo claro alrededor de la silueta (como la pegatina de la marca): la sudadera
+     negra no se pierde sobre el lienzo carbón */
+  :global(:root.dark) .pusher-stage :global(.pusher-chr) {
+    filter: drop-shadow(0 0 1px #f5f5f5) drop-shadow(0 0 1px #f5f5f5);
+  }
+  /* Sombra en el suelo */
+  .pusher-stage::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--pusher-h) * -0.02);
+    left: calc(var(--pusher-h) * -0.36);
+    width: calc(var(--pusher-h) * 0.66);
+    height: calc(var(--pusher-h) * 0.05);
+    background: radial-gradient(closest-side, rgb(0 0 0 / 0.26), transparent);
+  }
+</style>

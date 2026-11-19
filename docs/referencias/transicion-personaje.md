@@ -77,3 +77,54 @@ hecho el personaje para más animaciones.
 - La página se mueve de forma continua; los pasos del personaje se ajustan a ese avance, no al
   revés. Eso es lo que la hace más fluida que la referencia.
 - Con "reducir movimiento": un fundido, sin personaje.
+
+## Lo construido (19 nov)
+
+Christian eligió B y pasó las piezas en una lámina: `docs/imgs/emoji-piezas.jpg` (las 10 piezas y
+la cabeza de esfuerzo, de perfil, con rótulos).
+
+- **Piezas**: `.taste-skill/personaje/piezas.cjs` detecta cada dibujo de la lámina, quita el fondo
+  blanco y los rótulos y guarda un PNG transparente por pieza en `src/assets/character/`. El blanco
+  de la piel y de la suela se conserva; el borde se trata como línea negra con transparencia, para
+  que no quede filo blanco sobre fondos oscuros.
+- **Muñeco**: `src/data/character-rig.ts` (escala, pivote y articulaciones de cada pieza) y
+  `src/components/character/Character.astro` (las piezas anidadas por sus articulaciones). El brazo
+  y la pierna de detrás son copias, un punto más oscuras.
+- **Movimiento**: `src/scripts/character.ts`. Tres poses: de pie, empujando (inclinado, brazos
+  estirados, palmas abiertas) y arrastrando (echado atrás, puños, andando de espaldas). El ciclo de
+  andar dobla la rodilla en el paso, levanta el talón al impulsar y apoya siempre la suela más baja
+  en el suelo, de ahí sale el bote del cuerpo.
+- **Transición**: las páginas son frames en fila sobre el lienzo, con un hueco entre uno y otro
+  donde va el personaje (`Pusher.astro`). Al navegar panea todo a la vez: las dos páginas y el
+  hueco se mueven en el compositor con la misma curva (`global.css`, `::view-transition-*`), y
+  `frames.ts` mueve las piernas al paso de ese avance. Hacia delante empuja la página que sale;
+  hacia atrás tira de la que entra.
+  - Duración: 1350 ms. Entre cuatro y seis pasos, según el ancho.
+  - Tamaño del personaje: el 46 % del alto de la ventana (como mucho el 60 % del ancho en móvil).
+  - En oscuro lleva un filo claro alrededor, como la pegatina de la marca.
+  - Con "reducir movimiento" o sin View Transitions, no hay paneo ni personaje.
+- **Página de pruebas**: `/personaje` (fuera de buscadores): el muñeco de pie y en sus dos ciclos.
+  Con `?fase=120` se congela en una fase.
+- **Capturas** (a cámara lenta): `.taste-skill/def/e3-transicion-ida.jpg`,
+  `e3-transicion-vuelta.jpg` y `e3-transicion-movil.jpg`.
+
+## Lo que falta para la excelencia (pedido a Christian el 19 nov)
+
+Imprescindible:
+
+1. **Las piezas sueltas y sin rótulos**, cada una en su archivo con fondo transparente (o el archivo
+   con capas), al doble de tamaño. Ahora salen de un JPEG de 2000 px: en pantallas retina se quedan
+   justas y el JPEG deja algo de ruido en los bordes.
+2. **Todas a la misma escala**, o un dibujo del personaje entero de perfil ya montado. Las
+   proporciones entre piezas están puestas a ojo a partir del dibujo de frente.
+3. **La pierna (de rodilla a tobillo) recta**. Está dibujada con la rodilla doblada, y al girar
+   hace un bulto en la rodilla.
+4. **Una mano agarrando**, vista de lado, con los dedos rodeando un canto. El puño cerrado no
+   agarra nada.
+
+Para subir el detalle:
+
+5. La capucha y los cordones como piezas aparte, para que boten.
+6. Una zapatilla con la puntera doblada (el momento de impulsar).
+7. Más caras: ojos cerrados de esfuerzo, alivio al terminar y una mirando al frente.
+8. Efectos en su estilo: gotas de sudor y dos o tres nubecillas de polvo en los pies.
