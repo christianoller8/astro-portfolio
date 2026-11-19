@@ -1,11 +1,16 @@
 ---
+// Sobre mí (plan §5.5): retrato como capa y bio en grande · cronología completa como historial de
+// versiones (con Angular como hilo y la formación) · tres principios, cada uno con su ejemplo ·
+// herramientas por lente · idiomas y CV. Los datos salen de src/data/experience.ts (del CV).
 import { Image } from 'astro:assets';
 import Layout from '@/layouts/Layout.astro';
 import ToolsByLens from '@/components/home/ToolsByLens.astro';
 import profileImage from '@/assets/images/profile.jpg';
+// La misma foto con la persona recortada (.taste-skill/recorte/retrato-oscuro.cjs): para el modo oscuro
+import profileCut from '@/assets/images/profile-cut.png';
 import { useTranslations } from '@/i18n/utils';
 import { site, hasCV } from '@/data/site';
-import { experience } from '@/data/experience';
+import { experience, education, languages } from '@/data/experience';
 import type { ui } from '@/i18n/ui';
 
 interface Props {
@@ -14,64 +19,114 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const total = experience.length;
+
+const facts = [
+  { label: t('about.fact.now'), value: `${experience[0].company} · ${experience[0].role[lang].split(' · ')[0]}` },
+  { label: t('about.fact.where'), value: t('about.fact.where.value') },
+  { label: t('about.fact.langs'), value: languages.map((l) => l.name[lang]).join(' · ') },
+];
 
 const principles = [
-  { title: t('about.principle1.title'), body: t('about.principle1.body') },
-  { title: t('about.principle2.title'), body: t('about.principle2.body') },
-  { title: t('about.principle3.title'), body: t('about.principle3.body') },
-];
+  { title: t('about.principle1.title'), body: t('about.principle1.body'), kind: 'sketch' },
+  { title: t('about.principle2.title'), body: t('about.principle2.body'), kind: 'code' },
+  { title: t('about.principle3.title'), body: t('about.principle3.body'), kind: 'test' },
+] as const;
+
+// El ejemplo del segundo principio: cómo se usa un componente bien nombrado
+const componentCode = [
+  '<span>&lt;app-button</span>',
+  '  <b>variant</b>="primary"',
+  '  <b>[loading]</b>="saving()"',
+  '  <b>(pressed)</b>="save()"<span>&gt;</span>',
+  `  ${lang === 'es' ? 'Guardar' : 'Save'}`,
+  '<span>&lt;/app-button&gt;</span>',
+].join('\n');
+
+const tests =
+  lang === 'es'
+    ? ['se activa con Enter y con Espacio', 'muestra el estado «cargando»', 'tiene nombre accesible']
+    : ['fires on Enter and on Space', 'shows the “loading” state', 'has an accessible name'];
 ---
 
-<Layout
-  title={t('about.meta.title')}
-  description={t('about.meta.description')}
-  frame={t('nav.about')}
->
+<Layout title={t('about.meta.title')} description={t('about.meta.description')} frame={t('nav.about')}>
+  <!-- Cabecera: el retrato como capa y la bio en grande -->
   <section class="wrap about" data-cs="<section> AboutPage.astro">
     <h1 class="t-display about-title" data-reveal data-ds="H1" data-ds-type>{t('about.title')}</h1>
 
     <div class="about-grid">
-      <div
-        class="about-photo"
-        data-ds={lang === 'es' ? 'Retrato' : 'Portrait'}
-        data-qa-host
-        data-reveal
-      >
-        <div class="about-photo-clip">
-          <Image
-            src={profileImage}
-            alt={t('hero.portrait.alt')}
-            widths={[480, 800]}
-            sizes="(min-width: 1024px) 36vw, 100vw"
-            loading="eager"
-            class="about-photo-img"
-          />
-        </div>
-      </div>
       <div class="about-text">
-        <p class="t-lead" data-reveal style="--reveal-i: 1">{t('about.p1')}</p>
+        <p class="about-lead" data-reveal style="--reveal-i: 1">{t('about.p1')}</p>
         <p data-reveal style="--reveal-i: 2">{t('about.p2')}</p>
         <p data-reveal style="--reveal-i: 3">{t('about.p3')}</p>
+        <dl class="about-facts" data-reveal style="--reveal-i: 4">
+          {
+            facts.map((fact) => (
+              <div>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
       </div>
+      <figure class="about-photo" data-ds={lang === 'es' ? 'Retrato' : 'Portrait'} data-qa-host data-reveal>
+        <Image
+          src={profileImage}
+          alt={t('hero.portrait.alt')}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 44vw, 100vw"
+          loading="eager"
+          class="about-photo-img about-photo-img--light"
+        />
+        <Image
+          src={profileCut}
+          alt=""
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 44vw, 100vw"
+          loading="lazy"
+          class="about-photo-img about-photo-img--dark"
+        />
+      </figure>
     </div>
   </section>
 
-  <section class="wrap jobs" data-cs="<section> Experience">
-    <h2 class="t-head" data-reveal>{t('about.experience.title')}</h2>
-    <ol class="jobs-list">
+  <!-- Cronología completa: el historial de versiones -->
+  <section class="wrap jobs" id="trayectoria" data-cs="<section> Experience">
+    <div class="jobs-head">
+      <h2 class="t-head" data-reveal>{t('about.experience.title')}</h2>
+      <p class="jobs-thread" data-reveal style="--reveal-i: 1">
+        <i aria-hidden="true"></i>
+        {t('about.thread')}
+      </p>
+    </div>
+    <ol class="jobs-list" reversed>
       {
-        experience.map((job) => (
-          <li class="job" data-reveal>
-            <p class="job-period">{job.period[lang]}</p>
+        experience.map((job, i) => (
+          <li class="job" data-angular={job.angular ? '' : undefined} data-reveal>
+            <div class="job-meta">
+              <p class="job-version">
+                v{total - i}.0
+                {i === 0 && <span class="job-now">{t('path.now')}</span>}
+              </p>
+              <p class="job-period">{job.period[lang]}</p>
+              <p class="job-place">{job.place[lang]}</p>
+            </div>
+            <div class="job-main">
+              <h3 class="job-company">{job.company}</h3>
+              <p class="job-role">{job.role[lang]}</p>
+            </div>
             <div class="job-body">
-              <h3 class="job-role">
-                {job.role[lang]}
-                <span class="job-company">{job.company}</span>
-              </h3>
               <p class="job-summary">{job.summary[lang]}</p>
               <ul class="job-highlights">
                 {job.highlights[lang].map((item) => (
                   <li>{item}</li>
+                ))}
+              </ul>
+              <ul class="job-stack" aria-label={t('project.stack')}>
+                {job.angular && <li class="job-angular">{job.angular}</li>}
+                {job.stack.map((tool) => (
+                  <li>{tool}</li>
                 ))}
               </ul>
             </div>
@@ -79,40 +134,103 @@ const principles = [
         ))
       }
     </ol>
-  </section>
 
-  <section class="wrap principles" data-cs="<section> Principles">
-    <h2 class="t-head" data-reveal>{t('about.principles.title')}</h2>
-    <div class="principles-grid">
+    <h3 class="study-title" data-reveal>{t('about.education.title')}</h3>
+    <ul class="study-list">
       {
-        principles.map((item, i) => (
-          <div class="principle" data-reveal style={`--reveal-i: ${i + 1}`}>
-            <h3 class="principle-title">{item.title}</h3>
-            <p class="principle-body">{item.body}</p>
-          </div>
+        education.map((item) => (
+          <li class="study" data-reveal>
+            <p class="study-period">{item.period[lang]}</p>
+            <p class="study-name">{item.title[lang]}</p>
+            <p class="study-place">{item.place}</p>
+          </li>
         ))
       }
-    </div>
+    </ul>
+  </section>
+
+  <!-- Tres principios, cada uno con su ejemplo: un boceto, un componente y un test -->
+  <section class="wrap principles" data-cs="<section> Principles">
+    <h2 class="t-head" data-reveal>{t('about.principles.title')}</h2>
+    <ol class="principles-list">
+      {
+        principles.map((item, i) => (
+          <li class="principle" data-kind={item.kind}>
+            <div class="principle-text" data-reveal>
+              <p class="principle-n">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="principle-title">{item.title}</h3>
+              <p class="principle-body">{item.body}</p>
+            </div>
+            <div class="principle-example" data-reveal style="--reveal-i: 1" aria-hidden="true">
+              {item.kind === 'sketch' && (
+                <svg class="ex-sketch" viewBox="0 0 360 220" fill="none">
+                  <path d="M14 16c60-3 250 2 332-1 2 62-2 130 1 190-90 3-240-2-332 1-3-58 2-132-1-190z" />
+                  <path d="M30 40c30-2 52 1 78-1M286 38c18 1 30-1 44 1 1 8-1 14 0 22-14 1-30-1-44 0-1-8 1-14 0-23z" />
+                  <path d="M30 84c58-3 110 2 168-1M30 104c40 2 92-2 130 1M30 124c30-1 58 1 86-1" />
+                  <path d="M30 150c22 1 48-1 70 0 1 12-1 22 0 34-22 1-48-1-70 0-1-12 1-22 0-34z" />
+                  <path d="M222 78c38-2 76 2 108-1 2 36-2 72 1 108-36 2-74-2-109 1-2-36 2-72 0-108z" />
+                  <path d="M224 80l104 104M328 80L224 184" />
+                </svg>
+              )}
+              {item.kind === 'code' && (
+<pre class="ex-code"><code set:html={componentCode} /></pre>
+              )}
+              {item.kind === 'test' && (
+                <div class="ex-test">
+                  <p class="ex-test-name">button.spec.ts</p>
+                  <ul>
+                    {tests.map((test) => (
+                      <li>
+                        {test}
+                        <span class="kit-badge" data-state="ok" />
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="ex-test-total">3 / 3</p>
+                </div>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </section>
 
   <ToolsByLens lang={lang} />
 
-  <section class="wrap cv" data-cs="<section> CV">
-    <h2 class="t-head" data-reveal>{t('about.cv.title')}</h2>
-    {
-      hasCV ? (
-        <a class="btn btn-primary cv-btn" href={site.cv} download data-reveal>
-          {t('hero.cta.cv')}
-          <span class="btn-arrow" aria-hidden="true">
-            ↓
-          </span>
-        </a>
-      ) : (
-        <p class="t-lead cv-pending" data-reveal>
-          {t('about.cv.pending')}
-        </p>
-      )
-    }
+  <!-- Idiomas y CV -->
+  <section class="wrap extra" data-cs="<section> Languages">
+    <div class="langs">
+      <h2 class="t-head" data-reveal>{t('about.langs.title')}</h2>
+      <ul class="langs-list">
+        {
+          languages.map((item, i) => (
+            <li class="lang" data-reveal style={`--reveal-i: ${i}`}>
+              <span class="lang-name">{item.name[lang]}</span>
+              <span class="lang-bar" style={`--v: ${item.value}`} aria-hidden="true" />
+              <span class="lang-level">{item.level[lang]}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="cv">
+      <h2 class="cv-title" data-reveal>{t('about.cv.title')}</h2>
+      {
+        hasCV ? (
+          <a class="btn btn-primary cv-btn" href={site.cv} download data-reveal style="--reveal-i: 1">
+            {t('hero.cta.cv')}
+            <span class="btn-arrow" aria-hidden="true">
+              ↓
+            </span>
+          </a>
+        ) : (
+          <p class="t-lead cv-pending" data-reveal>
+            {t('about.cv.pending')}
+          </p>
+        )
+      }
+    </div>
   </section>
 </Layout>
 
@@ -120,113 +238,412 @@ const principles = [
   .about {
     padding-top: clamp(2rem, 5vw, 4.5rem);
   }
-  .about-title {
-    max-width: 100%;
-  }
   .about-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 2.5rem;
-    margin-top: clamp(2rem, 4vw, 3.5rem);
-  }
-  .about-photo {
-    max-width: 32rem;
-  }
-  .about-photo-clip {
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    background: var(--tint);
-  }
-  .about-photo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    margin-top: clamp(1.75rem, 4vw, 3rem);
   }
   .about-text {
     display: grid;
     align-content: start;
     gap: 1.25rem;
-    max-width: 40rem;
+    max-width: 38rem;
   }
+  .about-lead {
+    font-size: clamp(1.5rem, 2.9vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .about-text p:not(.about-lead) {
+    font-size: var(--step-lead);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--muted);
+  }
+  .about-facts {
+    display: grid;
+    gap: 3px;
+    margin-top: 1rem;
+  }
+  .about-facts div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--tint);
+  }
+  .about-facts dt {
+    font: 500 0.8125rem/1.5 var(--font-mono);
+    color: var(--muted);
+  }
+  .about-facts dd {
+    font-weight: 600;
+  }
+  /* El retrato, como capa: sobre papel su fondo blanco se funde (multiplicar) y el pie se desvanece */
+  .about-photo {
+    max-width: 40rem;
+    -webkit-mask: linear-gradient(#000 78%, transparent);
+    mask: linear-gradient(#000 78%, transparent);
+  }
+  .about-photo-img {
+    width: 100%;
+    height: auto;
+    /* El fondo de la foto es un blanco roto: se lleva a blanco para que al multiplicar no deje marco */
+    filter: brightness(1.07) contrast(1.1);
+    mix-blend-mode: multiply;
+  }
+  /* En oscuro no se puede multiplicar: se usa la foto con la persona recortada, y el jersey negro
+     se funde con el fondo */
+  .about-photo-img--dark,
+  :global(:root.dark) .about-photo-img--light {
+    display: none;
+  }
+  :global(:root.dark) .about-photo-img--dark {
+    display: block;
+    mix-blend-mode: normal;
+    filter: none;
+  }
+
+  /* ---------- Cronología ---------- */
   .jobs,
   .principles,
-  .cv {
+  .extra {
     padding-top: clamp(5rem, 10vw, 9rem);
+  }
+  .jobs-head {
+    display: grid;
+    gap: 1rem;
+  }
+  .jobs-thread {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .jobs-thread i {
+    width: 1.75rem;
+    height: 3px;
+    background: var(--ink);
   }
   .jobs-list {
     display: grid;
-    gap: clamp(2rem, 4vw, 3rem);
-    margin-top: clamp(2rem, 4vw, 3rem);
-    padding: 0;
-    list-style: none;
+    gap: 3px;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
   }
   .job {
+    position: relative;
     display: grid;
-    gap: 0.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.25rem 1.1rem 1.4rem 1.35rem;
+    background: var(--tint);
   }
-  .job-period {
-    color: var(--muted);
+  /* El hilo de Angular: una línea de tinta por el borde de las etapas en las que lo usé */
+  .job[data-angular]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -3px;
+    left: 0;
+    width: 3px;
+    background: var(--ink);
+  }
+  .job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 1rem;
+    font: 500 0.8125rem/1.4 var(--font-mono);
     font-variant-numeric: tabular-nums;
+    color: var(--muted);
   }
-  .job-role {
-    font-size: var(--step-lead);
-    font-weight: 650;
-    letter-spacing: -0.015em;
+  .job-version {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .job-now {
+    padding: 0.1rem 0.45rem;
+    color: var(--paper);
+    background: var(--ink);
   }
   .job-company {
-    display: block;
-    color: var(--muted);
-    font-weight: 400;
+    font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .job-role {
+    margin-top: 0.5rem;
+    font-weight: 600;
   }
   .job-summary {
-    max-width: 40rem;
-    margin-top: 0.75rem;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
   }
   .job-highlights {
     display: grid;
     gap: 0.35rem;
-    max-width: 40rem;
-    margin-top: 0.75rem;
-    padding-left: 1.1rem;
+    margin-top: 0.9rem;
     color: var(--muted);
-    list-style: disc;
   }
-  .principles-grid {
-    display: grid;
-    gap: 2rem;
-    margin-top: clamp(2rem, 4vw, 3rem);
+  .job-highlights li {
+    display: flex;
+    gap: 0.6rem;
   }
-  .principle {
-    padding: 1.5rem;
-    background: var(--tint);
+  .job-highlights li::before {
+    content: '';
+    flex: none;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-top: 0.6em;
+    background: var(--graphite);
   }
-  .principle-title {
+  .job-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 1.1rem;
+  }
+  .job-stack li {
+    padding: 0.15rem 0.5rem;
+    font: 500 0.8125rem/1.4 var(--font-mono);
+    background: var(--paper);
+  }
+  .job-stack .job-angular {
+    color: var(--paper);
+    background: var(--ink);
+  }
+
+  .study-title {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
     font-size: var(--step-lead);
     font-weight: 650;
     letter-spacing: -0.015em;
   }
-  .principle-body {
-    margin-top: 0.6rem;
-  }
-  .cv-btn {
-    margin-top: 1.75rem;
-  }
-  .cv-pending {
+  .study-list {
+    display: grid;
+    gap: 3px;
     margin-top: 1rem;
+  }
+  .study {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem 1rem;
+    padding: 0.9rem 1.1rem 0.9rem 1.35rem;
+    background: var(--tint);
+  }
+  .study-period,
+  .study-place {
+    font: 500 0.8125rem/1.5 var(--font-mono);
     color: var(--muted);
   }
-  @media (min-width: 768px) {
-    .job {
-      grid-template-columns: 12rem minmax(0, 1fr);
-      gap: 2rem;
-    }
-    .principles-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+  .study-name {
+    grid-column: 1 / -1;
+    font-weight: 600;
+  }
+
+  /* ---------- Principios ---------- */
+  .principles-list {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .principle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .principle-n {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .principle-title {
+    margin-top: 0.6rem;
+    font-size: clamp(1.75rem, 3.6vw, 3rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .principle-body {
+    max-width: 34ch;
+    margin-top: 1rem;
+    font-size: var(--step-lead);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--muted);
+  }
+  /* Los tres ejemplos: papel a lápiz, código sobre tinta y resultado de un test */
+  .ex-sketch {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    background: var(--tint);
+  }
+  .ex-sketch path {
+    stroke: var(--graphite);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ex-code {
+    max-width: 30rem;
+    padding: 1.5rem 1.5rem 1.6rem;
+    overflow-x: auto;
+    font: 400 0.9375rem/1.7 var(--font-mono);
+    color: #d4d4d4;
+    background: #121212;
+  }
+  .ex-code span {
+    color: #8e8e93;
+  }
+  .ex-code b {
+    font-weight: 500;
+    color: #fff;
+  }
+  .ex-test {
+    max-width: 30rem;
+    padding: 1.25rem 1.25rem 1.1rem;
+    background: var(--tint);
+  }
+  .ex-test-name,
+  .ex-test-total {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .ex-test ul {
+    display: grid;
+    gap: 3px;
+    margin-block: 0.9rem;
+  }
+  .ex-test li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 0.5rem 0.55rem 0.8rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    background: var(--paper);
+  }
+  .ex-test :global(.kit-badge) {
+    padding: 0.2rem 0.3rem;
+    background: none;
+  }
+  .ex-test-total {
+    color: var(--ok);
+  }
+
+  /* ---------- Idiomas y CV ---------- */
+  .extra {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.5rem;
+  }
+  .langs-list {
+    display: grid;
+    gap: 3px;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .lang {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) 4rem;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--tint);
+  }
+  .lang-name {
+    font-weight: 650;
+  }
+  .lang-bar {
+    height: 3px;
+    background: linear-gradient(var(--ink), var(--ink)) 0 0 / calc(var(--v) * 100%) 100% no-repeat, var(--line);
+  }
+  .lang-level {
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    text-align: right;
+    color: var(--muted);
+  }
+  .cv {
+    align-self: end;
+  }
+  .cv-title {
+    max-width: 16ch;
+    font-size: clamp(1.75rem, 3.6vw, 3rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .cv-btn {
+    margin-top: 1.5rem;
+  }
+
+  /* En móvil y tablet estrecha el retrato va justo debajo del título */
+  @media (max-width: 899px) {
+    .about-photo {
+      order: -1;
+      max-width: 26rem;
+      margin-top: -1rem;
     }
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 900px) {
     .about-grid {
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: start;
+      gap: 2rem;
+    }
+    .about-photo {
+      justify-self: end;
+      margin-top: -3.5rem;
+    }
+    .jobs-head {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+    .job {
+      grid-template-columns: 10rem minmax(0, 4fr) minmax(0, 6fr);
+      gap: 1.75rem;
+      padding: 1.5rem 1.5rem 1.6rem 1.6rem;
+    }
+    .job-meta {
+      display: grid;
+      align-content: start;
+      gap: 0.3rem;
+    }
+    .study {
+      grid-template-columns: 10rem minmax(0, 1fr) auto;
+      gap: 1.75rem;
+      padding-left: 1.6rem;
+    }
+    .study-name {
+      grid-column: auto;
+    }
+    .study-period {
+      order: -1;
+    }
+    .principle {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 4rem;
+    }
+    /* El ejemplo cambia de lado en cada principio */
+    .principle:nth-child(even) .principle-example {
+      order: -1;
+    }
+    .principle:nth-child(odd) .principle-example > * {
+      margin-left: auto;
+    }
+    .extra {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       gap: 4rem;
     }
   }

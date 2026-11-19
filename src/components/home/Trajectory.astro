@@ -12,6 +12,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const total = experience.length;
+// En el inicio, solo las últimas etapas: la cronología completa está en Sobre mí
+const latest = experience.slice(0, 4);
 ---
 
 <section class="path" data-cs="<section> Trajectory.astro">
@@ -22,7 +24,7 @@ const total = experience.length;
 
   <ol class="wrap path-list" reversed>
     {
-      experience.map((job, i) => (
+      latest.map((job, i) => (
         <li class="path-row" data-reveal style={`--reveal-i: ${Math.min(i, 4)}`}>
           <p class="path-version">
             v{total - i}.0
@@ -30,14 +32,14 @@ const total = experience.length;
           </p>
           <h3 class="path-company">{job.company}</h3>
           <p class="path-role">{job.role[lang]}</p>
-          <p class="path-period">{job.period[lang].replace(' - ', ' – ')}</p>
+          <p class="path-period">{job.period[lang]}</p>
         </li>
       ))
     }
   </ol>
 
   <div class="wrap path-all">
-    <a class="btn btn-quiet" href={translatePath('/about')}>
+    <a class="btn btn-quiet" href={`${translatePath('/about')}#trayectoria`}>
       {t('path.all')}
       <span class="btn-arrow" aria-hidden="true">→</span>
     </a>

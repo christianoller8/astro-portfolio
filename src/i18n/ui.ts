@@ -204,15 +204,22 @@ export const ui = {
     // Sobre mí
     'about.meta.title': 'Sobre mí · Christian Oller',
     'about.meta.description':
-      'Christian Oller, frontend developer que también diseña y prueba: Angular, Astro, React, Figma, Cypress y Jasmine. En remoto desde España.',
+      'Christian Oller, software developer que diseña, programa y prueba: Angular, Astro, React, Figma, Cypress y Playwright. En remoto desde España.',
     'about.title': 'Diseño, código y QA',
     'about.p1':
-      'Soy frontend developer y llevo años construyendo aplicaciones con Angular, de la versión 8 a la 21. También hago webs con Astro, React y WordPress.',
+      'Soy software developer: diseño, programo y pruebo. Llevo años construyendo aplicaciones con Angular, de la versión 8 a la 21, y webs con Astro, React y WordPress.',
     'about.p2':
-      'Antes de programar, diseño: Figma para las interfaces y Procreate cuando toca dibujar. Después pruebo lo que hago con Jasmine, Cypress y Postman, porque una interfaz bonita que falla no sirve.',
+      'Antes de programar, diseño: Figma para las interfaces y Procreate cuando toca dibujar. Después pruebo lo que hago con Jasmine, Cypress y Playwright, porque una interfaz bonita que falla no sirve.',
     'about.p3':
       'En 2025 cofundé Vístalo con Eloi Cotonat, una agencia que hace webs, fotos y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
     'about.experience.title': 'Trayectoria',
+    'about.thread': 'Angular, de la v8 a la v21: el hilo de casi todo',
+    'about.education.title': 'Formación',
+    'about.langs.title': 'Idiomas',
+    'about.fact.now': 'Ahora',
+    'about.fact.where': 'Dónde',
+    'about.fact.where.value': 'Remoto · España',
+    'about.fact.langs': 'Idiomas',
     'about.principles.title': 'Cómo trabajo',
     'about.principle1.title': 'Primero el boceto',
     'about.principle1.body':
@@ -222,7 +229,7 @@ export const ui = {
       'Código tipado, accesible y con nombres claros, para que quien venga después pueda seguir.',
     'about.principle3.title': 'Probado antes de entregar',
     'about.principle3.body': 'Si una parte importa, tiene su test. Si falla, me entero yo primero.',
-    'about.cv.title': 'Mi trayectoria completa, en el CV',
+    'about.cv.title': 'Todo esto, en una página.',
     'about.cv.pending': 'El CV en PDF estará aquí muy pronto.',
 
     // Contacto
@@ -438,15 +445,22 @@ export const ui = {
 
     'about.meta.title': 'About · Christian Oller',
     'about.meta.description':
-      'Christian Oller, a frontend developer who also designs and tests: Angular, Astro, React, Figma, Cypress and Jasmine. Remote from Spain.',
+      'Christian Oller, a software developer who designs, builds and tests: Angular, Astro, React, Figma, Cypress and Playwright. Remote from Spain.',
     'about.title': 'Design, code and QA',
     'about.p1':
-      "I'm a frontend developer and I've spent years building applications with Angular, from version 8 to 21. I also make websites with Astro, React and WordPress.",
+      "I'm a software developer: I design, build and test. I've spent years building applications with Angular, from version 8 to 21, and websites with Astro, React and WordPress.",
     'about.p2':
-      "Before coding, I design: Figma for interfaces and Procreate when it's time to draw. Then I test what I build with Jasmine, Cypress and Postman, because a beautiful interface that breaks is no use.",
+      "Before coding, I design: Figma for interfaces and Procreate when it's time to draw. Then I test what I build with Jasmine, Cypress and Playwright, because a beautiful interface that breaks is no use.",
     'about.p3':
       'In 2025 I co-founded Vístalo with Eloi Cotonat, an agency that makes websites, photos and Google presence for small businesses. I work remotely from Spain.',
     'about.experience.title': 'Experience',
+    'about.thread': 'Angular, from v8 to v21: the thread through most of it',
+    'about.education.title': 'Education',
+    'about.langs.title': 'Languages',
+    'about.fact.now': 'Now',
+    'about.fact.where': 'Where',
+    'about.fact.where.value': 'Remote · Spain',
+    'about.fact.langs': 'Languages',
     'about.principles.title': 'How I work',
     'about.principle1.title': 'Sketch first',
     'about.principle1.body': 'I draw the screen before coding it. Being wrong on paper is cheaper.',
@@ -455,7 +469,7 @@ export const ui = {
       'Typed, accessible code with clear names, so whoever comes next can carry on.',
     'about.principle3.title': 'Tested before it ships',
     'about.principle3.body': 'If a part matters, it has a test. If it breaks, I find out first.',
-    'about.cv.title': 'My full background, in my CV',
+    'about.cv.title': 'All of this, on one page.',
     'about.cv.pending': 'The PDF CV will be here very soon.',
 
     'contact.meta.title': 'Contact · Christian Oller',

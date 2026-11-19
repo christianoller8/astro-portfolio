@@ -17,11 +17,11 @@
 | Etapa | Estado |
 | --- | --- |
 | Plan y decisiones D1–D13 | Hecho (18 nov) |
-| E0 · Arranque | Hecho (18 nov). Por confirmar: texto de Vístalo y fechas de 2023 |
+| E0 · Arranque | Hecho (18 nov). Las fechas se corrigieron con el CV el 19 nov |
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **En curso**: Inicio y Proyectos aprobados; casos hechos con contenido provisional (19 nov) |
+| **E4 · Páginas** | **En curso**: Inicio y Proyectos aprobados; casos (contenido provisional) y Sobre mí hechos (19 nov) |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -42,8 +42,8 @@ Cada cosa indica qué etapa bloquea.
   te lo recordara). Hoy solo Vístalo tiene capturas reales; en los otros tres la imagen es un
   fragmento de interfaz montado en HTML para la web. Afecta a las tarjetas, a la cabecera de cada
   caso y al morph. No bloquea nada hasta E4.
-- [x] **CV en PDF**: recibido el 18 nov (`public/cv/christian-oller-cv.pdf`). Falta tu formación.
-  Bloquea E4.
+- [x] **CV en PDF**: recibido el 18 nov (`public/cv/christian-oller-cv.pdf`). La formación y los
+  idiomas salen de ahí (19 nov).
 - [ ] **Contenido real de cada proyecto** (Tempora, Vibora, Learnish y Vístalo). Bloquea E4:
   - Qué es, tu papel, el año, el stack y los enlaces (repo o demo).
   - Capturas.
@@ -441,7 +441,32 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
       real de cada proyecto, se cambia.
     - Las pruebas en vivo miden la pieza de esta página, no la app real.
     - Faltan año, stack y enlaces de Tempora, Vibora y Learnish, y sus imágenes reales.
-- [ ] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV.
+- [ ] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV
+  (**hecho el 19 nov; pendiente de tu visto bueno**).
+  - **Trayectoria real, del CV**: por fin pude leer el PDF. `src/data/experience.ts` tenía cinco
+    etapas con fechas distintas; ahora lleva las siete del CV, con tus frases resumidas:
+    Vístalo (2025 – actualidad), Accenture (ene – ago 2026), VHIR · Vall d'Hebron (sep 2024 –
+    ago 2025), Inology (jun 2023 – may 2024), Kenos Technology · Vueling (mar – may 2023),
+    SM Medioambientales (sep 2022 – ene 2023) y Pukkas (ene – ago 2022). También la formación
+    (UOC, Udemy y DAW) y los idiomas (castellano y catalán nativos, inglés B1).
+  - **Cabecera**: la bio en grande y el retrato como capa. En claro, el fondo blanco de la foto se
+    funde con el papel (multiplicar); en oscuro se usa la misma foto con la persona recortada
+    (`profile-cut.png`, hecha con `.taste-skill/recorte/retrato-oscuro.cjs`) y el jersey se funde
+    con el fondo. Debajo, tres datos: ahora, dónde e idiomas.
+  - **Cronología**: historial de versiones (v7.0 … v1.0) con periodo, lugar, papel, lo que hiciste
+    y el stack. Angular es el hilo: una línea de tinta recorre las etapas en las que lo usaste.
+    Después, la formación.
+  - **Cómo trabajo**: tres principios, cada uno con su ejemplo (un boceto a lápiz, un componente
+    en código y el resultado de un test), alternando de lado.
+  - **Herramientas por lente**, actualizadas con el CV (RxJS, NgRx, Signals, Python, PrimeNG,
+    SQL Server, MongoDB, GraphQL, Playwright…).
+  - **Idiomas y CV**.
+  - En el inicio, la trayectoria resumida enseña ahora las cuatro últimas etapas.
+  - Comprobado a 1440 px (claro y oscuro, inglés) y 390 px; la lente QA da todo superado.
+    Capturas: `.taste-skill/def/e4/e4-sobre-mi-escritorio.jpg` y `e4-sobre-mi-oscuro-movil.jpg`.
+  - **Por confirmar**: el CV dice Angular "v8–v18" y la web dice "de la 8 a la 21" (lo dejé en 21,
+    como me dijiste). La web sigue diciendo "Remoto · España" (el CV pone Córdoba). El "80.000
+    usuarios" de Accenture sale del CV. La sesión de fotos nueva sigue pendiente.
 - [ ] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados.
 - [ ] **404**: "Frame no encontrado", con la caricatura buscándolo.
 - [ ] **Inglés** al mismo nivel que el español.
