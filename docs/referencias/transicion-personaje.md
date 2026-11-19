@@ -132,3 +132,37 @@ Para subir el detalle:
 6. Una zapatilla con la puntera doblada (el momento de impulsar).
 7. Más caras: ojos cerrados de esfuerzo, alivio al terminar y una mirando al frente.
 8. Efectos en su estilo: gotas de sudor y dos o tres nubecillas de polvo en los pies.
+
+## Segunda lámina y muñeco rehecho (19 nov)
+
+Christian pasó una segunda lámina, `docs/imgs/emoji-piezas-2.jpg`, con casi todo lo pedido: el
+personaje entero de perfil, cuatro caras, el torso sin capucha, la capucha y los cordones aparte,
+brazo, antebrazo, cuatro manos (abierta, dos puños y una agarrando), muslo con cadera, la pierna
+entera recta, zapatilla normal y con la puntera doblada, gotas de sudor y nubecillas de polvo.
+
+- **Recorte**: `.taste-skill/personaje/piezas2.cjs` (`detectar.cjs` lista y numera los dibujos de
+  una lámina). Arreglos propios: a la mano que agarra se le quitan las rayas del canto; de la
+  pierna entera se usa la mitad de abajo (de la rodilla al tobillo); las gotas de sudor son
+  demasiado pequeñas en la lámina y se dibujan en SVG con el mismo trazo.
+- **Proporciones**: medidas en el personaje de perfil de la lámina (cabeza 24 %, hombro al 30 %,
+  cadera al 58 %, rodilla al 75 %, tobillo al 90 %). Ya no van a ojo.
+- **Muñeco** (`character-rig.ts`, `Character.astro`): desaparece la pieza de cadera (va dibujada
+  en el muslo); la pierna es recta, sin el bulto de la rodilla; el antebrazo va por delante del
+  brazo para tapar el corte del codo.
+- **Variantes** por atributo: cara (`calm`, `strain`, `relief`, `front`), manos (`open`, `fist`,
+  `grip`) y zapatilla (`flat`, `bent`).
+- **Detalle nuevo**:
+  - La capucha y los cordones van con retraso respecto al cuerpo: botan con cada paso.
+  - La zapatilla de la puntera doblada entra en el momento de impulsar.
+  - Al empujar, palmas abiertas; al tirar, las manos que agarran. La cara es la de esfuerzo con
+    los ojos cerrados.
+  - Una nubecilla de polvo cada vez que un pie termina su apoyo, y un par de gotas de sudor por
+    ciclo (`animate()` en `character.ts`).
+- **Sin usar todavía**: las caras de alivio y de frente (quedan listas para la 404, el pie o un
+  estado de reposo) y el puño.
+- **Copia en `docs/imgs/avatar/`**: las piezas nuevas; las de la primera lámina pasan a
+  `docs/imgs/avatar/v1/`.
+
+Lo que aún mejoraría el resultado, sin ser imprescindible: la misma lámina a más resolución (las
+piezas dan lo justo para pantallas retina al tamaño máximo) y una cara de esfuerzo de perfil
+estricto, para alternarla con la de ojos cerrados.

@@ -1,9 +1,9 @@
 ---
 // El personaje articulado. Pinta las piezas anidadas por sus articulaciones; quien lo mueve es
 // src/scripts/character.ts, girando cada [data-j]. Mira a la derecha; para la otra dirección se
-// voltea el contenedor.
+// voltea el contenedor. Las variantes (cara, manos, zapatilla) se eligen con atributos data-*.
 import { getImage } from 'astro:assets';
-import { PARTS, VARIANTS, ROOT, bone, type PartName, type Part } from '@/data/character-rig';
+import { PARTS, ART, ROOT, bone, type Art, type PartName } from '@/data/character-rig';
 
 interface Props {
   class?: string;
@@ -11,67 +11,62 @@ interface Props {
 const { class: className } = Astro.props;
 
 const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/character/*.png', { eager: true });
-const url = async (file: string, width: number) => {
+const url = async (file: string) => {
   const meta = files[`/src/assets/character/${file}.png`].default;
-  return (await getImage({ src: meta, width: Math.round(width), format: 'webp', quality: 82 })).src;
+  return (await getImage({ src: meta, format: 'webp', quality: 86 })).src;
 };
-
-// Estilo de una pieza: tamaño y colocación de su dibujo respecto al pivote (en unidades de muñeco)
-const art = async (part: { file: string; w: number; h: number; scale: [number, number]; pivot: [number, number] }) => ({
-  src: await url(part.file, part.w * 0.62),
-  style: `width: calc(${(part.w * part.scale[0]).toFixed(1)} * var(--u)); height: calc(${(part.h * part.scale[1]).toFixed(1)} * var(--u)); left: calc(${(-part.pivot[0] * part.scale[0]).toFixed(1)} * var(--u)); top: calc(${(-part.pivot[1] * part.scale[1]).toFixed(1)} * var(--u));`,
+const n = (value: number) => value.toFixed(1);
+// Tamaño y colocación de un dibujo respecto a su pivote (en unidades de muñeco)
+const art = async (piece: Art) => ({
+  src: await url(piece.file),
+  style: `width: calc(${n(piece.w * piece.scale[0])} * var(--u)); height: calc(${n(piece.h * piece.scale[1])} * var(--u)); left: calc(${n(-piece.pivot[0] * piece.scale[0])} * var(--u)); top: calc(${n(-piece.pivot[1] * piece.scale[1])} * var(--u));`,
 });
-const at = ([x, y]: [number, number]) => `left: calc(${x.toFixed(1)} * var(--u)); top: calc(${y.toFixed(1)} * var(--u));`;
-const jointOf = (name: PartName, joint: string) => at(bone(name, joint));
+const at = ([x, y]: [number, number]) => `left: calc(${n(x)} * var(--u)); top: calc(${n(y)} * var(--u));`;
+const joint = (name: PartName, point: string) => at(bone(name, point));
 
-const img: Record<string, { src: string; style: string }> = {};
-for (const [name, part] of Object.entries(PARTS) as [PartName, Part][]) img[name] = await art(part);
-img.headEffort = await art(VARIANTS.headEffort);
-img.handFist = await art(VARIANTS.handFist);
+const group = async (pieces: Record<string, Art>) =>
+  Promise.all(Object.entries(pieces).map(async ([name, piece]) => ({ name, ...(await art(piece)) })));
 
-const torso = PARTS.torso;
-const torsoJoint = (joint: 'neck' | 'shoulder') => jointOf('torso', joint);
+const img = {
+  torso: await art(PARTS.torso),
+  upperArm: await art(PARTS.upperArm),
+  forearm: await art(PARTS.forearm),
+  thigh: await art(PARTS.thigh),
+  shin: await art(PARTS.shin),
+  hood: await art(ART.hood),
+  cords: await Promise.all(ART.cords.map(art)),
+  heads: await group(ART.heads),
+  hands: await group(ART.hands),
+  shoes: await group(ART.shoes),
+};
+const dust = await Promise.all(ART.dust.map(async (piece) => ({ src: await url(piece.file), w: piece.w, h: piece.h })));
 const sides = ['far', 'near'] as const;
 ---
 
-<div class:list={['chr', className]} aria-hidden="true">
+<div class:list={['chr', className]} data-face="calm" data-hands="open" aria-hidden="true">
   <div class="chr-root" data-j="root">
-    {/* Pierna de detrás */}
-    <div class="chr-j chr-far" data-j="far.thigh" style={at(ROOT.legFar)}>
-      <img src={img.thigh.src} style={img.thigh.style} alt="" />
-      <div class="chr-j" data-j="far.shin" style={jointOf('thigh', 'knee')}>
-        <div class="chr-j" data-j="far.shoe" style={jointOf('shin', 'ankle')}>
-          <img src={img.shoe.src} style={img.shoe.style} alt="" />
+    {
+      sides.map((side) => (
+        <div class:list={['chr-j', side === 'far' ? 'chr-far chr-leg-far' : 'chr-leg-near']} data-j={`${side}.thigh`} style={at(side === 'far' ? ROOT.legFar : ROOT.legNear)}>
+          <div class="chr-j chr-under" data-j={`${side}.shin`} style={joint('thigh', 'knee')}>
+            <div class="chr-j chr-under chr-shoe" data-j={`${side}.shoe`} data-shoe="flat" style={joint('shin', 'ankle')}>
+              {img.shoes.map((shoe) => <img class={`chr-shoe-${shoe.name}`} src={shoe.src} style={shoe.style} alt="" />)}
+            </div>
+            <img src={img.shin.src} style={img.shin.style} alt="" />
+          </div>
+          <img src={img.thigh.src} style={img.thigh.style} alt="" />
         </div>
-        <img src={img.shin.src} style={img.shin.style} alt="" />
-      </div>
-    </div>
+      ))
+    }
 
-    {/* Cadera */}
-    <div class="chr-j" data-j="hip" style="left: 0; top: 0;">
-      <img src={img.hip.src} style={img.hip.style} alt="" />
-    </div>
-
-    {/* Pierna de delante */}
-    <div class="chr-j" data-j="near.thigh" style={at(ROOT.legNear)}>
-      <img src={img.thigh.src} style={img.thigh.style} alt="" />
-      <div class="chr-j" data-j="near.shin" style={jointOf('thigh', 'knee')}>
-        <div class="chr-j" data-j="near.shoe" style={jointOf('shin', 'ankle')}>
-          <img src={img.shoe.src} style={img.shoe.style} alt="" />
-        </div>
-        <img src={img.shin.src} style={img.shin.style} alt="" />
-      </div>
-    </div>
-
-    {/* Torso: lleva el brazo de detrás, la cabeza y el brazo de delante */}
+    {/* Torso: lleva el brazo de detrás, la capucha, la cabeza, los cordones y el brazo de delante */}
     <div class="chr-j chr-torso" data-j="torso" style={at(ROOT.waist)}>
       {
         sides.map((side) => (
-          <div class:list={['chr-j', `chr-arm-${side}`, side === 'far' && 'chr-far']} data-j={`${side}.upperArm`} style={torsoJoint('shoulder')}>
-            <div class="chr-j" data-j={`${side}.forearm`} style={jointOf('upperArm', 'elbow')}>
-              <div class="chr-j" data-j={`${side}.hand`} style={jointOf('forearm', 'wrist')}>
-                <img class="chr-hand-open" src={img.hand.src} style={img.hand.style} alt="" />
-                <img class="chr-hand-fist" src={img.handFist.src} style={img.handFist.style} alt="" />
+          <div class:list={['chr-j', `chr-arm-${side}`, side === 'far' && 'chr-far']} data-j={`${side}.upperArm`} style={joint('torso', 'shoulder')}>
+            <div class="chr-j chr-over" data-j={`${side}.forearm`} style={joint('upperArm', 'elbow')}>
+              <div class="chr-j chr-under chr-hand" data-j={`${side}.hand`} style={joint('forearm', 'wrist')}>
+                {img.hands.map((hand) => <img class={`chr-hand-${hand.name}`} src={hand.src} style={hand.style} alt="" />)}
               </div>
               <img src={img.forearm.src} style={img.forearm.style} alt="" />
             </div>
@@ -79,14 +74,78 @@ const sides = ['far', 'near'] as const;
           </div>
         ))
       }
-      <div class="chr-j chr-head" data-j="head" style={torsoJoint('neck')}>
-        <img class="chr-head-calm" src={img.head.src} style={img.head.style} alt="" />
-        <img class="chr-head-effort" src={img.headEffort.src} style={img.headEffort.style} alt="" />
+      <div class="chr-j chr-hood" data-j="hood" style={joint('torso', 'hood')}>
+        <img src={img.hood.src} style={img.hood.style} alt="" />
       </div>
-      <img class="chr-torso-img" src={img.torso.src} style={img.torso.style} alt="" data-w={torso.w} />
+      <div class="chr-j chr-head" data-j="head" style={joint('torso', 'neck')}>
+        {img.heads.map((head) => <img class={`chr-head-${head.name}`} src={head.src} style={head.style} alt="" />)}
+      </div>
+      <img class="chr-torso-img" src={img.torso.src} style={img.torso.style} alt="" />
+      {
+        img.cords.map((cord, i) => (
+          <div class="chr-j chr-cord" data-j={`cord.${i}`} style={`${joint('torso', 'cords')} margin-left: calc(${i * 26} * var(--u));`}>
+            <img src={cord.src} style={cord.style} alt="" />
+          </div>
+        ))
+      }
     </div>
   </div>
+
+  {/* Moldes de los efectos: character.ts los clona al dar cada paso */}
+  <div class="chr-bank" hidden>
+    {dust.map((puff) => <img data-fx="dust" data-w={puff.w} src={puff.src} alt="" />)}
+    <svg data-fx="sweat" viewBox="0 0 24 34">
+      <path d="M12 2.5C8 11 4 16.5 4 22.5a8 8 0 0 0 16 0C20 16.5 16 11 12 2.5Z" fill="#ffffff" stroke="#161616" stroke-width="2.6" stroke-linejoin="round"></path>
+      <path d="M8.5 22.5a3.6 3.6 0 0 0 2.6 3.6" fill="none" stroke="#b9b9b9" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </div>
 </div>
+
+<style is:global>
+  /* Efectos del personaje (los crea character.ts): polvo en los pies y gotas de sudor */
+  .chr-fx {
+    position: absolute;
+    pointer-events: none;
+    max-width: none;
+    z-index: 3;
+  }
+  .chr-fx-dust {
+    width: calc(var(--w) * var(--u));
+    margin: calc(var(--w) * var(--u) * -0.72) 0 0 calc(var(--w) * var(--u) * -0.5);
+    animation: chr-dust 520ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  }
+  .chr-fx-sweat {
+    width: calc(24 * var(--u));
+    margin: calc(-17 * var(--u)) 0 0 calc(-12 * var(--u));
+    animation: chr-sweat 620ms cubic-bezier(0.25, 0.6, 0.4, 1) forwards;
+  }
+  @keyframes chr-dust {
+    from {
+      transform: translate(0, 0) scale(0.4);
+      opacity: 0.95;
+    }
+    55% {
+      opacity: 0.8;
+    }
+    to {
+      transform: translate(calc(var(--dx) * var(--u)), calc(-30 * var(--u))) scale(1.15);
+      opacity: 0;
+    }
+  }
+  @keyframes chr-sweat {
+    from {
+      transform: translate(0, 0) rotate(var(--r)) scale(0.5);
+      opacity: 1;
+    }
+    60% {
+      opacity: 1;
+    }
+    to {
+      transform: translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u))) rotate(var(--r)) scale(1);
+      opacity: 0;
+    }
+  }
+</style>
 
 <style>
   /* --h es la altura del personaje de pie; --u, una unidad de muñeco */
@@ -104,7 +163,6 @@ const sides = ['far', 'near'] as const;
     width: 0;
     height: 0;
     transform-origin: 0 0;
-    will-change: transform;
   }
   .chr img {
     position: absolute;
@@ -112,34 +170,59 @@ const sides = ['far', 'near'] as const;
     user-select: none;
     -webkit-user-drag: none;
   }
-  /* Orden dentro del torso: brazo de detrás, cabeza, sudadera y brazo de delante */
+  /* Dentro de cada miembro, la pieza de abajo queda por debajo de la de arriba (la rodilla del muslo
+     tapa el arranque de la pierna; la manga, la muñeca) */
+  .chr-under {
+    z-index: -1;
+  }
+  /* En el brazo es al revés: el antebrazo tapa el corte del codo */
+  .chr-over {
+    z-index: 1;
+  }
+  /* Orden general: pierna de detrás, pierna de delante y, encima, el torso con lo suyo */
+  .chr-leg-far {
+    z-index: 0;
+  }
+  .chr-leg-near {
+    z-index: 1;
+  }
   .chr-torso {
     z-index: 2;
   }
   .chr-arm-far {
+    z-index: -3;
+  }
+  .chr-hood {
     z-index: -2;
   }
   .chr-head {
     z-index: -1;
   }
-  .chr-arm-near {
+  .chr-cord {
     z-index: 1;
+  }
+  .chr-arm-near {
+    z-index: 2;
   }
   /* Lo de detrás, un punto más oscuro: separa las dos piernas y los dos brazos */
   .chr-far {
-    filter: brightness(0.78);
+    filter: brightness(0.74);
   }
-  /* Variantes: mano abierta o puño, cara tranquila o de esfuerzo */
-  .chr-hand-fist,
-  .chr-head-effort {
+  /* Variantes: solo se ve la cara, la mano y la zapatilla elegidas */
+  .chr-head img,
+  .chr-hand img,
+  .chr-shoe img {
     display: none;
   }
-  .chr[data-hands='fist'] .chr-hand-open,
-  .chr[data-face='effort'] .chr-head-calm {
-    display: none;
-  }
+  .chr[data-face='calm'] .chr-head-calm,
+  .chr[data-face='strain'] .chr-head-strain,
+  .chr[data-face='relief'] .chr-head-relief,
+  .chr[data-face='front'] .chr-head-front,
+  .chr[data-hands='open'] .chr-hand-open,
   .chr[data-hands='fist'] .chr-hand-fist,
-  .chr[data-face='effort'] .chr-head-effort {
+  .chr[data-hands='grip'] .chr-hand-grip,
+  .chr [data-shoe='flat'] .chr-shoe-flat,
+  .chr [data-shoe='bent'] .chr-shoe-bent {
     display: block;
   }
 </style>

@@ -73,20 +73,22 @@ import Character from '@/components/character/Character.astro';
 </style>
 
 <script>
-  import { applyPose, pulling, pushing, standing } from '@/scripts/character';
+  import { animate, applyPose, pulling, pushing, standing } from '@/scripts/character';
 
   document.addEventListener('astro:page-load', () => {
     const cells = [...document.querySelectorAll<HTMLElement>('.lab-cell')];
     if (!cells.length) return;
     // ?fase=120 congela los ciclos en esa fase (para las capturas)
     const fixed = new URLSearchParams(location.search).get('fase');
-    const draw = (phase: number) => {
+    const draw = (phase: number, live = false) => {
       for (const cell of cells) {
         const chr = cell.querySelector<HTMLElement>('.chr')!;
         const mode = cell.dataset.mode;
-        chr.dataset.face = mode === 'standing' ? 'calm' : 'effort';
-        chr.dataset.hands = mode === 'pulling' ? 'fist' : 'open';
-        applyPose(chr, mode === 'pushing' ? pushing(phase) : mode === 'pulling' ? pulling(phase) : standing());
+        chr.dataset.face = mode === 'standing' ? 'calm' : 'strain';
+        chr.dataset.hands = mode === 'pulling' ? 'grip' : 'open';
+        if (mode === 'standing') applyPose(chr, standing());
+        else if (live) animate(chr, mode as 'pushing' | 'pulling', phase);
+        else applyPose(chr, mode === 'pushing' ? pushing(phase) : pulling(phase));
       }
     };
     if (fixed !== null) {
@@ -95,7 +97,7 @@ import Character from '@/components/character/Character.astro';
     }
     let raf = 0;
     const tick = (now: number) => {
-      draw((now / 1000) * 360 * 1.1);
+      draw((now / 1000) * 360 * 1.1, true);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

@@ -2,7 +2,7 @@
 // paneo según el orden del menú y mueve al personaje, que empuja la página al ir hacia delante y
 // tira de ella al volver. El paneo en sí está en global.css (::view-transition-*).
 import type { TransitionBeforePreparationEvent, TransitionBeforeSwapEvent } from 'astro:transitions/client';
-import { applyPose, pulling, pushing } from './character';
+import { animate } from './character';
 
 const ORDER = ['/', '/projects', '/about', '/contact'];
 let back = false;
@@ -57,10 +57,10 @@ document.addEventListener('astro:before-swap', (event) => {
       const chr = document.querySelector<HTMLElement>('[data-pusher] .chr');
       if (!chr) return;
       const goingBack = back;
-      chr.dataset.face = 'effort';
-      chr.dataset.hands = goingBack ? 'fist' : 'open';
-      const cycle = goingBack ? pulling : pushing;
-      applyPose(chr, cycle(0));
+      chr.dataset.face = 'strain';
+      chr.dataset.hands = goingBack ? 'grip' : 'open';
+      const mode = goingBack ? 'pulling' : 'pushing';
+      animate(chr, mode, 0);
 
       const duration = ms(reads('--dur-pan')) || 1350;
       const curve = reads('--ease-pan').match(/cubic-bezier\(([^)]+)\)/)?.[1].split(',').map(Number);
@@ -75,7 +75,7 @@ document.addEventListener('astro:before-swap', (event) => {
           const start = performance.now();
           const tick = (now: number) => {
             const progress = Math.min(1, (now - start) / duration);
-            applyPose(chr, cycle(ease(progress) * cycles * 360));
+            animate(chr, mode, ease(progress) * cycles * 360);
             if (progress < 1) frame = requestAnimationFrame(tick);
           };
           frame = requestAnimationFrame(tick);
