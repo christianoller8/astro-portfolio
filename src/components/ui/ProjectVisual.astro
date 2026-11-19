@@ -112,6 +112,12 @@ const host = link ? new URL(link).host : '';
   .pv--learnish .pv-clip > :global(*) {
     max-width: 27rem;
   }
+  /* En pantallas estrechas la interfaz de Vibora encoge con el ancho para caber entera */
+  @media (max-width: 767px) {
+    .pv--vibora .pv-clip {
+      --ui-size: clamp(0.625rem, 3.2vw, 0.8125rem);
+    }
+  }
   /* Con sitio (a partir de tablet) la interfaz va a tamaño de lectura */
   @media (min-width: 768px) {
     .pv--vibora .pv-clip,

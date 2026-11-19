@@ -40,7 +40,17 @@ const next = projects[(index + 1) % projects.length];
 // El código real de la pieza que se toca en esta página: su apartado de project-demos.ts
 const sections = demosSource.split(/\/\* -{10} (.+?) -{10} \*\/\n/);
 const at = sections.findIndex((part) => part.toLowerCase().startsWith(title.toLowerCase()));
-const code = at > -1 ? sections[at + 1].trim() : '';
+const source = at > -1 ? sections[at + 1].trim() : '';
+// Los comentarios del código están en español: en la versión en inglés se enseña sin ellos
+const code =
+  lang === 'es'
+    ? source
+    : source
+        .split('\n')
+        .filter((line) => !/^\s*\/\//.test(line) && !/^\s*\/?\*/.test(line))
+        .map((line) => line.replace(/\s+\/\/ .*$/, ''))
+        .join('\n')
+        .replace(/\n{3,}/g, '\n\n');
 
 // Capturas reales de la web publicada en otros tamaños de pantalla
 const shots =
@@ -310,8 +320,8 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   .case-visual {
     margin-top: clamp(2.5rem, 5vw, 4rem);
   }
-  .case-visual :global(.pv-clip) {
-    --ui-size: 1rem;
+  .case-visual :global(.pv .pv-clip) {
+    --ui-size: clamp(0.625rem, 3.2vw, 1rem);
     aspect-ratio: auto;
     height: clamp(20rem, 66vh, 46rem);
   }
@@ -353,6 +363,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   }
   .sketch-grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
   .sketch-lead {
@@ -393,7 +404,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     justify-self: center;
     width: min(100%, 22rem);
     aspect-ratio: auto;
-    --ui-size: 0.875rem;
+    --ui-size: clamp(0.625rem, 3.2vw, 0.875rem);
   }
   /* La interfaz aparece (se entinta) según avanza --ink; el boceto se dibuja con --draw y se va */
   .sketch-screen > :global([data-ui]) {
@@ -481,8 +492,8 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   .code-demo :global(.pv:not(.pv--live) .pv-clip) {
     aspect-ratio: auto;
   }
-  .code-demo--mobile :global(.pv-clip) {
-    --ui-size: 0.875rem;
+  .code-demo--mobile :global(.pv .pv-clip) {
+    --ui-size: clamp(0.625rem, 3.2vw, 0.875rem);
   }
   .code-try {
     position: absolute;

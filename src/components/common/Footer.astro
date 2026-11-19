@@ -61,6 +61,8 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
   }
   .back-inner {
     display: grid;
+    /* minmax(0, …): el email con su botón no ensancha el pie en pantallas de 320 px */
+    grid-template-columns: minmax(0, 1fr);
     gap: 3rem;
   }
   .back-cta {
@@ -97,8 +99,12 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
   }
   .back-mail {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0 0.6rem;
+  }
+  .back-mail a {
+    overflow-wrap: anywhere;
   }
   .back-copy {
     min-width: 4.75rem;

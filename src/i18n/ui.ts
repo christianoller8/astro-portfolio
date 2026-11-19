@@ -235,7 +235,7 @@ export const ui = {
     // Contacto
     'contact.meta.title': 'Contacto · Christian Oller',
     'contact.meta.description':
-      'Escribe a Christian Oller por una oferta de empleo o un proyecto frontend. Disponible en remoto desde España.',
+      'Escribe a Christian Oller por una oferta de empleo o un proyecto de diseño y desarrollo. Disponible en remoto desde España.',
     'contact.title': 'Hablemos',
     'contact.lead': '¿Tienes una oferta o un proyecto? Cuéntamelo y te contesto por email.',
     'contact.name': 'Nombre',
@@ -485,7 +485,7 @@ export const ui = {
 
     'contact.meta.title': 'Contact · Christian Oller',
     'contact.meta.description':
-      'Write to Christian Oller about a job or a frontend project. Available remotely from Spain.',
+      'Write to Christian Oller about a job or a design and development project. Available remotely from Spain.',
     'contact.title': "Let's talk",
     'contact.lead': "Got a role or a project? Tell me about it and I'll reply by email.",
     'contact.name': 'Name',

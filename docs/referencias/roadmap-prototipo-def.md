@@ -21,7 +21,7 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **En curso**: todo hecho menos la revisión del inglés; casos con contenido provisional (19 nov) |
+| **E4 · Páginas** | **Hecho** (19 nov), a falta de tu visto bueno al inglés y de tu contenido real para los casos |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -482,8 +482,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     `?estado=enviado` (usa datos de ejemplo).
   - Comprobado a 1440 px (claro, y oscuro en inglés) y 390 px (claro y oscuro); la lente QA da todo
     superado. Capturas: `.taste-skill/def/e4/e4-contacto-escritorio.jpg` y `e4-contacto-movil.jpg`.
-- [ ] **404**: "Frame no encontrado", con la caricatura buscándolo (**hecho el 19 nov; pendiente de
-  tu visto bueno**).
+- [x] **404**: "Frame no encontrado", con la caricatura buscándolo (hecho y aprobado el 19 nov).
   - `src/pages/404.astro`. El artboard no tiene papel: es un frame vacío de borde discontinuo sobre
     el lienzo, y su nombre (arriba, donde va siempre) es la ruta que se pidió.
   - Dentro: "Frame no encontrado", la ruta, "Volver al inicio" y "Ver el lienzo". A la derecha, los
@@ -500,7 +499,24 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     enseñan los diseños nuevos de Inicio, Proyectos, casos, Sobre mí y Contacto.
   - Comprobado a 1440 px (claro, y oscuro en inglés), 820 px y 390 px. Capturas:
     `.taste-skill/def/e4/e4-404-escritorio.jpg` y `e4-404-movil.jpg`.
-- [ ] **Inglés** al mismo nivel que el español.
+- [ ] **Inglés** al mismo nivel que el español (**revisado el 19 nov; pendiente de tu visto bueno**).
+  - Claves de texto: 224 en español y 224 en inglés, sin ninguna suelta. Los proyectos tienen las
+    mismas listas y el mismo contenido en los dos idiomas.
+  - Barrido de las ocho páginas en inglés buscando español en el texto visible y en `aria-label`,
+    `alt`, `title` y `placeholder`: solo quedan nombres propios (Vístalo, Lucía Prieto) y las frases
+    de las tarjetas de Learnish, que son en español a propósito.
+  - Estados que no se ven al cargar, también en inglés: las tres lentes y su barra, las cuatro
+    demos de proyectos, el lienzo navegable, el menú de móvil, las pruebas de los casos y los
+    estados del formulario.
+  - Tres arreglos: la descripción de Contacto decía "proyecto frontend" (en los dos idiomas); el
+    código de los casos enseñaba sus comentarios en español (en inglés va sin comentarios); y en un
+    404 de `/en/…` la barra de arriba salía en español (ahora se pasa a inglés, con sus enlaces).
+  - **De paso, dos desbordes reales a 320 px, en los dos idiomas**: el pie (el email con "Copiar"
+    ensanchaba todo el bloque) y la interfaz de Vibora (no cabía; ahora encoge con el ancho).
+    Barrido final: 9 páginas × 2 idiomas × 6 anchos (320 a 1920 px), 0 desbordes.
+  - El inglés es británico ("colour", "organise"), como ya estaba. Los textos nuevos siguen siendo
+    provisionales, igual que en español.
+  - Herramientas: `.taste-skill/eloi-1118/tools/en-scan.mjs`, `en-states.mjs` y `overflow-all.mjs`.
 
 **Hecho cuando**: cada pantalla pasa la prueba del póster (un protagonista claro).
 

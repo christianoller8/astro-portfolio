@@ -5,6 +5,7 @@
 // cuál toca, así que van los dos textos y se enseña el que corresponde a la ruta (/en/…).
 import Layout from '@/layouts/Layout.astro';
 import Character from '@/components/character/Character.astro';
+import { useTranslations } from '@/i18n/utils';
 
 const copy = {
   es: {
@@ -35,10 +36,17 @@ const copy = {
   },
 };
 const langs = ['es', 'en'] as const;
+// La barra de arriba se genera en español; para /en/… se cambian sus textos y enlaces en el navegador
+const t = useTranslations('en');
+const toolbar = {
+  links: { '/': ['/en', t('nav.home')], '/projects': ['/en/projects', t('nav.projects')], '/about': ['/en/about', t('nav.about')], '/contact': ['/en/contact', t('nav.contact')] },
+  lenses: { design: t('lens.design'), code: t('lens.code'), qa: t('lens.qa') },
+  canvas: t('nav.canvas'),
+};
 ---
 
 <Layout title="404 · Christian Oller" description="Frame no encontrado" frame="404" missing>
-  <section class="wrap nf" data-nf>
+  <section class="wrap nf" data-nf data-toolbar={JSON.stringify(toolbar)}>
     {
       langs.map((lang) => (
         <div class="nf-grid" data-nf-lang={lang} lang={lang} hidden={lang !== 'es'}>
@@ -269,6 +277,32 @@ const langs = ['es', 'en'] as const;
     section.querySelectorAll<HTMLElement>('[data-nf-lang]').forEach((el) => (el.hidden = el.dataset.nfLang !== lang));
     const path = decodeURIComponent(location.pathname);
     section.querySelectorAll('[data-nf-path]').forEach((el) => (el.textContent = path));
+    if (lang === 'en') {
+      const toolbar = JSON.parse(section.dataset.toolbar ?? '{}') as {
+        links: Record<string, [string, string]>;
+        lenses: Record<string, string>;
+        canvas: string;
+      };
+      document.querySelectorAll<HTMLAnchorElement>('header a[href]').forEach((link) => {
+        const to = toolbar.links[link.getAttribute('href')?.replace(/(.)\/$/, '$1') ?? ''];
+        if (!to) return;
+        link.setAttribute('href', to[0]);
+        // La marca lleva el logo dentro: solo se cambia el texto de los enlaces del menú
+        if (!link.children.length) link.textContent = to[1];
+      });
+      document.querySelectorAll<HTMLElement>('header [data-canvas-open]').forEach((btn) => {
+        // El texto del botón es su primer nodo de texto con contenido (lleva icono y tecla aparte)
+        const node = [...btn.childNodes].find((n) => n.nodeType === 3 && n.textContent?.trim());
+        const label = btn.querySelector('span:not([aria-hidden])') ?? node;
+        if (label) label.textContent = toolbar.canvas;
+        if (btn.title) btn.title = `${toolbar.canvas} (M)`;
+      });
+      document.querySelectorAll<HTMLElement>('header [data-lens-set]').forEach((btn) => {
+        const name = toolbar.lenses[btn.dataset.lensSet ?? ''];
+        const text = btn.querySelector('span');
+        if (name && text) text.textContent = name;
+      });
+    }
     const label = document.querySelector('.frame-label');
     if (label?.firstChild) label.firstChild.textContent = `${path} `;
 
