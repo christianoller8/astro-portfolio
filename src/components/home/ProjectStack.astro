@@ -11,6 +11,13 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const projects = await getSortedProjects(lang);
+// Lo que se puede hacer en cada uno
+const hints: Record<string, string> = {
+  tempora: t('projects.try.tempora'),
+  vibora: t('projects.try.vibora'),
+  learnish: t('projects.try.learnish'),
+  vistalo: t('projects.try.vistalo'),
+};
 ---
 
 <section class="projects" data-cs="<section> ProjectStack.astro">
@@ -21,28 +28,46 @@ const projects = await getSortedProjects(lang);
 
   <ol class="wrap stack">
     {
-      projects.map((project) => (
-        <li class="stack-item">
-          <a class="stack-card" href={translatePath(`/projects/${project.slug}`)}>
-            <div class="stack-meta">
-              <h3 class="stack-title" data-morph-title={project.slug}>{project.data.title}</h3>
-              <p class="stack-desc">
-                {project.data.description}
-                <span class="stack-kind">
-                  {t(project.data.kind === 'app' ? 'project.kind.app' : 'project.kind.web')} ·{' '}
-                  {project.data.status}
-                </span>
-              </p>
-              <span class="stack-cta">
-                {t('projects.view')} <span aria-hidden="true">→</span>
-              </span>
-            </div>
-            <div class="stack-visual" data-morph-visual={project.slug}>
-              <ProjectVisual project={project} lang={lang} />
-            </div>
-          </a>
-        </li>
-      ))
+      projects.map((project) => {
+        const href = translatePath(`/projects/${project.slug}`);
+        const kind = t(project.data.kind === 'app' ? 'project.kind.app' : 'project.kind.web');
+        const facts = [kind, project.data.status, project.data.role, project.data.year, project.data.stack.slice(0, 3).join(', ')]
+          .filter(Boolean)
+          .join(' · ');
+        const hint = hints[project.slug] ?? '';
+        return (
+          <li class="stack-item">
+            {/* La tarjeta ya no es un enlace entero: la interfaz de dentro se puede tocar */}
+            <article class="stack-card">
+              <div class="stack-meta">
+                <h3 class="stack-title">
+                  <a href={href} data-morph-title={project.slug}>
+                    {project.data.title}
+                  </a>
+                </h3>
+                <div class="stack-text">
+                  <p class="stack-desc">{project.data.description}</p>
+                  <p class="stack-facts">{facts}</p>
+                </div>
+                <a class="stack-cta" href={href} aria-label={`${t('projects.view')}: ${project.data.title}`}>
+                  {t('projects.view')} <span aria-hidden="true">→</span>
+                </a>
+              </div>
+              <div class="stack-visual">
+                <p class="stack-try">
+                  <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+                    <path d="M3 1.5l9.5 6.2-4.1.9 2.4 4.6-1.9 1-2.4-4.7L3.6 12.6z" />
+                  </svg>
+                  {hint}
+                </p>
+                <div data-morph-visual={project.slug}>
+                  <ProjectVisual project={project} lang={lang} interactive />
+                </div>
+              </div>
+            </article>
+          </li>
+        );
+      })
     }
   </ol>
 
@@ -70,16 +95,10 @@ const projects = await getSortedProjects(lang);
   }
   .stack-card {
     display: grid;
-    gap: 1.25rem;
+    gap: 2.9rem;
     padding: clamp(0.75rem, 1.6vw, 1.25rem);
     background: var(--tint);
     transition: background-color var(--dur-ui) var(--ease-out);
-  }
-  .stack-visual :global(.pv-clip) {
-    transition: transform var(--dur-ink) var(--ease-out);
-  }
-  .stack-card:hover .stack-visual :global(.pv-clip) {
-    transform: scale(0.985);
   }
   .stack-meta {
     display: grid;
@@ -93,19 +112,42 @@ const projects = await getSortedProjects(lang);
     line-height: 1;
     letter-spacing: -0.03em;
   }
+  .stack-title a {
+    text-decoration: none;
+  }
   .stack-desc {
     max-width: 52ch;
     color: var(--ink);
   }
-  .stack-kind {
-    display: block;
-    margin-top: 0.35rem;
+  .stack-facts {
+    margin-top: 0.4rem;
     font-size: var(--step-small);
     color: var(--muted);
   }
-  .stack-cta {
+  /* La nota de herramienta que dice qué se puede tocar: asoma por encima del marco */
+  .stack-visual {
+    position: relative;
+  }
+  .stack-try {
+    position: absolute;
+    bottom: calc(100% + 0.4rem);
+    left: 0;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.55rem 0.25rem 0.45rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    white-space: nowrap;
+    color: var(--paper);
+    background: var(--ink);
+    pointer-events: none;
+  }
+  .stack-cta {
+    display: inline-flex;
+    justify-self: start;
+    align-items: center;
+    min-height: 1.75rem;
     gap: 0.4rem;
     font-weight: 600;
     font-size: var(--step-small);
@@ -114,13 +156,23 @@ const projects = await getSortedProjects(lang);
   .stack-cta span {
     transition: transform var(--dur-micro) var(--ease-out);
   }
-  .stack-card:hover .stack-cta span {
+  .stack-cta:hover span {
     transform: translateX(4px);
   }
   .projects-all {
     margin-top: 2rem;
   }
 
+  /* En móvil y tablet la interfaz se ve entera (sin recortar a 16:10): si no, no se vería lo que
+     cambia al tocarla. La web abierta en su marco va en formato de móvil. */
+  @media (max-width: 1023px) {
+    .stack-visual :global(.pv:not(.pv--live) .pv-clip) {
+      aspect-ratio: auto;
+    }
+    .stack-visual :global(.pv--live.is-live .pv-clip) {
+      aspect-ratio: 3 / 4;
+    }
+  }
   @media (min-width: 1024px) {
     .stack {
       gap: 2rem;
@@ -132,7 +184,7 @@ const projects = await getSortedProjects(lang);
     }
     .stack-visual :global(.pv-clip) {
       aspect-ratio: auto;
-      height: clamp(16rem, 44vh, 30rem);
+      height: clamp(21rem, 56vh, 33rem);
     }
   }
   /* Cada tarjeta crece un poco al entrar en pantalla, ligada al scroll (sin JavaScript) */
@@ -156,9 +208,12 @@ const projects = await getSortedProjects(lang);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .stack-visual :global(.pv-clip),
     .stack-cta span {
       transition: none;
     }
   }
 </style>
+
+<script>
+  import '@/scripts/project-demos';
+</script>

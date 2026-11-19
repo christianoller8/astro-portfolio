@@ -1,0 +1,127 @@
+---
+// Trayectoria resumida (plan §5.2, punto 4): cada etapa es una "versión", en una línea, y el detalle
+// queda en la cronología de Sobre mí. Los datos salen de src/data/experience.ts.
+import { experience } from '@/data/experience';
+import { useTranslations, useTranslatedPath } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const total = experience.length;
+---
+
+<section class="path" data-cs="<section> Trajectory.astro">
+  <div class="wrap path-head">
+    <h2 class="t-head" data-reveal>{t('path.title')}</h2>
+    <p class="t-lead path-lead" data-reveal style="--reveal-i: 1">{t('path.lead')}</p>
+  </div>
+
+  <ol class="wrap path-list" reversed>
+    {
+      experience.map((job, i) => (
+        <li class="path-row" data-reveal style={`--reveal-i: ${Math.min(i, 4)}`}>
+          <p class="path-version">
+            v{total - i}.0
+            {i === 0 && <span class="path-now">{t('path.now')}</span>}
+          </p>
+          <h3 class="path-company">{job.company}</h3>
+          <p class="path-role">{job.role[lang]}</p>
+          <p class="path-period">{job.period[lang].replace(' - ', ' – ')}</p>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="wrap path-all">
+    <a class="btn btn-quiet" href={translatePath('/about')}>
+      {t('path.all')}
+      <span class="btn-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .path {
+    padding-top: clamp(5rem, 10vw, 9rem);
+  }
+  .path-lead {
+    max-width: 42ch;
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+  .path-list {
+    display: grid;
+    gap: 3px;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .path-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.35rem 1rem;
+    padding: 1rem 1.1rem;
+    background: var(--tint);
+  }
+  .path-version {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    color: var(--muted);
+  }
+  .path-now {
+    padding: 0.1rem 0.45rem;
+    color: var(--paper);
+    background: var(--ink);
+  }
+  .path-period {
+    grid-area: 1 / 2;
+    font: 500 0.8125rem/1.3 var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  .path-company {
+    grid-column: 1 / -1;
+    font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .path-role {
+    grid-column: 1 / -1;
+    color: var(--muted);
+  }
+  /* La versión actual, en tinta: es la protagonista */
+  .path-row:first-child {
+    color: var(--paper);
+    background: var(--ink);
+  }
+  .path-row:first-child :is(.path-version, .path-period, .path-role) {
+    color: color-mix(in srgb, var(--paper) 76%, var(--ink));
+  }
+  .path-row:first-child .path-now {
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .path-all {
+    margin-top: 2rem;
+  }
+
+  @media (min-width: 900px) {
+    .path-row {
+      grid-template-columns: 7.5rem minmax(0, 7fr) minmax(0, 4fr) auto;
+      gap: 1.5rem;
+      padding: 1.1rem 1.5rem;
+    }
+    .path-company,
+    .path-role,
+    .path-period {
+      grid-area: auto;
+    }
+  }
+</style>

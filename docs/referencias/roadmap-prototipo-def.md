@@ -20,8 +20,8 @@
 | E0 · Arranque | Hecho (18 nov). Por confirmar: texto de Vístalo y fechas de 2023 |
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
-| **E3 · Momentos firma** | **En curso**: todo hecho; solo falta tu visto bueno a las lentes (19 nov) |
-| E4 · Páginas | Pendiente |
+| E3 · Momentos firma | Hecho (19 nov) |
+| **E4 · Páginas** | **En curso**: Inicio completo hecho, pendiente de visto bueno (19 nov) |
 | E5 · Móvil y pulido | Pendiente |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -346,8 +346,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Con "reducir movimiento" la cámara salta sin viaje.
   - Capturas: `.taste-skill/def/cmap/v1-hoja.jpg` (la secuencia) y `v1-hoja-otros.jpg` (oscuro,
     tablet y móvil).
-- [ ] **Lentes** con estética de herramienta (valores medidos, sin rotulador) (**hechas el 19 nov;
-  pendientes de tu visto bueno**).
+- [x] **Lentes** con estética de herramienta (valores medidos, sin rotulador) (hechas y aprobadas
+  el 19 nov).
   - Las marcas ya no se pintan sobre los elementos: van en una capa aparte dentro del frame
     (`.lens-layer`), colocada midiendo cada pieza (`src/scripts/lenses.ts`, `src/styles/lenses.css`).
     Las etiquetas buscan sitio solas: no se pisan, no tapan texto y no se salen del artboard.
@@ -375,7 +375,29 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 ## E4 · Páginas
 
 - [ ] **Inicio completo**: proyectos que se pueden tocar (una mini interacción en cada uno),
-  trayectoria resumida, contacto y pie.
+  trayectoria resumida, contacto y pie (**hecho el 19 nov; pendiente de tu visto bueno**).
+  - **Proyectos que se pueden tocar** (`ProjectStack.astro`, `src/scripts/project-demos.ts`). La
+    tarjeta ya no es un enlace entero: se entra al caso por el título o por "Ver proyecto" (el
+    morph sigue igual) y la interfaz de dentro responde:
+    - Tempora: "+ Nuevo turno" añade una fila y suben los contadores; "Pendiente" pasa a "Fichado".
+    - Vibora: se elige una pista libre, cambia el resumen y "Confirmar" deja la reserva hecha.
+    - Learnish: "Ver respuesta", y "Repasar" o "Lo sabía" pasan de tarjeta y avanzan la lección.
+    - Vístalo: "Abrir la web aquí" carga la web real dentro de su marco (a 1280 px escalada; en
+      móvil, a 390 px). Solo se carga al pulsar; "Volver a la captura" la quita.
+    - Encima de cada marco, una nota de herramienta dice qué se puede probar.
+    - Vibora y Learnish (apps de móvil) van centradas sobre su color y a tamaño de lectura. En
+      móvil y tablet la interfaz se ve entera, sin recortar a 16:10.
+    - Por proyecto: nombre, una línea, tipo, estado, rol y, si los hay, año y stack.
+  - **Trayectoria resumida** (`Trajectory.astro`): cada etapa es una versión (v5.0 … v1.0) en una
+    línea, con la actual en tinta, y un enlace a la cronología de Sobre mí.
+  - **Contacto y pie**: email con botón "Copiar", frase nueva (ya no dice "frontend") y créditos
+    "Hecho en capas: boceto, diseño, código y pruebas".
+  - Comprobado a 1440 px (claro y oscuro), 820 px (inglés) y 390 px (claro y oscuro); la lente QA
+    da todo superado. Capturas: `.taste-skill/def/e4/e4-inicio-escritorio.jpg` y
+    `e4-inicio-movil.jpg`.
+  - Provisional: los datos de las demos son de ejemplo y los textos nuevos, por revisar. Faltan
+    año y stack de Tempora, Vibora y Learnish, y sus imágenes reales (ver "Lo que necesito de ti").
+  - Para la fase técnica: repetir las miniaturas del lienzo (la de Inicio ha cambiado).
 - [ ] **Proyectos**: el lienzo de proyectos y la vista en lista.
 - [ ] **Casos** con sus 9 apartados: Tempora, Vibora, Learnish y Vístalo.
 - [ ] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV.

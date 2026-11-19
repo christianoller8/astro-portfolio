@@ -2,9 +2,11 @@
 // Fragmento de interfaz de Vibora (reservas de pádel). Datos de ejemplo hasta tener capturas reales.
 interface Props {
   lang: 'es' | 'en';
+  /** Se puede tocar: elegir una pista libre y confirmar (src/scripts/project-demos.ts) */
+  interactive?: boolean;
 }
 
-const { lang } = Astro.props;
+const { lang, interactive = false } = Astro.props;
 
 const copy = {
   es: {
@@ -16,6 +18,8 @@ const copy = {
     mine: 'Tu reserva',
     summary: 'Pista 2 · 19:30 · 90 min',
     cta: 'Confirmar',
+    confirmed: 'Reserva confirmada',
+    pick: 'Elige una pista libre',
   },
   en: {
     title: 'Book a court',
@@ -26,6 +30,8 @@ const copy = {
     mine: 'Your booking',
     summary: 'Court 2 · 19:30 · 90 min',
     cta: 'Confirm',
+    confirmed: 'Booking confirmed',
+    pick: 'Pick a free court',
   },
 }[lang];
 
@@ -38,7 +44,16 @@ const grid = [
 ];
 ---
 
-<div class="vb" data-ui role="img" aria-label={`Vibora — ${copy.title}`}>
+<div
+  class="vb"
+  data-ui
+  role={interactive ? 'group' : 'img'}
+  aria-label={`Vibora — ${copy.title}`}
+  data-demo={interactive ? 'vibora' : undefined}
+  data-demo-data={interactive
+    ? JSON.stringify({ free: copy.free, mine: copy.mine, confirmed: copy.confirmed, pick: copy.pick, cta: copy.cta })
+    : undefined}
+>
   <div class="vb-top">
     <span class="vb-logo">vibora</span>
     <span class="vb-day">{copy.day}</span>
@@ -51,18 +66,37 @@ const grid = [
       times.map((time, row) => (
         <>
           <span class="vb-time">{time}</span>
-          {grid[row].map((state) => (
-            <span class:list={['vb-slot', { 'is-taken': state === 1, 'is-mine': state === 2 }]}>
-              {state === 0 ? copy.free : state === 1 ? copy.taken : copy.mine}
-            </span>
-          ))}
+          {grid[row].map((state, col) =>
+            interactive && state !== 1 ? (
+              <button
+                type="button"
+                class:list={['vb-slot', { 'is-mine': state === 2 }]}
+                aria-pressed={state === 2 ? 'true' : 'false'}
+                data-demo-slot={`${copy.courts[col]} · ${time}`}
+              >
+                {state === 0 ? copy.free : copy.mine}
+              </button>
+            ) : (
+              <span class:list={['vb-slot', { 'is-taken': state === 1, 'is-mine': state === 2 }]}>
+                {state === 0 ? copy.free : state === 1 ? copy.taken : copy.mine}
+              </span>
+            ),
+          )}
         </>
       ))
     }
   </div>
   <div class="vb-bar">
-    <span>{copy.summary}</span>
-    <span class="vb-cta">{copy.cta}</span>
+    <span data-demo-summary>{copy.summary}</span>
+    {
+      interactive ? (
+        <button type="button" class="vb-cta" data-demo-confirm>
+          {copy.cta}
+        </button>
+      ) : (
+        <span class="vb-cta">{copy.cta}</span>
+      )
+    }
   </div>
 </div>
 
@@ -139,5 +173,46 @@ const grid = [
     font-weight: 700;
     color: #11201a;
     background: #b9f26b;
+  }
+  /* Lo que se puede tocar */
+  button.vb-slot {
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      color 140ms ease-out,
+      transform 140ms ease-out;
+  }
+  button.vb-slot:not(.is-mine):hover {
+    background: #2a4a39;
+  }
+  button.vb-slot:active,
+  button.vb-cta:active {
+    transform: scale(0.97);
+  }
+  button.vb-cta {
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      transform 140ms ease-out;
+  }
+  button.vb-cta:hover {
+    background: #cdf78f;
+  }
+  button.vb-cta:disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
+  .vb :focus-visible {
+    outline: 2px solid #eef5e6;
+    outline-offset: 2px;
+  }
+  .vb-bar.is-done {
+    color: #11201a;
+    background: #b9f26b;
+    font-weight: 700;
+  }
+  .vb-bar.is-done .vb-cta {
+    visibility: hidden;
   }
 </style>

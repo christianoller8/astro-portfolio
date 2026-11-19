@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/home/Hero.astro';
 import ProjectStack from '@/components/home/ProjectStack.astro';
 import ViewScene from '@/components/home/ViewScene.astro';
+import Trajectory from '@/components/home/Trajectory.astro';
 import { useTranslations } from '@/i18n/utils';
 import type { ui } from '@/i18n/ui';
 
@@ -20,8 +21,9 @@ const t = useTranslations(lang);
   frame={t('nav.home')}
   intro
 >
-  {/* Orden del plan §5.2: primero los resultados (proyectos) y después "Cómo lo veo yo" */}
+  {/* Orden del plan §5.2: resultados (proyectos), "Cómo lo veo yo" y la trayectoria; el contacto es el pie */}
   <Hero lang={lang} />
   <ProjectStack lang={lang} />
   <ViewScene lang={lang} />
+  <Trajectory lang={lang} />
 </Layout>

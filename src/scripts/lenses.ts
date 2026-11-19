@@ -738,6 +738,7 @@ function settleQa(before: string) {
 /* ---------- Render ---------- */
 
 function render(animate = false) {
+  if (root.dataset.lens && !isLens(root.dataset.lens)) delete root.dataset.lens;
   syncButtons();
   const lens = currentLens();
   const motion = animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;

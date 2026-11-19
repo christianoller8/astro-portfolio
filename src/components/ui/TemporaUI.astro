@@ -5,9 +5,12 @@ interface Props {
   lang: 'es' | 'en';
   /** Muestra las notas a mano del boceto (solo en la escena del inicio) */
   notes?: { filters: string; table: string; cta: string };
+  /** Se puede tocar: añadir un turno y fichar a quien está pendiente (src/scripts/project-demos.ts) */
+  interactive?: boolean;
 }
 
-const { lang, notes } = Astro.props;
+const { lang, notes, interactive = false } = Astro.props;
+const Action = interactive ? 'button' : 'span';
 
 const copy = {
   es: {
@@ -46,6 +49,14 @@ const copy = {
   },
 }[lang];
 
+// Quien entra al pulsar "Nuevo turno" (en ese orden)
+const next = [
+  { name: 'Christian Oller', initials: 'CO', unit: copy.units[1], shift: copy.shifts.t },
+  { name: 'Nuria Vidal', initials: 'NV', unit: copy.units[0], shift: copy.shifts.n },
+  { name: 'Pablo Marín', initials: 'PM', unit: copy.units[2], shift: copy.shifts.m },
+  { name: 'Irene Campos', initials: 'IC', unit: copy.units[1], shift: copy.shifts.t },
+];
+
 const rows = [
   { name: 'Lucía Prieto', initials: 'LP', unit: copy.units[0], shift: copy.shifts.m, ok: true },
   { name: 'Javier Ortega', initials: 'JO', unit: copy.units[1], shift: copy.shifts.t, ok: true },
@@ -54,7 +65,14 @@ const rows = [
 ];
 ---
 
-<div class="tp" data-ui role="img" aria-label={`Tempora — ${copy.title}`}>
+<div
+  class="tp"
+  data-ui
+  role={interactive ? 'group' : 'img'}
+  aria-label={`Tempora — ${copy.title}`}
+  data-demo={interactive ? 'tempora' : undefined}
+  data-demo-data={interactive ? JSON.stringify({ next, done: copy.done }) : undefined}
+>
   <div class="tp-top" data-sketch="box">
     <span class="tp-logo" data-sketch="text">Tempora</span>
     <span class="tp-date" data-sketch="text">{copy.date}</span>
@@ -72,7 +90,13 @@ const rows = [
     <div class="tp-main">
       <div class="tp-head">
         <span class="tp-title" data-sketch="text">{copy.title}</span>
-        <span class="tp-cta" data-sketch="box" data-sketch-note={notes?.cta}>+ {copy.cta}</span>
+        <Action
+          class="tp-cta"
+          type={interactive ? 'button' : undefined}
+          data-demo-add={interactive ? '' : undefined}
+          data-sketch="box"
+          data-sketch-note={notes?.cta}>+ {copy.cta}</Action
+        >
       </div>
       <div class="tp-tabs">
         {
@@ -91,7 +115,7 @@ const rows = [
         {
           copy.stats.map(([value, label]) => (
             <span class="tp-stat" data-sketch="box">
-              <strong>{value}</strong> {label}
+              <strong data-demo-stat>{value}</strong> {label}
             </span>
           ))
         }
@@ -109,11 +133,39 @@ const rows = [
               </span>
               <span data-sketch="text">{row.unit}</span>
               <span data-sketch="text">{row.shift}</span>
-              <span class:list={['tp-chip', { 'is-pending': !row.ok }]} data-sketch="box">
-                {row.ok ? copy.done : copy.pending}
-              </span>
+              {row.ok ? (
+                <span class="tp-chip" data-sketch="box">
+                  {copy.done}
+                </span>
+              ) : (
+                <Action
+                  class="tp-chip is-pending"
+                  type={interactive ? 'button' : undefined}
+                  data-demo-clock={interactive ? '' : undefined}
+                  data-sketch="box"
+                >
+                  {copy.pending}
+                </Action>
+              )}
             </div>
           ))
+        }
+        {
+          interactive && (
+            <template data-demo-row>
+              <div class="tp-row is-new">
+                <span class="tp-person">
+                  <i aria-hidden="true" />
+                  <b />
+                </span>
+                <span />
+                <span />
+                <button type="button" class="tp-chip is-pending" data-demo-clock>
+                  {copy.pending}
+                </button>
+              </div>
+            </template>
+          )
         }
       </div>
     </div>
@@ -274,6 +326,59 @@ const rows = [
   }
   .tp-row > * {
     min-width: 0;
+  }
+  .tp-person b {
+    font-weight: inherit;
+  }
+  /* Lo que se puede tocar */
+  /* 26 px: sigue por encima de los 24 de zona táctil cuando la tarjeta está a escala 0,94 */
+  button.tp-chip {
+    min-height: 1.625rem;
+  }
+  button.tp-cta,
+  button.tp-chip {
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      transform 140ms ease-out;
+  }
+  button.tp-cta:hover {
+    background: #0c5f59;
+  }
+  button.tp-chip.is-pending:hover {
+    background: #fbdca0;
+  }
+  button.tp-cta:active,
+  button.tp-chip:active {
+    transform: scale(0.96);
+  }
+  .tp :focus-visible {
+    outline: 2px solid var(--tp-ink);
+    outline-offset: 2px;
+  }
+  .tp-row.is-new {
+    animation: tp-new 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .tp-chip.is-just {
+    animation: tp-pop 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes tp-new {
+    from {
+      opacity: 0;
+      transform: translateY(-0.6rem);
+      background: #d9efec;
+    }
+  }
+  @keyframes tp-pop {
+    from {
+      transform: scale(0.8);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tp-row.is-new,
+    .tp-chip.is-just {
+      animation: none;
+    }
   }
   @media (max-width: 640px) {
     .tp-body {

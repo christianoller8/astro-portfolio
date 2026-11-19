@@ -25,7 +25,12 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
     </div>
 
     <ul class="back-links" data-reveal style="--reveal-i: 3">
-      <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
+      <li class="back-mail">
+        <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
+        <button type="button" class="back-copy" data-copy={site.email} data-copied={t('footer.copied')}>
+          {t('footer.copy')}
+        </button>
+      </li>
       <li><a class="link" href={site.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></li>
       <li><a class="link" href={site.github} target="_blank" rel="noreferrer">GitHub ↗</a></li>
       {
@@ -90,6 +95,27 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
     min-height: 2.5rem;
     align-items: center;
   }
+  .back-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .back-copy {
+    min-width: 4.75rem;
+    min-height: 1.75rem;
+    padding: 0 0.6rem;
+    font: 500 0.8125rem/1 var(--font-mono);
+    color: var(--paper);
+    background: color-mix(in srgb, var(--paper) 14%, var(--ink));
+    transition:
+      background-color var(--dur-micro) var(--ease-out),
+      color var(--dur-micro) var(--ease-out);
+  }
+  .back-copy:hover,
+  .back-copy.is-done {
+    color: var(--ink);
+    background: var(--paper);
+  }
   .wordmark {
     margin-top: 1rem;
     font-size: clamp(3rem, 12.4vw, 13rem);
@@ -102,3 +128,23 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
     color: color-mix(in srgb, var(--paper) 72%, var(--ink));
   }
 </style>
+
+<script>
+  // Copiar el email: el botón dice "Copiado" un momento y vuelve a su texto
+  document.addEventListener('click', async (event) => {
+    const btn = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-copy]');
+    if (!btn || btn.classList.contains('is-done')) return;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+    } catch {
+      return;
+    }
+    const label = btn.textContent;
+    btn.textContent = btn.dataset.copied ?? '';
+    btn.classList.add('is-done');
+    window.setTimeout(() => {
+      btn.textContent = label;
+      btn.classList.remove('is-done');
+    }, 1600);
+  });
+</script>

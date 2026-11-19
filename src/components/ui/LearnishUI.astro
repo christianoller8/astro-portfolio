@@ -2,9 +2,20 @@
 // Fragmento de interfaz de Learnish (aprender inglés). Datos de ejemplo hasta tener capturas reales.
 interface Props {
   lang: 'es' | 'en';
+  /** Se puede tocar: ver la respuesta y pasar de tarjeta (src/scripts/project-demos.ts) */
+  interactive?: boolean;
 }
 
-const { lang } = Astro.props;
+const { lang, interactive = false } = Astro.props;
+
+// Las tarjetas que van saliendo al responder
+const cards = [
+  ['Tengo ganas de verte', 'I’m looking forward to seeing you'],
+  ['Se me ha hecho tarde', 'I’m running late'],
+  ['¿Me pones un café?', 'Could I have a coffee, please?'],
+  ['Me da igual', 'I don’t mind'],
+  ['Te echo de menos', 'I miss you'],
+];
 
 const copy = {
   es: {
@@ -16,6 +27,8 @@ const copy = {
     again: 'Repasar',
     good: 'Lo sabía',
     streak: '9 días seguidos',
+    reveal: 'Ver respuesta',
+    of: 'de',
   },
   en: {
     lesson: 'Lesson 12 · Travel',
@@ -26,28 +39,65 @@ const copy = {
     again: 'Review',
     good: 'Got it',
     streak: '9-day streak',
+    reveal: 'Show answer',
+    of: 'of',
   },
 }[lang];
 ---
 
-<div class="ln" data-ui role="img" aria-label={`Learnish — ${copy.lesson}`}>
+<div
+  class="ln"
+  data-ui
+  role={interactive ? 'group' : 'img'}
+  aria-label={`Learnish — ${copy.lesson}`}
+  data-demo={interactive ? 'learnish' : undefined}
+  data-demo-data={interactive ? JSON.stringify({ cards, of: copy.of }) : undefined}
+>
   <div class="ln-top">
     <span class="ln-logo">Learnish</span>
     <span class="ln-streak">{copy.streak}</span>
   </div>
   <div class="ln-progress">
     <span>{copy.lesson}</span>
-    <span>{copy.progress}</span>
+    <span data-demo-progress>{copy.progress}</span>
   </div>
-  <div class="ln-track" aria-hidden="true"><span></span></div>
-  <div class="ln-card">
+  <div class="ln-track" aria-hidden="true"><span data-demo-bar></span></div>
+  <div class="ln-card" data-demo-card>
     <span class="ln-prompt">{copy.prompt}</span>
-    <span class="ln-word">{copy.word}</span>
-    <span class="ln-answer">{copy.answer}</span>
+    <span class="ln-word" data-demo-word>{copy.word}</span>
+    {
+      interactive ? (
+        <>
+          <button type="button" class="ln-reveal" data-demo-reveal>
+            {copy.reveal}
+          </button>
+          <span class="ln-answer" data-demo-answer hidden>
+            {copy.answer}
+          </span>
+        </>
+      ) : (
+        <span class="ln-answer">{copy.answer}</span>
+      )
+    }
   </div>
   <div class="ln-actions">
-    <span class="ln-btn">{copy.again}</span>
-    <span class="ln-btn ln-btn--good">{copy.good}</span>
+    {
+      interactive ? (
+        <>
+          <button type="button" class="ln-btn" data-demo-next="again" disabled>
+            {copy.again}
+          </button>
+          <button type="button" class="ln-btn ln-btn--good" data-demo-next="good" disabled>
+            {copy.good}
+          </button>
+        </>
+      ) : (
+        <>
+          <span class="ln-btn">{copy.again}</span>
+          <span class="ln-btn ln-btn--good">{copy.good}</span>
+        </>
+      )
+    }
   </div>
 </div>
 
@@ -94,6 +144,7 @@ const copy = {
     width: 70%;
     height: 100%;
     background: #f2c200;
+    transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .ln-card {
     display: grid;
@@ -131,5 +182,69 @@ const copy = {
   .ln-btn--good {
     color: #2b2200;
     background: #ffd84d;
+  }
+  /* Lo que se puede tocar */
+  .ln-reveal {
+    justify-self: start;
+    margin-top: 0.25rem;
+    padding: 0.45rem 0.75rem;
+    font-weight: 700;
+    color: #2e3f8f;
+    background: #e9ecfa;
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      transform 140ms ease-out;
+  }
+  .ln-reveal:hover {
+    background: #d9dff7;
+  }
+  button.ln-btn {
+    cursor: pointer;
+    transition:
+      opacity 140ms ease-out,
+      transform 140ms ease-out;
+  }
+  button.ln-btn:disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
+  button.ln-btn:not(:disabled):hover {
+    filter: brightness(0.96);
+  }
+  .ln-reveal:active,
+  button.ln-btn:not(:disabled):active {
+    transform: scale(0.97);
+  }
+  .ln :focus-visible {
+    outline: 2px solid #17213f;
+    outline-offset: 2px;
+  }
+  .ln-answer:not([hidden]) {
+    animation: ln-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ln-card.is-next {
+    animation: ln-card 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes ln-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.3rem);
+    }
+  }
+  @keyframes ln-card {
+    from {
+      opacity: 0;
+      transform: translateX(1.2rem);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ln-track span {
+      transition: none;
+    }
+    .ln-answer:not([hidden]),
+    .ln-card.is-next {
+      animation: none;
+    }
   }
 </style>

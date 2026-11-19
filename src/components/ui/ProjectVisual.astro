@@ -4,21 +4,55 @@ import type { CollectionEntry } from 'astro:content';
 import TemporaUI from './TemporaUI.astro';
 import ViboraUI from './ViboraUI.astro';
 import LearnishUI from './LearnishUI.astro';
+import { useTranslations } from '@/i18n/utils';
 
 interface Props {
   project: CollectionEntry<'projects'>;
   lang: 'es' | 'en';
   /** Prioridad de carga cuando la imagen está en la primera pantalla */
   eager?: boolean;
+  /**
+   * Se puede tocar (inicio): cada app lleva su mini interacción y la web publicada se abre dentro
+   * de su marco. El comportamiento está en src/scripts/project-demos.ts.
+   */
+  interactive?: boolean;
 }
 
-const { project, lang, eager = false } = Astro.props;
-const { image, imageAlt, ui, title } = project.data;
+const { project, lang, eager = false, interactive = false } = Astro.props;
+const { image, imageAlt, ui, title, link } = project.data;
+const t = useTranslations(lang);
+// Una web publicada con captura: en el inicio se puede abrir la web real en el propio marco
+const live = interactive && image && link;
+const host = link ? new URL(link).host : '';
 ---
 
 <!-- La caja externa lleva las capas de las lentes; la interna recorta el contenido -->
-<div class="pv" data-ds={title} data-qa-host>
-  <div class="pv-clip">
+<div
+  class:list={['pv', ui && `pv--${ui}`, live && 'pv--live']}
+  data-ds={title}
+  data-qa-host
+  data-demo={live ? 'live' : undefined}
+  data-demo-url={live ? link : undefined}
+  data-demo-title={live ? title : undefined}
+>
+  {
+    live && (
+      <div class="pv-bar">
+        <span class="pv-url">{host}</span>
+        <button
+          type="button"
+          class="pv-live"
+          aria-pressed="false"
+          data-demo-live
+          data-open={t('projects.live.open')}
+          data-close={t('projects.live.close')}
+        >
+          <span>{t('projects.live.open')}</span>
+        </button>
+      </div>
+    )
+  }
+  <div class="pv-clip" data-demo-stage={live ? '' : undefined}>
     {
       image ? (
         <Image
@@ -30,11 +64,11 @@ const { image, imageAlt, ui, title } = project.data;
           class="pv-img"
         />
       ) : ui === 'tempora' ? (
-        <TemporaUI lang={lang} />
+        <TemporaUI lang={lang} interactive={interactive} />
       ) : ui === 'vibora' ? (
-        <ViboraUI lang={lang} />
+        <ViboraUI lang={lang} interactive={interactive} />
       ) : (
-        <LearnishUI lang={lang} />
+        <LearnishUI lang={lang} interactive={interactive} />
       )
     }
   </div>
@@ -45,6 +79,9 @@ const { image, imageAlt, ui, title } = project.data;
     width: 100%;
   }
   .pv-clip {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     aspect-ratio: 16 / 10;
     overflow: hidden;
     background: var(--tint);
@@ -54,5 +91,89 @@ const { image, imageAlt, ui, title } = project.data;
     height: 100%;
     object-fit: cover;
     object-position: top center;
+  }
+
+  /* Cada app en su formato: Vibora y Learnish son de móvil, así que van centradas sobre su color */
+  .pv--vibora .pv-clip {
+    background: #0b1712;
+  }
+  .pv--learnish .pv-clip {
+    background: #e7eaf5;
+  }
+  .pv--vibora .pv-clip > :global(*),
+  .pv--learnish .pv-clip > :global(*) {
+    justify-self: center;
+    align-self: center;
+    height: auto;
+  }
+  .pv--vibora .pv-clip > :global(*) {
+    max-width: 46rem;
+  }
+  .pv--learnish .pv-clip > :global(*) {
+    max-width: 27rem;
+  }
+  /* Con sitio (a partir de tablet) la interfaz va a tamaño de lectura */
+  @media (min-width: 768px) {
+    .pv--vibora .pv-clip,
+    .pv--learnish .pv-clip {
+      --ui-size: 1rem;
+    }
+  }
+
+  /* La web publicada: barra de navegador con su dirección y el botón para abrirla aquí mismo */
+  .pv-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0 0.5rem 0 0.9rem;
+    background: var(--paper);
+  }
+  .pv-url {
+    overflow: hidden;
+    font: 500 0.8125rem/1 var(--font-mono);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--muted);
+  }
+  .pv-live {
+    flex: none;
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--pencil-ink);
+    background: var(--pencil);
+    transition: transform var(--dur-micro) var(--ease-out);
+  }
+  .pv-live:active {
+    transform: scale(0.97);
+  }
+  .pv-live[aria-pressed='true'] {
+    color: var(--ink);
+    background: var(--tint);
+  }
+  .pv-clip :global(iframe) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 0;
+    background: #fff;
+    transform-origin: 0 0;
+    animation: pv-live-in var(--dur-ui) var(--ease-out) both;
+  }
+  @keyframes pv-live-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pv-live {
+      transition: none;
+    }
+    .pv-clip :global(iframe) {
+      animation: none;
+    }
   }
 </style>

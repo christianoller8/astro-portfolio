@@ -156,6 +156,18 @@ export const ui = {
     'projects.page.lead':
       'Apps propias y webs publicadas. Cada una pasa por boceto, código y QA antes de enseñarse.',
     'projects.view': 'Ver proyecto',
+    'projects.try.tempora': 'Pruébalo: añade un turno',
+    'projects.try.vibora': 'Pruébalo: reserva una pista',
+    'projects.try.learnish': 'Pruébalo: responde una tarjeta',
+    'projects.try.vistalo': 'Pruébalo: abre la web aquí',
+    'projects.live.open': 'Abrir la web aquí',
+    'projects.live.close': 'Volver a la captura',
+    'path.title': 'Trayectoria',
+    'path.lead': 'Las últimas versiones. De la más reciente a la más antigua.',
+    'path.all': 'Ver la trayectoria completa',
+    'path.now': 'actual',
+    'footer.copy': 'Copiar',
+    'footer.copied': 'Copiado',
     'projects.all': 'Todos los proyectos',
     'projects.meta.title': 'Proyectos · Christian Oller',
     'projects.meta.description':
@@ -177,11 +189,11 @@ export const ui = {
     // Pie: el reverso del artboard
     'footer.title': '¿Hablamos?',
     'footer.lead':
-      'Busco un equipo de producto en el que cuidar el frontend sea parte del trabajo.',
+      'Busco un equipo de producto donde diseñar, programar y probar lo que hago.',
     'footer.email': 'Escribir un email',
     'footer.form': 'Ir al formulario',
     'footer.credits':
-      'Bocetado a lápiz, programado con Astro y revisado con las tres lentes.',
+      'Hecho en capas: boceto, diseño, código y pruebas.',
 
     // Sobre mí
     'about.meta.title': 'Sobre mí · Christian Oller',
@@ -375,6 +387,18 @@ export const ui = {
     'projects.page.lead':
       'My own apps and published websites. Each one goes through sketch, code and QA before it is shown.',
     'projects.view': 'View project',
+    'projects.try.tempora': 'Try it: add a shift',
+    'projects.try.vibora': 'Try it: book a court',
+    'projects.try.learnish': 'Try it: answer a card',
+    'projects.try.vistalo': 'Try it: open the site here',
+    'projects.live.open': 'Open the site here',
+    'projects.live.close': 'Back to the screenshot',
+    'path.title': 'Experience',
+    'path.lead': 'The latest versions. From the most recent to the oldest.',
+    'path.all': 'See the full timeline',
+    'path.now': 'current',
+    'footer.copy': 'Copy',
+    'footer.copied': 'Copied',
     'projects.all': 'All projects',
     'projects.meta.title': 'Projects · Christian Oller',
     'projects.meta.description':
@@ -394,11 +418,11 @@ export const ui = {
 
     'footer.title': 'Shall we talk?',
     'footer.lead':
-      "I'm looking for a product team where caring about the frontend is part of the job.",
+      "I'm looking for a product team where I can design, build and test what I make.",
     'footer.email': 'Send an email',
     'footer.form': 'Go to the form',
     'footer.credits':
-      'Sketched in pencil, built with Astro and checked with all three lenses.',
+      'Made in layers: sketch, design, code and tests.',
 
     'about.meta.title': 'About · Christian Oller',
     'about.meta.description':
