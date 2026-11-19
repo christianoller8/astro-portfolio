@@ -33,8 +33,15 @@ function bezier(x1: number, y1: number, x2: number, y2: number) {
 const reads = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 const ms = (value: string) => (value.endsWith('ms') ? parseFloat(value) : parseFloat(value) * 1000);
 
+const language = (url: URL) => (/^\/en(\/|$)/.test(url.pathname) ? 'en' : 'es');
+
 document.addEventListener('astro:before-preparation', (event) => {
   const { from, to, direction } = event as TransitionBeforePreparationEvent;
+  // Cambio de idioma: ir al inglés es avanzar (empuja) y volver al español es regresar (arrastra)
+  if (language(from) !== language(to)) {
+    back = language(to) === 'es';
+    return;
+  }
   const delta = rank(to) - rank(from);
   back = delta < 0 || (delta === 0 && direction === 'back');
 });

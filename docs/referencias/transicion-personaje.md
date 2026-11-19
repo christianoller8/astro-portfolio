@@ -185,3 +185,15 @@ Le gustó mucho, con tres pegas:
 
 Hojas de muestra, también en `docs/imgs/avatar/`: `transicion-ida.jpg`, `transicion-vuelta.jpg`,
 `transicion-movil.jpg` y `ciclos-ocho-fases.jpg`.
+
+## Cambio de idioma (19 nov)
+
+Idea de Christian: que el cambio de idioma también tenga dirección, para que se sienta que empujas
+para ir a un idioma y que vuelves al que tenías con la otra animación.
+
+- **ES → EN**: avanza. El personaje empuja la página en español y entra la inglesa.
+- **EN → ES**: regresa. El personaje arrastra la página en español de vuelta.
+- Vale en cualquier página, no solo en la home. Sustituye a lo que decía el plan para el idioma
+  (un fundido del texto sin mover la maqueta).
+- Está en `frames.ts`: si cambia el idioma, manda el idioma; si no, el orden del menú.
+- Muestra: `docs/imgs/avatar/transicion-idioma.jpg`.
