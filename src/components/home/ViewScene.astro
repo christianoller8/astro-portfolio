@@ -15,11 +15,17 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+type Key = Parameters<typeof t>[0];
 const steps = [0, 1, 2, 3].map((i) => ({
-  title: t(`view.step.${i}.title` as Parameters<typeof t>[0]),
-  body: t(`view.step.${i}.body` as Parameters<typeof t>[0]),
-  tools: i > 0 ? t(`view.step.${i}.tools` as Parameters<typeof t>[0]) : '',
+  title: t(`view.step.${i}.title` as Key),
+  body: t(`view.step.${i}.body` as Key),
+  more: t(`view.step.${i}.more` as Key),
+  points: i > 0 ? [1, 2, 3].map((n) => t(`view.step.${i}.point.${n}` as Key)) : [],
+  tools: i > 0 ? t(`view.step.${i}.tools` as Key) : '',
 }));
+// El puente a las lentes ("Puedes ver toda esta web así") está oculto de momento: a Christian no le
+// convence. Se recupera poniendo esto en true.
+const showBridge = false;
 const features = [1, 2, 3].map((i) => ({
   title: t(`view.demo.f${i}.title` as Parameters<typeof t>[0]),
   body: t(`view.demo.f${i}.body` as Parameters<typeof t>[0]),
@@ -141,6 +147,12 @@ const lenses = [
               {step.title}
             </h3>
             <p class="vs-step-body">{step.body}</p>
+            <p class="vs-step-more">{step.more}</p>
+            {step.points.length > 0 && (
+              <ul class="vs-step-points">
+                {step.points.map((point) => <li>{point}</li>)}
+              </ul>
+            )}
             {step.tools && (
               <p class="vs-step-tools">
                 <span>{t('view.tools')}</span> {step.tools}
@@ -164,19 +176,23 @@ const lenses = [
     </ol>
   </div>
 
-  <div class="wrap vs-bridge">
-    <h3 class="t-title" data-reveal>{t('view.bridge.title')}</h3>
-    <p class="vs-bridge-body" data-reveal style="--reveal-i: 1">{t('view.bridge.body')}</p>
-    <div class="vs-bridge-actions" data-reveal style="--reveal-i: 2">
-      {
-        lenses.map((lens) => (
-          <button type="button" class="btn btn-quiet" data-lens-set={lens.id} aria-pressed="false">
-            {lens.label}
-          </button>
-        ))
-      }
-    </div>
-  </div>
+  {
+    showBridge && (
+      <div class="wrap vs-bridge">
+        <h3 class="t-title" data-reveal>{t('view.bridge.title')}</h3>
+        <p class="vs-bridge-body" data-reveal style="--reveal-i: 1">{t('view.bridge.body')}</p>
+        <div class="vs-bridge-actions" data-reveal style="--reveal-i: 2">
+          {
+            lenses.map((lens) => (
+              <button type="button" class="btn btn-quiet" data-lens-set={lens.id} aria-pressed="false">
+                {lens.label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    )
+  }
 </section>
 
 <style>
@@ -547,9 +563,33 @@ const lenses = [
     font-size: var(--step-lead);
     line-height: 1.3;
   }
+  .vs-step-more {
+    max-width: 38ch;
+    margin-top: 0.9rem;
+    color: var(--muted);
+  }
+  .vs-step-points {
+    display: grid;
+    gap: 0.4rem;
+    max-width: 38ch;
+    margin-top: 1rem;
+  }
+  .vs-step-points li {
+    position: relative;
+    padding-left: 1.15rem;
+  }
+  .vs-step-points li::before {
+    content: '';
+    position: absolute;
+    top: 0.62em;
+    left: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: var(--ink);
+  }
   .vs-step-tools {
     max-width: 34ch;
-    margin-top: 1rem;
+    margin-top: 1.1rem;
     font-size: var(--step-small);
     color: var(--muted);
   }

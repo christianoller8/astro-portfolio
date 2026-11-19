@@ -297,6 +297,10 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     "Del boceto al producto" y "Herramientas por lente" (los componentes siguen en el proyecto;
     el primero vuelve en el caso de Tempora).
   - Con "reducir movimiento" los cambios de fase son inmediatos.
+  - **Ajustes tuyos (19 nov)**: te gustó, pero la querías más llena. Cada mirada lleva ahora un
+    segundo párrafo y tres puntos (textos provisionales: los copies se revisan todos al final). El
+    puente "Puedes ver toda esta web así" queda **oculto** porque no te convence (`showBridge` en
+    `ViewScene.astro`).
   - Capturas: `.taste-skill/def/e3-como-lo-veo-escritorio.jpg` y `e3-como-lo-veo-movil.jpg`.
 - [ ] **Morph** de la tarjeta de proyecto a su caso.
 - [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil.
