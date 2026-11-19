@@ -21,8 +21,8 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| **E4 · Páginas** | **Hecho** (19 nov), a falta de tu visto bueno al inglés y de tu contenido real para los casos |
-| E5 · Móvil y pulido | Pendiente |
+| E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
+| **E5 · Móvil y pulido** | **En curso** |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -499,7 +499,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     enseñan los diseños nuevos de Inicio, Proyectos, casos, Sobre mí y Contacto.
   - Comprobado a 1440 px (claro, y oscuro en inglés), 820 px y 390 px. Capturas:
     `.taste-skill/def/e4/e4-404-escritorio.jpg` y `e4-404-movil.jpg`.
-- [ ] **Inglés** al mismo nivel que el español (**revisado el 19 nov; pendiente de tu visto bueno**).
+- [x] **Inglés** al mismo nivel que el español (revisado y aprobado el 19 nov).
   - Claves de texto: 224 en español y 224 en inglés, sin ninguna suelta. Los proyectos tienen las
     mismas listas y el mismo contenido en los dos idiomas.
   - Barrido de las ocho páginas en inglés buscando español en el texto visible y en `aria-label`,
@@ -522,7 +522,21 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 
 ## E5 · Móvil y pulido
 
-- [ ] Composición propia a 390 px en todas las páginas.
+- [ ] Composición propia a 390 px en todas las páginas (**revisado el 19 nov; pendiente de tu visto
+  bueno**).
+  - Repasadas, pantalla a pantalla, las seis páginas a 390 px: Inicio (11 pantallas), Proyectos (5),
+    un caso (9), Sobre mí, Contacto (4) y el 404. La mayoría ya estaba compuesta para móvil al
+    construirla en E4 (hero con el retrato como capa, interfaces enteras y a su formato, frames
+    apilados con su nota, datos en dos líneas, lentes y estados en la barra de abajo).
+  - **Arreglado**: en "Cómo lo veo yo" el panel del árbol y el de las comprobaciones pasaban por
+    encima de la web de ejemplo al subir; ahora pasan por debajo del escenario fijo.
+  - **Sobre mí**: eran 13 pantallas y la cronología ocupaba cinco. En móvil cada etapa enseña
+    periodo, empresa, papel, resumen y stack, y el detalle va plegado en "Lo que hice" (se abre al
+    tocarlo). En escritorio sigue todo a la vista. Queda en 11 pantallas.
+  - **Proyectos**: el pie va pegado a la franja del lienzo, sin la banda blanca que quedaba entre
+    los dos (también en escritorio).
+  - Comprobado en claro, oscuro e inglés; 0 desbordes en 108 combinaciones y la lente QA sin fallos.
+    Capturas: `.taste-skill/def/e5/e5-movil-*.jpg`. Herramienta: `mobile-strip.mjs`.
 - [ ] Todas las microinteracciones del catálogo (§4.4 del plan).
 - [ ] Revisión completa en claro y en oscuro.
 - [ ] **Nota de Christian (18 nov)**: quiere incorporar algo de three.js. Se mira aquí, al final

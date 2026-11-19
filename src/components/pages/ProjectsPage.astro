@@ -223,6 +223,10 @@ const items = projects.map((project, i) => {
     background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
     background-size: 20px 20px;
   }
+  /* En la vista de lienzo el pie (tinta) va pegado a la franja, sin papel entre medias */
+  :global(main:has(.pp[data-mode='canvas']) .artboard-back) {
+    margin-top: 0;
+  }
   .board-list {
     display: grid;
     gap: 3.5rem;

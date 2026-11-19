@@ -488,6 +488,8 @@ const lenses = [
   }
   .vs-panel--inline {
     position: static;
+    /* Sin z-index propio: al subir con el scroll pasa por debajo del escenario fijo, no por encima */
+    z-index: auto;
     width: min(100%, 22rem);
     margin-top: 1.25rem;
   }
