@@ -434,7 +434,7 @@ html.intro {
 :root {
   --pusher-h: clamp(11rem, min(46vh, 60vw), 27.5rem);
   --pusher-gap: calc(var(--pusher-h) * 0.98);
-  --dur-pan: 1600ms;
+  --dur-pan: 2000ms;
   --ease-pan: cubic-bezier(0.62, 0.02, 0.34, 1);
 }
 ::view-transition {

@@ -69,7 +69,7 @@ document.addEventListener('astro:before-swap', (event) => {
       const mode = goingBack ? 'pulling' : 'pushing';
       animate(chr, mode, 0);
 
-      const duration = ms(reads('--dur-pan')) || 1600;
+      const duration = ms(reads('--dur-pan')) || 2000;
       const curve = reads('--ease-pan').match(/cubic-bezier\(([^)]+)\)/)?.[1].split(',').map(Number);
       const ease = curve?.length === 4 ? bezier(curve[0], curve[1], curve[2], curve[3]) : (x: number) => x;
       // Zancadas: las que caben en el recorrido, entre dos y tres ciclos (cuatro a seis pasos)

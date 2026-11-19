@@ -103,7 +103,7 @@ la cabeza de esfuerzo, de perfil, con rótulos).
   hueco se mueven en el compositor con la misma curva (`global.css`, `::view-transition-*`), y
   `frames.ts` mueve las piernas al paso de ese avance. Hacia delante empuja la página que sale;
   hacia atrás tira de la que entra.
-  - Duración: 1350 ms. Entre cuatro y seis pasos, según el ancho.
+  - Duración: 2000 ms (empezó en 1350). Entre cuatro y seis pasos, según el ancho.
   - Tamaño del personaje: el 46 % del alto de la ventana (como mucho el 60 % del ancho en móvil).
   - En oscuro lleva un filo claro alrededor, como la pegatina de la marca.
   - Con "reducir movimiento" o sin View Transitions, no hay paneo ni personaje.
@@ -200,5 +200,6 @@ para ir a un idioma y que vuelves al que tenías con la otra animación.
 
 ## Velocidad (19 nov)
 
-Christian la quiso "un pelín más lenta": la duración pasa de 1350 ms a **1600 ms** (`--dur-pan` en
-`global.css`; `frames.ts` la lee de ahí, así que es el único sitio que hay que tocar).
+Christian la quiso "un pelín más lenta". Probó 1600 ms y 2000 ms y se quedó con **2000 ms**
+(`--dur-pan` en `global.css`; `frames.ts` la lee de ahí, así que es el único sitio que hay que
+tocar). Son seis pasos, unos tres por segundo.
