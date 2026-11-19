@@ -97,6 +97,8 @@ export interface Limbs {
   shoe: number;
   /** La zapatilla con la puntera doblada (el momento de impulsar) */
   bent?: boolean;
+  /** La mano, volteada: para cuando el brazo va hacia atrás y la mano quedaría boca abajo */
+  flip?: boolean;
 }
 
 const rad = (deg: number) => (deg * Math.PI) / 180;
@@ -111,6 +113,27 @@ export const bone = (name: PartName, joint: string): [number, number] => {
   const [jx, jy] = part.joints[joint];
   return scaled(part, [jx - part.pivot[0], jy - part.pivot[1]]);
 };
+
+/**
+ * Dónde toca la mano de delante, respecto a la cadera (x, en unidades de muñeco).
+ * - Mano abierta: el punto de la palma más adelantado (lo que apoya contra el canto).
+ * - Mano que agarra: el hueco entre los dedos y la palma (por donde pasa el canto).
+ */
+export function handContact(pose: Pose, hand: Hand): number {
+  const side = pose.near;
+  const shoulder = rotate(bone('torso', 'shoulder'), pose.torso);
+  const elbow = rotate(bone('upperArm', 'elbow'), side.upperArm);
+  const wrist = rotate(bone('forearm', 'wrist'), side.forearm);
+  const base = ROOT.waist[0] + shoulder[0] + elbow[0] + wrist[0];
+  const art = ART.hands[hand];
+  const reach = (point: [number, number]) => {
+    const local = scaled(art, [point[0] - art.pivot[0], point[1] - art.pivot[1]]);
+    return rotate(side.flip ? [local[0], -local[1]] : local, side.hand)[0];
+  };
+  if (hand === 'grip') return base + reach([124, 74]);
+  // Puntas de los dedos, centro de la palma y talón de la mano
+  return base + Math.max(...([[226, 58], [150, 124], [60, 126]] as [number, number][]).map(reach));
+}
 
 /** Tobillo de una pierna respecto a la cadera, en unidades de muñeco (y hacia abajo) */
 export function ankleOf(side: Limbs, hip: [number, number]): [number, number] {

@@ -166,3 +166,22 @@ entera recta, zapatilla normal y con la puntera doblada, gotas de sudor y nubeci
 Lo que aún mejoraría el resultado, sin ser imprescindible: la misma lámina a más resolución (las
 piezas dan lo justo para pantallas retina al tamaño máximo) y una cara de esfuerzo de perfil
 estricto, para alternarla con la de ojos cerrados.
+
+## Ajustes tras verlo Christian (19 nov)
+
+Le gustó mucho, con tres pegas:
+
+1. **Las manos quedaban separadas de la página.** Ahora la posición del personaje se calcula en
+   cada instante a partir de dónde cae la mano (`handContact()` en `character-rig.ts`): la palma, al
+   empujar, o el hueco de la mano que agarra, al arrastrar, quedan siempre justo en el canto del
+   frame, un punto montadas sobre la página. Ya no hay distancias puestas a ojo.
+2. **No distinguía el arrastre del empuje**, porque en los dos el personaje miraba a la izquierda.
+   Ahora, al volver, mira a la derecha (hacia donde va), camina hacia delante muy inclinado y lleva
+   la página a rastras con los dos brazos estirados hacia atrás. La mano se voltea para que no quede
+   boca abajo.
+3. **"He perdido la animación de entrada".** No estaba rota: solo salía una vez por sesión. Ahora
+   sale **cada vez que se carga la home** (al entrar o al recargar), y no al llegar a ella navegando
+   desde otra página. Cambia lo que decía el plan (una vez por sesión, como Eloi).
+
+Hojas de muestra, también en `docs/imgs/avatar/`: `transicion-ida.jpg`, `transicion-vuelta.jpg`,
+`transicion-movil.jpg` y `ciclos-ocho-fases.jpg`.

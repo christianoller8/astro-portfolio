@@ -28,17 +28,19 @@ import Character from './Character.astro';
   :global(html.is-panning) .pusher {
     opacity: 1;
   }
-  /* El personaje mira a la izquierda: sus manos llegan al borde izquierdo del hueco, que es el
-     canto de la página que empuja (o del que tira) */
+  /* El origen del escenario es el canto de la página (el borde izquierdo del hueco): character.ts
+     coloca al personaje de modo que su mano quede justo ahí, un punto montada sobre la página.
+     - Hacia delante mira a la izquierda y empuja ese canto.
+     - Hacia atrás mira a la derecha, que es hacia donde va, y lo lleva agarrado a su espalda. */
   .pusher-stage {
     position: absolute;
     bottom: max(5vh, 1.5rem);
-    left: calc(var(--pusher-h) * 0.47);
+    left: calc(var(--pusher-h) * -0.006);
     transform: scaleX(-1);
   }
-  /* Al tirar, los puños quedan más cerca del cuerpo: se acerca para que agarren el canto */
   :global(html.frame-back) .pusher-stage {
-    left: calc(var(--pusher-h) * 0.25);
+    left: calc(var(--pusher-h) * -0.02);
+    transform: none;
   }
   .pusher-stage :global(.pusher-chr) {
     --h: var(--pusher-h);
@@ -53,7 +55,7 @@ import Character from './Character.astro';
     content: '';
     position: absolute;
     top: calc(var(--pusher-h) * -0.02);
-    left: calc(var(--pusher-h) * -0.36);
+    left: calc(var(--pusher-h) * 0.12);
     width: calc(var(--pusher-h) * 0.66);
     height: calc(var(--pusher-h) * 0.05);
     background: radial-gradient(closest-side, rgb(0 0 0 / 0.26), transparent);

@@ -237,7 +237,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 
 - [x] **Intro** (hecha el 19 nov, adelantada a petición tuya; aprobada el 19 nov):
   - Lo que pediste: la animación del vídeo de `docs/videos/` y, después, la de eloicotonat.com.
-  - La secuencia (unos 2,5–3 s; solo en la primera visita de la sesión):
+  - La secuencia (unos 2,5–3 s). Desde el 19 nov sale cada vez que se carga la home, no solo la
+    primera vez de la sesión: lo pediste al no verla al recargar.
     1. **Trazado** (800 ms): todos los contornos de la caricatura y de "made by chris" se dibujan
        a la vez, en línea fina de grafito, sobre el lienzo liso. Como en el vídeo.
     2. **Espera en contorno** hasta que están las fuentes y la foto del hero (mínimo 300 ms,
@@ -248,8 +249,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
        web; a la vez, las piezas del hero entran una detrás de otra (suben 14 px con un fundido).
   - De Eloi se toma la mecánica (iris y entrada escalonada), no su lenguaje de cámara: sin
     visor, sin REC y sin flash.
-  - **Para repetirla**: abrir la home con `?intro` en la dirección (`/?intro`). Así sale siempre,
-    también al recargar; sin eso solo sale una vez por sesión.
+  - `?intro` en la dirección la fuerza aunque esté activado "reducir movimiento".
   - Salidas: cualquier tecla o clic salta a la salida; sin intro con ancla en la URL, "reducir
     movimiento" o ahorro de datos; si el JavaScript falla, la pantalla se quita sola a los 7 s.
   - Las letras de la marca pasan a ser trazados (`src/data/lockup-text.json`, generado con

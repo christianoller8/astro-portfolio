@@ -48,6 +48,7 @@ import Character from '@/components/character/Character.astro';
     left: 45%;
     bottom: 2.5rem;
   }
+  /* La raya vertical es el canto de la página: al empujar queda delante; al arrastrar, detrás */
   .lab-wall {
     position: absolute;
     top: 0;
@@ -55,6 +56,13 @@ import Character from '@/components/character/Character.astro';
     left: 78%;
     width: 2px;
     background: var(--line);
+  }
+  [data-mode='pushing'] .lab-stage :global(.lab-chr) {
+    left: 78%;
+  }
+  [data-mode='pulling'] .lab-wall,
+  [data-mode='pulling'] .lab-stage :global(.lab-chr) {
+    left: 20%;
   }
   .lab-stage::after {
     content: '';
@@ -88,7 +96,7 @@ import Character from '@/components/character/Character.astro';
         chr.dataset.hands = mode === 'pulling' ? 'grip' : 'open';
         if (mode === 'standing') applyPose(chr, standing());
         else if (live) animate(chr, mode as 'pushing' | 'pulling', phase);
-        else applyPose(chr, mode === 'pushing' ? pushing(phase) : pulling(phase));
+        else applyPose(chr, mode === 'pushing' ? pushing(phase) : pulling(phase), mode === 'pushing' ? 'open' : 'grip');
       }
     };
     if (fixed !== null) {
