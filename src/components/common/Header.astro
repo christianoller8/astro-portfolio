@@ -297,6 +297,14 @@ const isActive = (path: string) => {
   .tool-btn:hover {
     color: var(--ink);
   }
+  /* Con el lienzo abierto, el botón queda marcado como las lentes */
+  .tool-btn[aria-pressed='true'] {
+    color: var(--pencil-ink);
+    background: var(--pencil);
+  }
+  .tool-btn[aria-pressed='true'] kbd {
+    color: var(--pencil);
+  }
   .tool-btn:active {
     transform: scale(0.97);
   }

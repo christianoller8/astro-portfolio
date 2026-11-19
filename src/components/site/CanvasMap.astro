@@ -1,0 +1,383 @@
+---
+// El lienzo navegable (plan §4.3 C): todas las páginas del portfolio colocadas como los frames de un
+// archivo de diseño, con sus hilos de prototipo. Se abre con la tecla M o con "Ver lienzo".
+// - Escritorio y tablet: la cámara se aleja de la página actual; se arrastra, se hace zoom y, al
+//   pulsar un frame, la cámara entra en él y se navega.
+// - Móvil: una rejilla de dos columnas.
+// Las miniaturas son capturas reales de cada página (public/canvas, generadas con
+// .taste-skill/eloi-1118/tools/canvas-thumbs.mjs y canvas-thumbs-resize.cjs: hay que repetirlas
+// cuando cambie el diseño). La cámara la lleva src/scripts/canvas.ts.
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
+import { getSortedProjects } from '@/utils/projects';
+import sizes from '@/data/canvas-sizes.json';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const projects = await getSortedProjects(lang);
+
+// Medidas del mundo (px a escala 1): cada frame, 320 × 400
+const W = 320, H = 400;
+const main = [
+  { key: 'home', path: '/', name: t('nav.home') },
+  { key: 'projects', path: '/projects', name: t('nav.projects') },
+  { key: 'about', path: '/about', name: t('nav.about') },
+  { key: 'contact', path: '/contact', name: t('nav.contact') },
+].map((frame, i) => ({ ...frame, x: i * 430, y: 0 }));
+const cases = projects.map((project, i) => ({
+  key: `p-${project.slug}`,
+  path: `/projects/${project.slug}`,
+  name: `${t('nav.projects')} / ${project.data.title}`,
+  x: 120 + i * 350,
+  y: 550,
+}));
+const frames = [...main, ...cases].map((frame) => ({
+  ...frame,
+  href: translatePath(frame.path),
+  height: (sizes as Record<string, number>)[`${lang}-${frame.key}`] ?? 0,
+}));
+
+// Hilos de prototipo: la cadena del menú y, de Proyectos, uno a cada caso
+const n = (v: number) => Math.round(v);
+const threads = [
+  ...main.slice(0, -1).map((from, i) => {
+    const to = main[i + 1];
+    return { d: `M${from.x + W} ${H / 2}H${to.x - 4}`, head: [to.x - 4, H / 2, 0], dot: [from.x + W, H / 2] };
+  }),
+  ...cases.map((to) => {
+    const from = main[1];
+    const x1 = from.x + W / 2, y1 = H, x2 = to.x + W / 2, y2 = to.y - 34;
+    return { d: `M${x1} ${y1}C${x1} ${n(y1 + 90)} ${x2} ${n(y2 - 90)} ${x2} ${y2}`, head: [x2, y2, 90], dot: [x1, y1] };
+  }),
+];
+const bounds = { x: -20, y: -44, w: 1610 + 40, h: 550 + H + 64 };
+---
+
+<div
+  class="cmap"
+  data-canvas
+  data-bounds={JSON.stringify(bounds)}
+  role="dialog"
+  aria-modal="true"
+  aria-label={t('canvas.label')}
+  hidden
+>
+  <div class="cmap-world" data-canvas-world>
+    <svg class="cmap-threads" width={bounds.w} height={bounds.h} aria-hidden="true">
+      {
+        threads.map((thread) => (
+          <g>
+            <path class="cmap-thread" pathLength="1" d={thread.d} />
+            <path class="cmap-head" d="M-8 -5.5L0 0L-8 5.5" transform={`translate(${thread.head[0]} ${thread.head[1]}) rotate(${thread.head[2]})`} />
+            <circle cx={thread.dot[0]} cy={thread.dot[1]} r="4" />
+          </g>
+        ))
+      }
+    </svg>
+
+    {
+      frames.map((frame) => (
+        <a
+          class="cmap-frame"
+          href={frame.href}
+          data-canvas-frame={frame.path}
+          data-x={frame.x}
+          data-y={frame.y}
+          style={`left: ${frame.x}px; top: ${frame.y}px;`}
+        >
+          <span class="cmap-name">
+            <b>{frame.name}</b>
+            <span>1440 × {frame.height}</span>
+          </span>
+          <span class="cmap-shot">
+            <img class="cmap-img cmap-img--light" src={`/canvas/${lang}-${frame.key}-light.jpg`} width="685" height="854" loading="lazy" alt="" />
+            <img class="cmap-img cmap-img--dark" src={`/canvas/${lang}-${frame.key}-dark.jpg`} width="685" height="854" loading="lazy" alt="" />
+          </span>
+          <span class="cmap-here">{t('canvas.here')}</span>
+        </a>
+      ))
+    }
+  </div>
+
+  <div class="cmap-hud">
+    <p class="cmap-hint cmap-hint--mouse">{t('canvas.hint')}</p>
+    <p class="cmap-hint cmap-hint--touch">{t('canvas.hint.touch')}</p>
+    <div class="cmap-tools">
+      <output class="cmap-zoom" data-canvas-zoom>100 %</output>
+      <button type="button" class="cmap-btn" data-canvas-fit>{t('canvas.fit')}</button>
+      <button type="button" class="cmap-btn cmap-btn--close" data-canvas-close>
+        {t('canvas.close')}
+        <kbd>Esc</kbd>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cmap {
+    --k: 1;
+    position: fixed;
+    inset: var(--toolbar-h) 0 0;
+    z-index: 45;
+    overflow: hidden;
+    color: var(--ink);
+    background-color: var(--canvas);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+    background-size: 20px 20px;
+    opacity: 0;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    transition: opacity 160ms var(--ease-out);
+  }
+  .cmap.is-open {
+    opacity: 1;
+  }
+  .cmap.is-dragging {
+    cursor: grabbing;
+  }
+  .cmap-world {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+  /* La cámara: se mueve con una transición solo cuando viaja sola (abrir, cerrar, entrar, "ver todo") */
+  .cmap.is-flying .cmap-world {
+    transition: transform var(--dur-camera) var(--ease-camera);
+  }
+
+  /* --- Hilos de prototipo --- */
+  .cmap-threads {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+    color: var(--graphite);
+  }
+  .cmap-threads path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: calc(1.5px / var(--k));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cmap-threads circle {
+    fill: var(--canvas);
+    stroke: currentColor;
+    stroke-width: calc(1.5px / var(--k));
+  }
+  .cmap-thread {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 700ms var(--ease-camera) 350ms;
+  }
+  .cmap-head {
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out) 950ms;
+  }
+  .cmap.is-open .cmap-thread {
+    stroke-dashoffset: 0;
+  }
+  .cmap.is-open .cmap-head {
+    opacity: 1;
+  }
+
+  /* --- Frames --- */
+  .cmap-frame {
+    position: absolute;
+    display: block;
+    width: 320px;
+    height: 400px;
+    outline: calc(1.5px / var(--k)) solid transparent;
+    outline-offset: calc(4px / var(--k));
+  }
+  /* El nombre y el tamaño van siempre a 13 px en pantalla, haya el zoom que haya */
+  .cmap-name {
+    position: absolute;
+    bottom: calc(100% + 6px / var(--k));
+    left: 0;
+    display: flex;
+    gap: calc(8px / var(--k));
+    font-size: calc(13px / var(--k));
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .cmap-name b {
+    font-weight: 600;
+  }
+  .cmap-name span {
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .cmap-shot {
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .cmap-img {
+    width: 100%;
+    height: auto;
+    -webkit-user-drag: none;
+  }
+  .cmap-img--dark,
+  :global(:root.dark) .cmap-img--light {
+    display: none;
+  }
+  :global(:root.dark) .cmap-img--dark {
+    display: block;
+  }
+  /* Selección: al pasar el ratón, con el teclado y en el frame actual */
+  .cmap-frame:hover,
+  .cmap-frame:focus-visible,
+  .cmap-frame[aria-current='page'] {
+    outline-color: var(--ink);
+  }
+  .cmap-here {
+    position: absolute;
+    top: calc(100% + 8px / var(--k));
+    left: 50%;
+    display: none;
+    padding: calc(3px / var(--k)) calc(8px / var(--k));
+    font: 500 calc(12px / var(--k)) / 1.3 var(--font-mono);
+    white-space: nowrap;
+    color: var(--paper);
+    background: var(--ink);
+    translate: -50% 0;
+  }
+  .cmap-frame[aria-current='page'] .cmap-here {
+    display: block;
+  }
+
+  /* --- Barra de abajo: la pista, el zoom y los botones --- */
+  .cmap-hud {
+    position: absolute;
+    right: var(--gutter);
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    left: var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    pointer-events: none;
+  }
+  .cmap-hint {
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+  .cmap-hint--touch {
+    display: none;
+  }
+  .cmap-tools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: var(--tint);
+    pointer-events: auto;
+    cursor: default;
+  }
+  .cmap-zoom {
+    min-width: 3.75rem;
+    padding-inline: 0.6rem;
+    font: 500 0.8125rem/1 var(--font-mono);
+    text-align: center;
+    color: var(--muted);
+  }
+  .cmap-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2rem;
+    padding: 0 0.7rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    color: var(--muted);
+    transition: color var(--dur-micro) var(--ease-out);
+  }
+  .cmap-btn:hover {
+    color: var(--ink);
+  }
+  .cmap-btn--close {
+    color: var(--pencil-ink);
+    background: var(--pencil);
+  }
+  .cmap-btn--close:hover {
+    color: var(--pencil-ink);
+  }
+  .cmap-btn kbd {
+    font: 500 0.6875rem/1 var(--font-mono);
+    opacity: 0.7;
+  }
+
+  /* --- Móvil: una rejilla de dos columnas, sin cámara --- */
+  @media (max-width: 767px) {
+    .cmap {
+      overflow-y: auto;
+      cursor: default;
+      touch-action: auto;
+    }
+    .cmap-world {
+      position: static;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.25rem 0.75rem;
+      padding: 2.25rem var(--gutter) 5.5rem;
+      transform: none !important;
+    }
+    .cmap-threads {
+      display: none;
+    }
+    .cmap-frame {
+      position: relative;
+      inset: auto !important;
+      width: auto;
+      height: auto;
+      aspect-ratio: 4 / 5;
+    }
+    .cmap-name {
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .cmap-name span {
+      display: none;
+    }
+    /* "Estás aquí" va dentro del frame: debajo taparía el nombre del siguiente */
+    .cmap-here {
+      top: auto;
+      bottom: 0.5rem;
+    }
+    .cmap-btn kbd {
+      display: none;
+    }
+    .cmap-hud {
+      position: fixed;
+    }
+    .cmap-hint--mouse,
+    .cmap-zoom,
+    [data-canvas-fit] {
+      display: none;
+    }
+    .cmap-hint--touch {
+      display: block;
+      padding: 0.35rem 0.6rem;
+      background: var(--canvas);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cmap,
+    .cmap.is-flying .cmap-world,
+    .cmap-thread,
+    .cmap-head {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import '@/scripts/canvas';
+</script>

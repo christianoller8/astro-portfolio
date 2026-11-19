@@ -533,6 +533,22 @@ html.is-morph::view-transition-group(pusher) {
   }
 }
 
+/* --- Entrar en un frame desde el lienzo navegable: la cámara ya ha hecho el viaje, así que el
+   cambio de página es directo, sin paneo ni morph --- */
+html.is-instant::view-transition-group(*),
+html.is-instant::view-transition-old(*),
+html.is-instant::view-transition-new(*) {
+  animation: none !important;
+}
+html.is-instant::view-transition-old(root),
+html.is-instant::view-transition-group(pusher) {
+  display: none;
+}
+/* Con el lienzo abierto la página de detrás no se desplaza */
+html.canvas-open {
+  overflow: hidden;
+}
+
 @keyframes pan-out {
   to {
     translate: calc(-100vw - var(--pusher-gap)) 0;

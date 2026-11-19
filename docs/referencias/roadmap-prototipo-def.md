@@ -38,7 +38,12 @@ Cada cosa indica qué etapa bloquea.
   marca de made_byfede). Christian quiere esa misma animación, con su caricatura: se pinta el pelo,
   etc.
 - [ ] **Fotos**: la sesión nueva en blanco y negro. Mientras tanto se usa `profile.jpg`. Bloquea E4.
-- [ ] **CV en PDF** y tu formación. Bloquea E4.
+- [ ] **Imágenes reales de Tempora, Vibora y Learnish** (pendiente desde el 19 nov; pediste que
+  te lo recordara). Hoy solo Vístalo tiene capturas reales; en los otros tres la imagen es un
+  fragmento de interfaz montado en HTML para la web. Afecta a las tarjetas, a la cabecera de cada
+  caso y al morph. No bloquea nada hasta E4.
+- [x] **CV en PDF**: recibido el 18 nov (`public/cv/christian-oller-cv.pdf`). Falta tu formación.
+  Bloquea E4.
 - [ ] **Contenido real de cada proyecto** (Tempora, Vibora, Learnish y Vístalo). Bloquea E4:
   - Qué es, tu papel, el año, el stack y los enlaces (repo o demo).
   - Capturas.
@@ -316,7 +321,30 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Con "reducir movimiento" no hay morph.
   - Capturas a cámara lenta: `.taste-skill/def/e3-morph-ida.jpg`, `e3-morph-vuelta.jpg` y
     `e3-morph-movil.jpg`.
-- [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil.
+- [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil
+  (**hecho el 19 nov; pendiente de tu visto bueno**):
+  - **Abrir**: tecla M o el botón "Ver lienzo" de la barra (y del menú en móvil). La cámara sale de
+    la página en la que estás y se aleja hasta que se ve el archivo entero.
+  - **Lo que se ve**: las ocho páginas como frames (Inicio, Proyectos, Sobre mí y Contacto en una
+    fila; los cuatro casos debajo), cada una con su nombre y su tamaño real, los hilos de prototipo
+    entre ellas y "Estás aquí" en la actual.
+  - **Moverse**: arrastrar, rueda o pellizco para el zoom (del 20 % al 220 %) y "Ver todo" para
+    volver a encuadrar. Abajo a la derecha, el porcentaje de zoom.
+  - **Entrar**: al pulsar un frame la cámara se acerca hasta él y cambia de página sin otra
+    animación (ni personaje ni morph: el viaje ya lo ha hecho la cámara). Pulsar el frame actual,
+    Esc, M o "Cerrar lienzo" vuelve a la página.
+  - **Móvil**: una rejilla de dos columnas con las ocho páginas.
+  - **Miniaturas**: capturas reales de cada página, en claro y oscuro y en los dos idiomas
+    (32 imágenes en `public/canvas/`, 1,8 MB en total; se cargan solo al abrir el lienzo y solo
+    las ocho que tocan). **Hay que repetirlas cuando cambie el diseño de una página**:
+    `.taste-skill/eloi-1118/tools/canvas-thumbs.mjs` hace las capturas y
+    `canvas-thumbs-resize.cjs` las recorta y reduce. Las alturas de cada página quedan en
+    `src/data/canvas-sizes.json`.
+  - Con teclado: las páginas se recorren con el tabulador y se entra con Intro. Mientras está
+    abierto, la página de detrás queda inactiva.
+  - Con "reducir movimiento" la cámara salta sin viaje.
+  - Capturas: `.taste-skill/def/cmap/v1-hoja.jpg` (la secuencia) y `v1-hoja-otros.jpg` (oscuro,
+    tablet y móvil).
 - [ ] **Lentes** con estética de herramienta (valores medidos, sin rotulador).
 
 **Hecho cuando**: cada momento, grabado a 0,25×, no tiene saltos, y nada recuerda a la firma de Eloi

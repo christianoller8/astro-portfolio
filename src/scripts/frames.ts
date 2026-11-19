@@ -13,6 +13,8 @@ let frame = 0;
 /** El proyecto cuya tarjeta y cuyo caso se están transformando, o null si la transición es un paneo */
 let morph: string | null = null;
 let traverse = false;
+/** Se entra desde el lienzo navegable: el cambio de página va sin animación */
+let instant = false;
 
 const plain = (url: URL) => url.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
 const caseOf = (url: URL) => plain(url).match(/^\/projects\/([^/]+)$/)?.[1] ?? null;
@@ -66,6 +68,8 @@ document.addEventListener('astro:before-preparation', (event) => {
   const { from, to, direction, navigationType, sourceElement } = event as TransitionBeforePreparationEvent;
   morph = null;
   traverse = navigationType === 'traverse';
+  instant = document.documentElement.dataset.canvasNav === '1';
+  if (instant) return;
   // Cambio de idioma: ir al inglés es avanzar (empuja) y volver al español es regresar (arrastra)
   if (language(from) !== language(to)) {
     back = language(to) === 'es';
@@ -91,6 +95,11 @@ document.addEventListener('astro:before-swap', (event) => {
       const root = document.documentElement;
       root.classList.toggle('frame-back', back);
       if (!animated) return;
+      if (instant) {
+        root.classList.add('is-instant');
+        transition.finished.finally(() => root.classList.remove('is-instant'));
+        return;
+      }
 
       if (morph) {
         const target = tag(morph);
