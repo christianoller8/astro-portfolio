@@ -5,6 +5,25 @@
 :root {
   --kit-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 5' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='square'/%3E%3C/svg%3E");
   --kit-cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 4l8 8M12 4l-8 8' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='square'/%3E%3C/svg%3E");
+  /* Los ocho tiradores de una selección. Cada uno son dos capas: el interior de papel (4 px) sobre el
+     borde de tinta (6 px) */
+  --kit-handles:
+    linear-gradient(var(--paper), var(--paper)) 1px 1px / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 0 / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 50% 1px / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 50% 0 / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) calc(100% - 1px) 1px / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 0 / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 1px 50% / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 50% / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) calc(100% - 1px) 50% / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 50% / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 1px calc(100% - 1px) / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 0 100% / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) 50% calc(100% - 1px) / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 50% 100% / 6px 6px no-repeat,
+    linear-gradient(var(--paper), var(--paper)) calc(100% - 1px) calc(100% - 1px) / 4px 4px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) 100% 100% / 6px 6px no-repeat;
 }
 
 /* ---------- Nombre de frame: fuera del artboard, arriba a la izquierda ---------- */
@@ -38,24 +57,7 @@
   transition:
     opacity var(--dur-micro) var(--ease-out),
     scale var(--dur-ui) var(--spring);
-  /* Cada tirador son dos capas: el interior de papel (4 px) sobre el borde de tinta (6 px) */
-  background:
-    linear-gradient(var(--paper), var(--paper)) 1px 1px / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 0 0 / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) 50% 1px / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 50% 0 / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) calc(100% - 1px) 1px / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 100% 0 / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) 1px 50% / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 0 50% / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) calc(100% - 1px) 50% / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 100% 50% / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) 1px calc(100% - 1px) / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 0 100% / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) 50% calc(100% - 1px) / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 50% 100% / 6px 6px no-repeat,
-    linear-gradient(var(--paper), var(--paper)) calc(100% - 1px) calc(100% - 1px) / 4px 4px no-repeat,
-    linear-gradient(var(--ink), var(--ink)) 100% 100% / 6px 6px no-repeat;
+  background: var(--kit-handles);
 }
 /* La medida la escribe kit.ts en data-size al seleccionar */
 [data-sel]::after {

@@ -1,0 +1,289 @@
+/* Las tres lentes (Diseño · Código · QA): la capa de marcas que src/scripts/lenses.ts coloca encima de
+   la página, con las piezas del kit de herramienta (kit.css). Todo se mide en el navegador; aquí solo
+   está el aspecto. La barra de estado de abajo está en components/site/LensPanel.astro. */
+
+:root {
+  --lens-bar-h: 2.75rem;
+}
+/* En móvil y tablet la barra tiene dos filas: el cambio de lente y las cifras */
+@media (max-width: 1023px) {
+  :root {
+    --lens-bar-h: 5.75rem;
+  }
+}
+
+/* Con una lente activa el frame aloja la capa y deja sitio a la barra de estado */
+html[data-lens] main.frame {
+  position: relative;
+  padding-bottom: calc(var(--gutter) + var(--lens-bar-h));
+}
+/* Una lente es una vista de herramienta: todo está ya en su sitio, sin entradas al hacer scroll */
+html[data-lens] .reveal-ready [data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+html[data-lens='design'] .artboard {
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+.lens-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  overflow: clip;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-out);
+}
+.lens-layer.is-leaving,
+html.canvas-open .lens-layer,
+html.intro .lens-layer {
+  opacity: 0;
+}
+.lens-layer [hidden] {
+  display: none !important;
+}
+
+/* ---------- Marca: una caja del tamaño de la pieza y sus etiquetas ---------- */
+.lm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Escalonado: 20 ms por marca a la vista (lo reparte lenses.ts) */
+  --d: calc(var(--i, 0) * 20ms);
+}
+.lm-box {
+  position: absolute;
+  inset: 0;
+  animation: lm-grow 160ms var(--ease-out) var(--d) both;
+}
+.lm-tag {
+  position: absolute;
+  z-index: 1;
+  padding: 0.15rem 0.45rem;
+  font: 500 0.8125rem/1.3 var(--font-mono);
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--paper);
+  background: var(--ink);
+  /* Un filo para que la etiqueta no se pierda sobre fondos de tinta (el pie de página) */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--paper) 30%, transparent);
+  animation: lm-tag 200ms var(--ease-out) calc(var(--d) + 120ms) both;
+}
+.lm-tag i {
+  font-style: normal;
+  opacity: 0.65;
+}
+@keyframes lm-grow {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+@keyframes lm-tag {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+@keyframes lm-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes lm-draw-y {
+  from {
+    scale: 1 0;
+  }
+}
+@keyframes lm-draw-x {
+  from {
+    scale: 0 1;
+  }
+}
+
+/* ---------- Diseño: selección del kit (1 px, ocho tiradores), nombre de capa y medida ---------- */
+.lm--sel .lm-box {
+  inset: -3px;
+  outline: 1px solid var(--ink);
+  outline-offset: -3px;
+  background: var(--kit-handles);
+}
+.lm-name {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 0;
+  font: 600 0.8125rem/1.2 var(--font-sans);
+  white-space: nowrap;
+  color: var(--ink);
+  animation: lm-fade 200ms var(--ease-out) calc(var(--d) + 120ms) both;
+}
+.lm-size {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* En los textos, la tipografía va arriba a la derecha, en la línea del nombre de la capa */
+.lm--type .lm-size {
+  top: auto;
+  right: 0;
+  bottom: calc(100% + 5px);
+  left: auto;
+  transform: none;
+}
+/* Si la medida choca con otra, pasa dentro de la caja */
+.lm--sel.is-flip .lm-size {
+  top: auto;
+  bottom: 8px;
+}
+
+/* Guías: líneas de construcción discontinuas. Las de la columna recorren el artboard entero. */
+.lm--guide {
+  width: 1px;
+  color: var(--graphite);
+  background: repeating-linear-gradient(currentColor 0 4px, transparent 4px 8px);
+  transform-origin: 50% 0;
+  animation: lm-draw-y 700ms var(--ease-camera) both;
+}
+.lm--guide-x {
+  width: auto;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 8px);
+}
+.lm--guide-hover {
+  animation: none;
+  opacity: 0.8;
+}
+/* Cotas de los márgenes y de la columna, arriba del artboard */
+.lm--dims {
+  display: flex;
+  animation: lm-draw-x 500ms var(--ease-camera) 200ms both;
+}
+.lm--dims .kit-dim {
+  min-width: 0;
+}
+.lm--dims .kit-dim b:empty {
+  display: none;
+}
+
+/* ---------- Inspector: la pieza bajo el puntero ---------- */
+.lm--hover {
+  z-index: 2;
+}
+.lm--hover .lm-box {
+  outline: 1px solid var(--ink);
+  outline-offset: -1px;
+  animation: none;
+}
+.lm-tip {
+  top: calc(100% + 8px);
+  left: 0;
+  animation: none;
+}
+.lm--hover.is-above .lm-tip {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+.lm-tip u {
+  margin-left: 0.5rem;
+  text-decoration: none;
+}
+.lens-layer[data-kind='code'] .lm--hover .lm-box {
+  background: var(--pencil-soft);
+}
+
+/* ---------- Código: cada bloque con su etiqueta y su componente; los títulos, con la suya ---------- */
+.lm--block .lm-box {
+  outline: 1px dashed var(--graphite);
+  outline-offset: -1px;
+  animation-name: lm-fade;
+  animation-duration: 260ms;
+}
+.lm--block .lm-tag {
+  top: 0;
+  left: 0;
+}
+.lm--block.is-hot .lm-box {
+  outline: 1px solid var(--ink);
+  background: var(--pencil-soft);
+}
+.lm--node .lm-box {
+  outline: 1px dashed var(--graphite);
+}
+.lm-tag--node {
+  color: var(--ink);
+  background: var(--tint);
+}
+
+/* Etiquetas e insignias: encima de su caja, a la izquierda; lenses.ts las pasa al final de la caja
+   (is-end), dentro (is-in) o debajo (is-flip) cuando no caben */
+.lm-tag--node,
+.lm-badge {
+  bottom: calc(100% + 4px);
+  left: 0;
+}
+.is-end > :is(.lm-tag--node, .lm-badge) {
+  right: 0;
+  left: auto;
+}
+.is-in > :is(.lm-tag--node, .lm-badge) {
+  top: 6px;
+  bottom: auto;
+  left: 6px;
+}
+.is-in.is-end > :is(.lm-tag--node, .lm-badge) {
+  right: 6px;
+  left: auto;
+}
+.is-flip > :is(.lm-tag--node, .lm-badge) {
+  top: calc(100% + 4px);
+  bottom: auto;
+}
+
+/* ---------- QA: caja de estado e insignia con el valor medido ---------- */
+.lm--qa .lm-box {
+  outline: 1px solid var(--ok);
+}
+.lm--qa[data-state='fail'] .lm-box {
+  outline: 1.5px solid var(--fail);
+}
+.lm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink);
+  background: var(--tint);
+}
+.lm--qa.is-hot .lm-box {
+  outline-width: 2px;
+  background: color-mix(in srgb, var(--fail) 10%, transparent);
+}
+.lm-ico {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  opacity: 1 !important;
+  background: var(--ok);
+  -webkit-mask: var(--kit-check) center / contain no-repeat;
+  mask: var(--kit-check) center / contain no-repeat;
+}
+[data-state='fail'] > .lm-ico,
+[data-state='fail'] .lm-badge .lm-ico {
+  background: var(--fail);
+  -webkit-mask-image: var(--kit-cross);
+  mask-image: var(--kit-cross);
+}
+
+/* Al volver a medir (cambio de tamaño) no se repite la entrada */
+.lens-layer.is-static * {
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lens-layer,
+  .lens-layer * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

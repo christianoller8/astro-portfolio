@@ -1,11 +1,19 @@
-// Tres lentes (Diseño · Código · QA): capas calculadas en el navegador sobre la propia web.
-// El estado vive en html[data-lens] y en localStorage; el script inline del <head> lo restaura antes de pintar.
+// Tres lentes (Diseño · Código · QA): capas de herramienta calculadas en el navegador sobre la propia web.
+// - Las marcas (selecciones, guías, cotas, etiquetas, insignias) van en una capa aparte dentro del
+//   frame (.lens-layer) y se colocan midiendo cada pieza: no tocan el HTML de la página.
+// - La barra de estado de abajo (LensPanel.astro) lleva las cifras de la lente activa.
+// - Con ratón, Diseño y Código inspeccionan la pieza que hay bajo el puntero.
+// El estado vive en html[data-lens] y en localStorage; el script inline del <head> lo restaura antes
+// de pintar. Los estilos están en src/styles/lenses.css.
 
 type Lens = 'design' | 'code' | 'qa';
-type Check = { ok: boolean; label: string; el?: Element; note?: string; badge?: boolean };
+type Group = 'structure' | 'alt' | 'name' | 'target' | 'label' | 'contrast';
+type Check = { ok: boolean; group: Group; label: string; el?: Element; note?: string; badge?: boolean };
 type Rgba = [number, number, number, number];
+type Mark = { node: HTMLElement; place: (base: DOMRect, art: DOMRect) => void; live?: boolean; el?: Element };
 
 const LENSES: Lens[] = ['design', 'code', 'qa'];
+const GROUPS: Group[] = ['contrast', 'target', 'name', 'alt', 'label', 'structure'];
 const STORAGE_KEY = 'lens';
 const root = document.documentElement;
 
@@ -16,7 +24,7 @@ const NOTES = {
     noAlt: 'sin alt',
     name: 'nombre accesible',
     noName: 'sin nombre',
-    target: 'tamaño táctil',
+    target: 'táctil',
     small: 'objetivo pequeño',
     label: 'etiqueta',
     noLabel: 'sin etiqueta',
@@ -25,7 +33,16 @@ const NOTES = {
     order: 'Encabezados en orden',
     lang: 'Idioma declarado',
     title: 'Título de la página',
-    failed: 'Por revisar',
+    column: 'columna',
+    margin: 'margen',
+    groups: {
+      contrast: 'contraste',
+      target: 'zona táctil',
+      name: 'nombres',
+      alt: 'imágenes',
+      label: 'formularios',
+      structure: 'estructura',
+    },
   },
   en: {
     alt: 'alt',
@@ -33,7 +50,7 @@ const NOTES = {
     noAlt: 'no alt',
     name: 'accessible name',
     noName: 'no name',
-    target: 'target size',
+    target: 'target',
     small: 'small target',
     label: 'label',
     noLabel: 'no label',
@@ -42,7 +59,16 @@ const NOTES = {
     order: 'Headings in order',
     lang: 'Language declared',
     title: 'Page title',
-    failed: 'To review',
+    column: 'column',
+    margin: 'margin',
+    groups: {
+      contrast: 'contrast',
+      target: 'target size',
+      name: 'names',
+      alt: 'images',
+      label: 'forms',
+      structure: 'structure',
+    },
   },
 };
 
@@ -53,7 +79,11 @@ const fmt = (value: number, digits = 0) =>
   new Intl.NumberFormat(lang(), {
     maximumFractionDigits: digits,
     minimumFractionDigits: digits,
+    useGrouping: false,
   }).format(value);
+const esc = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const frame = () => document.querySelector<HTMLElement>('main.frame');
+const artboard = () => document.querySelector<HTMLElement>('main.frame > .artboard');
 
 export function setLens(next: Lens | null) {
   if (next) root.dataset.lens = next;
@@ -64,7 +94,7 @@ export function setLens(next: Lens | null) {
   } catch {
     /* sin almacenamiento: la lente vive solo en esta página */
   }
-  render();
+  render(true);
 }
 
 function syncButtons() {
@@ -74,16 +104,135 @@ function syncButtons() {
   });
 }
 
-function clearMarks() {
-  document.querySelectorAll('[data-qa]').forEach((el) => {
-    el.removeAttribute('data-qa');
-    el.removeAttribute('data-qa-note');
-  });
-  document.querySelectorAll('[data-ds-meta]').forEach((el) => el.removeAttribute('data-ds-meta'));
-  document.querySelectorAll('[data-cs-auto]').forEach((el) => {
-    el.removeAttribute('data-cs');
-    el.removeAttribute('data-cs-auto');
-  });
+/** Lo que no cuenta para las lentes: lo oculto, lo inerte (la web de ejemplo) y lo que no ocupa sitio */
+const visible = (el: Element) => {
+  const box = el.getBoundingClientRect();
+  if (!box.width || !box.height || el.closest('[hidden], [inert], [aria-hidden="true"]')) return false;
+  const cs = getComputedStyle(el);
+  return cs.visibility !== 'hidden' && cs.display !== 'none';
+};
+
+/* ---------- La capa de marcas ---------- */
+
+let layer: HTMLElement | null = null;
+let marks: Mark[] = [];
+let hover: { node: HTMLElement; tag: HTMLElement; guides: HTMLElement[] } | null = null;
+let targets: Element[] = [];
+
+function resetLayer(lens: Lens | null, animate: boolean) {
+  const old = layer;
+  layer = null;
+  marks = [];
+  hover = null;
+  targets = [];
+  if (old) {
+    if (animate) {
+      // Cruce de 200 ms entre lentes
+      old.classList.add('is-leaving');
+      window.setTimeout(() => old.remove(), 220);
+    } else old.remove();
+  }
+  document.querySelectorAll('.lens-layer:not(.is-leaving)').forEach((stale) => stale !== old && stale.remove());
+  const host = frame();
+  if (!lens || !host) return;
+  layer = document.createElement('div');
+  layer.className = 'lens-layer';
+  layer.dataset.kind = lens;
+  layer.setAttribute('aria-hidden', 'true');
+  if (!animate) layer.classList.add('is-static');
+  host.append(layer);
+}
+
+const node = (className: string, html = '') => {
+  const el = document.createElement('span');
+  el.className = className;
+  el.innerHTML = html;
+  layer?.append(el);
+  return el;
+};
+
+/** Marca pegada a un elemento: caja del tamaño del elemento (más un margen) y sus etiquetas dentro */
+function markOn(el: Element, className: string, html: string, pad = 0) {
+  const mark = node(`lm ${className}`, `<i class="lm-box"></i>${html}`);
+  let last = '';
+  const entry: Mark = {
+    node: mark,
+    el,
+    // Se vuelve a medir al hacer scroll: hay piezas fijadas (sticky) o que cambian de escala al pasar
+    live: true,
+    place: (base, art) => {
+      // La caja es la parte de la pieza que queda dentro del artboard (el retrato se sale por arriba)
+      const box = el.getBoundingClientRect();
+      const left = Math.max(box.left - pad, art.left);
+      const top = Math.max(box.top - pad, art.top);
+      const right = Math.min(box.right + pad, art.right);
+      const bottom = Math.min(box.bottom + pad, art.bottom);
+      const key = `${left - base.left}|${top - base.top}|${right - left}|${bottom - top}`;
+      if (key === last) return;
+      last = key;
+      mark.hidden = !box.width || !box.height || right <= left || bottom <= top;
+      mark.style.left = `${(left - base.left).toFixed(1)}px`;
+      mark.style.top = `${(top - base.top).toFixed(1)}px`;
+      mark.style.width = `${(right - left).toFixed(1)}px`;
+      mark.style.height = `${(bottom - top).toFixed(1)}px`;
+    },
+  };
+  marks.push(entry);
+  return entry;
+}
+
+function place(onlyLive = false) {
+  const host = frame();
+  const art = artboard();
+  if (!host || !art || !layer) return;
+  const base = host.getBoundingClientRect();
+  const area = art.getBoundingClientRect();
+  for (const mark of marks) if (!onlyLive || mark.live) mark.place(base, area);
+}
+
+/**
+ * Coloca cada etiqueta donde no pise a otra ni se salga del artboard: encima de su caja, dentro de
+ * ella (si es grande) o debajo. Si no cabe en ningún sitio, se esconde y queda solo la caja.
+ */
+function declutter() {
+  const art = artboard()?.getBoundingClientRect();
+  if (!layer || !art) return;
+  const taken: DOMRect[] = [];
+  const bad = (box: DOMRect) =>
+    box.top < art.top - 1 ||
+    box.left < art.left - 1 ||
+    taken.some((t) => box.left < t.right + 4 && box.right > t.left - 4 && box.top < t.bottom + 1 && box.bottom > t.top - 1);
+  for (const mark of marks) {
+    const tag = mark.node.querySelector<HTMLElement>('.lm-tag');
+    if (!tag || mark.node.hidden) continue;
+    mark.node.classList.remove('is-flip', 'is-in', 'is-end');
+    tag.hidden = false;
+    if (tag.getBoundingClientRect().right > art.right - 4) mark.node.classList.add('is-end');
+    const roomy = mark.node.offsetHeight >= 72 && mark.node.offsetWidth >= tag.offsetWidth + 16;
+    const options = mark.node.matches('.lm--block') ? [''] : ['', ...(roomy ? ['is-in'] : []), 'is-flip'];
+    let placed = false;
+    for (const option of options) {
+      if (option) mark.node.classList.add(option);
+      const box = tag.getBoundingClientRect();
+      if (!bad(box)) {
+        taken.push(box);
+        placed = true;
+        break;
+      }
+      if (option) mark.node.classList.remove(option);
+    }
+    tag.hidden = !placed;
+  }
+}
+
+/** Escalonado: 20 ms entre las marcas que están a la vista, como mucho 30 */
+function stagger() {
+  let i = 0;
+  for (const mark of marks) {
+    const box = mark.node.getBoundingClientRect();
+    const inView = box.bottom > 0 && box.top < window.innerHeight;
+    mark.node.style.setProperty('--i', String(inView ? Math.min(i++, 30) : 0));
+  }
 }
 
 /* ---------- Diseño ---------- */
@@ -95,67 +244,157 @@ const shortFamily = (family: string) =>
     .replace(/ Variable$/, '')
     .trim();
 
-function annotateDesign() {
-  document.querySelectorAll<HTMLElement>('[data-ds]').forEach((el) => {
-    if (el.hasAttribute('data-ds-type')) {
-      const cs = getComputedStyle(el);
-      const size = parseFloat(cs.fontSize);
-      const leading = parseFloat(cs.lineHeight) / size;
-      el.dataset.dsMeta = `${shortFamily(cs.fontFamily)} ${fmt(size)}/${fmt(leading, 2)} · ${cs.fontWeight}`;
-    } else {
-      const box = el.getBoundingClientRect();
-      el.dataset.dsMeta = `${fmt(box.width)} × ${fmt(box.height)}`;
-    }
-  });
+const typeOf = (el: Element) => {
+  const cs = getComputedStyle(el);
+  const size = parseFloat(cs.fontSize);
+  const leading = parseFloat(cs.lineHeight) / size;
+  return `${shortFamily(cs.fontFamily)} · ${fmt(size)}/${Number.isFinite(leading) ? fmt(leading, 2) : '—'} · ${cs.fontWeight}`;
+};
+const sizeOf = (el: Element) => {
+  const box = el.getBoundingClientRect();
+  return `${fmt(box.width)} × ${fmt(box.height)}`;
+};
+
+/** La columna de contenido: el primer .wrap del artboard sin su relleno lateral */
+function column() {
+  const art = artboard();
+  const wrap = art?.querySelector<HTMLElement>('.wrap');
+  if (!art || !wrap) return null;
+  const a = art.getBoundingClientRect();
+  const w = wrap.getBoundingClientRect();
+  const cs = getComputedStyle(wrap);
+  const left = w.left + parseFloat(cs.paddingLeft);
+  const right = w.right - parseFloat(cs.paddingRight);
+  return { art: a, left, right, margin: left - a.left, width: right - left };
 }
 
-function designPanel(i18n: Record<string, string>) {
+function buildDesign() {
+  const art = artboard();
+  if (!art) return;
+  const L = NOTES[lang()];
+
+  // Guías de la columna y, arriba, las cotas de los márgenes y de la columna
+  if (column()) {
+    for (const side of ['left', 'right'] as const) {
+      const guide = node('lm lm--guide');
+      marks.push({
+        node: guide,
+        place: (base) => {
+          const col = column();
+          if (!col) return;
+          guide.style.left = `${(col[side] - base.left).toFixed(1)}px`;
+          guide.style.top = `${(col.art.top - base.top).toFixed(1)}px`;
+          guide.style.height = `${col.art.height.toFixed(1)}px`;
+        },
+      });
+    }
+    const dims = node(
+      'lm lm--dims',
+      '<span class="kit-dim" data-axis="x"><b></b></span><span class="kit-dim" data-axis="x"><b></b></span><span class="kit-dim" data-axis="x"><b></b></span>',
+    );
+    const [m1, c, m2] = [...dims.children] as HTMLElement[];
+    marks.push({
+      node: dims,
+      place: (base) => {
+        const col = column();
+        if (!col) return;
+        dims.style.left = `${(col.art.left - base.left).toFixed(1)}px`;
+        dims.style.top = `${(col.art.top - base.top + 8).toFixed(1)}px`;
+        dims.style.width = `${col.art.width.toFixed(1)}px`;
+        const rest = col.art.right - col.right;
+        m1.style.width = `${col.margin.toFixed(1)}px`;
+        c.style.width = `${col.width.toFixed(1)}px`;
+        m2.style.width = `${rest.toFixed(1)}px`;
+        m1.firstElementChild!.textContent = col.margin >= 44 ? fmt(col.margin) : '';
+        c.firstElementChild!.textContent = `${L.column} ${fmt(col.width)}`;
+        m2.firstElementChild!.textContent = rest >= 44 ? fmt(rest) : '';
+      },
+    });
+  }
+
+  // Selecciones: las piezas marcadas en el HTML y los títulos de sección
+  const picked = new Set<Element>();
+  art.querySelectorAll<HTMLElement>('[data-ds]').forEach((el) => {
+    if (!visible(el)) return;
+    picked.add(el);
+    const value = el.hasAttribute('data-ds-type') ? typeOf(el) : sizeOf(el);
+    const kind = el.hasAttribute('data-ds-type') ? 'lm--sel lm--type' : 'lm--sel';
+    const mark = markOn(el, kind, `<b class="lm-name">${esc(el.dataset.ds ?? '')}</b><b class="lm-tag lm-size"></b>`);
+    const size = mark.node.querySelector('.lm-size')!;
+    size.textContent = value;
+    const basePlace = mark.place;
+    mark.place = (base, art) => {
+      basePlace(base, art);
+      size.textContent = el.hasAttribute('data-ds-type') ? typeOf(el) : sizeOf(el);
+    };
+  });
+  art.querySelectorAll<HTMLElement>('h2').forEach((el) => {
+    if (!visible(el) || picked.has(el) || el.closest('[data-ds]')) return;
+    const mark = markOn(el, 'lm--sel lm--type', `<b class="lm-name">H2</b><b class="lm-tag lm-size"></b>`);
+    mark.node.querySelector('.lm-size')!.textContent = typeOf(el);
+  });
+
+  buildHover(true);
+}
+
+function designBar() {
+  const L = NOTES[lang()];
   const styles = getComputedStyle(root);
-  const tokens = ['--paper', '--ink', '--muted', '--graphite', '--canvas'].map((name) => ({
-    name,
+  const tokens = ['--paper', '--ink', '--muted', '--canvas'].map((name) => ({
+    name: name.slice(2),
     value: styles.getPropertyValue(name).trim(),
   }));
   const families = new Set<string>();
   document.fonts.forEach((face) => {
     if (face.status === 'loaded') families.add(shortFamily(face.family));
   });
-  const swatches = tokens
-    .map(
-      (token) =>
-        `<li style="display:flex;align-items:center;gap:.5rem"><span style="width:14px;height:14px;background:${token.value};box-shadow:inset 0 0 0 1px rgb(127 127 127 / .5)"></span>${token.name.slice(2)} <span style="opacity:.75">${token.value}</span></li>`,
-    )
-    .join('');
-  return `<p style="font-weight:600">${i18n.colors}</p><ul style="display:grid;gap:.25rem;margin:.35rem 0 .75rem">${swatches}</ul><p style="font-weight:600">${i18n.fonts}</p><p>${[...families].join(' · ')}</p>`;
+  const col = column();
+  return [
+    ...tokens.map((t) => `<li class="lb-chip"><i class="lb-sw" style="background:${t.value}"></i>${t.name} <b>${t.value}</b></li>`),
+    '<li class="lb-sep"></li>',
+    ...[...families].map((family) => `<li class="lb-chip">${esc(family)}</li>`),
+    ...(col
+      ? [
+          '<li class="lb-sep"></li>',
+          `<li class="lb-chip">${L.column} <b>${fmt(col.width)}</b> · ${L.margin} <b>${fmt(col.margin)}</b></li>`,
+        ]
+      : []),
+  ].join('');
 }
 
 /* ---------- Código ---------- */
 
-function annotateCode() {
-  document.querySelectorAll<HTMLElement>('main h1, main h2').forEach((heading) => {
-    if (heading.hasAttribute('data-cs')) return;
-    heading.dataset.cs = `<${heading.tagName.toLowerCase()}>`;
-    heading.dataset.csAuto = '';
+const tagHtml = (label: string) => {
+  // "<section> Hero.astro" → la etiqueta y, más apagado, el componente
+  const [tag, ...rest] = label.split(' ');
+  return `${esc(tag)}${rest.length ? ` <i>${esc(rest.join(' '))}</i>` : ''}`;
+};
+
+function buildCode() {
+  const art = artboard();
+  if (!art) return;
+  art.querySelectorAll<HTMLElement>('[data-cs]').forEach((el) => {
+    if (!visible(el)) return;
+    markOn(el, 'lm--block', `<b class="lm-tag lm-tag--code">${tagHtml(el.dataset.cs ?? '')}</b>`);
   });
+  art.querySelectorAll<HTMLElement>('h1, h2, h3').forEach((el) => {
+    if (!visible(el)) return;
+    markOn(el, 'lm--node', `<b class="lm-tag lm-tag--node">&lt;${el.tagName.toLowerCase()}&gt;</b>`, 3);
+  });
+  buildHover(false);
 }
 
-function codePanel(i18n: Record<string, string>) {
+function codeBar(i18n: Record<string, string>) {
   const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-  const bytes = (entry: PerformanceResourceTiming) =>
-    entry.transferSize || entry.encodedBodySize || 0;
+  const bytes = (entry: PerformanceResourceTiming) => entry.transferSize || entry.encodedBodySize || 0;
   const inline = (selector: string) =>
-    [...document.querySelectorAll(selector)].reduce(
-      (sum, el) => sum + (el.textContent?.length ?? 0),
-      0,
-    );
+    [...document.querySelectorAll(selector)].reduce((sum, el) => sum + (el.textContent?.length ?? 0), 0);
   const js =
     resources.filter((e) => /\.m?js(\?|$)/.test(e.name)).reduce((sum, e) => sum + bytes(e), 0) +
     inline('script:not([src]):not([type="application/ld+json"])');
   const css =
-    resources.filter((e) => /\.css(\?|$)/.test(e.name)).reduce((sum, e) => sum + bytes(e), 0) +
-    inline('style');
-  const nav = performance.getEntriesByType('navigation')[0] as
-    | PerformanceNavigationTiming
-    | undefined;
+    resources.filter((e) => /\.css(\?|$)/.test(e.name)).reduce((sum, e) => sum + bytes(e), 0) + inline('style');
+  const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
   const load = nav ? nav.loadEventEnd || nav.domContentLoadedEventEnd : 0;
   const nodes = document.getElementsByTagName('*').length;
   const rows = [
@@ -164,9 +403,90 @@ function codePanel(i18n: Record<string, string>) {
     [`${fmt(css / 1024, 1)} KB`, i18n.css],
     ...(load ? [[`${fmt(load / 1000, 2)} s`, i18n.load]] : []),
   ];
-  return `<ul style="display:grid;gap:.3rem">${rows
-    .map(([value, label]) => `<li><strong style="font-weight:700">${value}</strong> ${label}</li>`)
-    .join('')}</ul>`;
+  // Las capas de la página: cada bloque con su componente; al pulsarlo, se va hasta él
+  const blocks = [...document.querySelectorAll<HTMLElement>('[data-cs]')].filter(visible);
+  targets = blocks;
+  return [
+    ...rows.map(([value, label]) => `<li class="lb-chip"><b>${value}</b> ${label}</li>`),
+    '<li class="lb-sep"></li>',
+    ...blocks.map(
+      (el, i) => `<li><button type="button" class="lb-chip lb-chip--btn" data-lens-goto="${i}">${esc((el.dataset.cs ?? '').replace(/^<[^>]+>\s+(?=\S)/, ''))}</button></li>`,
+    ),
+  ].join('');
+}
+
+/* ---------- Inspector: la pieza que hay bajo el puntero (Diseño y Código) ---------- */
+
+function buildHover(withGuides: boolean) {
+  const mark = node('lm lm--hover', '<i class="lm-box"></i><b class="lm-tag lm-tip"></b>');
+  mark.hidden = true;
+  const guides = withGuides ? ['x', 'x', 'y', 'y'].map((axis) => node(`lm lm--guide lm--guide-${axis} lm--guide-hover`)) : [];
+  guides.forEach((guide) => (guide.hidden = true));
+  hover = { node: mark, tag: mark.querySelector<HTMLElement>('.lm-tip')!, guides };
+}
+
+function hideHover() {
+  if (!hover) return;
+  hover.node.hidden = true;
+  hover.guides.forEach((guide) => (guide.hidden = true));
+}
+
+const ownText = (el: Element) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent?.trim());
+
+function inspect(target: Element | null) {
+  const lens = currentLens();
+  const host = frame();
+  const art = artboard();
+  if (!hover || !host || !art || !target || !art.contains(target) || target === art || target.closest('[inert]')) {
+    hideHover();
+    return;
+  }
+  const box = target.getBoundingClientRect();
+  const a = art.getBoundingClientRect();
+  // Los contenedores que ocupan casi toda la pantalla no se inspeccionan: taparían lo demás
+  if (!box.width || !box.height || (box.height > window.innerHeight * 0.85 && box.width > a.width * 0.85)) {
+    hideHover();
+    return;
+  }
+  const base = host.getBoundingClientRect();
+  const { node: mark, tag, guides } = hover;
+  mark.hidden = false;
+  mark.style.left = `${(box.left - base.left).toFixed(1)}px`;
+  mark.style.top = `${(box.top - base.top).toFixed(1)}px`;
+  mark.style.width = `${box.width.toFixed(1)}px`;
+  mark.style.height = `${box.height.toFixed(1)}px`;
+
+  if (lens === 'code') {
+    const cls = [...target.classList].find((c) => !c.startsWith('astro-'));
+    tag.innerHTML = `${esc(target.tagName.toLowerCase())}${cls ? `<i>.${esc(cls)}</i>` : ''} <u>${sizeOf(target)}</u>`;
+  } else {
+    tag.innerHTML = `${sizeOf(target)}${ownText(target) ? ` <i>${esc(typeOf(target))}</i>` : ''}`;
+  }
+  // La nota va debajo de la pieza; si no cabe en pantalla, encima. Y nunca se sale del artboard.
+  const below = box.bottom + 8 + tag.offsetHeight < window.innerHeight - 52;
+  mark.classList.toggle('is-above', !below);
+  const overflow = box.left + tag.offsetWidth - (a.right - 4);
+  tag.style.left = `${overflow > 0 ? -overflow : 0}px`;
+
+  // Líneas de construcción: los cuatro bordes de la pieza, prolongados por el artboard
+  if (guides.length) {
+    const top = Math.max(a.top, 0) - base.top;
+    const height = Math.min(a.bottom, window.innerHeight) - Math.max(a.top, 0);
+    [box.top, box.bottom - 1].forEach((y, i) => {
+      const g = guides[i];
+      g.hidden = false;
+      g.style.left = `${(a.left - base.left).toFixed(1)}px`;
+      g.style.top = `${(y - base.top).toFixed(1)}px`;
+      g.style.width = `${a.width.toFixed(1)}px`;
+    });
+    [box.left, box.right - 1].forEach((x, i) => {
+      const g = guides[i + 2];
+      g.hidden = false;
+      g.style.left = `${(x - base.left).toFixed(1)}px`;
+      g.style.top = `${top.toFixed(1)}px`;
+      g.style.height = `${height.toFixed(1)}px`;
+    });
+  }
 }
 
 /* ---------- QA ---------- */
@@ -190,18 +510,13 @@ function parseColor(value: string): Rgba | null {
 
 const over = (top: Rgba, bottom: Rgba): Rgba => {
   const a = top[3];
-  return [
-    top[0] * a + bottom[0] * (1 - a),
-    top[1] * a + bottom[1] * (1 - a),
-    top[2] * a + bottom[2] * (1 - a),
-    1,
-  ];
+  return [top[0] * a + bottom[0] * (1 - a), top[1] * a + bottom[1] * (1 - a), top[2] * a + bottom[2] * (1 - a), 1];
 };
 
 function effectiveBackground(el: Element): Rgba | null {
   const layers: Rgba[] = [];
-  for (let node: Element | null = el; node; node = node.parentElement) {
-    const cs = getComputedStyle(node);
+  for (let n: Element | null = el; n; n = n.parentElement) {
+    const cs = getComputedStyle(n);
     if (cs.backgroundImage.includes('url(')) return null;
     const color = parseColor(cs.backgroundColor);
     if (color && color[3] > 0) {
@@ -227,35 +542,36 @@ const contrast = (a: Rgba, b: Rgba) => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
-const visible = (el: Element) => {
-  const box = el.getBoundingClientRect();
-  if (!box.width || !box.height || el.closest('[hidden], [inert], [aria-hidden="true"]'))
-    return false;
-  const cs = getComputedStyle(el);
-  return cs.visibility !== 'hidden' && cs.display !== 'none';
-};
-
 function runChecks(): Check[] {
   const L = NOTES[lang()];
   const checks: Check[] = [];
+  // La web de ejemplo de "Cómo lo veo yo" es una ilustración inerte: no cuenta
+  const real = (el: Element) => !el.closest('[inert]');
 
-  checks.push({ ok: !!root.getAttribute('lang'), label: L.lang });
-  checks.push({ ok: document.title.trim().length > 0, label: L.title });
-  checks.push({ ok: document.querySelectorAll('main h1').length === 1, label: L.h1 });
+  checks.push({ ok: !!root.getAttribute('lang'), group: 'structure', label: L.lang });
+  checks.push({ ok: document.title.trim().length > 0, group: 'structure', label: L.title });
+  const h1s = [...document.querySelectorAll('main h1')].filter(real);
+  checks.push({ ok: h1s.length === 1, group: 'structure', label: L.h1, el: h1s[1] });
   let previous = 0;
   let ordered = true;
-  document.querySelectorAll('main h1, main h2, main h3, main h4').forEach((heading) => {
+  let jump: Element | undefined;
+  [...document.querySelectorAll('main h1, main h2, main h3, main h4')].filter(real).forEach((heading) => {
     const level = Number(heading.tagName[1]);
-    if (previous && level > previous + 1) ordered = false;
+    if (previous && level > previous + 1) {
+      ordered = false;
+      jump ??= heading;
+    }
     previous = level;
   });
-  checks.push({ ok: ordered, label: L.order });
+  checks.push({ ok: ordered, group: 'structure', label: L.order, el: jump });
 
   document.querySelectorAll('main img').forEach((img) => {
+    if (!real(img) || !visible(img)) return;
     const alt = img.getAttribute('alt');
     const host = img.closest('[data-qa-host]') ?? img.parentElement ?? undefined;
     checks.push({
       ok: alt !== null,
+      group: 'alt',
       label: alt === null ? L.noAlt : alt ? L.alt : L.decorative,
       el: host,
       badge: true,
@@ -270,125 +586,144 @@ function runChecks(): Check[] {
       el.querySelector('img')?.getAttribute('alt')?.trim() ||
       el.getAttribute('title')?.trim() ||
       '';
-    const inHeader = !!el.closest('header');
-    checks.push({
-      ok: !!name,
-      label: name ? L.name : L.noName,
-      el,
-      badge: !inHeader && el.matches('.btn, button'),
-    });
+    checks.push({ ok: !!name, group: 'name', label: name ? L.name : L.noName, el });
     const inlineLink = el.tagName === 'A' && getComputedStyle(el).display === 'inline';
     if (!inlineLink) {
       const box = el.getBoundingClientRect();
       const ok = box.width >= 24 && box.height >= 24;
       checks.push({
         ok,
+        group: 'target',
         label: ok ? L.target : L.small,
         el,
         note: `${Math.round(box.width)}×${Math.round(box.height)}`,
+        // La insignia, solo en botones y enlaces de tamaño de botón (no en una tarjeta entera)
+        badge: box.height <= 96 && (el.matches('.btn, button') || !!el.closest('main')),
       });
     }
   });
 
-  document
-    .querySelectorAll('main input:not([type="hidden"]), main textarea, main select')
-    .forEach((field) => {
-      const input = field as HTMLInputElement;
-      const ok =
-        (input.labels?.length ?? 0) > 0 ||
-        input.hasAttribute('aria-label') ||
-        input.hasAttribute('aria-labelledby');
-      checks.push({
-        ok,
-        label: ok ? L.label : L.noLabel,
-        el: field.closest('[data-qa-host]') ?? field.parentElement ?? undefined,
-        badge: true,
-      });
+  document.querySelectorAll('main input:not([type="hidden"]), main textarea, main select').forEach((field) => {
+    const input = field as HTMLInputElement;
+    const ok = (input.labels?.length ?? 0) > 0 || input.hasAttribute('aria-label') || input.hasAttribute('aria-labelledby');
+    checks.push({
+      ok,
+      group: 'label',
+      label: ok ? L.label : L.noLabel,
+      el: field.closest('[data-qa-host]') ?? field.parentElement ?? undefined,
+      badge: true,
     });
+  });
 
   const decimal = lang() === 'es' ? ',' : '.';
   document
-    .querySelectorAll<HTMLElement>(
-      'main h1, main h2, main h3, main p, main li, main label, main .btn, footer p, footer a',
-    )
+    .querySelectorAll<HTMLElement>('main h1, main h2, main h3, main p, main li, main label, main .btn, footer p, footer a')
     .forEach((el) => {
       if (!el.textContent?.trim() || !visible(el)) return;
       const cs = getComputedStyle(el);
       const fg = parseColor(cs.color);
       const bg = effectiveBackground(el);
-      if (!fg || !bg) return;
+      if (!fg || !bg || cs.mixBlendMode !== 'normal') return;
       const ratio = contrast(over(fg, bg), bg);
       const size = parseFloat(cs.fontSize);
       const large = size >= 24 || (size >= 18.66 && Number(cs.fontWeight) >= 700);
       checks.push({
         ok: ratio >= (large ? 3 : 4.5),
+        group: 'contrast',
         label: L.contrast,
         el,
         note: `${ratio.toFixed(1).replace('.', decimal)}:1`,
-        badge: el.matches('h1, h2, .btn'),
+        badge: el.matches('h1, h2, h3'),
       });
     });
 
   return checks;
 }
 
-function markChecks(checks: Check[]) {
-  const marks = new Map<Element, { ok: boolean; notes: string[] }>();
+function buildQa(checks: Check[]) {
+  const art = artboard();
+  if (!art) return;
+  const found = new Map<Element, { ok: boolean; notes: string[] }>();
   for (const check of checks) {
-    if (!check.el || (!check.badge && check.ok)) continue;
-    const entry = marks.get(check.el) ?? { ok: true, notes: [] };
+    if (!check.el || (!check.badge && check.ok) || !art.contains(check.el)) continue;
+    const entry = found.get(check.el) ?? { ok: true, notes: [] };
     const note = check.note ? `${check.label} ${check.note}` : check.label;
     if (!check.ok && entry.ok) {
       entry.ok = false;
       entry.notes = [note];
-    } else if (check.ok === entry.ok) entry.notes.push(note);
-    marks.set(check.el, entry);
+    } else if (check.ok === entry.ok && !entry.notes.includes(note)) entry.notes.push(note);
+    found.set(check.el, entry);
   }
-  marks.forEach((entry, el) => {
-    el.setAttribute('data-qa', entry.ok ? 'ok' : 'warn');
-    el.setAttribute('data-qa-note', entry.notes.slice(0, 2).join(' · '));
+  found.forEach((entry, el) => {
+    const mark = markOn(
+      el,
+      'lm--qa',
+      `<b class="lm-tag lm-badge">${esc(entry.notes.slice(0, 2).join(' · '))}<i class="lm-ico"></i></b>`,
+      3,
+    );
+    mark.node.dataset.state = entry.ok ? 'ok' : 'fail';
   });
 }
 
-function qaPanel(checks: Check[], i18n: Record<string, string>) {
-  const passed = checks.filter((c) => c.ok).length;
-  const failed = checks.filter((c) => !c.ok);
+function qaBar(checks: Check[], i18n: Record<string, string>) {
   const L = NOTES[lang()];
-  const list = failed.length
-    ? `<p style="margin-top:.5rem;font-weight:600">${L.failed}</p><ul style="display:grid;gap:.2rem">${failed
-        .slice(0, 4)
-        .map((c) => `<li>! ${c.label}${c.note ? ` ${c.note}` : ''}</li>`)
-        .join('')}</ul>`
-    : '';
-  return `<p><strong style="font-weight:700;font-size:1.25rem">${passed}/${checks.length}</strong> ${i18n.passed}</p>${list}`;
+  const passed = checks.filter((c) => c.ok).length;
+  targets = [];
+  const chips = GROUPS.map((group) => {
+    const own = checks.filter((c) => c.group === group);
+    if (!own.length) return '';
+    const ok = own.filter((c) => c.ok).length;
+    const failed = own.find((c) => !c.ok && c.el && frame()?.contains(c.el));
+    const inner = `${L.groups[group]} <b>${ok}/${own.length}</b><i class="lm-ico"></i>`;
+    const state = ok === own.length ? 'ok' : 'fail';
+    if (failed?.el) {
+      targets.push(failed.el);
+      return `<li><button type="button" class="lb-chip lb-chip--btn" data-state="${state}" data-lens-goto="${targets.length - 1}">${inner}</button></li>`;
+    }
+    return `<li class="lb-chip" data-state="${state}">${inner}</li>`;
+  });
+  return [`<li class="lb-chip lb-score"><b>${passed}/${checks.length}</b> ${i18n.passed}</li>`, '<li class="lb-sep"></li>', ...chips].join('');
 }
 
 /* ---------- Render ---------- */
 
-function render() {
+function render(animate = false) {
   syncButtons();
-  clearMarks();
   const lens = currentLens();
+  const motion = animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  resetLayer(lens, motion);
   const panel = document.querySelector<HTMLElement>('[data-lens-panel]');
   if (!lens || !panel) return;
   const i18n = JSON.parse(panel.dataset.i18n ?? '{}') as Record<string, string>;
   const title = panel.querySelector('[data-lens-title]');
-  const body = panel.querySelector('[data-lens-body]');
   const stats = panel.querySelector('[data-lens-stats]');
   if (title) title.textContent = i18n[lens];
-  if (body) body.textContent = i18n[`${lens}Body`];
-  if (!stats) return;
   if (lens === 'design') {
-    annotateDesign();
-    stats.innerHTML = designPanel(i18n);
+    buildDesign();
+    if (stats) stats.innerHTML = designBar();
   } else if (lens === 'code') {
-    annotateCode();
-    stats.innerHTML = codePanel(i18n);
+    buildCode();
+    if (stats) stats.innerHTML = codeBar(i18n);
   } else {
     const checks = runChecks();
-    markChecks(checks);
-    stats.innerHTML = qaPanel(checks, i18n);
+    buildQa(checks);
+    if (stats) stats.innerHTML = qaBar(checks, i18n);
   }
+  if (stats) stats.scrollLeft = 0;
+  place();
+  declutter();
+  if (motion) stagger();
+}
+
+/** Vuelve a medir sin repetir la animación (cambios de tamaño, fuentes, imágenes que llegan) */
+function refresh() {
+  if (!currentLens()) return;
+  if (!layer?.isConnected) {
+    render();
+    return;
+  }
+  place();
+  declutter();
 }
 
 /* ---------- Eventos (una sola vez por carga) ---------- */
@@ -401,23 +736,88 @@ document.addEventListener('click', (event) => {
     setLens(isLens(lens) && lens !== currentLens() ? lens : null);
     return;
   }
-  if (target?.closest('[data-lens-clear]')) setLens(null);
+  if (target?.closest('[data-lens-clear]')) {
+    setLens(null);
+    return;
+  }
+  // Un bloque de la barra de estado: se va hasta él y se resalta un momento
+  const goto = target?.closest<HTMLElement>('[data-lens-goto]');
+  const el = goto ? targets[Number(goto.dataset.lensGoto)] : null;
+  if (el) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: el.matches('[data-cs]') ? 'start' : 'center' });
+    hot(el, true);
+    window.setTimeout(() => hot(el, false), 1600);
+  }
 });
+
+function hot(el: Element | null, on: boolean) {
+  for (const mark of marks) if (mark.el === el) mark.node.classList.toggle('is-hot', on);
+}
+for (const [type, on] of [
+  ['pointerover', true],
+  ['pointerout', false],
+  ['focusin', true],
+  ['focusout', false],
+] as const) {
+  document.addEventListener(type, (event) => {
+    const chip = (event.target as Element | null)?.closest?.<HTMLElement>('[data-lens-goto]');
+    if (chip) hot(targets[Number(chip.dataset.lensGoto)], on);
+  });
+}
 
 document.addEventListener('keydown', (event) => {
   if (event.metaKey || event.ctrlKey || event.altKey) return;
   const el = event.target as HTMLElement | null;
-  if (el?.closest('input, textarea, select, [contenteditable="true"]')) return;
+  if (el?.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+  if (root.classList.contains('canvas-open')) return;
   if (event.key === 'Escape' && currentLens()) setLens(null);
   const index = ['1', '2', '3'].indexOf(event.key);
   if (index >= 0) setLens(LENSES[index] === currentLens() ? null : LENSES[index]);
 });
 
+// Inspector con ratón
+let pointerTarget: Element | null = null;
+let pointerFrame = 0;
+document.addEventListener(
+  'pointermove',
+  (event) => {
+    if (!hover || event.pointerType !== 'mouse') return;
+    pointerTarget = event.target instanceof Element ? event.target : null;
+    if (pointerFrame) return;
+    pointerFrame = requestAnimationFrame(() => {
+      pointerFrame = 0;
+      inspect(pointerTarget);
+    });
+  },
+  { passive: true },
+);
+document.addEventListener('pointerleave', hideHover);
+
+let scrollFrame = 0;
+window.addEventListener(
+  'scroll',
+  () => {
+    if (!layer || scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = 0;
+      hideHover();
+      place(true);
+    });
+  },
+  { passive: true },
+);
+
 let resizeTimer = 0;
 const onResize = () => {
   window.clearTimeout(resizeTimer);
-  resizeTimer = window.setTimeout(() => currentLens() && render(), 160);
+  resizeTimer = window.setTimeout(refresh, 160);
 };
 new ResizeObserver(onResize).observe(document.documentElement);
-document.fonts?.ready.then(() => currentLens() && render());
-document.addEventListener('astro:page-load', render);
+window.addEventListener('resize', onResize, { passive: true });
+document.fonts?.ready.then(refresh);
+// El titular se entinta al cargar (se mueve unos píxeles): se vuelve a medir cuando ha terminado
+document.addEventListener('astro:page-load', () => {
+  render(true);
+  for (const delay of [700, 1600, 3200]) window.setTimeout(refresh, delay);
+});

@@ -321,8 +321,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Con "reducir movimiento" no hay morph.
   - Capturas a cámara lenta: `.taste-skill/def/e3-morph-ida.jpg`, `e3-morph-vuelta.jpg` y
     `e3-morph-movil.jpg`.
-- [ ] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil
-  (**hecho el 19 nov; pendiente de tu visto bueno**):
+- [x] **Lienzo navegable** (tecla M): arrastre, zoom, selección y clic para entrar; rejilla en móvil
+  (hecho y aprobado el 19 nov):
   - **Abrir**: tecla M o el botón "Ver lienzo" de la barra (y del menú en móvil). La cámara sale de
     la página en la que estás y se aleja hasta que se ve el archivo entero.
   - **Lo que se ve**: las ocho páginas como frames (Inicio, Proyectos, Sobre mí y Contacto en una

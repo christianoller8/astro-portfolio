@@ -1,5 +1,9 @@
 ---
+// Barra de estado de la lente activa, pegada abajo como la de una herramienta: el nombre de la lente,
+// sus cifras (medidas en el navegador por src/scripts/lenses.ts) y la salida a la vista normal.
+// En móvil y tablet lleva también el cambio de lente, para pasar de una a otra sin abrir el menú.
 import { useTranslations } from '@/i18n/utils';
+import LensSwitch from './LensSwitch.astro';
 
 interface Props {
   lang: 'es' | 'en';
@@ -9,93 +13,222 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<!-- Panel flotante de la lente activa. Lo rellena src/scripts/lenses.ts con datos medidos en el navegador. -->
 <aside
-  class="lens-panel"
-  aria-live="polite"
+  class="lens-bar"
+  aria-label={t('lens.label')}
   data-lens-panel
   data-i18n={JSON.stringify({
     design: t('lens.design'),
     code: t('lens.code'),
     qa: t('lens.qa'),
-    designBody: t('lens.panel.design'),
-    codeBody: t('lens.panel.code'),
-    qaBody: t('lens.panel.qa'),
     nodes: t('lens.stat.nodes'),
     js: t('lens.stat.js'),
     css: t('lens.stat.css'),
     load: t('lens.stat.load'),
     passed: t('lens.stat.passed'),
-    colors: t('lens.stat.colors'),
-    fonts: t('lens.stat.fonts'),
-    clear: t('lens.clear'),
-    hint: t('lens.hint'),
   })}
 >
-  <div class="lens-panel-head">
-    <p class="lens-panel-title" data-lens-title></p>
-    <button type="button" class="lens-panel-close" data-lens-clear>{t('lens.clear')}</button>
-  </div>
-  <p class="lens-panel-body" data-lens-body></p>
-  <div class="lens-panel-stats" data-lens-stats></div>
-  <p class="lens-panel-hint">{t('lens.hint')}</p>
+  <div class="lens-bar-switch"><LensSwitch variant="dock" lang={lang} /></div>
+  <p class="lens-bar-title" data-lens-title aria-live="polite"></p>
+  <ul class="lens-bar-stats" data-lens-stats></ul>
+  <button type="button" class="lens-bar-close" data-lens-clear>
+    <span>{t('lens.clear')}</span>
+    <kbd>Esc</kbd>
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M3.5 3.5l9 9M12.5 3.5l-9 9"></path>
+    </svg>
+  </button>
 </aside>
 
 <style>
-  .lens-panel {
+  .lens-bar {
     position: fixed;
-    left: var(--gutter);
-    bottom: var(--gutter);
-    z-index: 55;
-    width: min(22rem, calc(100vw - 2 * var(--gutter)));
-    padding: 1rem 1.1rem 0.9rem;
-    color: var(--paper);
-    background: var(--ink);
-    box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.5);
-    transition:
-      opacity var(--dur-ui) var(--ease-out),
-      transform var(--dur-ui) var(--ease-out);
-  }
-  :global(html:not([data-lens])) .lens-panel {
-    display: none;
-  }
-  .lens-panel-head {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 48;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+    gap: 0.9rem;
+    height: var(--lens-bar-h);
+    padding-inline: var(--gutter) 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: content-box;
+    font-size: 0.8125rem;
+    color: var(--paper);
+    background: var(--ink);
+    transition:
+      translate var(--dur-ui) var(--ease-out),
+      visibility 0s;
   }
-  .lens-panel-title {
+  /* Sin lente, la barra espera fuera de la pantalla */
+  :global(html:not([data-lens])) .lens-bar,
+  :global(html.canvas-open) .lens-bar,
+  :global(html.menu-open) .lens-bar,
+  :global(html.intro) .lens-bar {
+    translate: 0 100%;
+    visibility: hidden;
+    transition:
+      translate var(--dur-micro) var(--ease-in),
+      visibility 0s var(--dur-micro);
+  }
+  .lens-bar-title {
+    flex: none;
+    font-size: var(--step-small);
     font-weight: 700;
   }
-  .lens-panel-close {
-    min-height: 2rem;
-    padding: 0 0.6rem;
+  .lens-bar-switch {
+    display: none;
+    flex: none;
+  }
+
+  /* Las cifras: una fila que se desliza si no cabe */
+  .lens-bar-stats {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    height: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    font-family: var(--font-mono);
+    white-space: nowrap;
+    -webkit-mask: linear-gradient(90deg, #000 calc(100% - 1.5rem), transparent);
+    mask: linear-gradient(90deg, #000 calc(100% - 1.5rem), transparent);
+  }
+  .lens-bar-stats::-webkit-scrollbar {
+    display: none;
+  }
+  .lens-bar-stats :global(li) {
+    flex: none;
+  }
+  .lens-bar-stats :global(.lb-chip) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 1.75rem;
+    padding: 0 0.55rem;
+    color: color-mix(in srgb, var(--paper) 72%, var(--ink));
+    background: color-mix(in srgb, var(--paper) 9%, var(--ink));
+    animation: lb-in 260ms var(--ease-out) both;
+  }
+  .lens-bar-stats :global(.lb-chip b) {
+    font-weight: 500;
+    color: var(--paper);
+  }
+  .lens-bar-stats :global(.lb-chip i:not(.lm-ico):not(.lb-sw)) {
+    font-style: normal;
+    opacity: 0.7;
+  }
+  .lens-bar-stats :global(.lb-chip--btn) {
+    color: var(--paper);
+    transition: background-color var(--dur-micro) var(--ease-out);
+  }
+  .lens-bar-stats :global(.lb-chip--btn:hover),
+  .lens-bar-stats :global(.lb-chip--btn:focus-visible) {
+    background: color-mix(in srgb, var(--paper) 22%, var(--ink));
+  }
+  .lens-bar-stats :global(.lb-chip--btn:focus-visible) {
+    outline: 1px solid var(--paper);
+    outline-offset: -1px;
+  }
+  .lens-bar-stats :global(.lb-score b) {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .lens-bar-stats :global(.lb-sw) {
+    width: 0.75rem;
+    height: 0.75rem;
+    box-shadow: inset 0 0 0 1px rgb(127 127 127 / 0.6);
+  }
+  .lens-bar-stats :global(.lb-sep) {
+    width: 0.5rem;
+  }
+  @keyframes lb-in {
+    from {
+      opacity: 0;
+      translate: 0 5px;
+    }
+  }
+
+  .lens-bar-close {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: stretch;
+    padding: 0 var(--gutter) 0 0.9rem;
     font-size: var(--step-small);
     font-weight: 600;
     color: var(--ink);
     background: var(--paper);
+    transition: background-color var(--dur-micro) var(--ease-out);
   }
-  .lens-panel-body {
-    margin-top: 0.4rem;
-    font-size: var(--step-small);
-    color: color-mix(in srgb, var(--paper) 80%, var(--ink));
+  .lens-bar-close:hover {
+    background: color-mix(in srgb, var(--paper) 86%, var(--ink));
   }
-  .lens-panel-stats {
-    margin-top: 0.75rem;
-    font-size: var(--step-small);
+  .lens-bar-close kbd {
+    font: 500 0.6875rem/1 var(--font-mono);
+    opacity: 0.7;
   }
-  .lens-panel-hint {
-    margin-top: 0.75rem;
-    font-size: 0.8125rem;
-    color: color-mix(in srgb, var(--paper) 70%, var(--ink));
+  .lens-bar-close svg {
+    display: none;
   }
+
+  /* Móvil y tablet: dos filas. Arriba, el cambio de lente y la salida; abajo, las cifras. */
   @media (max-width: 1023px) {
-    .lens-panel {
-      bottom: calc(4.25rem + max(0.75rem, env(safe-area-inset-bottom)));
+    .lens-bar {
+      display: grid;
+      grid-template: 3rem 2.75rem / 1fr auto;
+      gap: 0;
+      padding-inline: 0;
     }
-    .lens-panel-hint {
+    .lens-bar-switch {
+      display: block;
+      padding-left: var(--gutter);
+    }
+    .lens-bar-title {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .lens-bar-close {
+      grid-area: 1 / 2;
+      width: 2.25rem;
+      height: 2.25rem;
+      justify-content: center;
+      align-self: center;
+      margin-right: var(--gutter);
+      padding: 0;
+    }
+    .lens-bar-close kbd {
       display: none;
+    }
+    .lens-bar-close span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .lens-bar-close svg {
+      display: block;
+    }
+    .lens-bar-stats {
+      grid-area: 2 / 1 / 3 / 3;
+      padding-inline: var(--gutter);
+      align-items: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lens-bar,
+    .lens-bar-stats :global(.lb-chip) {
+      transition: none;
+      animation: none;
     }
   }
 </style>

@@ -3,7 +3,7 @@ import { useTranslations } from '@/i18n/utils';
 
 interface Props {
   lang: 'es' | 'en';
-  /** bar: barra superior · dock: barra flotante en móvil · tray: bloque grande del hero */
+  /** bar: barra superior · dock: dentro de la barra de estado de las lentes · tray: bloque grande */
   variant: 'bar' | 'dock' | 'tray';
 }
 
@@ -120,21 +120,22 @@ const lenses = [
     font-size: var(--step-body);
   }
 
+  /* dock: el cambio de lente dentro de la barra de estado (móvil y tablet), sobre tinta */
   .lens-switch--dock {
-    position: fixed;
-    left: 50%;
-    bottom: max(0.75rem, env(safe-area-inset-bottom));
-    z-index: 60;
-    transform: translateX(-50%);
-    background: var(--paper);
-    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.35);
+    padding: 0;
+    background: none;
   }
   .lens-switch--dock .lens-btn {
-    min-height: 2.75rem;
+    min-height: 2.25rem;
+    padding: 0 0.6rem;
+    color: color-mix(in srgb, var(--paper) 72%, var(--ink));
+    background: color-mix(in srgb, var(--paper) 9%, var(--ink));
   }
-  @media (min-width: 1024px) {
-    .lens-switch--dock {
-      display: none;
-    }
+  .lens-switch--dock .lens-btn:hover {
+    color: var(--paper);
+  }
+  .lens-switch--dock .lens-btn[aria-pressed='true'] {
+    color: var(--ink);
+    background: var(--paper);
   }
 </style>
