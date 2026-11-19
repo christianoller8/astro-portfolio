@@ -52,6 +52,20 @@ const code =
         .join('\n')
         .replace(/\n{3,}/g, '\n\n');
 
+// Tema del código con la paleta de la web: tinta, grafito y el verde de las comprobaciones
+const codeTheme = {
+  name: 'tinta',
+  type: 'dark' as const,
+  colors: { 'editor.background': '#121212', 'editor.foreground': '#e2e2e2' },
+  tokenColors: [
+    { scope: ['comment', 'punctuation.definition.comment'], settings: { foreground: '#9a9aa0' } },
+    { scope: ['string', 'string.template', 'constant.numeric', 'constant.language'], settings: { foreground: '#8fd6a4' } },
+    { scope: ['keyword', 'storage', 'storage.type', 'keyword.operator.new'], settings: { foreground: '#ffffff', fontStyle: 'bold' } },
+    { scope: ['entity.name.function', 'support.function'], settings: { foreground: '#ffffff' } },
+    { scope: ['entity.name.type', 'support.type', 'variable.parameter'], settings: { foreground: '#c9c9cf' } },
+  ],
+};
+
 // Capturas reales de la web publicada en otros tamaños de pantalla
 const shots =
   project.slug === 'vistalo'
@@ -67,9 +81,7 @@ const facts = [
   ...(stack.length ? [{ label: t('project.stack'), value: stack.join(' · ') }] : []),
 ];
 
-// Numeración de los apartados que tiene este caso (la web publicada no tiene boceto)
-const present = ['problem', ...(ui ? ['sketch'] : []), 'decisions', 'code', 'tests', 'result', 'enjoyed'];
-const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0')} · ${L[key as 'problem']}`;
+const tag = (key: string) => L[key as 'problem'];
 ---
 
 <Layout title={`${title} · Christian Oller`} description={description} image={image?.src} frame={`${t('nav.projects')} / ${title}`}>
@@ -111,7 +123,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
 
     <!-- El problema: dos o tres frases en grande -->
     <section class="wrap case-problem">
-      <h2 class="case-tag" data-reveal>{tag('problem')}</h2>
+      <h2 class="case-h" data-reveal>{tag('problem')}</h2>
       <div class="problem-text" data-reveal style="--reveal-i: 1">
         <Content />
       </div>
@@ -123,7 +135,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
         <section class="case-sketch-band" data-case-sketch>
           <div class="wrap sketch-grid">
             <div class="sketch-copy">
-              <h2 class="case-tag">{tag('sketch')}</h2>
+              <h2 class="case-h">{tag('sketch')}</h2>
               <p class="sketch-lead">{L.sketchLead}</p>
               <p class="sketch-meter" aria-hidden="true">
                 <span>{L.pencil}</span>
@@ -145,13 +157,13 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     {
       content && (
         <section class="wrap case-decisions">
-          <h2 class="case-tag" data-reveal>{tag('decisions')}</h2>
+          <h2 class="case-h" data-reveal>{tag('decisions')}</h2>
           <ol class="decisions">
             {content.decisions.map((decision, i) => (
               <li class="decision" data-reveal style={`--reveal-i: ${i}`}>
-                <p class="decision-note">{decision.note[lang]}</p>
                 <h3 class="decision-title">{decision.title[lang]}</h3>
                 <p class="decision-body">{decision.body[lang]}</p>
+                <p class="decision-note">{decision.note[lang]}</p>
               </li>
             ))}
           </ol>
@@ -164,13 +176,15 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
       code && (
         <section class="wrap case-code">
           <div class="code-head">
-            <h2 class="case-tag" data-reveal>{tag('code')}</h2>
+            <h2 class="case-h" data-reveal>{tag('code')}</h2>
             <p class="code-lead" data-reveal style="--reveal-i: 1">{L.codeLead}</p>
           </div>
           <div class="code-grid">
             <div class="code-panel" data-reveal>
-              <p class="code-file">src/scripts/project-demos.ts</p>
-              <Code code={code} lang="ts" theme="vitesse-dark" />
+              <p class="code-file">
+                <code>src/scripts/project-demos.ts</code>
+              </p>
+              <Code code={code} lang="ts" theme={codeTheme} />
             </div>
             <div class:list={['code-demo', mobile && 'code-demo--mobile']} data-case-demo data-reveal style="--reveal-i: 1">
               <p class="code-try">
@@ -188,14 +202,14 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
 
     <!-- Pruebas, en insignias -->
     <section class="wrap case-tests">
-      <h2 class="case-tag" data-reveal>{tag('tests')}</h2>
+      <h2 class="case-h" data-reveal>{tag('tests')}</h2>
       <p class="tests-lead" data-reveal style="--reveal-i: 1">{content?.tests ? L.testsStatic : L.testsLive}</p>
       {
         content?.tests ? (
           <ul class="tests" data-reveal style="--reveal-i: 2">
             {content.tests.map((test) => (
               <li>
-                <span class="kit-badge" data-state="ok">
+                <span class="kit-badge kit-badge--text" data-state="ok">
                   {test[lang]}
                 </span>
               </li>
@@ -209,14 +223,13 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
 
     <!-- Resultado -->
     <section class="wrap case-result">
-      <h2 class="case-tag" data-reveal>{tag('result')}</h2>
+      <h2 class="case-h" data-reveal>{tag('result')}</h2>
       <div class="result-grid">
         <div>
           <h3 class="result-title" data-reveal>{L.features}</h3>
           <ol class="features">
             {features.map((feature, i) => (
               <li data-reveal style={`--reveal-i: ${i}`}>
-                <span>{String(i + 1).padStart(2, '0')}</span>
                 {feature}
               </li>
             ))}
@@ -244,9 +257,11 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
       content && (
         <section class="case-enjoyed">
           <div class="wrap">
-            <h2 class="case-tag">{tag('enjoyed')}</h2>
-            <p class="enjoyed-text" data-reveal>
-              {content.enjoyed[lang]}
+            <h2 class="enjoyed-text" data-reveal>
+              {content.enjoyed.title[lang]}
+            </h2>
+            <p class="enjoyed-body" data-reveal style="--reveal-i: 1">
+              <b>{L.enjoyedLead}</b> {content.enjoyed.body[lang]}
             </p>
           </div>
         </section>
@@ -257,12 +272,13 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     {
       next && next.slug !== project.slug && (
         <nav class="wrap case-next" aria-label={L.next}>
+          <svg class="kit-thread next-thread" data-thread-from="#next-from" data-thread-to="#next-to" aria-hidden="true" />
           <div class="next-copy" id="next-from">
-            <p class="case-tag">
-              {String(present.length + 2).padStart(2, '0')} · {L.next}
-            </p>
             <a class="next-title" href={translatePath(`/projects/${next.slug}`)}>
-              {next.data.title} <span aria-hidden="true">→</span>
+              <span class="next-pre">{L.next}</span>
+              <span class="next-name">
+                {next.data.title} <span aria-hidden="true">→</span>
+              </span>
             </a>
           </div>
           <a
@@ -275,7 +291,6 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
           >
             <ProjectVisual project={next} lang={lang} />
           </a>
-          <svg class="kit-thread next-thread" data-thread-from="#next-from" data-thread-to="#next-to" aria-hidden="true" />
         </nav>
       )
     }
@@ -326,10 +341,12 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     height: clamp(20rem, 66vh, 46rem);
   }
 
-  /* Nombre de cada apartado: como el de un frame, con su número */
-  .case-tag {
-    font: 500 0.8125rem/1.3 var(--font-mono);
-    color: var(--muted);
+  /* El título de cada apartado */
+  .case-h {
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    font-weight: 650;
+    line-height: 1;
+    letter-spacing: -0.035em;
   }
   .case-problem,
   .case-decisions,
@@ -342,13 +359,14 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
 
   /* ---------- El problema ---------- */
   .problem-text {
-    max-width: 30ch;
-    margin-top: 1.25rem;
-    font-size: clamp(1.6rem, 3.6vw, 3rem);
-    font-weight: 600;
-    line-height: 1.12;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
+    max-width: 34ch;
+    margin-top: 1.5rem;
+    /* Un párrafo que se lee, no un titular: hasta 36 px */
+    font-size: clamp(1.375rem, 2.4vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
   }
   .problem-text :global(p + p) {
     margin-top: 0.8em;
@@ -379,7 +397,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     gap: 0.75rem;
     max-width: 22rem;
     margin-top: 1.5rem;
-    font: 500 0.8125rem/1 var(--font-mono);
+    font: 600 0.8125rem/1 var(--font-sans);
     color: var(--muted);
   }
   .sketch-meter i {
@@ -429,13 +447,13 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   }
   .decision-note {
     display: inline-block;
+    margin-top: 1.25rem;
     padding: 0.15rem 0.45rem;
-    font: 500 0.8125rem/1.3 var(--font-mono);
+    font: 600 0.8125rem/1.3 var(--font-sans);
     color: var(--paper);
     background: var(--ink);
   }
   .decision-title {
-    margin-top: 1.5rem;
     font-size: clamp(1.35rem, 2.2vw, 1.75rem);
     font-weight: 650;
     line-height: 1.08;
@@ -472,8 +490,10 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   }
   .code-file {
     padding: 0.7rem 1rem;
-    font: 500 0.8125rem/1.3 var(--font-mono);
     color: #a3a3a3;
+  }
+  .code-file code {
+    font: 500 0.8125rem/1.3 var(--font-mono);
   }
   .code-panel :global(pre) {
     max-height: 30rem;
@@ -507,7 +527,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     align-items: center;
     gap: 0.4rem;
     padding: 0.25rem 0.55rem 0.25rem 0.45rem;
-    font: 500 0.8125rem/1.3 var(--font-mono);
+    font: 600 0.8125rem/1.3 var(--font-sans);
     white-space: nowrap;
     color: var(--paper);
     background: var(--ink);
@@ -551,10 +571,9 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     margin-top: 1.25rem;
   }
   .result-title {
-    font-size: clamp(1.6rem, 3.6vw, 3rem);
-    font-weight: 600;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
+    font-size: var(--step-lead);
+    font-weight: 650;
+    letter-spacing: -0.015em;
   }
   .features {
     display: grid;
@@ -564,19 +583,12 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   .features li {
     display: flex;
     align-items: baseline;
-    gap: 1.25rem;
     padding: 1rem 1.25rem;
     font-size: var(--step-lead);
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.015em;
     background: var(--tint);
-  }
-  .features li span {
-    flex: none;
-    font: 500 0.8125rem/1.3 var(--font-mono);
-    letter-spacing: 0;
-    color: var(--muted);
   }
   .shots {
     display: grid;
@@ -594,7 +606,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   }
   .shot-label {
     margin-top: 0.5rem;
-    font: 500 0.8125rem/1.3 var(--font-mono);
+    font: 600 0.8125rem/1.3 var(--font-sans);
     color: var(--muted);
   }
 
@@ -605,17 +617,26 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     color: var(--paper);
     background: var(--ink);
   }
-  .case-enjoyed .case-tag {
-    color: color-mix(in srgb, var(--paper) 72%, var(--ink));
-  }
   .enjoyed-text {
-    max-width: 24ch;
-    margin-top: 1.5rem;
-    font-size: clamp(2rem, 5.2vw, 4.5rem);
+    max-width: 16ch;
+    font-size: clamp(1.75rem, 5.2vw, 4.5rem);
     font-weight: 650;
     line-height: 1.02;
     letter-spacing: -0.04em;
     text-wrap: balance;
+  }
+
+  .enjoyed-body {
+    max-width: 38ch;
+    margin-top: 1.5rem;
+    font-size: var(--step-lead);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: color-mix(in srgb, var(--paper) 78%, var(--ink));
+  }
+  .enjoyed-body b {
+    font-weight: 600;
+    color: var(--paper);
   }
 
   /* ---------- Siguiente proyecto ---------- */
@@ -627,19 +648,26 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
   .next-copy {
     justify-self: start;
   }
+  .next-copy,
+  .next-frame {
+    position: relative;
+    z-index: 1;
+  }
   .next-title {
-    display: inline-block;
-    margin-top: 0.75rem;
+    display: grid;
     font-size: clamp(2.25rem, 6vw, 5rem);
     font-weight: 650;
     line-height: 1;
     letter-spacing: -0.04em;
   }
-  .next-title span {
+  .next-pre {
+    color: var(--muted);
+  }
+  .next-name span {
     display: inline-block;
     transition: transform var(--dur-micro) var(--ease-out);
   }
-  .next-title:hover span {
+  .next-title:hover .next-name span {
     transform: translateX(6px);
   }
   .next-frame {
@@ -688,6 +716,27 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
       align-items: start;
     }
+    /* Sin capturas, las funciones van en columnas a todo el ancho */
+    .result-grid:not(:has(.shots)) .features {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .result-grid:not(:has(.shots)) .features li {
+      min-height: 9rem;
+      align-items: flex-end;
+      padding: 1.25rem;
+      text-wrap: balance;
+    }
+    /* Lo que más disfruté: el titular a un lado y la frase al otro, abajo */
+    .case-enjoyed .wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+      gap: 3rem;
+    }
+    .enjoyed-body {
+      margin-top: 0;
+      padding-bottom: 0.6rem;
+    }
     /* Con capturas (la web publicada): la lista a un lado y las pantallas al otro */
     .result-grid:has(.shots) {
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
@@ -719,7 +768,7 @@ const tag = (key: string) => `${String(present.indexOf(key) + 2).padStart(2, '0'
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .next-title span {
+    .next-name span {
       transition: none;
     }
   }

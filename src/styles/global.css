@@ -183,6 +183,7 @@
 .frame-label {
   align-items: center;
   height: var(--frame-label-h);
+  padding-left: max(0px, 0.75rem - var(--gutter));
 }
 .artboard {
   background: var(--paper);
@@ -260,20 +261,33 @@ a[download]:focus-visible :is(.btn-arrow, svg) {
 }
 
 /* Enlace de texto: un subrayado fino de grafito que se entinta de izquierda a derecha (200 ms).
-   Va como fondo para poder crecer; la altura se mide desde el centro de la caja, así vale igual
-   para un enlace en línea que para uno con zona táctil alta. */
+   Son dos líneas (::before la fina, ::after la de tinta) colocadas desde el centro de la caja, así
+   vale igual para un enlace en línea que para uno con zona táctil alta. */
 .link {
+  position: relative;
   text-decoration: none;
-  background:
-    linear-gradient(currentColor, currentColor) 0 calc(50% + 0.62em) / 0 2px no-repeat,
-    linear-gradient(var(--graphite), var(--graphite)) 0 calc(50% + 0.62em) / 100% 1px no-repeat;
-  transition: background-size 200ms var(--ease-out);
 }
-.link:hover,
-.link:focus-visible {
-  background-size:
-    100% 2px,
-    100% 1px;
+.link::before,
+.link::after {
+  content: '';
+  position: absolute;
+  top: calc(50% + 0.62em);
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--graphite);
+  pointer-events: none;
+}
+.link::after {
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 200ms var(--ease-out);
+}
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
 }
 
 /* ---------- Modo claro / oscuro en dos tiempos: primero el lienzo, después los frames ---------- */
@@ -301,7 +315,7 @@ html.theme-switching .frame-label * {
   position: fixed;
   z-index: 90;
   padding: 0.2rem 0.55rem;
-  font: 500 0.8125rem/1.4 var(--font-mono);
+  font: 600 0.8125rem/1.4 var(--font-sans);
   white-space: nowrap;
   color: var(--paper);
   background: var(--ink);
@@ -573,7 +587,7 @@ html.canvas-open {
   html.theme-switching *,
   html.theme-switching *::before,
   html.theme-switching *::after,
-  .link {
+  .link::after {
     transition: none !important;
   }
   a[download]:hover :is(.btn-arrow, svg),

@@ -68,7 +68,7 @@ const lenses = [
       <div class="vs-frame" data-view-frame>
         <!-- La web de ejemplo: HTML real. [data-sketch] dice cómo se boceta cada pieza; [data-tag], cuáles se etiquetan -->
         <div class="demo" data-view-demo inert>
-          <header class="demo-top" data-tag>
+          <header class="demo-top" data-tag data-ui>
             <a class="demo-brand" href="#" tabindex="-1" data-sketch="box">Norte</a>
             <nav class="demo-nav" data-tag>
               <a href="#" tabindex="-1" data-sketch="text">{t('view.demo.nav.1')}</a>
@@ -83,7 +83,7 @@ const lenses = [
               <div class="demo-copy">
                 <h1 data-sketch="text" data-tag>{t('view.demo.h1')}</h1>
                 <p data-sketch="text" data-tag>{t('view.demo.p')}</p>
-                <div class="demo-actions">
+                <div class="demo-actions" data-ui>
                   <button class="demo-cta" type="button" tabindex="-1" data-sketch="box" data-tag data-view-cta
                     >{t('view.demo.cta')}</button
                   >
@@ -106,7 +106,7 @@ const lenses = [
               </figure>
             </section>
 
-            <section class="demo-how">
+            <section class="demo-how" data-ui>
               <h2 data-sketch="text">{t('view.demo.h2')}</h2>
               <div class="demo-steps">
                 {
@@ -395,7 +395,7 @@ const lenses = [
   .vs-overlay :global(.vs-mark--sel) {
     outline: 1px solid #1a1a1a;
   }
-  .vs-overlay :global(.vs-mark--sel b) {
+  .vs-overlay :global(.vs-mark--sel code) {
     position: absolute;
     top: calc(100% + 5px);
     left: 50%;
@@ -415,7 +415,7 @@ const lenses = [
     outline: 1px dashed rgb(42 31 20 / 0.5);
   }
   /* La etiqueta va encima de la caja, por fuera, para no tapar el texto */
-  .vs-overlay :global(.vs-mark--tag b) {
+  .vs-overlay :global(.vs-mark--tag code) {
     position: absolute;
     bottom: 100%;
     left: -1px;
@@ -426,7 +426,7 @@ const lenses = [
     background: #2a1f14;
   }
   /* En las tarjetas no hay sitio encima: va dentro, en la esquina */
-  .vs-overlay :global(.vs-mark--tag[data-in] b) {
+  .vs-overlay :global(.vs-mark--tag[data-in] code) {
     top: 0;
     right: 0;
     bottom: auto;
@@ -513,7 +513,7 @@ const lenses = [
     width: min(21rem, 78%);
     color: var(--ink);
     background: var(--paper);
-    box-shadow: 0 0 0 1px var(--line);
+    outline: 1px solid var(--line);
   }
   .vs-checks .vs-panel-title {
     color: var(--muted);

@@ -65,7 +65,8 @@ function initViewScene() {
     const mark = (kind: string, label = '') => {
       const el = document.createElement('span');
       el.className = `vs-mark vs-mark--${kind}`;
-      if (label) el.innerHTML = `<b>${label}</b>`;
+      // <code>: son medidas y etiquetas, no texto
+      if (label) el.innerHTML = `<code>${label}</code>`;
       overlay.append(el);
       return el;
     };
@@ -138,7 +139,7 @@ function initViewScene() {
       list.replaceChildren(
         ...checks.map((check) => {
           const li = document.createElement('li');
-          const value = document.createElement('span');
+          const value = document.createElement('samp');
           value.className = 'kit-badge';
           value.dataset.state = check.ok ? 'ok' : 'fail';
           value.textContent = check.value;

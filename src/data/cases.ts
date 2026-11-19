@@ -14,7 +14,8 @@ export interface Decision {
 
 export interface CaseContent {
   decisions: Decision[];
-  enjoyed: Text;
+  /** Un titular corto (cabe en dos líneas) y la frase que lo explica */
+  enjoyed: { title: Text; body: Text };
   /** Pruebas que no se pueden calcular en la página (una web publicada): se enseñan tal cual */
   tests?: Text[];
 }
@@ -35,6 +36,7 @@ export const caseLabels = {
     result: 'Resultado',
     features: 'Qué hace',
     enjoyed: 'Lo que más disfruté',
+    enjoyedLead: 'Lo que más disfruté:',
     next: 'Siguiente proyecto',
     checks: {
       contrast: 'Contraste del botón principal',
@@ -59,6 +61,7 @@ export const caseLabels = {
     result: 'Result',
     features: 'What it does',
     enjoyed: 'What I enjoyed most',
+    enjoyedLead: 'What I enjoyed most:',
     next: 'Next project',
     checks: {
       contrast: 'Main button contrast',
@@ -99,8 +102,8 @@ export const cases: Record<string, CaseContent> = {
       },
     ],
     enjoyed: {
-      es: 'Ordenar mucha información en una sola pantalla sin que agobie. Aprendí que una tabla también se diseña.',
-      en: 'Fitting a lot of information on a single screen without it feeling heavy. I learnt that a table is designed too.',
+      title: { es: 'Una tabla también se diseña.', en: 'A table gets designed too.' },
+      body: { es: 'ordenar mucha información en una sola pantalla sin que agobie.', en: 'fitting a lot of information on a single screen without it feeling heavy.' },
     },
   },
   vibora: {
@@ -131,8 +134,8 @@ export const cases: Record<string, CaseContent> = {
       },
     ],
     enjoyed: {
-      es: 'Dejar la reserva en dos toques. Quitar pasos cuesta más que añadirlos.',
-      en: 'Getting a booking down to two taps. Removing steps is harder than adding them.',
+      title: { es: 'Quitar pasos cuesta más que añadirlos.', en: 'Removing steps is harder than adding them.' },
+      body: { es: 'dejar la reserva en dos toques.', en: 'getting a booking down to two taps.' },
     },
   },
   learnish: {
@@ -163,8 +166,8 @@ export const cases: Record<string, CaseContent> = {
       },
     ],
     enjoyed: {
-      es: 'Pensar en ratos cortos: que una lección quepa en un trayecto de metro.',
-      en: 'Designing for short moments: a lesson that fits into a metro ride.',
+      title: { es: 'Una lección por trayecto de metro.', en: 'One lesson per metro ride.' },
+      body: { es: 'pensar en ratos cortos, que es cuando de verdad se aprende.', en: 'designing for short moments, which is when people actually learn.' },
     },
   },
   vistalo: {
@@ -202,8 +205,8 @@ export const cases: Record<string, CaseContent> = {
       { es: 'Respeta reducir movimiento', en: 'Respects reduced motion' },
     ],
     enjoyed: {
-      es: 'Sacar toda la web de una sola idea, el nombre. Y hacerla con Eloi, cada uno en lo suyo.',
-      en: 'Building the whole site from a single idea, the name. And making it with Eloi, each of us on our own part.',
+      title: { es: 'Toda la web sale de una idea.', en: 'The whole site comes from one idea.' },
+      body: { es: 'partir del nombre y hacerla con Eloi, cada uno en lo suyo.', en: 'starting from the name and making it with Eloi, each of us on our own part.' },
     },
   },
 };

@@ -263,6 +263,11 @@
   color: var(--ink);
   background: var(--tint);
 }
+/* Variante para rótulos (no valores medidos): con la letra de texto */
+.kit-badge--text {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
 .kit-badge[data-state]::after {
   content: '';
   flex: none;
@@ -304,9 +309,16 @@
     width var(--dur-ui) var(--spring),
     opacity var(--dur-micro) var(--ease-out);
 }
-/* Con el indicador en marcha, el segmento pulsado ya no pinta su propio fondo */
-[data-seg].is-seg > [aria-pressed='true'] {
-  background: none !important;
+/* Con el indicador en marcha, el segmento pulsado espera a que llegue para pintar su propio fondo
+   (así el texto siempre tiene debajo su color real) y lo suelta en cuanto deja de estar pulsado */
+[data-seg].is-seg.is-seg-ready > * {
+  transition: background-color 0s !important;
+}
+[data-seg].is-seg.is-seg-ready > [aria-pressed='true'] {
+  transition: background-color 0s var(--dur-ui) !important;
+}
+[data-seg].is-seg > :not([aria-pressed='true']) {
+  background-color: transparent !important;
 }
 
 /* ---------- Foco con teclado: el mismo cuadro de selección que el hover ----------

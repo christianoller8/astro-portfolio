@@ -107,7 +107,8 @@ function initChecks() {
   list.replaceChildren(
     ...checks.map((check) => {
       const li = document.createElement('li');
-      const value = document.createElement('span');
+      // <samp>: es la salida de una comprobación
+      const value = document.createElement('samp');
       value.className = 'kit-badge';
       value.dataset.state = check.ok ? 'ok' : 'fail';
       value.textContent = check.value;

@@ -80,6 +80,18 @@ const items = projects.map((project, i) => {
     <div class="pp-canvas">
       <div class="wrap">
         <div class="board">
+          {/* Hilos de prototipo: de cada frame a la nota de su caso (los dibuja kit.ts) */}
+          {
+            items.map(({ project }) => (
+              <svg
+                class="kit-thread board-thread"
+                id={`pt-${project.slug}`}
+                data-thread-from={`#pf-${project.slug}`}
+                data-thread-to={`#pn-${project.slug}`}
+                aria-hidden="true"
+              />
+            ))
+          }
           <ol class="board-list">
           {
             items.map(({ project, spot, mobile, href, kind, format, size }, i) => (
@@ -126,18 +138,6 @@ const items = projects.map((project, i) => {
             ))
           }
           </ol>
-          {/* Hilos de prototipo: de cada frame a la nota de su caso (los dibuja kit.ts) */}
-          {
-            items.map(({ project }) => (
-              <svg
-                class="kit-thread board-thread"
-                id={`pt-${project.slug}`}
-                data-thread-from={`#pf-${project.slug}`}
-                data-thread-to={`#pn-${project.slug}`}
-                aria-hidden="true"
-              />
-            ))
-          }
         </div>
       </div>
     </div>
@@ -145,10 +145,9 @@ const items = projects.map((project, i) => {
     <!-- Vista en lista -->
     <ol class="wrap plist">
       {
-        items.map(({ project, href, kind, format }, i) => (
+        items.map(({ project, href, kind, format }) => (
           <li>
             <a class="plist-row" href={href}>
-              <span class="plist-n">{String(i + 1).padStart(2, '0')}</span>
               <h2 class="plist-title">{project.data.title}</h2>
               <span class="plist-desc">{project.data.description}</span>
               <span class="plist-facts">
@@ -269,14 +268,13 @@ const items = projects.map((project, i) => {
   }
   .board-facts {
     margin-top: 0.5rem;
-    font: 500 0.8125rem/1.4 var(--font-mono);
+    font: 600 0.8125rem/1.4 var(--font-sans);
     color: var(--muted);
   }
   .board-desc {
     max-width: 44ch;
     margin-top: 0.75rem;
-    font-size: var(--step-small);
-    line-height: 1.45;
+    line-height: 1.4;
   }
   .board-cta {
     display: inline-flex;
@@ -316,6 +314,7 @@ const items = projects.map((project, i) => {
     .board-frame,
     .board-note {
       position: absolute;
+      z-index: 1;
     }
     .board-frame {
       top: calc(var(--fy) * 1cqi);
@@ -388,7 +387,7 @@ const items = projects.map((project, i) => {
   }
   .plist-row {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: baseline;
     gap: 0.5rem 1rem;
     padding: 1.1rem 1.1rem 1.2rem;
@@ -397,9 +396,8 @@ const items = projects.map((project, i) => {
       background-color var(--dur-micro) var(--ease-out),
       color var(--dur-micro) var(--ease-out);
   }
-  .plist-n,
   .plist-facts {
-    font: 500 0.8125rem/1.4 var(--font-mono);
+    font: 600 0.8125rem/1.4 var(--font-sans);
     color: var(--muted);
   }
   .plist-title {
@@ -410,13 +408,13 @@ const items = projects.map((project, i) => {
   }
   .plist-desc,
   .plist-facts {
-    grid-column: 2 / -1;
+    grid-column: 1 / -1;
   }
   .plist-desc {
     max-width: 56ch;
   }
   .plist-arrow {
-    grid-area: 1 / 3;
+    grid-area: 1 / 2;
     font-size: 1.25rem;
     transition: transform var(--dur-micro) var(--ease-out);
   }
@@ -425,8 +423,8 @@ const items = projects.map((project, i) => {
     color: var(--paper);
     background: var(--ink);
   }
-  .plist-row:hover :is(.plist-n, .plist-facts),
-  .plist-row:focus-visible :is(.plist-n, .plist-facts) {
+  .plist-row:hover .plist-facts,
+  .plist-row:focus-visible .plist-facts {
     color: color-mix(in srgb, var(--paper) 76%, var(--ink));
   }
   .plist-row:hover .plist-arrow {
@@ -434,18 +432,18 @@ const items = projects.map((project, i) => {
   }
   @media (min-width: 900px) {
     .plist-row {
-      grid-template-columns: 3rem minmax(0, 4fr) minmax(0, 6fr) auto;
+      grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) auto;
       gap: 0.35rem 1.5rem;
       padding: 1.25rem 1.5rem 1.35rem;
     }
     .plist-desc {
-      grid-area: 1 / 3;
+      grid-area: 1 / 2;
     }
     .plist-facts {
-      grid-area: 2 / 3;
+      grid-area: 2 / 2;
     }
     .plist-arrow {
-      grid-area: 1 / 4;
+      grid-area: 1 / 3;
     }
   }
 

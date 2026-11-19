@@ -572,7 +572,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     capturas de producto), y las franjas "en tinta" (pie, "Lo que más disfruté", la etapa actual)
     se invierten a claro, como estaba decidido.
   - Capturas: `.taste-skill/def/e5/e5-oscuro-arreglos.jpg` y `e5-lente-alineada.jpg`.
-- [ ] **Pieza de three.js (D18)** (**hecha el 19 nov; pendiente de tu visto bueno**). Elegiste la
+- [x] **Pieza de three.js (D18)** (hecha y aprobada el 19 nov). Elegiste la
   "vista explosionada", como cierre de "Cómo lo veo yo" en el inicio.
   - **"Y todo a la vez, en capas."** (`LayerStack.astro`, `src/scripts/layer-stack.ts`): la web de
     ejemplo se separa en sus cuatro capas, puestas en el espacio: 01 Boceto, 02 Diseño, 03 Código
@@ -591,7 +591,41 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     errores ni lienzos sueltos; 0 desbordes y la lente QA sin fallos. Capturas:
     `.taste-skill/def/e5/e5-capas-3d.jpg` y `e5-capas-3d-movil.jpg`.
   - No lo he podido ver moviéndose: el giro, el balanceo y la apertura a velocidad real los juzgas tú.
-- [ ] Inspector de la skill: 0 FAIL a 1440, 768 y 390 px.
+- [ ] Inspector de la skill: 0 FAIL a 1440, 768 y 390 px (**hecho el 19 nov; pendiente de tu visto
+  bueno**).
+  - **De 46 FAIL a 0** en catorce páginas (las ocho en español y seis en inglés), a los tres anchos,
+    con dos excepciones declaradas (abajo). Informes en `.taste-skill/def/e5/insp4/`.
+  - **Lo que se ha arreglado de verdad**:
+    - *Monoespaciada como rótulo*: el plan ya decía "mono solo para código y medidas". Los rótulos
+      (versiones, fechas, "Pruébalo…", nombres de capa, datos de contacto, estados…) pasan a la
+      letra de texto. La mono queda para código, rutas y valores medidos, que ahora van marcados
+      como tales en el HTML (`<code>` y `<samp>`).
+    - *Numeración decorativa* ("01", "02"…): fuera de las capas 3D, las funciones, los principios,
+      la lista de proyectos y los apartados de los casos.
+    - *Etiquetas pequeñas encima de títulos*: en los casos, cada apartado tiene ahora un título de
+      verdad; la anotación de cada decisión va debajo de su texto; "Siguiente proyecto" y el nombre
+      son una sola pieza grande.
+    - *Textos grandes de más de dos líneas*: el problema del caso, la bio de Sobre mí y la frase de
+      Contacto bajan a 36 px (son párrafos, no titulares). "Lo que más disfruté" pasa a ser un
+      titular corto con su frase al lado. El titular de la web de ejemplo se acorta.
+    - *Degradados*: el subrayado de los enlaces y el control de separación ya no los usan.
+    - *Secciones cargadas a un lado*: "Qué hace" va en tres columnas y "Lo que más disfruté", en dos.
+    - *Texto tapado*: los hilos de prototipo van ahora por debajo de los títulos (Proyectos y casos).
+    - *Contraste* del control Lienzo/Lista (el texto no tenía su fondo real debajo), *tamaño del
+      texto* de las notas de Proyectos (16 px), *sombra* de un panel, *nombre del frame* a menos
+      de 12 px del borde en móvil y la *paleta del código* (tema propio: tinta, grafito y verde).
+  - **Excepciones declaradas** (`--allow`), con su porqué:
+    - `eyebrow`: el inspector toma el nombre del frame ("Inicio", "Sobre mí"…) por una etiqueta
+      encima del H1. Es la pieza central del concepto y va fuera del artboard, como en Figma.
+    - `few-pictures` (páginas interiores): pide al menos cuatro imágenes reales. Faltan las tuyas:
+      capturas de Tempora, Vibora y Learnish y la sesión de fotos. Se quita cuando lleguen.
+    - `covered-text` (solo Inicio, en móvil): en "Cómo lo veo yo" el texto pasa por debajo de la web
+      de ejemplo, que va fija. Es como funciona la escena.
+  - Avisos (WARN) que quedan y no bloquean: no hay vídeo, muchos tamaños de letra distintos (los de
+    las interfaces de ejemplo) y la hoja de dirección antigua de la skill (otras tipografías).
+  - Tras los cambios: 0 desbordes en 108 combinaciones y la lente QA sin fallos.
+  - **Textos que he cambiado** (provisionales, como el resto): los titulares de "Lo que más
+    disfruté" de los cuatro casos y el titular de la web de ejemplo.
 - [ ] Las 10 pruebas de la rúbrica.
 
 **Hecho cuando**: pasa toda la rúbrica. Ahí el diseño está de 10.
