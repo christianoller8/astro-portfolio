@@ -981,9 +981,12 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
      el texto de su caso: es el crédito de su parte del trabajo y no se quitó sin preguntar.
   10. "Cómo trabajo": el título pasa al tamaño grande de la escala; sus tres principios tenían
       el mismo tamaño que él y no se leía como título.
-  11. Herramientas: fuera los tres botones "Ver la web como…". **Los logotipos de cada tecnología
-      están sin hacer**: hace falta un paquete de iconos de marcas (no hay ninguno instalado) y
-      hay que pedirle permiso para añadirlo.
+  11. Herramientas: fuera los tres botones "Ver la web como…". Cada herramienta es una pieza con
+      su **logotipo** en tinta y su nombre. Los logotipos salen de `simple-icons` (CC0; lo
+      autorizó él, va como dependencia de desarrollo y no llega al navegador). Llevan logotipo 22
+      de 30. **Sin logotipo: Procreate, SQL Server, Playwright y Karma**, que el paquete no trae,
+      y las que no son una marca (Signals, REST y las dos frases). Si quiere los cuatro que
+      faltan, hay que conseguir su SVG oficial.
   12. Idiomas: fuera "Todo esto, en una página." y el botón del CV; la lista va de lado a lado.
   13. Contacto: el formulario, centrado en su franja.
   14. Contacto: los cuatro estados del componente, ocultos con CSS (no borrados: el guion lee de

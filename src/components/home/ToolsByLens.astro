@@ -1,4 +1,35 @@
 ---
+// Lo que uso, por oficio: cada herramienta con su logotipo (20 nov, pedido por Christian).
+// Los logotipos salen de simple-icons (CC0), que da el trazado de cada marca en un solo color: se
+// pintan en la tinta del tema, no en el color de la marca. Solo se importan los que se usan y
+// acaban como SVG dentro del HTML; el paquete no llega al navegador.
+// Sin logotipo quedan las que simple-icons no trae (Procreate, SQL Server, Playwright y Karma) y
+// las que no son una marca (Signals, REST, las frases): van con su nombre a secas. Ojo: el icono
+// "Signal" del paquete es el de la app de mensajería, no el de los signals de Angular.
+import {
+  siAngular,
+  siAstro,
+  siBitbucket,
+  siCypress,
+  siFigma,
+  siGit,
+  siGraphql,
+  siJasmine,
+  siJavascript,
+  siJira,
+  siMongodb,
+  siNextdotjs,
+  siNgrx,
+  siPostman,
+  siPrimeng,
+  siPython,
+  siReact,
+  siReactivex,
+  siSass,
+  siTailwindcss,
+  siTypescript,
+  siWordpress,
+} from 'simple-icons';
 import { useTranslations } from '@/i18n/utils';
 
 interface Props {
@@ -8,39 +39,58 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+const logos: Record<string, { path: string }> = {
+  Figma: siFigma,
+  Angular: siAngular,
+  RxJS: siReactivex,
+  NgRx: siNgrx,
+  TypeScript: siTypescript,
+  JavaScript: siJavascript,
+  Python: siPython,
+  Astro: siAstro,
+  React: siReact,
+  'Next.js': siNextdotjs,
+  'Tailwind CSS': siTailwindcss,
+  SASS: siSass,
+  PrimeNG: siPrimeng,
+  MongoDB: siMongodb,
+  GraphQL: siGraphql,
+  WordPress: siWordpress,
+  Git: siGit,
+  Bitbucket: siBitbucket,
+  Jira: siJira,
+  Cypress: siCypress,
+  Jasmine: siJasmine,
+  Postman: siPostman,
+};
+
+// Cada fila es una familia de herramientas
 const columns = [
   {
-    lens: 'design',
     title: t('lens.design'),
-    tools: [
-      'Figma',
-      'Procreate',
-      lang === 'es' ? 'Wireframes y prototipos' : 'Wireframes and prototypes',
-    ],
+    rows: [['Figma', 'Procreate'], [lang === 'es' ? 'Wireframes y prototipos' : 'Wireframes and prototypes']],
   },
   {
-    lens: 'code',
     title: t('lens.code'),
-    tools: [
-      'Angular · RxJS · NgRx · Signals',
-      'TypeScript · JavaScript · Python',
-      'Astro · React · Next.js',
-      'Tailwind CSS · SASS · PrimeNG',
-      'SQL Server · MongoDB · REST · GraphQL',
-      'WordPress · Git · Bitbucket · Jira',
+    rows: [
+      ['Angular', 'RxJS', 'NgRx', 'Signals'],
+      ['TypeScript', 'JavaScript', 'Python'],
+      ['Astro', 'React', 'Next.js'],
+      ['Tailwind CSS', 'SASS', 'PrimeNG'],
+      ['SQL Server', 'MongoDB', 'REST', 'GraphQL'],
+      ['WordPress', 'Git', 'Bitbucket', 'Jira'],
     ],
   },
   {
-    lens: 'qa',
     title: t('lens.qa'),
-    tools: [
-      'Cypress · Playwright',
-      'Jasmine · Karma',
-      'Postman',
-      lang === 'es' ? 'Tests unitarios, de integración y E2E' : 'Unit, integration and E2E tests',
+    rows: [
+      ['Cypress', 'Playwright'],
+      ['Jasmine', 'Karma'],
+      ['Postman'],
+      [lang === 'es' ? 'Tests unitarios, de integración y E2E' : 'Unit, integration and E2E tests'],
     ],
   },
-] as const;
+];
 ---
 
 <section class="tools wrap" data-cs="<section> ToolsByLens.astro">
@@ -53,8 +103,19 @@ const columns = [
         <div class="tools-col" data-reveal style={`--reveal-i: ${i + 2}`}>
           <h3 class="tools-title">{column.title}</h3>
           <ul class="tools-list">
-            {column.tools.map((tool) => (
-              <li>{tool}</li>
+            {column.rows.map((row) => (
+              <li class="tools-row">
+                {row.map((tool) => (
+                  <span class="tool">
+                    {logos[tool] && (
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                        <path d={logos[tool].path} />
+                      </svg>
+                    )}
+                    {tool}
+                  </span>
+                ))}
+              </li>
             ))}
           </ul>
           {/* Aquí iba un botón "Ver la web como Diseño / Código / QA" por columna: Christian lo quitó
@@ -89,11 +150,28 @@ const columns = [
   }
   .tools-list {
     display: grid;
-    gap: 0.35rem;
+    gap: 0.375rem;
     margin-top: 1.1rem;
-    font-size: var(--step-lead);
-    line-height: 1.3;
+  }
+  .tools-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+  /* Cada herramienta, una pieza plana del sistema: su logotipo en tinta y su nombre */
+  .tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.25rem;
+    padding: 0 0.7rem;
+    font-weight: 600;
     letter-spacing: -0.01em;
+    background: var(--tint);
+  }
+  .tool svg {
+    flex: none;
+    fill: currentColor;
   }
   @media (min-width: 768px) {
     .tools-grid {
