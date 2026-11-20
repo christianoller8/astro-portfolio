@@ -26,8 +26,7 @@ const isList = (url: URL) => ['/', '/projects'].includes(plain(url));
  */
 function tag(slug: string, near?: Element | null) {
   // Proyectos tiene dos vistas (cajas y lienzo) y las dos llevan estas piezas: valen las de la que
-  // se ve. (Al llegar navegando, la vista guardada ya está aplicada: lo hace el script del <head>
-  // de Layout.astro en astro:after-swap, que corre antes que este.)
+  // se ve. (La página abre siempre en cajas, así que al llegar a ella son las de las cajas.)
   const shown = (selector: string) =>
     [...document.querySelectorAll<HTMLElement>(selector)].find((el) => el.getClientRects().length > 0) ?? null;
   const within = (selector: string) => near?.closest('li, article')?.querySelector<HTMLElement>(selector) ?? shown(selector);

@@ -89,7 +89,8 @@ export const ui = {
     'layers.design': 'Diseño',
     'layers.code': 'Código',
     'layers.qa': 'Pruebas',
-    'view.lead': 'La misma página, mirada con mis tres oficios. Baja y verás cómo cambia.',
+    'view.lead': 'La misma página, mirada con mis tres oficios.',
+    'view.lead.more': 'Baja y verás cómo cambia.',
     'view.frame': 'norte.cafe',
     'view.step.0.title': 'La web',
     'view.step.0.body': 'Lo que ve cualquiera: una página terminada que funciona.',
@@ -165,10 +166,8 @@ export const ui = {
 
     // Proyectos
     'projects.title': 'Proyectos',
-    'projects.lead':
-      'Tres apps propias que diseño, programo y pruebo de principio a fin, y la web de Vístalo.',
-    'projects.page.lead':
-      'Apps propias y webs publicadas. Cada una pasa por boceto, código y QA antes de enseñarse.',
+    'projects.lead': 'Te presento mis últimos proyectos.',
+    'projects.page.lead': 'Apps propias y webs publicadas. Entra en cada una y mira cómo está hecha por dentro.',
     'projects.view': 'Ver proyecto',
     'projects.mode.label': 'Ver los proyectos como',
     'projects.mode.boxes': 'Cajas',
@@ -219,13 +218,12 @@ export const ui = {
     'about.meta.title': 'Sobre mí · Christian Oller',
     'about.meta.description':
       'Christian Oller, software developer que diseña, programa y prueba: Angular, Astro, React, Figma, Cypress y Playwright. En remoto desde España.',
-    'about.title': 'Diseño, código y QA',
-    'about.p1':
-      'Soy software developer: diseño, programo y pruebo. Llevo años construyendo aplicaciones con Angular y webs con Astro, React y WordPress.',
+    'about.title': 'Hola, soy Christian.',
+    'about.p1': 'Llevo años haciendo webs, aplicaciones y software, y también logotipos y diseños.',
     'about.p2':
       'Antes de programar, diseño: Figma para las interfaces y Procreate cuando toca dibujar. Después pruebo lo que hago con Jasmine, Cypress y Playwright, porque una interfaz bonita que falla no sirve.',
     'about.p3':
-      'En 2025 cofundé Vístalo con Eloi Cotonat, una agencia que hace webs, fotos y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
+      'En 2025 cofundé Vístalo, una agencia que hace webs, fotos y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
     'about.experience.title': 'Trayectoria',
     'about.thread': 'Angular: el hilo de casi todo',
     'about.education.title': 'Formación',
@@ -360,7 +358,8 @@ export const ui = {
     'layers.design': 'Design',
     'layers.code': 'Code',
     'layers.qa': 'Tests',
-    'view.lead': 'The same page, seen through my three trades. Scroll and watch it change.',
+    'view.lead': 'The same page, seen through my three trades.',
+    'view.lead.more': 'Scroll and watch it change.',
     'view.frame': 'norte.cafe',
     'view.step.0.title': 'The website',
     'view.step.0.body': 'What anyone sees: a finished page that works.',
@@ -435,10 +434,8 @@ export const ui = {
     'process.check.export': "Exports the month's hours",
 
     'projects.title': 'Projects',
-    'projects.lead':
-      'Three apps of my own that I design, build and test end to end, plus the Vístalo website.',
-    'projects.page.lead':
-      'My own apps and published websites. Each one goes through sketch, code and QA before it is shown.',
+    'projects.lead': 'Meet my latest projects.',
+    'projects.page.lead': 'My own apps and published websites. Open any of them and see how it is built inside.',
     'projects.view': 'View project',
     'projects.mode.label': 'View the projects as',
     'projects.mode.boxes': 'Boxes',
@@ -486,13 +483,12 @@ export const ui = {
     'about.meta.title': 'About · Christian Oller',
     'about.meta.description':
       'Christian Oller, a software developer who designs, builds and tests: Angular, Astro, React, Figma, Cypress and Playwright. Remote from Spain.',
-    'about.title': 'Design, code and QA',
-    'about.p1':
-      "I'm a software developer: I design, build and test. I've spent years building applications with Angular and websites with Astro, React and WordPress.",
+    'about.title': "Hi, I'm Christian.",
+    'about.p1': "I've spent years making websites, apps and software, as well as logos and designs.",
     'about.p2':
       "Before coding, I design: Figma for interfaces and Procreate when it's time to draw. Then I test what I build with Jasmine, Cypress and Playwright, because a beautiful interface that breaks is no use.",
     'about.p3':
-      'In 2025 I co-founded Vístalo with Eloi Cotonat, an agency that makes websites, photos and Google presence for small businesses. I work remotely from Spain.',
+      'In 2025 I co-founded Vístalo, an agency that makes websites, photos and Google presence for small businesses. I work remotely from Spain.',
     'about.experience.title': 'Experience',
     'about.thread': 'Angular: the thread through most of it',
     'about.education.title': 'Education',

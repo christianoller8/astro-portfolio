@@ -9,7 +9,6 @@ import ToolsByLens from '@/components/home/ToolsByLens.astro';
 // en color está en docs/imgs/sobre-mi-luz.jpg). La misma foto en los dos modos
 import aboutImage from '@/assets/images/about.jpg';
 import { useTranslations } from '@/i18n/utils';
-import { site, hasCV } from '@/data/site';
 import { experience, education, languages } from '@/data/experience';
 import type { ui } from '@/i18n/ui';
 
@@ -152,7 +151,9 @@ const tests =
 
   <!-- Tres principios, cada uno con su ejemplo: un boceto, un componente y un test -->
   <section class="wrap principles" data-cs="<section> Principles">
-    <h2 class="t-head" data-reveal>{t('about.principles.title')}</h2>
+    {/* El título va en el tamaño grande de la escala: sus tres principios tienen el tamaño de los
+        demás títulos de sección y, con el mismo, "Cómo trabajo" no se leía como título (20 nov) */}
+    <h2 class="t-display principles-title" data-reveal>{t('about.principles.title')}</h2>
     <ol class="principles-list">
       {
         principles.map((item) => (
@@ -202,7 +203,8 @@ const tests =
 
   <ToolsByLens lang={lang} />
 
-  <!-- Idiomas y CV -->
+  <!-- Idiomas, de lado a lado. (Al lado iba "Todo esto, en una página." con el botón de descargar
+       el CV: Christian lo quitó el 20 nov. El CV sigue en el hero y en el pie.) -->
   <section class="wrap extra" data-cs="<section> Languages">
     <div class="langs">
       <h2 class="t-head" data-reveal>{t('about.langs.title')}</h2>
@@ -217,23 +219,6 @@ const tests =
           ))
         }
       </ul>
-    </div>
-    <div class="cv">
-      <h2 class="cv-title" data-reveal>{t('about.cv.title')}</h2>
-      {
-        hasCV ? (
-          <a class="btn btn-primary cv-btn" href={site.cv} download data-reveal style="--reveal-i: 1">
-            {t('hero.cta.cv')}
-            <span class="btn-arrow" aria-hidden="true">
-              ↓
-            </span>
-          </a>
-        ) : (
-          <p class="t-lead cv-pending" data-reveal>
-            {t('about.cv.pending')}
-          </p>
-        )
-      }
     </div>
   </section>
 </Layout>
@@ -659,20 +644,6 @@ const tests =
     text-align: right;
     color: var(--muted);
   }
-  .cv {
-    align-self: end;
-  }
-  .cv-title {
-    max-width: 16ch;
-    font-size: var(--step-head);
-    font-weight: 650;
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    text-wrap: balance;
-  }
-  .cv-btn {
-    margin-top: 1.5rem;
-  }
 
   /* En móvil y tablet estrecha el retrato va justo debajo del título */
   @media (max-width: 899px) {
@@ -734,10 +705,6 @@ const tests =
     }
     .principle:nth-child(odd) .principle-example > * {
       margin-left: auto;
-    }
-    .extra {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: 4rem;
     }
   }
 </style>

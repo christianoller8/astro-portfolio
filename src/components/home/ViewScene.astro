@@ -55,7 +55,10 @@ const lenses = [
 >
   <div class="wrap vs-head">
     <h2 class="t-head" data-reveal>{t('view.title')}</h2>
-    <p class="t-lead vs-lead" data-reveal style="--reveal-i: 1">{t('view.lead')}</p>
+    {/* Dos frases, una por línea (pedido por Christian el 20 nov) */}
+    <p class="t-lead vs-lead" data-reveal style="--reveal-i: 1">
+      {t('view.lead')}<br />{t('view.lead.more')}
+    </p>
   </div>
 
   <div class="wrap vs-grid">
@@ -205,7 +208,8 @@ const lenses = [
     padding-bottom: clamp(3rem, 7vw, 6rem);
   }
   .vs-lead {
-    max-width: 44ch;
+    /* La primera frase cabe entera en su línea */
+    max-width: 52ch;
     margin-top: 1rem;
     color: var(--muted);
   }

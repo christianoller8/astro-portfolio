@@ -1,5 +1,6 @@
 ---
-// Proyectos (plan §5.3), con dos vistas; la elegida se recuerda (localStorage):
+// Proyectos (plan §5.3), con dos vistas. Abre siempre en cajas; la otra, solo si se pulsa (ya no
+// se recuerda la elegida):
 // - Cajas (la principal, desde el 20 nov): cada proyecto en un bloque de cajas, con su pieza, su
 //   resumen y sus decisiones (ProjectBento.astro). Sustituye a la lista de una línea por proyecto.
 // - Lienzo: los cuatro proyectos como frames de un archivo de diseño, cada uno en su formato
@@ -48,13 +49,9 @@ const items = projects.map((project, i) => {
   description={t('projects.meta.description')}
   frame={t('nav.projects')}
 >
+  {/* La página abre siempre en cajas; el lienzo, solo si se pulsa (pedido por Christian el 20 nov:
+      antes se recordaba la última vista y él, que había probado el lienzo, entraba siempre en él) */}
   <section class="pp" data-projects data-mode="boxes" data-cs="<section> ProjectsPage.astro">
-    <!-- Antes de pintar: la vista que se eligió la última vez (por defecto, las cajas) -->
-    <script is:inline>
-      try {
-        if (localStorage.getItem('projects-mode') === 'canvas') document.currentScript.parentElement.dataset.mode = 'canvas';
-      } catch (e) {}
-    </script>
 
     <div class="wrap pp-head">
       <div>
@@ -398,7 +395,8 @@ const items = projects.map((project, i) => {
   // Las interfaces de las cajas se pueden tocar
   import '@/scripts/project-demos';
 
-  // Cambio de vista (se recuerda) y el hilo de cada proyecto, que se vuelve a dibujar al señalarlo
+  // Cambio de vista (vale mientras se está en la página: al volver, otra vez las cajas) y el hilo
+  // de cada proyecto, que se vuelve a dibujar al señalarlo
   document.addEventListener('click', (event) => {
     const btn = (event.target as Element | null)?.closest<HTMLElement>('[data-projects-mode]');
     const section = btn?.closest<HTMLElement>('[data-projects]');
@@ -406,11 +404,6 @@ const items = projects.map((project, i) => {
     const mode = btn.dataset.projectsMode === 'canvas' ? 'canvas' : 'boxes';
     section.dataset.mode = mode;
     sync(section);
-    try {
-      localStorage.setItem('projects-mode', mode);
-    } catch {
-      /* sin almacenamiento: la vista vale solo para esta página */
-    }
     if (mode === 'canvas') redraw(section);
     // Al volver a las cajas, lo que se mide con su ancho (la web de Vístalo abierta en su marco) se ajusta de nuevo
     else window.dispatchEvent(new Event('resize'));
@@ -442,11 +435,6 @@ const items = projects.map((project, i) => {
   document.addEventListener('astro:page-load', () => {
     const section = document.querySelector<HTMLElement>('[data-projects]');
     if (!section) return;
-    try {
-      if (localStorage.getItem('projects-mode') === 'canvas') section.dataset.mode = 'canvas';
-    } catch {
-      /* sin almacenamiento */
-    }
     sync(section);
     // Las fuentes cambian el alto de las notas: los hilos se repiten cuando han cargado
     document.fonts?.ready.then(() => section.dataset.mode === 'canvas' && redraw(section));

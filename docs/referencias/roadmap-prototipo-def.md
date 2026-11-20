@@ -959,6 +959,36 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     de la cronología y las herramientas por lente). Las etiquetas "v7.0, v6.0…" de la trayectoria
     no son de Angular: son la numeración de las etapas y se quedan.
 
+- [ ] **Textos y ajustes, primera tanda** (20 nov; hecho, pendiente de su repaso punto por punto).
+  Los textos nuevos son provisionales, en los dos idiomas:
+  1. Hero: no se toca.
+  2. Inicio, Proyectos: "Te presento mis últimos proyectos." (pidió "mis 3 últimos", pero se
+     enseñan cuatro: tres apps y la web de Vístalo).
+  3. "Tú ves una web. Yo la veo así.": se queda; no le acaba de convencer y quiere alternativas.
+  4. Su texto, en dos líneas: "La misma página, mirada con mis tres oficios." / "Baja y verás
+     cómo cambia."
+  5. Proyectos, entrada: "Apps propias y webs publicadas. Entra en cada una y mira cómo está
+     hecha por dentro." (no quiere "boceto, código y QA" repetido por la web).
+  6. Proyectos abre **siempre en cajas**; el lienzo, solo si se pulsa. Ya no se recuerda la vista
+     (`projects-mode` en `localStorage` dejó de usarse): él había probado el lienzo y entraba
+     siempre en él.
+  7. Sobre mí, titular: "Hola, soy Christian." en lugar de "Diseño, código y QA".
+  8. Sobre mí, primer párrafo: "Llevo años haciendo webs, aplicaciones y software, y también
+     logotipos y diseños." (sin repetir los tres oficios y sin tecnologías). El segundo párrafo,
+     que sí nombra herramientas, no lo mencionó y sigue igual.
+  9. Vístalo se queda; **Eloi Cotonat, fuera** de la bio y de la trayectoria (`experience.ts`).
+     Sigue saliendo en el papel del proyecto Vístalo ("Eloi Cotonat: pruebas, foto y vídeo") y en
+     el texto de su caso: es el crédito de su parte del trabajo y no se quitó sin preguntar.
+  10. "Cómo trabajo": el título pasa al tamaño grande de la escala; sus tres principios tenían
+      el mismo tamaño que él y no se leía como título.
+  11. Herramientas: fuera los tres botones "Ver la web como…". **Los logotipos de cada tecnología
+      están sin hacer**: hace falta un paquete de iconos de marcas (no hay ninguno instalado) y
+      hay que pedirle permiso para añadirlo.
+  12. Idiomas: fuera "Todo esto, en una página." y el botón del CV; la lista va de lado a lado.
+  13. Contacto: el formulario, centrado en su franja.
+  14. Contacto: los cuatro estados del componente, ocultos con CSS (no borrados: el guion lee de
+      ahí el nombre del estado).
+
 ## Fase técnica (después del 10 de diseño)
 
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.

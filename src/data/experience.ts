@@ -24,8 +24,8 @@ export const experience: Job[] = [
     period: { es: '2025 – Actualidad', en: '2025 – Present' },
     place: { es: 'Remoto', en: 'Remote' },
     summary: {
-      es: 'Agencia que hace webs, fotos y presencia en Google para negocios pequeños, con Eloi Cotonat.',
-      en: 'An agency that builds websites, photography and Google presence for small businesses, with Eloi Cotonat.',
+      es: 'Agencia que hace webs, fotos y presencia en Google para negocios pequeños.',
+      en: 'An agency that builds websites, photography and Google presence for small businesses.',
     },
     highlights: {
       es: ['Diseño cada pantalla y escribo el código, de la idea a la web publicada.'],

@@ -306,6 +306,20 @@ const topics = [
     grid-template-columns: minmax(0, 1fr);
     gap: 3rem;
   }
+  /* El formulario, en el centro de la franja (pedido por Christian el 20 nov) */
+  .form-frame {
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+  /* OCULTO (20 nov), no borrado: el panel con los cuatro estados del componente (vacío,
+     escribiendo, válido y enviado) que iba a la derecha del formulario. A Christian no le gusta.
+     Sigue en la página porque el guion lee de él el nombre del estado que enseña el rótulo del
+     formulario; para recuperarlo, quitar esta regla y devolver a .form-grid sus dos columnas
+     (8fr y 3fr) a partir de 1024 px */
+  .form-grid .states {
+    display: none;
+  }
   .form-name {
     margin-bottom: 0.5rem;
   }
@@ -637,11 +651,8 @@ const topics = [
       align-items: end;
       gap: 3rem;
     }
-    .form-grid {
-      grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
-      align-items: start;
-      gap: 4rem;
-    }
+    /* (Con los cuatro estados a la vista, la rejilla era 8fr + 3fr: el formulario y, a su derecha,
+       los estados. Ahora el formulario va solo y centrado: ver .form-frame más abajo) */
     .states {
       position: sticky;
       top: calc(var(--toolbar-h) + 2rem);
