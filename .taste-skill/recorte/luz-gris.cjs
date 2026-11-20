@@ -1,13 +1,15 @@
 // Versión "de día" de la foto de la luz roja: la figura sola, sin la franja de luz de la pared ni
 // sombra, con fondo transparente para que se vea la hoja de la página (su gris y su textura, D25).
-// Detrás del cuerpo lleva un velo claro muy suave, que hace de luz de estudio y se apaga hacia los
-// bordes y hacia arriba, donde la foto toca la barra, para que no haya ningún corte.
+// Detrás del cuerpo lleva un velo oscuro muy suave, que hace de pared (un velo claro lo despegaba
+// del papel y la figura parecía flotar) y se apaga hacia los bordes y hacia arriba, donde la foto
+// toca la barra, para que no haya ningún corte.
 // En el borde de la figura se quita la pared vieja (oscura y, a la altura de la franja, roja) para
 // que no quede cerco.
 // Uso (desde la raíz, usa sharp):
 //   node .taste-skill/recorte/luz-gris.cjs <foto.jpg> <mascara.png> <salida.webp> [previa.jpg]
 // La máscara de card.jpg está en docs/imgs/card-mascara.png (sale de mascara-diferencia.cjs).
-// Ajustes por variable de entorno: GLOW (opacidad máxima del velo, 0–1), CX, CY, RX, RY (centro y
+// Ajustes por variable de entorno: GLOW (opacidad máxima del velo, 0–1), VEIL (su tono: 0 negro,
+// 1 blanco), CX, CY, RX, RY (centro y
 // radios del velo, en fracciones de la foto), INNER (desde dónde se apaga), TOP0, TOP1 (rampa de
 // arriba) y SHEET (gris de la hoja, solo para la previa).
 const sharp = require('sharp');
@@ -15,7 +17,7 @@ const [photoPath, maskPath, outPath, prevPath] = process.argv.slice(2);
 const env = (k, v) => (process.env[k] === undefined ? v : +process.env[k]);
 // Los valores por defecto son los de card-light.webp. La foto asoma bajo la barra al 17 % de su alto
 // (en escritorio y en móvil): a esa altura el velo tiene que haberse apagado ya.
-const GLOW = env('GLOW', 0.34), CX = env('CX', 0.55), CY = env('CY', 0.58), RX = env('RX', 0.66), RY = env('RY', 0.56);
+const GLOW = env('GLOW', 0.12), VEIL = env('VEIL', 0), CX = env('CX', 0.55), CY = env('CY', 0.58), RX = env('RX', 0.66), RY = env('RY', 0.56);
 const INNER = env('INNER', 0.35), TOP0 = env('TOP0', 0.17), TOP1 = env('TOP1', 0.32), SHEET = env('SHEET', 0xd6);
 
 // Desenfoque de caja separable sobre un Float32Array
@@ -63,7 +65,7 @@ const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const i = y * W + x, u = x / W, v = y / H;
     const r = Math.hypot((u - CX) / RX, (v - CY) / RY);
-    // El velo: blanco, con esta opacidad
+    // El velo: del tono VEIL (0 negro, 1 blanco), con esta opacidad
     const g = (1 - smooth(INNER, 1, r)) * smooth(TOP0, TOP1, v) * GLOW;
     const a = alpha[i];
     // Figura (a) sobre el velo (g): la opacidad del píxel y su color, sin premultiplicar
@@ -73,7 +75,7 @@ const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a
       // Color propio de la figura en el borde: la foto menos la parte de pared que se colaba. Solo
       // donde la máscara es fiable (a ≥ 0,5) y sin apartarse mucho de la foto
       const own = a >= 1 ? p : a >= 0.5 ? Math.min(p + 0.15, Math.max(p - 0.15, (p - (1 - a) * wall[c][i]) / a)) : p;
-      const color = cover > 1e-4 ? (a * own + (1 - a) * g) / cover : 1;
+      const color = cover > 1e-4 ? (a * own + (1 - a) * g * VEIL) / cover : VEIL;
       out[i * 4 + c] = Math.round(Math.min(1, Math.max(0, color)) * 255);
     }
     out[i * 4 + 3] = Math.round(cover * 255);
