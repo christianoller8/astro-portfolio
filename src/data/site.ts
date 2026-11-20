@@ -6,7 +6,8 @@ const cvPath = '/cv/christian-oller-cv.pdf';
 
 export const site = {
   name: 'Christian Oller',
-  email: 'contacto@christianoller.com',
+  // Su correo, el que indicó él el 20 nov (hasta entonces la web mostraba contacto@christianoller.com)
+  email: 'christianoller.dev@gmail.com',
   linkedin: 'https://www.linkedin.com/in/christian-oller',
   github: 'https://github.com/christianoller8',
   cv: cvPath,
