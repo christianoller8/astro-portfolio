@@ -130,13 +130,10 @@ const roles = [
     /* El ancho del contenido manda en todo el hero: titular, columnas y foto */
     container-type: inline-size;
     /* Móvil: proporción de la foto (alto / ancho) y punto de su alto en el que ya es transparente.
-       El texto empieza justo ahí. En claro la foto es cuadrada; en oscuro, más alta */
+       El texto empieza justo ahí. Son los mismos en los dos modos: al cambiar de tema ni la foto ni
+       el texto se mueven */
     --m-photo: 1;
     --m-clear: 0.88;
-  }
-  :global(:root.dark) .hero-inner {
-    --m-photo: 1.18;
-    --m-clear: 0.92;
   }
   .hero-stage {
     position: relative;
@@ -339,18 +336,22 @@ const roles = [
       left: 0;
       width: 100%;
     }
-    /* Claro: encima de la cabeza solo hay blanco, así que la foto se sube. La luz llega de borde a
-       borde y la chaqueta se desvanece antes del nombre. Oscuro: la foto entera, con su pared */
+    /* El mismo encuadre y el mismo fundido de abajo en los dos modos: la foto se sube (la cabeza
+       queda arriba) y la chaqueta se desvanece antes del nombre. En oscuro, además, la pared se
+       funde arriba para que no haya un corte recto bajo la barra */
     .hero-photo {
       aspect-ratio: 1 / var(--m-photo);
+      --fade-from: 77%;
+      --fade-to: calc(var(--m-clear) * 100%);
+    }
+    .hero-photo-img {
+      object-position: 50% 52%;
     }
     .hero-photo-img--light {
-      object-position: 50% 52%;
-      mask-image: linear-gradient(180deg, #000 77%, transparent calc(var(--m-clear) * 100%));
+      mask-image: linear-gradient(180deg, #000 var(--fade-from), transparent var(--fade-to));
     }
     .hero-photo-img--dark {
-      object-position: 50% 30%;
-      mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 58%, transparent calc(var(--m-clear) * 100%));
+      mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 var(--fade-from), transparent var(--fade-to));
     }
     /* El texto arranca donde la foto ya es transparente. La foto ocupa el ancho del contenido más
        sus dos márgenes (100cqi + 2 × --pad); su alto es ese ancho por --m-photo */
