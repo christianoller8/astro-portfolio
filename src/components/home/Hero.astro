@@ -177,9 +177,11 @@ const roles = [
   .hero-photo-img--dark {
     display: none;
     filter: brightness(0.9) saturate(0.95);
+    /* Arriba la pared también se funde con la hoja, en vez de cortarse recta bajo la barra. La foto
+       asoma al 16,8 % de su alto (12,6cqi de 75cqi); el pelo, oscuro como la hoja, no lo acusa */
     mask-image:
       linear-gradient(90deg, transparent 0, #000 30%, #000 82%, transparent 100%),
-      linear-gradient(180deg, #000 62%, transparent 96%);
+      linear-gradient(180deg, transparent 16.8%, #000 25%, #000 62%, transparent 96%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
@@ -341,7 +343,7 @@ const roles = [
     }
     .hero-photo-img--dark {
       object-position: 50% 30%;
-      mask-image: linear-gradient(180deg, #000 48%, transparent calc(var(--m-clear) * 100%));
+      mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 48%, transparent calc(var(--m-clear) * 100%));
     }
     /* El texto arranca donde la foto ya es transparente. La foto ocupa el ancho del contenido más
        sus dos márgenes (100cqi + 2 × --pad); su alto es ese ancho por --m-photo */
