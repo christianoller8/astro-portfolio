@@ -795,6 +795,13 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Componentes: `ThemeToggle.astro` (rehecho) y `LangSwitch.astro` (nuevo), los dos con una
     variante para el menú.
   - Miniaturas del lienzo: repetidas las 32 (la barra sale en todas). Las alturas no cambian.
+- [x] **Foto oscura del hero: bordes** (hecho y aprobado el 20 nov; solo cambia la máscara, la foto
+  es la misma):
+  - Arriba, la pared ya no corta recta bajo la barra: se funde con la hoja (del 16,8 % al 25 % del
+    alto de la foto; en móvil, del 0 al 8 %). El pelo no lo acusa porque es del tono de la hoja.
+  - Abajo, menos fundido: la figura aguanta sólida hasta el 71 % (antes, 62 %); en móvil, hasta el
+    58 % (antes, 48 %). El punto donde se desvanece del todo no cambia.
+  - Pendiente: repetir las miniaturas de la home en oscuro (`es-home-dark.jpg`, `en-home-dark.jpg`).
 
 ## Fase técnica (después del 10 de diseño)
 
