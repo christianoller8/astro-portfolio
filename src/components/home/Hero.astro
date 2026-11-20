@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import portraitDark from '@/assets/images/card.jpg';
+import portraitDark from '@/assets/images/card-dark.jpg';
 import portraitLight from '@/assets/images/card-light.webp';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
@@ -24,7 +24,9 @@ const roles = [
 <!--
   Hero: el retrato (la foto de la luz roja, en los dos modos) va fundido en el fondo, sin caja ni
   panel (referencia: la página "nosotros" de Vístalo).
-  - Oscuro: la foto tal cual (card.jpg). Su pared oscura se desvanece en la hoja oscura.
+  - Oscuro: la foto con su pared y la franja de luz, pero sin la sombra que la figura proyectaba en
+    la pared (card-dark.jpg, que sale de card.jpg con .taste-skill/recorte/sin-sombra.cjs). La
+    pared oscura se desvanece en la hoja oscura.
   - Claro: la misma foto "de día" (card-light.webp, D24 y D25): la figura sola, sin la franja de
     luz de la pared ni sombra, con fondo transparente para que se vea la hoja con su textura.
     Detrás del cuerpo lleva un velo oscuro muy suave, que hace de pared y se apaga hacia arriba
