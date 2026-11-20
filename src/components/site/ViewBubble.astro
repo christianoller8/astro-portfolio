@@ -7,8 +7,9 @@
 //   igual que ella.
 // - Los botones no tienen lógica propia: llevan data-lens-set, data-lens-clear y data-canvas-open,
 //   y de eso se encargan lenses.ts y canvas.ts. Los atajos (1, 2, 3, M y Esc) son los de siempre.
-// - La cara no es la de la marca: aquí guiña un ojo y sonríe con la boca abierta (pedido por
-//   Christian para que no sea la misma cara en todas partes).
+// - La cara no se queda en la de la marca: entra con ella, habla y, al acabar, guiña un ojo y
+//   sonríe con la boca abierta; así se queda el resto de la visita (pedido por Christian para que
+//   no sea la misma cara en todas partes).
 // - En reposo queda solo la cabeza, que parpadea de vez en cuando. El bocadillo sale cuando
 //   "habla" (mueve la boca): una vez por visita, un segundo después de entrar, y al pasar el ratón
 //   o enfocarla. Con la página movida o con una lente puesta no sale solo, para no tapar contenido.
@@ -29,7 +30,7 @@ const lenses = [
 ] as const;
 ---
 
-<div class="vb" data-vb>
+<div class="vb" data-vb data-face="normal">
   <button
     type="button"
     class="vb-toggle"
@@ -39,14 +40,25 @@ const lenses = [
     aria-label={t('bubble.title')}
   >
     <Caricature variant="head" class="vb-head" />
-    {/* La cara de aquí no es la de la marca: guiña un ojo y sonríe con la boca abierta, siempre.
-        El gesto va dibujado encima con las medidas de la caricatura (900 × 1180): el ojo grande
-        cerrado en un arco grueso y la boca con dientes y lengua. Sustituyen al ojo, la boca y la
-        línea y el tono de debajo del labio del dibujo (se esconden en el CSS) */}
+    {/* Los gestos de esta cara, dibujados encima con las medidas de la caricatura (900 × 1180).
+        Entra con la cara del dibujo; al acabar de hablar guiña un ojo y se queda así (data-face).
+        - El guiño: el ojo grande cerrado en un arco grueso.
+        - Las bocas: al hablar va pasando de una forma a otra (data-mouth), como en los dibujos
+          animados: entreabierta, en "o" y abierta del todo. La abierta es también la sonrisa con
+          la que se queda tras el guiño. La boca cerrada es la línea del propio dibujo.
+        El CSS esconde los trazos del dibujo a los que sustituyen en cada momento */}
     <svg class="vb-face" viewBox="0 0 900 1180" aria-hidden="true">
-      <path class="vb-wink" d="M330 664Q408 556 500 642Q414 630 330 664Z"></path>
-      <g class="vb-mouth">
-        <path class="vb-mouth-in" d="M446 868Q580 912 716 846Q700 1006 566 1002Q468 990 446 868Z"></path>
+      <path class="vb-wink vb-ink" d="M330 664Q408 556 500 642Q414 630 330 664Z"></path>
+      <g class="vb-m vb-m--half">
+        <path class="vb-ink" d="M498 888Q578 874 660 884Q644 940 578 942Q514 938 498 888Z"></path>
+        <path class="vb-teeth" d="M520 893Q578 884 640 890L634 906Q578 898 526 908Z"></path>
+      </g>
+      <g class="vb-m vb-m--o">
+        <path class="vb-ink" d="M532 910a46 40 0 1 0 92 0a46 40 0 1 0-92 0Z"></path>
+        <path class="vb-tongue" d="M552 926Q578 908 604 926Q592 944 578 944Q564 944 552 926Z"></path>
+      </g>
+      <g class="vb-m vb-m--wide">
+        <path class="vb-ink" d="M446 868Q580 912 716 846Q700 1006 566 1002Q468 990 446 868Z"></path>
         <path class="vb-teeth" d="M470 886Q582 924 698 866L688 898Q580 948 480 916Z"></path>
         <path class="vb-tongue" d="M520 966Q580 938 640 958Q604 992 566 990Q536 986 520 966Z"></path>
       </g>
@@ -235,17 +247,41 @@ const lenses = [
     transform-box: fill-box;
     transform-origin: center;
   }
-  /* El gesto fijo de esta cara: se esconden el ojo grande, la boca y la línea y el tono de debajo
-     del labio de la caricatura (trazos 3, 6 y 7 y barba-2 de caricature.json) y se ven los de aquí.
-     La ceja de ese ojo baja un poco, como al guiñar */
-  .vb :global([data-part='trazo-3']),
-  .vb :global([data-part='trazo-6']),
-  .vb :global([data-part='trazo-7']),
-  .vb :global([data-part='barba-2']) {
+  /* --- Los gestos (.vb-face). data-face y data-mouth los pone el guion. Los trazos del dibujo que
+     se esconden son de caricature.json: trazo-3 (ojo grande), trazo-6 (boca), trazo-7 y barba-2
+     (línea y tono de debajo del labio) y trazo-1 (ceja de ese ojo) --- */
+  .vb-wink,
+  .vb-m {
     visibility: hidden;
   }
-  .vb :global([data-part='trazo-1']) {
+  /* El guiño: el ojo grande se cierra en arco y su ceja baja un poco */
+  .vb[data-face='wink'] .vb-wink {
+    visibility: visible;
+  }
+  .vb[data-face='wink'] :global([data-part='trazo-3']) {
+    visibility: hidden;
+  }
+  .vb[data-face='wink'] :global([data-part='trazo-1']) {
     transform: translateY(12px);
+  }
+  /* La boca. En reposo: la línea del dibujo (cara normal) o la sonrisa abierta (tras el guiño).
+     Al hablar: la forma de cada momento */
+  .vb[data-face='wink']:not([data-mouth]) .vb-m--wide,
+  .vb[data-mouth='wide'] .vb-m--wide,
+  .vb[data-mouth='half'] .vb-m--half,
+  .vb[data-mouth='o'] .vb-m--o {
+    visibility: visible;
+  }
+  .vb[data-face='wink']:not([data-mouth]) :global([data-part='trazo-6']),
+  .vb[data-mouth]:not([data-mouth='closed']) :global([data-part='trazo-6']) {
+    visibility: hidden;
+  }
+  /* La boca abierta del todo tapa la línea y el tono de debajo del labio */
+  .vb[data-face='wink']:not([data-mouth]) :global([data-part='trazo-7']),
+  .vb[data-face='wink']:not([data-mouth]) :global([data-part='barba-2']),
+  .vb[data-mouth='wide'] :global([data-part='trazo-7']),
+  .vb[data-mouth='wide'] :global([data-part='barba-2']) {
+    visibility: hidden;
   }
   .vb-face {
     position: absolute;
@@ -258,8 +294,7 @@ const lenses = [
     transform-origin: 50% 100%;
     transition: transform var(--dur-micro) var(--ease-out);
   }
-  .vb-wink,
-  .vb-mouth-in {
+  .vb-ink {
     fill: var(--vb-ink);
   }
   .vb-teeth {
@@ -267,11 +302,6 @@ const lenses = [
   }
   .vb-tongue {
     fill: var(--car-tone);
-  }
-  /* Al hablar, la boca se cierra y se abre desde arriba, como una mandíbula (en el guion) */
-  .vb-mouth {
-    transform-box: fill-box;
-    transform-origin: 50% 0;
   }
 
   .vb-panel {
@@ -462,10 +492,10 @@ const lenses = [
   });
 
   // --- La cara: parpadea de vez en cuando y mueve la boca cuando habla ---
-  // El ojo abierto es un trazo de src/data/caricature.json (Caricature.astro los numera en
-  // data-part): si se regenera el dibujo, hay que comprobar que sigue siendo ese. El otro ojo y la
-  // boca son los del gesto (.vb-face).
-  const EYES = ['trazo-4'];
+  // Los ojos son trazos de src/data/caricature.json (Caricature.astro los numera en data-part): si
+  // se regenera el dibujo, hay que comprobar que siguen siendo esos. Tras el guiño el ojo grande
+  // (trazo-3) queda escondido y solo se ve parpadear el otro.
+  const EYES = ['trazo-3', 'trazo-4'];
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
   const trace = (name: string) => parts()?.box.querySelector<SVGPathElement>(`.car [data-part="${name}"]`) ?? null;
@@ -490,20 +520,66 @@ const lenses = [
   };
   blinkLater();
 
-  let talkingUntil = 0;
-  const TALK_MS = 1500;
-  /** Dice la frase: siete sílabas ("¿Quie-res ver-lo co-mo yo?"). La boca, que en reposo sonríe
-   *  abierta, se cierra y se vuelve a abrir en cada una */
+  // --- El guiño: la primera vez que habla en la visita acaba guiñando un ojo, y se queda así ---
+  const FACE = 'vb-face';
+  const winked = () => {
+    try {
+      return sessionStorage.getItem(FACE) === 'wink';
+    } catch {
+      return false;
+    }
+  };
+  const wink = () => {
+    const box = parts()?.box;
+    if (!box) return;
+    box.dataset.face = 'wink';
+    try {
+      sessionStorage.setItem(FACE, 'wink');
+    } catch {}
+    if (still.matches) return;
+    // Un cabeceo corto acompaña al guiño
+    for (const el of box.querySelectorAll('.vb-head, .vb-face')) {
+      el.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(-7deg)', offset: 0.4 }, { transform: 'rotate(0deg)' }], {
+        duration: 320,
+        easing: 'ease-out',
+      });
+    }
+  };
+  // La página se vuelve a pintar en cada navegación: si ya guiñó en esta visita, entra guiñando
+  const restoreFace = () => {
+    const box = parts()?.box;
+    if (box && winked()) box.dataset.face = 'wink';
+  };
+  document.addEventListener('astro:after-swap', restoreFace);
+  restoreFace();
+
+  // --- Hablar: la boca pasa de una forma a otra, sin transición, como en los dibujos animados.
+  // Son las siete sílabas de "¿Quie-res ver-lo co-mo yo?": cada paso es una forma de boca
+  // (data-mouth; "closed" es la línea del dibujo) y lo que dura en milisegundos ---
+  const PHRASE: [mouth: 'closed' | 'half' | 'o' | 'wide', ms: number][] = [
+    ['half', 90], ['wide', 120], ['half', 80], ['closed', 70], // Quie-res
+    ['half', 110], ['closed', 60], ['o', 120], // ver-lo
+    ['closed', 60], ['o', 110], ['closed', 70], ['o', 120], // co-mo
+    ['half', 90], ['o', 140], ['closed', 110], // yo
+  ];
+  let talking = 0;
   const talk = () => {
-    if (still.matches || away() || performance.now() < talkingUntil) return;
-    talkingUntil = performance.now() + TALK_MS;
-    const open = [1, 0.5, 0.95, 0.45, 1, 0.55, 0.9, 0.45, 1, 0.5, 0.95, 0.55, 1, 0.45, 1];
-    parts()
-      ?.box.querySelector('.vb-mouth')
-      ?.animate(
-        open.map((amount) => ({ transform: `scaleY(${amount})` })),
-        { duration: TALK_MS, easing: 'ease-in-out' },
-      );
+    if (still.matches || away() || talking) return;
+    let at = 0;
+    const step = () => {
+      const box = parts()?.box;
+      if (!box || at >= PHRASE.length) {
+        talking = 0;
+        if (!box) return;
+        delete box.dataset.mouth;
+        if (box.dataset.face !== 'wink') wink();
+        return;
+      }
+      const [mouth, ms] = PHRASE[at++];
+      box.dataset.mouth = mouth;
+      talking = window.setTimeout(step, ms);
+    };
+    step();
   };
 
   // Al pasar el ratón o llegar con el teclado, habla (el bocadillo lo saca el CSS)
@@ -535,7 +611,9 @@ const lenses = [
     window.setTimeout(() => {
       const box = parts()?.box;
       if (!box || away() || root.hasAttribute('data-scrolled') || root.dataset.lens) return;
-      talk();
+      // Sin movimiento no habla: el bocadillo aparece y la cara pasa a la del guiño
+      if (still.matches) wink();
+      else talk();
       window.setTimeout(() => parts()?.box.classList.add('is-saying'), still.matches ? 0 : 160);
       try {
         sessionStorage.setItem(SAID, '1');

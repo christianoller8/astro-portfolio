@@ -839,7 +839,13 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     páginas queda la cabeza y habla al pasar el ratón o enfocarla. Sin movimiento si el sistema
     lo pide. Los ojos y la boca son trazos de `caricature.json` (`trazo-3`, `trazo-4`, `trazo-6`,
     `trazo-7`): si se regenera el dibujo hay que revisarlos en `ViewBubble.astro`.
-  - Pendiente de él: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
+  - Ajustes posteriores, a ojo con él: al hablar la boca **no se estira**, pasa de una forma a
+    otra por sílaba (entreabierta, en "o", abierta), como en los dibujos animados; estirarla le
+    pareció poco natural. Y la cara: entra con la del dibujo, habla y **al acabar guiña un ojo y
+    sonríe con la boca abierta; así se queda el resto de la visita**. El guiño y las bocas están
+    dibujados en `ViewBubble.astro` encima de la caricatura (referencia suya: un logo de cara
+    guiñando; se tomó el gesto, no el dibujo). La marca y la intro conservan la cara normal.
+  - Ya no hace falta, salvo que quiera afinar el gesto con su trazo: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
     tinta negra sobre blanco y con el encuadre de `docs/imgs/avatar/head-front.png`. Se pasa a
     vectores con `.taste-skill/letras/vectorize.cjs`.
   - De la misma conversación quedan por hacer: enlazar "Tú ves una web. Yo la veo
