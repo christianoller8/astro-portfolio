@@ -6,7 +6,7 @@ export default defineConfig({
   site: 'https://christianoller.dev',
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/sistema') && !page.includes('/personaje'),
+      filter: (page) => !page.includes('/sistema') && !page.includes('/personaje') && !page.includes('/cajas'),
       i18n: {
         defaultLocale: 'es',
         locales: {

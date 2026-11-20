@@ -867,6 +867,17 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     así" con el bocadillo, las cajas de proyectos con vídeo al estilo de poulo.site y mirar por
     qué han dejado de verse las capas 3D de la home.
 
+- [ ] **Proyectos en cajas** (idea suya, con poulo.site como referencia de organización; en
+  marcha el 20 nov):
+  - Hecho: el componente `src/components/ui/ProjectBento.astro`. Por proyecto: nombre y datos,
+    una caja grande con su pieza (la interfaz que se toca), una caja con el resumen, el papel y
+    "Ver caso", y una fila con sus tres decisiones (`src/data/cases.ts`). Cajas del sistema: planas,
+    rectas, sobre `--tint`. Sin filtros ni vistas, que con cuatro proyectos sobran.
+  - Se ve en la página interna de pruebas `/cajas` (fuera de buscadores y del sitemap). **Falta
+    decidir dónde va** (página de Proyectos, home o las dos) y quitar la página de pruebas después.
+  - Falta de él: un vídeo corto por app (8–15 s, sin sonido, una sola acción). Cuando llegue el
+    primero se añade el campo `video` al esquema de proyectos y la caja grande lo enseña.
+
 ## Fase técnica (después del 10 de diseño)
 
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.
