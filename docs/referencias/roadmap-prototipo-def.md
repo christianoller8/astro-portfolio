@@ -833,6 +833,12 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Después pidió: frase "¿Quieres verlo como yo?", bocadillo cerrado más cuadrado (como el
     abierto) y quitar las lentes y el lienzo del menú de móvil. Hecho: el bocadillo es la única
     entrada en todos los tamaños y el menú de móvil queda en enlaces, idioma, tema y CV.
+  - La caricatura tiene vida (idea suya, hecha el 20 nov, pendiente de su visto bueno): parpadea
+    a intervalos irregulares y mueve la boca cuando "habla". La página entra sin bocadillo; un
+    segundo después habla y el bocadillo salta. Eso pasa **una vez por visita**; en las demás
+    páginas queda la cabeza y habla al pasar el ratón o enfocarla. Sin movimiento si el sistema
+    lo pide. Los ojos y la boca son trazos de `caricature.json` (`trazo-3`, `trazo-4`, `trazo-6`,
+    `trazo-7`): si se regenera el dibujo hay que revisarlos en `ViewBubble.astro`.
   - Pendiente de él: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
     tinta negra sobre blanco y con el encuadre de `docs/imgs/avatar/head-front.png`. Se pasa a
     vectores con `.taste-skill/letras/vectorize.cjs`.

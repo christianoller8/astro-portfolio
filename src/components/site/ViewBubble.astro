@@ -7,8 +7,9 @@
 //   igual que ella.
 // - Los botones no tienen lógica propia: llevan data-lens-set, data-lens-clear y data-canvas-open,
 //   y de eso se encargan lenses.ts y canvas.ts. Los atajos (1, 2, 3, M y Esc) son los de siempre.
-// - El bocadillo se ve con la página arriba del todo y al pasar el ratón o enfocar la caricatura;
-//   con la página movida o con una lente puesta queda solo la cabeza, para no tapar el contenido.
+// - En reposo queda solo la cabeza, que parpadea de vez en cuando. El bocadillo sale cuando
+//   "habla" (mueve la boca): una vez por visita, un segundo después de entrar, y al pasar el ratón
+//   o enfocarla. Con la página movida o con una lente puesta no sale solo, para no tapar contenido.
 import Caricature from './Caricature.astro';
 import { useTranslations } from '@/i18n/utils';
 
@@ -176,15 +177,7 @@ const lenses = [
     font-weight: 700;
     line-height: 1.2;
     white-space: nowrap;
-    transition:
-      opacity var(--dur-micro) var(--ease-out),
-      transform var(--dur-micro) var(--ease-out),
-      visibility 0s;
-  }
-  /* Con la página movida, con una lente o con el panel abierto, queda solo la cabeza */
-  :global(html[data-scrolled]) .vb-bubble,
-  :global(html[data-lens]) .vb-bubble,
-  .vb-toggle[aria-expanded='true'] .vb-bubble {
+    /* En reposo no se ve: queda la cabeza sola */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -194,7 +187,20 @@ const lenses = [
       transform var(--dur-micro) var(--ease-in),
       visibility 0s var(--dur-micro);
   }
-  /* …y vuelve al pasar el ratón o enfocar la caricatura */
+  /* Sale cuando la caricatura habla: al saludar (.is-saying, lo pone el guion una vez por visita,
+     con la página arriba del todo y sin lente) y al pasar el ratón o enfocarla. Entra con un
+     pequeño rebote, como un bocadillo que salta */
+  :global(html:not([data-scrolled]):not([data-lens])) .vb.is-saying .vb-toggle[aria-expanded='false'] .vb-bubble,
+  .vb .vb-toggle[aria-expanded='false']:focus-visible .vb-bubble {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition:
+      opacity var(--dur-micro) var(--ease-out),
+      transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      visibility 0s;
+  }
   @media (hover: hover) {
     .vb .vb-toggle[aria-expanded='false']:hover .vb-bubble {
       opacity: 1;
@@ -203,15 +209,14 @@ const lenses = [
       transform: none;
       transition:
         opacity var(--dur-micro) var(--ease-out),
-        transform var(--dur-micro) var(--ease-out),
+        transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
         visibility 0s;
     }
   }
-  .vb .vb-toggle[aria-expanded='false']:focus-visible .vb-bubble {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
+  /* Los trazos de la cara giran y se estiran sobre su propio centro (parpadeo y boca, en el guion) */
+  .vb :global(.car-ink) {
+    transform-box: fill-box;
+    transform-origin: center;
   }
 
   .vb-panel {
@@ -356,9 +361,9 @@ const lenses = [
     (event) => {
       const p = parts();
       if (!p || !isOpen()) return;
-      const root = document.documentElement.classList;
+      const state = document.documentElement.classList;
       // Con el lienzo o el menú abiertos la caricatura está escondida: el panel se cierra y la tecla sigue su camino
-      if (root.contains('canvas-open') || root.contains('menu-open')) {
+      if (state.contains('canvas-open') || state.contains('menu-open')) {
         setOpen(false, false);
         return;
       }
@@ -397,4 +402,96 @@ const lenses = [
     const to = event.relatedTarget instanceof Node ? event.relatedTarget : null;
     if (to && !p.box.contains(to)) setOpen(false);
   });
+
+  // --- La cara: parpadea de vez en cuando y mueve la boca cuando habla ---
+  // Los trazos son los de src/data/caricature.json (Caricature.astro los numera en data-part): si
+  // se regenera el dibujo, hay que comprobar que estos siguen siendo los ojos y la boca.
+  const EYES = ['trazo-3', 'trazo-4'];
+  const LIP = 'trazo-6';
+  const CHIN = 'trazo-7';
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const root = document.documentElement;
+  const trace = (name: string) => parts()?.box.querySelector<SVGPathElement>(`.car [data-part="${name}"]`) ?? null;
+  // Escondida (intro, lienzo o menú abiertos) o con la pestaña en segundo plano, no se mueve
+  const away = () => document.hidden || ['intro', 'canvas-open', 'menu-open'].some((cls) => root.classList.contains(cls));
+
+  const blink = () => {
+    if (still.matches || away()) return;
+    for (const name of EYES) {
+      trace(name)?.animate([{ transform: 'scaleY(1)' }, { transform: 'scaleY(0.12)', offset: 0.45 }, { transform: 'scaleY(1)' }], {
+        duration: 180,
+        easing: 'ease-in-out',
+      });
+    }
+  };
+  // A intervalos irregulares (de 3,6 a 6,4 s): si fuera regular parecería un tic
+  const blinkLater = () => {
+    window.setTimeout(() => {
+      blink();
+      blinkLater();
+    }, 3600 + Math.random() * 2800);
+  };
+  blinkLater();
+
+  let talkingUntil = 0;
+  /** Unas sílabas: la boca se abre y se cierra, y la línea de debajo del labio la acompaña */
+  const talk = () => {
+    if (still.matches || away() || performance.now() < talkingUntil) return;
+    talkingUntil = performance.now() + 900;
+    const open = [0, 2.6, 1.2, 3.1, 1.3, 2.5, 1.3, 0];
+    const timing = { duration: 860, easing: 'ease-in-out' };
+    trace(LIP)?.animate(
+      open.map((amount) => ({ transform: amount ? `scale(${amount > 2 ? 0.82 : 0.95}, ${amount})` : 'none' })),
+      timing,
+    );
+    trace(CHIN)?.animate(
+      open.map((amount) => ({ transform: `translateY(${amount > 2 ? 14 : amount ? 4 : 0}px)` })),
+      timing,
+    );
+  };
+
+  // Al pasar el ratón o llegar con el teclado, habla (el bocadillo lo saca el CSS)
+  document.addEventListener('pointerover', (event) => {
+    if (event.pointerType !== 'mouse' || isOpen()) return;
+    const toggle = event.target instanceof Element ? event.target.closest('[data-vb-toggle]') : null;
+    const from = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+    if (toggle && !(from && toggle.contains(from))) talk();
+  });
+  document.addEventListener('focusin', (event) => {
+    if (event.target instanceof Element && event.target.matches('[data-vb-toggle]:focus-visible') && !isOpen()) talk();
+  });
+
+  // El saludo: una vez por visita. La página entra sin bocadillo; un momento después la caricatura
+  // habla y el bocadillo sale. Si en ese momento la página ya está movida o hay una lente, se deja
+  // para la siguiente carga. Al bajar, el bocadillo se va y ya no vuelve solo.
+  const SAID = 'vb-said';
+  const greet = () => {
+    try {
+      if (sessionStorage.getItem(SAID)) return;
+    } catch {
+      return;
+    }
+    // En la home espera a que acabe la intro
+    if (root.classList.contains('intro')) {
+      window.setTimeout(greet, 300);
+      return;
+    }
+    window.setTimeout(() => {
+      const box = parts()?.box;
+      if (!box || away() || root.hasAttribute('data-scrolled') || root.dataset.lens) return;
+      talk();
+      window.setTimeout(() => parts()?.box.classList.add('is-saying'), still.matches ? 0 : 160);
+      try {
+        sessionStorage.setItem(SAID, '1');
+      } catch {}
+    }, 1000);
+  };
+  greet();
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (window.scrollY > 120) parts()?.box.classList.remove('is-saying');
+    },
+    { passive: true },
+  );
 </script>
