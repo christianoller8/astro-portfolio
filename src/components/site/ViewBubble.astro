@@ -11,8 +11,8 @@
 //   se queda el resto de la visita (pedido por Christian para que no sea la misma cara en todas
 //   partes). La boca, en reposo, es siempre la del dibujo.
 // - En reposo queda solo la cabeza, que parpadea de vez en cuando. El bocadillo sale cuando
-//   "habla" (mueve la boca): una vez por visita, un segundo después de entrar, y se recoge a los
-//   cinco segundos; después, solo al pasar el ratón o enfocarla. Con la página movida o con una
+//   "habla" (mueve la boca): al cargar la web, tres segundos después de entrar (cuando la firma
+//   de la barra ya se ha escrito), y se recoge a los cinco segundos; después, solo al pasar el ratón o enfocarla. Con la página movida o con una
 //   lente puesta no sale solo, para no tapar contenido.
 // - El bocadillo y el panel son un solo globo: al abrir, crece; al cerrar, encoge.
 import Caricature from './Caricature.astro';
@@ -651,6 +651,9 @@ const lenses = [
   // la caricatura habla y el bocadillo sale. Si en ese momento la página ya está movida o hay una
   // lente, no hay saludo. A los cinco segundos, o al bajar, el bocadillo se va y ya no vuelve solo.
   const SAY_MS = 5200;
+  // Espera antes de saludar: primero se escribe la firma de la barra (acaba al segundo) y después,
+  // con la página ya quieta, habla la caricatura (Christian pidió 2 s más para que no se pisen)
+  const GREET_AFTER = 3000;
   const greet = () => {
     // En la home espera a que acabe la intro
     if (root.classList.contains('intro')) {
@@ -666,7 +669,7 @@ const lenses = [
       window.setTimeout(() => parts()?.box.classList.add('is-saying'), still.matches ? 0 : 160);
       // El bocadillo se queda cinco segundos y se recoge; después solo sale al pasar el ratón
       window.setTimeout(() => parts()?.box.classList.remove('is-saying'), SAY_MS);
-    }, 1000);
+    }, GREET_AFTER);
   };
   greet();
 

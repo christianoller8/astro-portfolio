@@ -901,7 +901,9 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     para que escribiera la firma y él lo mandó revertir: lo había entendido mal.
   - Lo que pidió: que **la firma de la barra se escriba a máquina**, letra a letra y con un cursor
     delante, en claro y en oscuro (hecho el 20 nov, pendiente de su visto bueno). El cursor
-    desaparece en cuanto se escribe la S: los parpadeos del final los mandó quitar.
+    desaparece en cuanto se escribe la S: los parpadeos del final los mandó quitar. **Aprobado.**
+  - Para que las dos animaciones no se pisen, el saludo del bocadillo entra a los **3 s** de
+    cargar (antes, 1 s): primero se escribe la firma arriba y después habla la caricatura abajo.
     Solo al cargar la web, no al pasar de una página a otra; en la home espera a que acabe la
     intro. Como la firma es una imagen, se destapa a saltos donde acaba cada letra (`Header.astro`):
     si cambia la imagen hay que volver a medir esos puntos.
