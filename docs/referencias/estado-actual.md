@@ -21,6 +21,12 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   la home funcionan y van numeradas, y al acabar esa escena la caricatura dice que toda la web se
   puede ver así (aprobado). **Solo quedan sus vídeos** cortos de cada app, para la caja grande de
   cada proyecto: cuando llegue el primero se añade el campo `video` al esquema de proyectos.
+- **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
+  momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
+  menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la
+  opción activa en gris; la transición entre páginas va sobre papel, con el canto de la página
+  marcado; y el cuadro de selección al pasar el ratón está desactivado (comentado en `kit.css`).
+  La intro no cambió. Detalle en "Ajustes de diseño" del roadmap.
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.

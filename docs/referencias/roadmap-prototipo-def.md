@@ -908,7 +908,7 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     intro. Como la firma es una imagen, se destapa a saltos donde acaba cada letra (`Header.astro`):
     si cambia la imagen hay que volver a medir esos puntos.
 
-- [ ] **Cuatro retoques del 20 nov** (hechos, pendientes de su visto bueno):
+- [x] **Retoques del 20 nov, tanda cerrada por él** (todo aprobado; miniaturas del lienzo rehechas):
   - **Foto clara tan ancha como la oscura**: medidas, las dos paredes ocupaban casi lo mismo,
     pero en claro el fundido lateral (18 % del ancho) hacía que se viera unos 100 px más estrecha,
     porque la pared oscura a medio fundir sobre la hoja clara ya no se lee como foto. El fundido
@@ -942,7 +942,7 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     proyectos, la foto de Sobre mí…) no le gusta. Está **comentado, no borrado**, en `kit.css`
     (bloque `[data-sel]:hover`), por si lo quiere de vuelta: basta con quitar el comentario. Se
     sigue viendo al llegar con el teclado, que es lo que indica dónde está el foco.
-  - Al aprobarlo: rehacer las miniaturas del lienzo de todas las páginas (cambia la barra).
+  - Las miniaturas del lienzo de todas las páginas se rehicieron al cerrar la tanda.
 
 ## Fase técnica (después del 10 de diseño)
 
