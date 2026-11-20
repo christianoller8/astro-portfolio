@@ -7,6 +7,8 @@
 //   igual que ella.
 // - Los botones no tienen lógica propia: llevan data-lens-set, data-lens-clear y data-canvas-open,
 //   y de eso se encargan lenses.ts y canvas.ts. Los atajos (1, 2, 3, M y Esc) son los de siempre.
+// - La cara no es la de la marca: aquí guiña un ojo y sonríe con la boca abierta (pedido por
+//   Christian para que no sea la misma cara en todas partes).
 // - En reposo queda solo la cabeza, que parpadea de vez en cuando. El bocadillo sale cuando
 //   "habla" (mueve la boca): una vez por visita, un segundo después de entrar, y al pasar el ratón
 //   o enfocarla. Con la página movida o con una lente puesta no sale solo, para no tapar contenido.
@@ -37,11 +39,17 @@ const lenses = [
     aria-label={t('bubble.title')}
   >
     <Caricature variant="head" class="vb-head" />
-    {/* El gesto del guiño, dibujado encima con las medidas de la caricatura (900 × 1180): el ojo
-        grande cerrado en arco y la boca en sonrisa. Sustituyen a los trazos 3 y 6 mientras dura */}
+    {/* La cara de aquí no es la de la marca: guiña un ojo y sonríe con la boca abierta, siempre.
+        El gesto va dibujado encima con las medidas de la caricatura (900 × 1180): el ojo grande
+        cerrado en un arco grueso y la boca con dientes y lengua. Sustituyen al ojo, la boca y la
+        línea y el tono de debajo del labio del dibujo (se esconden en el CSS) */}
     <svg class="vb-face" viewBox="0 0 900 1180" aria-hidden="true">
-      <path d="M350 652Q415 584 484 640"></path>
-      <path d="M468 880Q582 962 702 866"></path>
+      <path class="vb-wink" d="M330 664Q408 556 500 642Q414 630 330 664Z"></path>
+      <g class="vb-mouth">
+        <path class="vb-mouth-in" d="M446 868Q580 912 716 846Q700 1006 566 1002Q468 990 446 868Z"></path>
+        <path class="vb-teeth" d="M470 886Q582 924 698 866L688 898Q580 948 480 916Z"></path>
+        <path class="vb-tongue" d="M520 966Q580 938 640 958Q604 992 566 990Q536 986 520 966Z"></path>
+      </g>
     </svg>
     <span class="vb-bubble" aria-hidden="true">
       <span data-vb-title>{t('bubble.title')}</span>
@@ -139,7 +147,7 @@ const lenses = [
     transform-origin: 50% 100%;
     transition: transform var(--dur-micro) var(--ease-out);
   }
-  /* El gesto del guiño (.vb-face) va encima de la cabeza y se mueve con ella */
+  /* El gesto (.vb-face) va encima de la cabeza y se mueve con ella */
   @media (hover: hover) {
     .vb-toggle:hover :global(.vb-head),
     .vb-toggle:hover .vb-face {
@@ -227,8 +235,18 @@ const lenses = [
     transform-box: fill-box;
     transform-origin: center;
   }
-  /* El guiño: de golpe, como un fotograma de dibujos. Se esconden el ojo grande y la boca de la
-     caricatura (trazos 3 y 6 de caricature.json) y se ven los del gesto */
+  /* El gesto fijo de esta cara: se esconden el ojo grande, la boca y la línea y el tono de debajo
+     del labio de la caricatura (trazos 3, 6 y 7 y barba-2 de caricature.json) y se ven los de aquí.
+     La ceja de ese ojo baja un poco, como al guiñar */
+  .vb :global([data-part='trazo-3']),
+  .vb :global([data-part='trazo-6']),
+  .vb :global([data-part='trazo-7']),
+  .vb :global([data-part='barba-2']) {
+    visibility: hidden;
+  }
+  .vb :global([data-part='trazo-1']) {
+    transform: translateY(12px);
+  }
   .vb-face {
     position: absolute;
     top: 0;
@@ -240,19 +258,20 @@ const lenses = [
     transform-origin: 50% 100%;
     transition: transform var(--dur-micro) var(--ease-out);
   }
-  .vb-face path {
-    fill: none;
-    stroke: var(--vb-ink);
-    stroke-width: 17;
-    stroke-linecap: round;
-    opacity: 0;
+  .vb-wink,
+  .vb-mouth-in {
+    fill: var(--vb-ink);
   }
-  .vb.is-wink .vb-face path {
-    opacity: 1;
+  .vb-teeth {
+    fill: var(--vb-paper);
   }
-  .vb.is-wink :global([data-part='trazo-3']),
-  .vb.is-wink :global([data-part='trazo-6']) {
-    opacity: 0;
+  .vb-tongue {
+    fill: var(--car-tone);
+  }
+  /* Al hablar, la boca se cierra y se abre desde arriba, como una mandíbula (en el guion) */
+  .vb-mouth {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
   }
 
   .vb-panel {
@@ -443,11 +462,10 @@ const lenses = [
   });
 
   // --- La cara: parpadea de vez en cuando y mueve la boca cuando habla ---
-  // Los trazos son los de src/data/caricature.json (Caricature.astro los numera en data-part): si
-  // se regenera el dibujo, hay que comprobar que estos siguen siendo los ojos y la boca.
-  const EYES = ['trazo-3', 'trazo-4'];
-  const LIP = 'trazo-6';
-  const CHIN = 'trazo-7';
+  // El ojo abierto es un trazo de src/data/caricature.json (Caricature.astro los numera en
+  // data-part): si se regenera el dibujo, hay que comprobar que sigue siendo ese. El otro ojo y la
+  // boca son los del gesto (.vb-face).
+  const EYES = ['trazo-4'];
   const still = window.matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
   const trace = (name: string) => parts()?.box.querySelector<SVGPathElement>(`.car [data-part="${name}"]`) ?? null;
@@ -473,30 +491,19 @@ const lenses = [
   blinkLater();
 
   let talkingUntil = 0;
-  let winkTimer = 0;
-  // Lo que dura la frase y el guiño que la remata
   const TALK_MS = 1500;
-  const WINK_MS = 620;
-  /** Dice la frase: siete sílabas ("¿Quie-res ver-lo co-mo yo?"), con la boca abriéndose y cerrándose
-   *  y la línea de debajo del labio acompañándola. Al acabar, guiña un ojo y sonríe (.is-wink) */
+  /** Dice la frase: siete sílabas ("¿Quie-res ver-lo co-mo yo?"). La boca, que en reposo sonríe
+   *  abierta, se cierra y se vuelve a abrir en cada una */
   const talk = () => {
     if (still.matches || away() || performance.now() < talkingUntil) return;
-    talkingUntil = performance.now() + TALK_MS + WINK_MS;
-    const open = [0, 2.6, 1.1, 3, 1.2, 2.2, 1.1, 2.9, 1.2, 2.4, 1.1, 2.7, 1.2, 3.1, 0];
-    const timing = { duration: TALK_MS, easing: 'ease-in-out' };
-    trace(LIP)?.animate(
-      open.map((amount) => ({ transform: amount ? `scale(${amount > 2 ? 0.82 : 0.95}, ${amount})` : 'none' })),
-      timing,
-    );
-    trace(CHIN)?.animate(
-      open.map((amount) => ({ transform: `translateY(${amount > 2 ? 14 : amount ? 4 : 0}px)` })),
-      timing,
-    );
-    window.clearTimeout(winkTimer);
-    winkTimer = window.setTimeout(() => {
-      parts()?.box.classList.add('is-wink');
-      winkTimer = window.setTimeout(() => parts()?.box.classList.remove('is-wink'), WINK_MS);
-    }, TALK_MS);
+    talkingUntil = performance.now() + TALK_MS;
+    const open = [1, 0.5, 0.95, 0.45, 1, 0.55, 0.9, 0.45, 1, 0.5, 0.95, 0.55, 1, 0.45, 1];
+    parts()
+      ?.box.querySelector('.vb-mouth')
+      ?.animate(
+        open.map((amount) => ({ transform: `scaleY(${amount})` })),
+        { duration: TALK_MS, easing: 'ease-in-out' },
+      );
   };
 
   // Al pasar el ratón o llegar con el teclado, habla (el bocadillo lo saca el CSS)
