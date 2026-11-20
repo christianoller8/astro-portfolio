@@ -5,9 +5,9 @@
 import { Image } from 'astro:assets';
 import Layout from '@/layouts/Layout.astro';
 import ToolsByLens from '@/components/home/ToolsByLens.astro';
-import profileImage from '@/assets/images/profile.jpg';
-// La misma foto con la persona recortada (.taste-skill/recorte/retrato-oscuro.cjs): para el modo oscuro
-import profileCut from '@/assets/images/profile-cut.png';
+// El retrato de la luz circular, en blanco y negro (.taste-skill/recorte/sobre-mi.cjs; el original
+// en color está en docs/imgs/sobre-mi-luz.jpg). La misma foto en los dos modos
+import aboutImage from '@/assets/images/about.jpg';
 import { useTranslations } from '@/i18n/utils';
 import { site, hasCV } from '@/data/site';
 import { experience, education, languages } from '@/data/experience';
@@ -71,23 +71,15 @@ const tests =
         </dl>
       </div>
       {/* La selección va en un envoltorio: la figura lleva una máscara que la recortaría */}
-      <div class="about-photo-sel" data-sel data-sel-name="profile.jpg" data-reveal>
+      <div class="about-photo-sel" data-sel data-sel-name="sobre-mi.jpg" data-reveal>
       <figure class="about-photo" data-ds={lang === 'es' ? 'Retrato' : 'Portrait'} data-qa-host>
         <Image
-          src={profileImage}
+          src={aboutImage}
           alt={t('hero.portrait.alt')}
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 1024px) 44vw, 100vw"
+          widths={[480, 800, 1116]}
+          sizes="(min-width: 900px) 36vw, 100vw"
           loading="eager"
-          class="about-photo-img about-photo-img--light"
-        />
-        <Image
-          src={profileCut}
-          alt=""
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 1024px) 44vw, 100vw"
-          loading="lazy"
-          class="about-photo-img about-photo-img--dark"
+          class="about-photo-img"
         />
       </figure>
       </div>
@@ -254,7 +246,8 @@ const tests =
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 2.5rem;
-    margin-top: clamp(1.75rem, 4vw, 3rem);
+    /* Aire entre el titular y lo de debajo (texto y foto): Christian lo veía apretado (20 nov) */
+    margin-top: clamp(2.75rem, 6vw, 5rem);
   }
   .about-text {
     display: grid;
@@ -295,36 +288,87 @@ const tests =
   .about-facts dd {
     font-weight: 600;
   }
-  /* El retrato, como capa: su fondo blanco se funde con la hoja (multiplicar), así que queda impreso
-     sobre el papel con su textura, y el pie se desvanece. La mezcla va en el envoltorio y no en la
-     imagen: la máscara de la figura y la entrada escalonada del envoltorio aíslan lo que tienen
-     dentro, y la foto se quedaría en un rectángulo blanco */
+  /* El retrato de la luz circular, en blanco y negro, el mismo en los dos modos (20 nov; antes era
+     la figura recortada sobre blanco, multiplicada sobre la hoja). Es una foto oscura con su pared:
+     se integra como la del hero, fundiendo los cuatro bordes con la hoja con una curva suave. A los
+     lados y arriba el fundido es corto; abajo, largo, porque el jersey negro llega hasta el borde.
+     Se encuadra en 4:5 sobre el círculo de luz y la cara (la foto original es 9:16) */
   .about-photo-sel {
-    max-width: 40rem;
-    mix-blend-mode: multiply;
-  }
-  :global(:root.dark) .about-photo-sel {
-    mix-blend-mode: normal;
+    width: 100%;
+    max-width: 30rem;
   }
   .about-photo {
-    -webkit-mask: linear-gradient(#000 78%, transparent);
-    mask: linear-gradient(#000 78%, transparent);
+    aspect-ratio: 4 / 5;
+    -webkit-mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0,
+        rgb(0 0 0 / 0.104) 1.8%,
+        rgb(0 0 0 / 0.352) 3.6%,
+        rgb(0 0 0 / 0.648) 5.4%,
+        rgb(0 0 0 / 0.896) 7.2%,
+        #000 9%,
+        #000 91%,
+        rgb(0 0 0 / 0.896) 92.8%,
+        rgb(0 0 0 / 0.648) 94.6%,
+        rgb(0 0 0 / 0.352) 96.4%,
+        rgb(0 0 0 / 0.104) 98.2%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0,
+        rgb(0 0 0 / 0.104) 1.6%,
+        rgb(0 0 0 / 0.352) 3.2%,
+        rgb(0 0 0 / 0.648) 4.8%,
+        rgb(0 0 0 / 0.896) 6.4%,
+        #000 8%,
+        #000 72%,
+        rgb(0 0 0 / 0.896) 77.6%,
+        rgb(0 0 0 / 0.648) 83.2%,
+        rgb(0 0 0 / 0.352) 88.8%,
+        rgb(0 0 0 / 0.104) 94.4%,
+        transparent 100%
+      );
+    mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0,
+        rgb(0 0 0 / 0.104) 1.8%,
+        rgb(0 0 0 / 0.352) 3.6%,
+        rgb(0 0 0 / 0.648) 5.4%,
+        rgb(0 0 0 / 0.896) 7.2%,
+        #000 9%,
+        #000 91%,
+        rgb(0 0 0 / 0.896) 92.8%,
+        rgb(0 0 0 / 0.648) 94.6%,
+        rgb(0 0 0 / 0.352) 96.4%,
+        rgb(0 0 0 / 0.104) 98.2%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0,
+        rgb(0 0 0 / 0.104) 1.6%,
+        rgb(0 0 0 / 0.352) 3.2%,
+        rgb(0 0 0 / 0.648) 4.8%,
+        rgb(0 0 0 / 0.896) 6.4%,
+        #000 8%,
+        #000 72%,
+        rgb(0 0 0 / 0.896) 77.6%,
+        rgb(0 0 0 / 0.648) 83.2%,
+        rgb(0 0 0 / 0.352) 88.8%,
+        rgb(0 0 0 / 0.104) 94.4%,
+        transparent 100%
+      );
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
   .about-photo-img {
     width: 100%;
-    height: auto;
-    /* El fondo de la foto es un blanco roto: se lleva a blanco para que al multiplicar no deje marco */
-    filter: brightness(1.07) contrast(1.1);
-  }
-  /* En oscuro no se puede multiplicar: se usa la foto con la persona recortada, y el jersey negro
-     se funde con el fondo */
-  .about-photo-img--dark,
-  :global(:root.dark) .about-photo-img--light {
-    display: none;
-  }
-  :global(:root.dark) .about-photo-img--dark {
-    display: block;
-    filter: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 25%;
   }
 
   /* ---------- Cronología ---------- */
@@ -634,8 +678,7 @@ const tests =
   @media (max-width: 899px) {
     .about-photo-sel {
       order: -1;
-      max-width: 26rem;
-      margin-top: -1rem;
+      max-width: 24rem;
     }
   }
   @media (min-width: 900px) {
@@ -644,9 +687,9 @@ const tests =
       align-items: start;
       gap: 2rem;
     }
+    /* La foto ya no sube hacia el titular: empieza a la altura del texto */
     .about-photo-sel {
       justify-self: end;
-      margin-top: -3.5rem;
     }
     .jobs-head {
       grid-template-columns: minmax(0, 1fr) auto;

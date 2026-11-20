@@ -72,7 +72,8 @@ enviar a Awwwards la URL en inglés.
 - **Contenido real de los casos**: sus frases de "Lo que más disfruté", decisiones, un fragmento de
   código real de cada proyecto, año, stack y enlaces. Lo que hay ahora lo escribió Claude.
 - **Imágenes reales** de Tempora, Vibora y Learnish, y la sesión de fotos nueva en blanco y negro.
-- **Angular**: su CV dice v8–v18 y la web dice hasta la v21. Hay que confirmar cuál es.
+- **Angular** (resuelto el 20 nov): la web ya no cita versiones, solo "Angular". Él ha tocado
+  todas y no quiere un rango. (El PDF del CV sí dice v8–v18: es suyo y no se ha tocado.)
 - **CV público**: el repositorio es público e incluye el PDF con su teléfono y su código postal.
   Preguntado; sin respuesta todavía.
 - **Textos**: revisar todos; los nuevos son provisionales.

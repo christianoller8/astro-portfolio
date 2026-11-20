@@ -944,6 +944,22 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     sigue viendo al llegar con el teclado, que es lo que indica dónde está el foco.
   - Las miniaturas del lienzo de todas las páginas se rehicieron al cerrar la tanda.
 
+- [ ] **Sobre mí: foto nueva y Angular sin versiones** (hecho el 20 nov, pendiente de su visto
+  bueno):
+  - **Foto**: el retrato de la luz circular que pasó él, **en blanco y negro**
+    (`src/assets/images/about.jpg`, hecha con `.taste-skill/recorte/sobre-mi.cjs`; el original en
+    color, en `docs/imgs/sobre-mi-luz.jpg`). La misma en los dos modos, encuadrada en 4:5 sobre el
+    círculo de luz y la cara, y fundida con la hoja por los cuatro bordes, como la del hero.
+    Sustituye a la figura recortada sobre blanco (`profile.jpg` sigue siendo la imagen para
+    compartir; `profile-cut.png` ya no se usa).
+  - **Más aire bajo el titular**: el texto y la foto empiezan 80 px por debajo de "Diseño, código
+    y QA" (antes 48) y la foto ya no sube hacia el titular.
+  - **Angular sin versiones en toda la web**: fuera "de la versión 8 a la 21", "v8–v21" y
+    "v8 → v15" (bio de Sobre mí en los dos idiomas, el rótulo del hilo de la trayectoria, la etapa
+    de la cronología y las herramientas por lente). Las etiquetas "v7.0, v6.0…" de la trayectoria
+    no son de Angular: son la numeración de las etapas y se quedan.
+  - Al aprobarlo: rehacer las miniaturas del lienzo de Sobre mí y de la home.
+
 ## Fase técnica (después del 10 de diseño)
 
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.

@@ -80,7 +80,7 @@ export const experience: Job[] = [
       ],
     },
     stack: ['SQL Server', 'Karma', 'Jasmine', 'Cypress'],
-    angular: 'Angular v8 → v15',
+    angular: 'Angular',
   },
   {
     company: 'Inology',
