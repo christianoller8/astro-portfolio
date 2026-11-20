@@ -14,11 +14,14 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   página (D25) y los selectores de tema e idioma (D26). Los cinco están hechos y aprobados (ver
   "Ajustes de diseño" en el roadmap). Después retocó la foto del hero (la misma en los dos modos,
   con su pared gris y sin sombra) y dio la home por cerrada: no quiere tocarla más por ahora.
-- **Idea nueva, en marcha (20 nov)**: las lentes y el lienzo le cargaban la barra. Ya están en el
-  bocadillo "Cómo lo veo yo" de la caricatura, abajo a la izquierda (D27), a falta de su visto
-  bueno. De la misma idea quedan: enlazar la sección "Tú ves una web. Yo la veo así" con el
-  bocadillo, organizar los proyectos en cajas con un vídeo corto de cada app (referencia:
-  poulo.site; los vídeos los graba él) y mirar por qué no se ven las capas 3D de la home.
+- **Idea nueva (20 nov), casi cerrada**: las lentes y el lienzo le cargaban la barra. Ya están en
+  el bocadillo "¿Quieres verlo como yo?" de la caricatura, abajo a la izquierda (D27), aprobado
+  con todos sus detalles (habla, guiña, sale 5 s al cargar la web). La barra queda en marca, menú,
+  idioma y tema. Los proyectos van en cajas en la página de Proyectos, aprobado. Las capas 3D de
+  la home funcionan y van numeradas. **Quedan**: sus vídeos cortos de cada app para la caja grande
+  de cada proyecto, y enlazar la sección "Tú ves una web. Yo la veo así" con el bocadillo.
+- **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
+  si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta

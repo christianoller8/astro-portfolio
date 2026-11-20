@@ -867,8 +867,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     así" con el bocadillo, las cajas de proyectos con vídeo al estilo de poulo.site y mirar por
     qué han dejado de verse las capas 3D de la home.
 
-- [ ] **Proyectos en cajas** (idea suya, con poulo.site como referencia de organización; en
-  marcha el 20 nov):
+- [x] **Proyectos en cajas** (idea suya, con poulo.site como referencia de organización; hecho y
+  aprobado el 20 nov; **quedan sus vídeos**, ver el último punto):
   - Hecho: el componente `src/components/ui/ProjectBento.astro`. Por proyecto: nombre y datos,
     una caja grande con su pieza (la interfaz que se toca), una caja con el resumen, el papel y
     "Ver caso", y una fila con sus tres decisiones (`src/data/cases.ts`). Cajas del sistema: planas,
@@ -880,7 +880,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Cada proyecto está ahora dos veces en la página (una por vista, la otra escondida). Por eso
     `frames.ts` coge para el paso animado al caso las piezas de la vista que se ve, y la vista
     guardada se aplica también al llegar navegando (script del `<head>` de `Layout.astro`).
-  - Pendiente de su visto bueno. Después: rehacer las miniaturas del lienzo de Proyectos.
+  - Las miniaturas del lienzo de Proyectos y su altura (`canvas-sizes.json`: la página pasa de
+    2.397 a 4.641 px) ya están rehechas.
   - Falta de él: un vídeo corto por app (8–15 s, sin sonido, una sola acción). Cuando llegue el
     primero se añade el campo `video` al esquema de proyectos y la caja grande lo enseña.
 
