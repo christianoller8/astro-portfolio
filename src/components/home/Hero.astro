@@ -1,7 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import portraitDark from '@/assets/images/card-dark.jpg';
-import portraitLight from '@/assets/images/card-light.webp';
+// Prueba (20 nov): en claro, la misma foto con su pared gris que en oscuro. Antes: card-light.webp
+import portraitLight from '@/assets/images/card-dark.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -173,9 +174,10 @@ const roles = [
   }
   /* Claro: la figura se desvanece a los lados y por abajo */
   .hero-photo-img--light {
+    /* Prueba: con la pared gris lleva los mismos fundidos que la oscura */
     mask-image:
-      linear-gradient(90deg, transparent 0, #000 18%, #000 90%, transparent 100%),
-      linear-gradient(180deg, #000 var(--fade-from), transparent var(--fade-to));
+      linear-gradient(90deg, transparent 0, #000 30%, #000 82%, transparent 100%),
+      linear-gradient(180deg, transparent 16.8%, #000 25%, #000 var(--fade-from), transparent var(--fade-to));
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
@@ -350,7 +352,7 @@ const roles = [
       object-position: 50% 52%;
     }
     .hero-photo-img--light {
-      mask-image: linear-gradient(180deg, #000 var(--fade-from), transparent var(--fade-to));
+      mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 var(--fade-from), transparent var(--fade-to));
     }
     .hero-photo-img--dark {
       mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 var(--fade-from), transparent var(--fade-to));
