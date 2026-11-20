@@ -230,7 +230,10 @@ async function start(section: HTMLElement, signal: AbortSignal) {
   try {
     THREE = await import('three');
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  } catch {
+  } catch (error) {
+    // Dos motivos posibles: three.js no se pudo descargar o el navegador no da un contexto WebGL
+    // (aceleración gráfica desactivada). Queda dicho en la consola para saber cuál
+    console.warn('[layers] sin 3D, se enseñan las capas planas:', error);
     flat();
     return;
   }

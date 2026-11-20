@@ -198,6 +198,10 @@ const layers = [
   .ls.is-flat .ls-stage {
     display: none;
   }
+  /* Sin 3D no hay separación que mover: el control se esconde en vez de quedarse sin hacer nada */
+  .ls.is-flat .ls-gap {
+    display: none;
+  }
   .ls.is-flat .ls-flat {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
