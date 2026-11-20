@@ -27,6 +27,12 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   opción activa en gris; la transición entre páginas va sobre papel, con el canto de la página
   marcado; y el cuadro de selección al pasar el ratón está desactivado (comentado en `kit.css`).
   La intro no cambió. Detalle en "Ajustes de diseño" del roadmap.
+- **Textos, primera tanda (20 nov, cerrada)**: repasó Inicio, Proyectos, Sobre mí y Contacto.
+  Sobre mí cambia de titular ("Hola, soy Christian."), de foto (la de la luz circular, en blanco
+  y negro) y de bio; ya no cita versiones de Angular ni a Eloi Cotonat (que sí sigue en el
+  crédito del proyecto Vístalo, por decisión suya); las herramientas llevan logotipo
+  (`simple-icons`); Proyectos abre siempre en cajas; el formulario de Contacto va centrado y sin
+  el panel de estados. Los textos siguen siendo provisionales. Los 14 puntos, en el roadmap.
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.

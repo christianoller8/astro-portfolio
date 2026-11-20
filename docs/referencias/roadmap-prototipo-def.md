@@ -959,7 +959,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     de la cronología y las herramientas por lente). Las etiquetas "v7.0, v6.0…" de la trayectoria
     no son de Angular: son la numeración de las etapas y se quedan.
 
-- [ ] **Textos y ajustes, primera tanda** (20 nov; hecho, pendiente de su repaso punto por punto).
+- [x] **Textos y ajustes, primera tanda** (20 nov; hecho y cerrado por él; miniaturas del lienzo
+  y alturas de página rehechas).
   Los textos nuevos son provisionales, en los dos idiomas:
   1. Hero: no se toca.
   2. Inicio, Proyectos: "Te presento mis últimos proyectos." (pidió "mis 3 últimos", pero se
