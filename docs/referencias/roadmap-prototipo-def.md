@@ -860,7 +860,7 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     `astro.config.mjs`. En el modo plano la barra de "Separación" ya se esconde. Preguntó si el
     boceto debía ir delante: se dejó el orden (boceto y diseño son hojas opacas; código y pruebas,
     transparentes) y **las capas van numeradas del 1 al 4** en las etiquetas y en la lista.
-  - Enlace con la escena de la home (hecho el 20 nov, pendiente de su visto bueno): al acabar
+  - Enlace con la escena de la home (hecho y aprobado el 20 nov): al acabar
     "Tú ves una web. Yo la veo así", con las capas 3D a la vista, la caricatura habla otra vez y
     su bocadillo dice **"Puedes ver toda esta web así."** durante cinco segundos, una vez por
     carga. No se añade ningún bloque: el puente con botones que había (`showBridge` en
