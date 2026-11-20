@@ -1,21 +1,22 @@
-// Versión "de día" de la foto de la luz roja: la figura sobre un gris claro, sin la franja de luz de la
-// pared ni sombra. El gris es más hondo detrás del cuerpo y se abre a blanco hacia los bordes y hacia
-// arriba, donde la foto toca la barra, para fundirse con el papel sin ningún corte.
-// En el borde de la figura se cambia la pared vieja por el gris (foto + (1 − a)·(gris − pared)), así
-// no queda cerco oscuro ni rojizo donde pasaba la franja.
+// Versión "de día" de la foto de la luz roja: la figura sola, sin la franja de luz de la pared ni
+// sombra, con fondo transparente para que se vea la hoja de la página (su gris y su textura, D25).
+// Detrás del cuerpo lleva un velo claro muy suave, que hace de luz de estudio y se apaga hacia los
+// bordes y hacia arriba, donde la foto toca la barra, para que no haya ningún corte.
+// En el borde de la figura se quita la pared vieja (oscura y, a la altura de la franja, roja) para
+// que no quede cerco.
 // Uso (desde la raíz, usa sharp):
-//   node .taste-skill/recorte/luz-gris.cjs <foto.jpg> <mascara.png> <salida.jpg> [previa.jpg]
+//   node .taste-skill/recorte/luz-gris.cjs <foto.jpg> <mascara.png> <salida.webp> [previa.jpg]
 // La máscara de card.jpg está en docs/imgs/card-mascara.png (sale de mascara-diferencia.cjs).
-// Ajustes por variable de entorno: GRAY (el gris más hondo, 0–1), CX, CY, RX, RY (centro y radios de
-// la mancha gris, en fracciones de la foto), INNER (desde dónde aclara), TOP0, TOP1 (rampa de arriba)
-// y GRAIN (grano, en niveles de 0 a 255).
+// Ajustes por variable de entorno: GLOW (opacidad máxima del velo, 0–1), CX, CY, RX, RY (centro y
+// radios del velo, en fracciones de la foto), INNER (desde dónde se apaga), TOP0, TOP1 (rampa de
+// arriba) y SHEET (gris de la hoja, solo para la previa).
 const sharp = require('sharp');
 const [photoPath, maskPath, outPath, prevPath] = process.argv.slice(2);
 const env = (k, v) => (process.env[k] === undefined ? v : +process.env[k]);
-// Los valores por defecto son los de card-light.jpg (D24). La foto asoma bajo la barra al 17 % de su
-// alto (en escritorio y en móvil): a esa altura el gris tiene que ser ya blanco.
-const GRAY = env('GRAY', 0.88), CX = env('CX', 0.55), CY = env('CY', 0.58), RX = env('RX', 0.66), RY = env('RY', 0.56);
-const INNER = env('INNER', 0.35), TOP0 = env('TOP0', 0.15), TOP1 = env('TOP1', 0.3), GRAIN = env('GRAIN', 1.4);
+// Los valores por defecto son los de card-light.webp. La foto asoma bajo la barra al 17 % de su alto
+// (en escritorio y en móvil): a esa altura el velo tiene que haberse apagado ya.
+const GLOW = env('GLOW', 0.34), CX = env('CX', 0.55), CY = env('CY', 0.58), RX = env('RX', 0.66), RY = env('RY', 0.56);
+const INNER = env('INNER', 0.35), TOP0 = env('TOP0', 0.17), TOP1 = env('TOP1', 0.32), SHEET = env('SHEET', 0xd6);
 
 // Desenfoque de caja separable sobre un Float32Array
 function box(src, W, H, r) {
@@ -41,13 +42,6 @@ function box(src, W, H, r) {
 const blur = (a, W, H, r, n = 3) => { let o = a; for (let i = 0; i < n; i++) o = box(o, W, H, r); return o; };
 const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
 
-// Grano: ruido gaussiano repetible (mulberry32 + Box-Muller)
-function noise(seed) {
-  let s = seed >>> 0;
-  const rand = () => { s = (s + 0x6d2b79f5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-  return () => Math.sqrt(-2 * Math.log(rand() || 1e-9)) * Math.cos(2 * Math.PI * rand());
-}
-
 (async () => {
   const { data: d, info } = await sharp(photoPath).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   const W = info.width, H = info.height, N = W * H;
@@ -65,24 +59,28 @@ function noise(seed) {
     return num.map((v, i) => (den[i] > 0.02 ? v / den[i] : denFar[i] > 1e-3 ? numFar[i] / denFar[i] : 0.25));
   });
 
-  const grain = noise(1118);
-  const out = Buffer.alloc(N * 3);
+  const out = Buffer.alloc(N * 4);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const i = y * W + x, u = x / W, v = y / H;
     const r = Math.hypot((u - CX) / RX, (v - CY) / RY);
-    const s = (1 - smooth(INNER, 1, r)) * smooth(TOP0, TOP1, v);
-    const g = 1 - s * (1 - GRAY) + (grain() * GRAIN) / 255;
+    // El velo: blanco, con esta opacidad
+    const g = (1 - smooth(INNER, 1, r)) * smooth(TOP0, TOP1, v) * GLOW;
     const a = alpha[i];
+    // Figura (a) sobre el velo (g): la opacidad del píxel y su color, sin premultiplicar
+    const cover = a + (1 - a) * g;
     for (let c = 0; c < 3; c++) {
       const p = d[i * 3 + c] / 255;
-      // Acotado entre la foto y el gris: donde la máscara se queda corta (la oreja, con luz roja) la
-      // piel que cae fuera no puede salir más clara que el fondo y hacer un cerco
-      const o = a >= 1 ? p : a <= 0 ? g : Math.min(Math.max(p, g), Math.max(Math.min(p, g), p + (1 - a) * (g - wall[c][i])));
-      out[i * 3 + c] = Math.round(Math.min(1, Math.max(0, o)) * 255);
+      // Color propio de la figura en el borde: la foto menos la parte de pared que se colaba. Solo
+      // donde la máscara es fiable (a ≥ 0,5) y sin apartarse mucho de la foto
+      const own = a >= 1 ? p : a >= 0.5 ? Math.min(p + 0.15, Math.max(p - 0.15, (p - (1 - a) * wall[c][i]) / a)) : p;
+      const color = cover > 1e-4 ? (a * own + (1 - a) * g) / cover : 1;
+      out[i * 4 + c] = Math.round(Math.min(1, Math.max(0, color)) * 255);
     }
+    out[i * 4 + 3] = Math.round(cover * 255);
   }
-  const img = sharp(out, { raw: { width: W, height: H, channels: 3 } });
-  await img.clone().jpeg({ quality: 90, mozjpeg: true }).toFile(outPath);
-  if (prevPath) await img.clone().resize({ height: 1100 }).jpeg({ quality: 88 }).toFile(prevPath);
-  console.log('hecho', outPath);
+  const img = sharp(out, { raw: { width: W, height: H, channels: 4 } });
+  await img.clone().webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(outPath);
+  // La previa la pone sobre el gris de la hoja
+  if (prevPath) await img.clone().flatten({ background: { r: SHEET, g: SHEET, b: SHEET } }).resize({ height: 1100 }).jpeg({ quality: 88 }).toFile(prevPath);
+  console.log('hecho', outPath, require('node:fs').statSync(outPath).size, 'bytes');
 })();

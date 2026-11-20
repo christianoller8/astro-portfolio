@@ -295,9 +295,16 @@ const tests =
   .about-facts dd {
     font-weight: 600;
   }
-  /* El retrato, como capa: sobre papel su fondo blanco se funde (multiplicar) y el pie se desvanece */
+  /* El retrato, como capa: su fondo blanco se funde con la hoja (multiplicar), así que queda impreso
+     sobre el papel con su textura, y el pie se desvanece. La mezcla va en el envoltorio y no en la
+     imagen: la máscara de la figura y la entrada escalonada del envoltorio aíslan lo que tienen
+     dentro, y la foto se quedaría en un rectángulo blanco */
   .about-photo-sel {
     max-width: 40rem;
+    mix-blend-mode: multiply;
+  }
+  :global(:root.dark) .about-photo-sel {
+    mix-blend-mode: normal;
   }
   .about-photo {
     -webkit-mask: linear-gradient(#000 78%, transparent);
@@ -308,7 +315,6 @@ const tests =
     height: auto;
     /* El fondo de la foto es un blanco roto: se lleva a blanco para que al multiplicar no deje marco */
     filter: brightness(1.07) contrast(1.1);
-    mix-blend-mode: multiply;
   }
   /* En oscuro no se puede multiplicar: se usa la foto con la persona recortada, y el jersey negro
      se funde con el fondo */
@@ -318,7 +324,6 @@ const tests =
   }
   :global(:root.dark) .about-photo-img--dark {
     display: block;
-    mix-blend-mode: normal;
     filter: none;
   }
 

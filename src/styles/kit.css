@@ -116,7 +116,8 @@
   padding: 0 0.35rem;
   font: 500 0.8125rem/1 var(--font-mono);
   color: var(--muted);
-  background: var(--paper);
+  /* Corta la línea de cota: el color de la hoja sobre la que se mide */
+  background: var(--sheet);
 }
 .kit-dim::before,
 .kit-dim::after {

@@ -10,8 +10,9 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
   cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
-  página (D23), ya aprobados. Después, la foto clara sin sombra ni franja, sobre gris (D24): hecha y
-  a la espera de su visto bueno (ver "Ajustes de diseño" en el roadmap).
+  página (D23) y la foto clara sin sombra ni franja (D24), ya aprobados. Después, la hoja con
+  textura de papel en toda la página (D25): hecha y a la espera de su visto bueno. Lo siguiente,
+  ya acordado, son los selectores de tema e idioma (ver "Ajustes de diseño" en el roadmap).
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta
@@ -62,10 +63,18 @@ enviar a Awwwards la URL en inglés.
 
 ## Cambios recientes que conviene saber
 
-- **20 nov, foto clara (D24)**: sin la franja roja ni la sombra, sobre un gris claro que se abre a
-  blanco. Se genera en cualquier equipo con `.taste-skill/recorte/luz-gris.cjs` y la máscara
-  guardada en `docs/imgs/card-mascara.png` (sacada de la foto anterior con `mascara-diferencia.cjs`).
-  Para esta foto ya no hace falta `person.swift`.
+- **20 nov, hoja con textura (D25)**: la página ya no es un color plano. `--sheet` es la hoja (gris
+  `#d6d6d6` en claro) y se pinta con `--sheet-bg`, que lleva la textura de papel
+  (`public/textures/`, generada con `.taste-skill/papel/papel.cjs`). `--paper` queda para las
+  piezas que van encima. La hoja la pinta el `body`, de borde a borde: el artboard va sin fondo y
+  ya no hay lienzo a los lados. **Lo que tenga que tapar algo con "la página" (la barra, el menú
+  de móvil) usa `--sheet-bg`, nunca `--paper`.** La barra termina en un fundido, no en una línea.
+  Una mezcla (`mix-blend-mode`) dentro de un elemento con máscara o con entrada escalonada queda
+  aislada: hay que ponerla en el elemento de fuera (pasó con el retrato de Sobre mí).
+- **20 nov, foto clara (D24 y D25)**: sin la franja roja ni la sombra, con fondo transparente
+  (`card-light.webp`) y un velo claro detrás. Se genera en cualquier equipo con
+  `.taste-skill/recorte/luz-gris.cjs` y la máscara guardada en `docs/imgs/card-mascara.png` (sacada
+  de la foto anterior con `mascara-diferencia.cjs`). Para esta foto ya no hace falta `person.swift`.
 - **20 nov**: la barra es la primera fila del artboard y el nombre del frame ya no va encima de él
   (sale en la barra de estado de las lentes, en el lienzo y en la 404). En el hero, texto y foto van
   en columnas separadas.

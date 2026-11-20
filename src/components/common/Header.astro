@@ -173,19 +173,50 @@ const isActive = (path: string) => {
 </header>
 
 <style>
-  /* La barra va dentro de la página: papel, del ancho del artboard (deja ver el lienzo a los lados)
+  /* La barra va dentro de la página: la misma hoja, del ancho del artboard
      y con el contenido alineado con el de las secciones (.wrap). En el paneo se queda quieta. */
   .toolbar {
     position: sticky;
     top: 0;
     z-index: 50;
     margin-inline: var(--gutter);
-    background: var(--paper);
     view-transition-name: toolbar;
   }
+  /* La hoja de la barra (::before) y su borde de abajo (::after). El borde no es una línea: es una
+     franja de la misma hoja que se desvanece, así lo que pasa por debajo al hacer scroll se funde
+     en vez de cortarse. Solo aparece con la página movida (html[data-scrolled]); arriba del todo
+     taparía el principio del contenido. La textura se coloca donde cae la de la página. */
+  .toolbar::before,
+  .toolbar::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--sheet-bg);
+  }
+  .toolbar::before {
+    inset-block: 0;
+    background-position: calc(-1 * var(--gutter)) 0;
+  }
+  .toolbar::after {
+    top: 100%;
+    height: 2.25rem;
+    background-position: calc(-1 * var(--gutter)) calc(-1 * var(--toolbar-h));
+    -webkit-mask-image: linear-gradient(#000, rgb(0 0 0 / 0.55) 40%, transparent);
+    mask-image: linear-gradient(#000, rgb(0 0 0 / 0.55) 40%, transparent);
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+  :global(html[data-scrolled]) .toolbar::after {
+    opacity: 1;
+  }
   /* 404: el frame que falta no tiene papel, así que la barra sigue sobre el lienzo */
-  :global(html[data-missing]) .toolbar {
+  :global(html[data-missing]) .toolbar::before {
     background: var(--canvas);
+  }
+  :global(html[data-missing]) .toolbar::after {
+    display: none;
   }
   .toolbar-inner {
     display: flex;
@@ -416,7 +447,7 @@ const isActive = (path: string) => {
     height: calc(100dvh - var(--toolbar-h));
     padding: 1rem var(--pad) max(1.25rem, env(safe-area-inset-bottom));
     overflow-y: auto;
-    background: var(--paper);
+    background: var(--sheet-bg);
   }
   .mobile-menu[hidden] {
     display: none;
@@ -544,7 +575,12 @@ const isActive = (path: string) => {
     document.documentElement.classList.toggle('menu-open', open);
   };
 
+  // La barra funde su borde con lo que pasa por debajo solo cuando la página se ha movido
+  const markScrolled = () => document.documentElement.toggleAttribute('data-scrolled', window.scrollY > 2);
+  window.addEventListener('scroll', markScrolled, { passive: true });
+
   document.addEventListener('astro:page-load', () => {
+    markScrolled();
     // Al llegar a otra página el menú vuelve cerrado
     document.documentElement.classList.remove('menu-open');
     const btn = document.getElementById('menu-btn');

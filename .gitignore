@@ -39,6 +39,9 @@ pnpm-debug.log*
 .taste-skill/recorte/*
 !.taste-skill/recorte/*.cjs
 !.taste-skill/recorte/*.swift
+!.taste-skill/papel/
+.taste-skill/papel/*
+!.taste-skill/papel/*.cjs
 !.taste-skill/personaje/
 .taste-skill/personaje/*
 !.taste-skill/personaje/*.cjs

@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import portraitDark from '@/assets/images/card.jpg';
-import portraitLight from '@/assets/images/card-light.jpg';
+import portraitLight from '@/assets/images/card-light.webp';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -24,13 +24,15 @@ const roles = [
 <!--
   Hero: el retrato (la foto de la luz roja, en los dos modos) va fundido en el fondo, sin caja ni
   panel (referencia: la página "nosotros" de Vístalo).
-  - Oscuro: la foto tal cual (card.jpg). Su pared oscura se desvanece en el papel oscuro.
-  - Claro: la misma foto "de día" (card-light.jpg, D24): la figura sobre un gris claro, sin la
-    franja de luz de la pared ni sombra. El gris se abre a blanco hacia arriba (donde la foto asoma
-    bajo la barra) y hacia los lados, así que se funde con el papel sin corte.
+  - Oscuro: la foto tal cual (card.jpg). Su pared oscura se desvanece en la hoja oscura.
+  - Claro: la misma foto "de día" (card-light.webp, D24 y D25): la figura sola, sin la franja de
+    luz de la pared ni sombra, con fondo transparente para que se vea la hoja con su textura.
+    Detrás del cuerpo lleva un velo claro muy suave, que se apaga hacia arriba (donde la foto asoma
+    bajo la barra) y hacia los lados, así que no hay corte.
+  El hero no pinta fondo propio: se ve la hoja del artboard.
   Texto y foto no se pisan (D22, 20 nov): en escritorio el texto ocupa su columna a la izquierda y
   la foto la suya a la derecha; en móvil la foto va arriba y el texto empieza donde ella termina.
-  card-light.jpg se genera con .taste-skill/recorte/luz-gris.cjs a partir de card.jpg y de su
+  card-light.webp se genera con .taste-skill/recorte/luz-gris.cjs a partir de card.jpg y de su
   máscara de persona (docs/imgs/card-mascara.png).
   [data-ink] marca las piezas que entran escalonadas al acabar la intro (--ink-i es su turno).
 -->
@@ -120,13 +122,11 @@ const roles = [
   .hero {
     position: relative;
     overflow: hidden;
-    background: var(--paper);
   }
   .hero-inner {
     position: relative;
     /* El ancho del contenido manda en todo el hero: titular, columnas y foto */
     container-type: inline-size;
-    background: var(--paper);
     /* Móvil: proporción de la foto (alto / ancho) y punto de su alto en el que ya es transparente.
        El texto empieza justo ahí. En claro la foto es cuadrada; en oscuro, más alta */
     --m-photo: 1;

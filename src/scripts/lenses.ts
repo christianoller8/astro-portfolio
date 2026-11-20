@@ -374,7 +374,7 @@ function buildDesign() {
 function designBar() {
   const L = NOTES[lang()];
   const styles = getComputedStyle(root);
-  const tokens = ['--paper', '--ink', '--muted', '--canvas'].map((name) => ({
+  const tokens = ['--sheet', '--paper', '--ink', '--muted'].map((name) => ({
     name: name.slice(2),
     value: styles.getPropertyValue(name).trim(),
   }));

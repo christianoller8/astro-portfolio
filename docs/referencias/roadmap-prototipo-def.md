@@ -23,7 +23,7 @@
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
-| **Ajustes de diseño** | **En curso** (20 nov): hero y barra aprobados; la foto clara sobre gris, hecha y a falta de tu visto bueno |
+| **Ajustes de diseño** | **En curso** (20 nov): hero, barra y foto clara aprobados; la hoja con textura de papel, hecha y a falta de tu visto bueno. Después, los selectores de tema e idioma |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -705,8 +705,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - **Tests de Playwright desfasados** (no por este cambio): `tests/example.spec.ts` viene de `main` y
     falla en 7 de 12 casos (títulos con "|", el id `#mobile-menu-btn` y dos `<nav>` en la home por la
     web de ejemplo). Se rehacen en la fase técnica.
-- [ ] **Foto clara sin sombra ni franja, sobre gris** (D24; hecha el 20 nov, pendiente de tu visto
-  bueno):
+- [x] **Foto clara sin sombra ni franja, sobre gris** (D24; hecha y aprobada el 20 nov: "déjala como
+  está, me gusta". Con D25 su fondo pasa a ser transparente, ver el punto siguiente):
   - Pediste quitar en modo claro la sombra y la línea roja de la pared, y un fondo algo más gris.
   - `card-light.jpg` es ahora tu figura (la de `card.jpg`) sobre un gris claro, más hondo detrás de
     los hombros (#e0e0e0) y que se abre a blanco hacia arriba y hacia los lados. Arriba, donde la
@@ -728,6 +728,55 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     `.taste-skill/mock-hero/verify-gray/`.
   - Miniaturas del lienzo: repetidas las dos de la home en claro (`es-home-light.jpg` y
     `en-home-light.jpg`). Las alturas no cambian.
+- [ ] **Hoja con textura de papel** (D25; hecha el 20 nov, pendiente de tu visto bueno):
+  - Viste el fondo en carterogunsola.com/writing y lo quisiste en toda la página y en los dos
+    modos, pero fijo: sin la estela que allí deja el ratón.
+  - Cómo está hecho: allí es un shader que se redibuja en cada fotograma (por eso reacciona al
+    ratón). Aquí es una imagen que se repite sin costuras, así que no puede reaccionar a nada, pesa
+    50 KB en claro y 43 KB en oscuro y no gasta batería. La textura es propia: trama de puntos a
+    45°, manchas muy suaves y grano.
+  - Se genera con `node .taste-skill/papel/papel.cjs light public/textures/paper-light.webp` (y
+    `dark`); el aspecto se ajusta con variables de entorno.
+  - Colores: hay una superficie nueva, `--sheet` (la hoja: `#d6d6d6` en claro, `#171717` en oscuro),
+    que se pinta con `--sheet-bg` (color más textura). `--paper` queda para las piezas que van
+    encima. En claro, además: lienzo `#c6c6c6` (antes `#e5e5e5`; más oscuro que la hoja, para
+    que se distinga de ella donde aún se ve), bordes `#b6b6b6` y grafito `#74747a` (más oscuros,
+    para conservar el contraste que tenían sobre blanco). El oscuro no cambia de colores.
+  - **De borde a borde** (lo pediste al verla: a los lados seguía el gris liso del lienzo): la hoja
+    la pinta el `body`, como una sola superficie sin costuras, y el artboard va sin fondo. Los
+    márgenes siguen midiendo lo mismo, pero ya son papel. El lienzo solo se ve donde hace de mesa
+    de trabajo: el paneo entre páginas, "Ver lienzo", la 404 y las franjas de Proyectos y Contacto.
+    El pie y esas franjas quedan como paneles dentro de la hoja.
+  - **La barra sin línea recta** (también pedido al verla): su fondo y su borde son dos capas de la
+    misma hoja. El borde es una franja de 36 px que se desvanece, así las tarjetas se funden al
+    pasar por debajo en vez de cortarse. Solo aparece con la página movida (`html[data-scrolled]`,
+    lo pone el guion de `Header.astro`); arriba del todo taparía el principio del contenido.
+  - También usan la hoja el menú de móvil y, en móvil y tablet, el escenario fijo de "Cómo lo veo
+    yo" (en escritorio va sin fondo). El hero ya no pinta fondo propio.
+  - Cambio de modo: la textura se funde a la vez que el texto (antes de corregirlo saltaba al
+    instante y el texto quedaba 150 ms del color del modo anterior). Como ya no hay lienzo a la
+    vista, el cambio en dos tiempos solo queda en la 404.
+  - Revisión con contexto limpio: encontró el escenario fijo pintado de blanco, la etiqueta de las
+    cotas en blanco y el salto de la textura al cambiar de modo. Los tres, corregidos.
+  - Las fotos de persona en claro:
+    - Hero: `card-light.webp` sustituye a `card-light.jpg`. Es la misma figura con fondo
+      transparente y un velo claro muy suave detrás, así se ve la trama del papel hasta el borde
+      de la silueta. `luz-gris.cjs` genera ahora esta versión.
+    - Sobre mí: el fundido por multiplicación no funcionaba (la máscara de la figura lo aislaba) y
+      sobre blanco no se notaba. Ahora la mezcla va en el envoltorio y el retrato queda impreso
+      sobre la hoja.
+  - La lente Diseño conserva el gris de la hoja y cambia la textura por su rejilla de puntos; su
+    barra de estado enseña `sheet` en lugar de `canvas`.
+  - Lo que no se ha copiado: las líneas de pliegue de la referencia (cruzarían titulares y
+    tarjetas y parecerían líneas de maquetación) y su interacción.
+  - Miniaturas del lienzo: repetidas las 32. Las alturas no cambian.
+  - Comprobado en Inicio, Proyectos, dos casos, Sobre mí, Contacto y la 404, a 1440 y 390 px, en
+    claro y oscuro, más la barra con la página desplazada, la lente Diseño, el menú de móvil y el
+    cambio de modo. Capturas en `.taste-skill/mock-hero/audit/` y `states/`.
+- [ ] **Selectores de tema e idioma** (acordado el 20 nov, sin empezar): los dos con la misma forma,
+  enseñando las dos opciones y marcando la activa, como el de día y noche de la misma web de
+  referencia pero con esquinas rectas, como el resto de la barra. No se aplica a los botones de
+  acción (CV, Ver proyectos, Ver lienzo). Por comprobar: si en móvil cabe en la barra o va al menú.
 
 ## Fase técnica (después del 10 de diseño)
 

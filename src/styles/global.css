@@ -6,19 +6,26 @@
 
 /* Tokens: lienzo (canvas), papel del artboard, tinta y grafito (docs/referencias/plan-diseno-awwwards.md §3.3).
    Los neutros son los de christianoller.dev. --pencil es el acento de la interfaz (tinta) y --graphite,
-   el trazo del boceto. --ok y --fail solo marcan estado. */
+   el trazo del boceto. --ok y --fail solo marcan estado.
+   Desde D25 hay dos superficies: --sheet es la hoja de la página (gris en claro, con la textura de
+   papel de --sheet-tex) y --paper, la superficie limpia de las piezas que van encima (tarjetas,
+   campos, ventanas de interfaz). Lo que es "la página" se pinta con --sheet-bg, nunca con --paper. */
 @layer base {
   :root {
-    --canvas: #e5e5e5;
+    --canvas: #c6c6c6;
+    --sheet: #d6d6d6;
+    --sheet-tex: url('/textures/paper-light.webp');
+    /* El mosaico mide 1024 px y se pinta a 512: nítido a doble densidad */
+    --sheet-bg: var(--sheet) var(--sheet-tex) 0 0 / 512px 512px;
     --paper: #ffffff;
     --ink: #1a1a1a;
     --muted: #4a4a4a;
-    --line: #d4d4d4;
+    --line: #b6b6b6;
     --tint: #f2f2f2;
     --pencil: var(--ink);
     --pencil-ink: var(--paper);
     --pencil-soft: rgb(26 26 26 / 0.08);
-    --graphite: #8e8e93;
+    --graphite: #74747a;
     /* Caricatura: en claro usa la tinta y el papel de la página */
     --car-ink: var(--ink);
     --car-paper: var(--paper);
@@ -65,6 +72,8 @@
 
   :root.dark {
     --canvas: #2c2c2e;
+    --sheet: #171717;
+    --sheet-tex: url('/textures/paper-dark.webp');
     --paper: #171717;
     --ink: #f5f5f5;
     --muted: #a3a3a3;
@@ -84,18 +93,28 @@
     color-scheme: dark;
   }
 
+  /* La hoja cubre la página entera, de borde a borde: la pinta el body (una sola superficie, sin
+     costuras) y el artboard va sin fondo. El lienzo ya solo se ve donde hace de mesa de trabajo:
+     el paneo entre páginas, "Ver lienzo", la 404 y las franjas de Proyectos y Contacto. */
   html {
-    background: var(--canvas);
+    background: var(--sheet);
     -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background: var(--canvas);
+    min-height: 100svh;
+    background: var(--sheet-bg);
     color: var(--ink);
     font-family: var(--font-sans);
     font-size: var(--step-body);
     line-height: 1.55;
     font-optical-sizing: auto;
+  }
+
+  /* 404: el frame que falta no tiene hoja; la página entera es lienzo */
+  html[data-missing],
+  html[data-missing] body {
+    background: var(--canvas);
   }
 
   :focus-visible {
@@ -186,9 +205,8 @@
   height: var(--frame-label-h);
   padding-left: max(0px, 0.75rem - var(--gutter));
 }
-/* La barra es la primera fila del artboard: el papel empieza justo debajo de ella */
+/* La barra es la primera fila del artboard. El artboard no pinta fondo: se ve la hoja del body */
 .artboard {
-  background: var(--paper);
   min-height: calc(100svh - var(--toolbar-h) - var(--gutter));
   overflow-x: clip;
 }
@@ -297,20 +315,25 @@ a[download]:focus-visible :is(.btn-arrow, svg) {
 html.theme-switching *,
 html.theme-switching *::before,
 html.theme-switching *::after {
+  /* La textura de la hoja cambia con los frames. Donde el navegador no funde imágenes, salta a
+     mitad del cambio (allow-discrete) en vez de al principio, con el texto aún del otro modo */
   transition:
     background-color 150ms linear 150ms,
+    background-image 150ms linear 150ms,
     color 150ms linear 150ms,
     border-color 150ms linear 150ms,
     outline-color 150ms linear 150ms,
     fill 150ms linear 150ms,
     stroke 150ms linear 150ms !important;
+  transition-behavior: allow-discrete !important;
 }
-/* El lienzo cambia primero; la barra, que es papel, cambia con los frames (en la 404 va sobre el
-   lienzo, así que cambia con él) */
-html.theme-switching body,
+/* En la 404 el lienzo cambia primero, con la barra, que allí va sobre él, y el nombre del frame.
+   En el resto de páginas no hay lienzo a la vista: la hoja cambia con todo lo demás */
+html.theme-switching[data-missing] body,
 html.theme-switching .frame-label,
 html.theme-switching .frame-label *,
 html.theme-switching[data-missing] .toolbar,
+html.theme-switching[data-missing] .toolbar::before,
 html.theme-switching[data-missing] .toolbar * {
   transition-delay: 0s !important;
 }
