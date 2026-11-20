@@ -897,8 +897,13 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     "de momento". Es una imagen usada de máscara, no una tercera familia de letra.
   - Pendiente de él: su firma a mano (varias pruebas con rotulador grueso sobre papel blanco, en
     foto), para sustituir a la de la fuente.
-  - Pendiente de decidir: si la intro, que dibuja la caricatura con "made by chris", pasa a
-    escribir la firma.
+  - **La intro no se toca**: sigue dibujando la caricatura con "made by chris". Se llegó a cambiar
+    para que escribiera la firma y él lo mandó revertir: lo había entendido mal.
+  - Lo que pidió: que **la firma de la barra se escriba a máquina**, letra a letra y con un cursor
+    que parpadea y se va, en claro y en oscuro (hecho el 20 nov, pendiente de su visto bueno).
+    Solo al cargar la web, no al pasar de una página a otra; en la home espera a que acabe la
+    intro. Como la firma es una imagen, se destapa a saltos donde acaba cada letra (`Header.astro`):
+    si cambia la imagen hay que volver a medir esos puntos.
 
 ## Fase técnica (después del 10 de diseño)
 

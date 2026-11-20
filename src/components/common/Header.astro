@@ -40,7 +40,11 @@ const isActive = (path: string) => {
       <span
         class="brand-sign"
         style={`--sign: url(${sign.src}); --sign-ratio: ${sign.width} / ${sign.height}`}
-        aria-hidden="true"></span>
+        aria-hidden="true"
+      >
+        <span class="brand-sign-ink"></span>
+        <span class="brand-caret"></span>
+      </span>
     </a>
 
     <nav class="toolbar-nav" aria-label={t('nav.menu')}>
@@ -195,15 +199,23 @@ const isActive = (path: string) => {
   .brand::after {
     display: none;
   }
-  /* La imagen de la firma hace de máscara: lo que se ve es la tinta del tema */
+  /* La imagen de la firma hace de máscara: lo que se ve es la tinta del tema, en claro y en oscuro */
   .brand-sign {
+    position: relative;
     display: block;
     width: 6.5rem;
     aspect-ratio: var(--sign-ratio);
+    rotate: -3deg;
+  }
+  .brand-sign-ink {
+    position: absolute;
+    inset: 0;
     background: var(--ink);
     -webkit-mask: var(--sign) center / contain no-repeat;
     mask: var(--sign) center / contain no-repeat;
-    rotate: -3deg;
+  }
+  .brand-caret {
+    display: none;
   }
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .brand-sign {
@@ -211,6 +223,86 @@ const isActive = (path: string) => {
     }
     .brand:hover .brand-sign {
       rotate: -7deg;
+    }
+  }
+
+  /* La firma se escribe a máquina al cargar la web (pedido por Christian el 20 nov): se destapa de
+     izquierda a derecha a saltos, uno por letra, en el punto donde acaba cada una (medido sobre la
+     imagen: C 22 %, H 45,1 %, R 74,9 %, I 83,5 %, S 100 %), con un cursor delante que parpadea un
+     par de veces y se va. Solo al cargar: al pasar de una página a otra (html.arrived) la barra se
+     vuelve a pintar y la firma ya está escrita. En la home espera a que acabe la intro */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html:not(.arrived)) .brand-sign-ink {
+      animation: brand-type 700ms step-end 450ms both;
+    }
+    :global(html:not(.arrived)) .brand-caret {
+      position: absolute;
+      top: 4%;
+      bottom: 4%;
+      left: 0;
+      display: block;
+      width: 2px;
+      background: var(--ink);
+      animation:
+        brand-caret 700ms step-end 450ms both,
+        brand-blink 460ms step-end infinite,
+        brand-caret-out 1ms linear 2450ms forwards;
+    }
+    :global(html.intro) .brand-sign-ink,
+    :global(html.intro) .brand-caret {
+      animation-play-state: paused;
+    }
+  }
+  /* Con step-end cada valor se mantiene hasta el siguiente: una letra más en cada paso */
+  @keyframes brand-type {
+    0% {
+      clip-path: inset(-15% 100% -15% 0);
+    }
+    20% {
+      clip-path: inset(-15% 78% -15% 0);
+    }
+    40% {
+      clip-path: inset(-15% 54.9% -15% 0);
+    }
+    60% {
+      clip-path: inset(-15% 25.1% -15% 0);
+    }
+    80% {
+      clip-path: inset(-15% 16.5% -15% 0);
+    }
+    100% {
+      clip-path: inset(-15% -5% -15% 0);
+    }
+  }
+  @keyframes brand-caret {
+    0% {
+      left: 0;
+    }
+    20% {
+      left: 22%;
+    }
+    40% {
+      left: 45.1%;
+    }
+    60% {
+      left: 74.9%;
+    }
+    80% {
+      left: 83.5%;
+    }
+    100% {
+      left: 102%;
+    }
+  }
+  @keyframes brand-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  /* Va la última en la lista de animaciones del cursor: al acabar manda sobre el parpadeo */
+  @keyframes brand-caret-out {
+    to {
+      opacity: 0;
     }
   }
 
