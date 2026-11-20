@@ -3,7 +3,9 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://christianoller.dev',
+  // El dominio que sirve la web es el de www (el apex responde 308 hacia él): canonical, hreflang,
+  // og:url y sitemap tienen que declarar el mismo para no repartir las señales entre dos hosts
+  site: 'https://www.christianoller.dev',
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/sistema') && !page.includes('/personaje'),

@@ -45,6 +45,32 @@ const toolbar = {
   bubble: t('bubble.title'),
   hint: t('bubble.hint'),
   clear: t('lens.clear'),
+  // Etiquetas accesibles y textos de la barra de estado de las lentes: la 404 se genera en español,
+  // así que para /en/… se reescriben (las mismas claves de ui.ts que usa el resto de la web en inglés)
+  aria: {
+    skip: t('aria.skip'),
+    home: t('aria.home'),
+    nav: t('nav.menu'),
+    lang: t('aria.lang'),
+    langEs: t('aria.lang.es'),
+    langEn: t('aria.lang.en'),
+    theme: t('aria.theme'),
+    themeLight: t('aria.theme.light'),
+    themeDark: t('aria.theme.dark'),
+    menuOpen: t('aria.menu'),
+    menuClose: t('aria.close'),
+    lens: t('lens.label'),
+  },
+  panel: {
+    design: t('lens.design'),
+    code: t('lens.code'),
+    qa: t('lens.qa'),
+    nodes: t('lens.stat.nodes'),
+    js: t('lens.stat.js'),
+    css: t('lens.stat.css'),
+    load: t('lens.stat.load'),
+    passed: t('lens.stat.passed'),
+  },
 };
 ---
 
@@ -292,6 +318,8 @@ const toolbar = {
         bubble: string;
         hint: string;
         clear: string;
+        aria: Record<string, string>;
+        panel: Record<string, string>;
       };
       document.querySelectorAll<HTMLAnchorElement>('header a[href]').forEach((link) => {
         const to = toolbar.links[link.getAttribute('href')?.replace(/(.)\/$/, '$1') ?? ''];
@@ -304,8 +332,8 @@ const toolbar = {
       document.querySelectorAll('[data-vb-title]').forEach((el) => (el.textContent = toolbar.bubble));
       document.querySelectorAll('[data-vb-hint]').forEach((el) => (el.textContent = toolbar.hint));
       document.querySelectorAll('[data-vb][aria-label], [data-vb] [aria-label]').forEach((el) => el.setAttribute('aria-label', toolbar.bubble));
-      const clear = document.querySelector('[data-vb] [data-lens-clear] span');
-      if (clear) clear.textContent = toolbar.clear;
+      // "Vista normal" (bocadillo y barra de estado)
+      document.querySelectorAll('[data-lens-clear] span').forEach((el) => (el.textContent = toolbar.clear));
       document.querySelectorAll<HTMLElement>('header [data-canvas-open], [data-vb] [data-canvas-open]').forEach((btn) => {
         // El texto del botón es su primer nodo de texto con contenido (lleva icono y tecla aparte)
         const node = [...btn.childNodes].find((n) => n.nodeType === 3 && n.textContent?.trim());
@@ -313,11 +341,40 @@ const toolbar = {
         if (label) label.textContent = toolbar.canvas;
         if (btn.title) btn.title = `${toolbar.canvas} (M)`;
       });
-      document.querySelectorAll<HTMLElement>('header [data-lens-set], [data-vb] [data-lens-set]').forEach((btn) => {
+      document.querySelectorAll<HTMLElement>('[data-lens-set]').forEach((btn) => {
         const name = toolbar.lenses[btn.dataset.lensSet ?? ''];
         const text = btn.querySelector('span');
         if (name && text) text.textContent = name;
+        if (name && btn.title) btn.title = `${name} (${btn.getAttribute('aria-keyshortcuts') ?? ''})`;
       });
+
+      // Enlace de salto, etiquetas de la barra, de los selectores de idioma y tema, del botón de menú
+      // y de la barra de estado de las lentes (aside): todo lo que sigue saliendo en español
+      const { aria } = toolbar;
+      const label = (selector: string, text: string) =>
+        document.querySelectorAll(selector).forEach((el) => el.setAttribute('aria-label', text));
+      const skip = document.querySelector('a[href="#main"]');
+      if (skip) skip.textContent = aria.skip;
+      label('header .brand', aria.home);
+      label('header nav', aria.nav);
+      label('.seg--lang', aria.lang);
+      label('.seg--lang [hreflang="es"]', aria.langEs);
+      label('.seg--lang [hreflang="en"]', aria.langEn);
+      label('.seg--theme', aria.theme);
+      document.querySelectorAll<HTMLElement>('[data-theme-set]').forEach((btn) => {
+        const text = btn.dataset.themeSet === 'dark' ? aria.themeDark : aria.themeLight;
+        btn.setAttribute('aria-label', text);
+        btn.title = text;
+      });
+      const menuBtn = document.getElementById('menu-btn');
+      if (menuBtn) {
+        menuBtn.dataset.labelOpen = aria.menuOpen;
+        menuBtn.dataset.labelClose = aria.menuClose;
+        menuBtn.setAttribute('aria-label', menuBtn.getAttribute('aria-expanded') === 'true' ? aria.menuClose : aria.menuOpen);
+      }
+      label('[data-lens-panel], .lens-switch', aria.lens);
+      const panel = document.querySelector<HTMLElement>('[data-lens-panel]');
+      if (panel) panel.dataset.i18n = JSON.stringify(toolbar.panel);
     }
     // El nombre del frame es la ruta: encima del frame y en la barra de estado de las lentes
     document.querySelectorAll('.frame-label, .lens-bar-frame').forEach((label) => {

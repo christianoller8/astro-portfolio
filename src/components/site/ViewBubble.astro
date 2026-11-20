@@ -262,7 +262,8 @@ const lenses = [
   .vb-hint {
     font-size: 0.75rem;
     font-weight: 300;
-    color: color-mix(in srgb, var(--vb-ink) 58%, var(--vb-paper));
+    /* 64 %: lo justo para llegar a 4,5:1 en claro y en oscuro (con 58 % quedaba en 4,2:1) */
+    color: color-mix(in srgb, var(--vb-ink) 64%, var(--vb-paper));
   }
   /* Los trazos de la cara giran y se estiran sobre su propio centro (parpadeo y boca, en el guion) */
   .vb :global(.car-ink) {

@@ -8,9 +8,52 @@ import Character from './Character.astro';
 
 <div class="pusher" data-pusher aria-hidden="true">
   <div class="pusher-stage">
-    <Character class="pusher-chr" />
+    <Character class="pusher-chr" defer />
   </div>
 </div>
+
+<script>
+  // Unas veinte imágenes (~100 KB, el 22 % de los bytes de cada página) que solo se ven mientras dura
+  // una transición. No se piden con la página: se activan en cuanto ha cargado y hay un respiro, de modo
+  // que el personaje ya está completo (y en la caché) cuando se navega por primera vez. Si se navega
+  // antes, se activan también al empezar la navegación (en paralelo a la descarga de la página) y en
+  // cuanto hay intención de navegar (ratón o foco sobre un enlace interno).
+  // Con 'reducir movimiento' o ahorro de datos no se descargan: en ese caso no hay paneo.
+  const canWarm = () => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !connection?.saveData;
+  };
+  const warm = (root: ParentNode) => {
+    if (!canWarm()) return;
+    root.querySelectorAll<HTMLImageElement>('[data-pusher] img[data-src]').forEach((img) => {
+      img.src = img.dataset.src ?? '';
+      img.removeAttribute('data-src');
+    });
+  };
+
+  const whenIdle = () => {
+    const run = () => warm(document);
+    // Safari no tiene requestIdleCallback
+    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(run, { timeout: 1500 });
+    else setTimeout(run, 800);
+  };
+  if (document.readyState === 'complete') whenIdle();
+  else window.addEventListener('load', () => window.setTimeout(whenIdle, 300), { once: true });
+
+  // Intención de navegar: primer ratón o foco sobre un enlace interno
+  const intent = (event: Event) => {
+    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href]') : null;
+    if (link && link.origin === location.origin && !link.hasAttribute('download')) warm(document);
+  };
+  document.addEventListener('pointerover', intent, { passive: true });
+  document.addEventListener('focusin', intent);
+  // Empieza la navegación: se pide a la vez que la página nueva
+  document.addEventListener('astro:before-preparation', () => warm(document));
+
+  // La página que llega trae su propio personaje sin activar: se activa antes del swap para que
+  // arranque a cargar (desde la caché) a la vez que entra, como cuando iba con la página.
+  document.addEventListener('astro:before-swap', (event) => warm((event as Event & { newDocument: Document }).newDocument));
+</script>
 
 <style>
   .pusher {

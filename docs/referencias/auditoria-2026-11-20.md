@@ -11,19 +11,20 @@ Hallazgos: 6 de gravedad alta, 24 media y 27 baja (los repetidos entre revisione
 
 ## Lo primero
 
-Arreglos que no necesitan ninguna decisión de Christian, por orden:
+Arreglos que no necesitan ninguna decisión de Christian, por orden (hechos el mismo día: ver "Estado de los
+arreglos" al final):
 
-- [ ] **Dominio canónico**: poner `site: 'https://www.christianoller.dev'` en `astro.config.mjs:5`. Corrige de
+- [x] **Dominio canónico**: poner `site: 'https://www.christianoller.dev'` en `astro.config.mjs:5`. Corrige de
   golpe canonical, `og:url`, hreflang, sitemap y `robots.txt`.
-- [ ] **Imagen para redes**: una propia de 1200 × 630 px y menos de 300 KB, con `og:image:alt` y medidas.
-- [ ] **CI**: pasar `.github/workflows/playwright.yml` a ejecución manual hasta reescribir los tests.
-- [ ] **Formulario, sin servicio todavía**: aviso tras el `mailto:` ("si no se abrió tu correo, escríbeme a…" con
+- [x] **Imagen para redes**: una propia de 1200 × 630 px y menos de 300 KB, con `og:image:alt` y medidas.
+- [x] **CI**: pasar `.github/workflows/playwright.yml` a ejecución manual hasta reescribir los tests.
+- [x] **Formulario, sin servicio todavía**: aviso tras el `mailto:` ("si no se abrió tu correo, escríbeme a…" con
   el botón de copiar) y errores por campo accesibles.
-- [ ] **Accesibilidad sin decisiones**: contrastes, bordes de los campos, foco del menú de móvil y del lienzo, 404
+- [x] **Accesibilidad sin decisiones**: contrastes, bordes de los campos, foco del menú de móvil y del lienzo, 404
   en inglés, espaciado de texto y nombre de ES/EN (detalle en su tabla).
-- [ ] **Rendimiento**: diferir las imágenes del personaje, no ocultar la primera pantalla hasta el JS, caché larga
+- [x] **Rendimiento**: diferir las imágenes del personaje, no ocultar la primera pantalla hasta el JS, caché larga
   de la textura (`vercel.json`, junto con las cabeceras de seguridad) y quitar las fuentes sin uso.
-- [ ] **Diseño sin decisiones**: H1 de Contacto a la escala, decisiones a 3 columnas solo desde 900 px y la fecha
+- [x] **Diseño sin decisiones**: H1 de Contacto a la escala, decisiones a 3 columnas solo desde 900 px y la fecha
   de la demo de Tempora.
 
 ## Decisiones que le tocan a Christian
@@ -202,6 +203,36 @@ Los 14 sitios con la triada:
 - Los informes completos de cada revisión, con capturas y scripts, están en `.taste-skill/auditoria/` (solo en el
   equipo, no en git).
 
+## Estado de los arreglos
+
+**"Lo primero", hecho el 20 nov** (un solo lote, revisado por un revisor independiente, que encontró
+cinco fallos en la primera versión y los dio por corregidos en la segunda). Pendiente de publicar.
+
+| Punto | Resultado medido |
+|---|---|
+| Dominio canónico | Canonical, hreflang, `og:url`, sitemap y `robots.txt` con `www` |
+| Imagen para redes | `public/og-image.jpg`, 1200 × 630, 63 KB (antes 7,6 MB), con `alt` y medidas; las etiquetas de Twitter con `name=` |
+| CI | Workflow de Playwright solo a mano (`workflow_dispatch`) |
+| Formulario | Aviso tras el `mailto:` con el correo y "Copiar"; errores por campo con `aria-invalid`, resumen en `role="alert"` y marca de obligatorio; "Copiado" anunciado; aviso si no se puede copiar |
+| Contraste | "Hazme clic" 5,25:1; "3 / 3" 4,97:1 (token `--ok-text`); números de las capas 7,7:1; pasos inactivos de la escena 4,82:1 (token `--idle`, color en vez de opacidad) |
+| Campos | Borde 3,45:1 (claro) y 3,36:1 (oscuro) con el token `--field-line`; foco con contorno de 2 px |
+| Menú de móvil | `main` inerte mientras está abierto; se cierra solo al pasar a escritorio |
+| Lienzo | `main` y pie inertes; la barra sigue usable; sin `aria-modal` (no es un diálogo modal: la barra queda a la vista y operativa) |
+| 404 en inglés | Enlace de salto, menús y paneles en inglés |
+| ES/EN | Nombres accesibles "EN, cambiar a inglés" / "ES, switch to Spanish" |
+| Espaciado de texto | El nombre del hero se parte sin recortarse solo en móvil; en escritorio sigue fijo en una línea (sin salto al cargar la fuente) |
+| H1 de Contacto | `.t-display`: 127 px (antes 245 px) |
+| Cajas en tablet | Tres columnas solo desde 900 px de contenedor |
+| Demo de Tempora | "Jue 5 nov" / "Thu 5 Nov" |
+| Personaje de la transición | Al cargar, 62 KB de imágenes en `/contact/` (antes 175 KB); el resto se carga en reposo, al pasar por un enlace o al empezar a navegar; nada con "reducir movimiento" o ahorro de datos. Límite: con conexión muy lenta y un clic inmediato, el personaje aparece a mitad del paneo |
+| Primera pantalla sin esperar al JS | LCP en móvil lento: Contacto 3080 → 1136 ms, Sobre mí 3416 → 1428 ms; las navegaciones sin recarga no cambian; con una lente puesta no hay entrada |
+| `vercel.json` | Cabeceras de seguridad (sin CSP completa) y caché de `/textures/`, `/canvas/` y `/og-image.jpg`; se comprueba al publicar |
+| Fuentes sin uso | Quitadas `@fontsource/inter` y `@fontsource/playfair-display` |
+
+**Visto al revisar las capturas** (nuevo, sin arreglar): en el lienzo en modo oscuro, el nombre de cada página
+("Inicio", "Proyectos"…) casi no se lee: gris oscuro sobre fondo oscuro.
+
 ## Siguiente paso
 
-Hacer "Lo primero" en un lote y enseñarlo; después, las decisiones de la tabla, una por una.
+Publicar el lote cuando Christian lo pida y comprobar en vivo las cabeceras de `vercel.json`. Después, las
+decisiones de la tabla, una por una.

@@ -14,7 +14,6 @@ import Pusher from '../components/character/Pusher.astro';
 import CanvasMap from '../components/site/CanvasMap.astro';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '@/i18n/utils';
-import profileImage from '@/assets/images/profile.jpg';
 
 interface Props {
   title: string;
@@ -33,7 +32,7 @@ interface Props {
 const {
   title,
   description = 'Christian Oller, software developer. Diseño, programo y pruebo webs y apps.',
-  image = profileImage.src,
+  image = '/og-image.jpg',
   frame,
   intro = false,
   missing = false,
@@ -46,6 +45,9 @@ const t = useTranslations(lang);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const esURL = new URL(useTranslatedPath('es')(Astro.url.pathname), Astro.site);
 const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
+// La imagen para redes es siempre absoluta y en el host canónico (los rastreadores no resuelven rutas
+// relativas a un host que redirige). 1200 x 630 es el formato que piden Open Graph y las tarjetas grandes.
+const imageURL = new URL(image, Astro.site);
 ---
 
 <!doctype html>
@@ -77,13 +79,17 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={t('meta.og.alt')} />
 
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={Astro.url} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+    <meta name="twitter:image:alt" content={t('meta.og.alt')} />
 
     <ClientRouter fallback="swap" />
 
@@ -170,6 +176,24 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     {intro && <IntroScreen />}
     <Pusher />
     <CanvasMap />
+    <script is:inline>
+      // Primera pantalla sin esperar al módulo: en una carga completa, lo que ya está dentro del
+      // viewport arranca su entrada ahora (animación CSS, mismo aspecto y escalonado que la transición
+      // del scroll). Sin esto, el titular seguía oculto hasta que bajaba y ejecutaba el JS, y retrasaba
+      // el LCP en móvil lento. La bandera en window evita repetirlo en las navegaciones sin recarga,
+      // que conservan su coreografía (html.arrived y la transición de página).
+      (() => {
+        if (window.__revealEarly) return;
+        window.__revealEarly = true;
+        const root = document.documentElement;
+        if (!root.classList.contains('reveal-ready')) return;
+        const limit = window.innerHeight * 0.92; // el mismo margen (-8 %) que usa reveal.ts
+        document.querySelectorAll('[data-reveal]').forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < limit && r.bottom > 0) el.classList.add('is-revealed', 'reveal-early');
+        });
+      })();
+    </script>
   </body>
 </html>
 

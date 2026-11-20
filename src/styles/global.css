@@ -34,9 +34,15 @@
     --car-tone: #bdbdbd;
     --car-halo: none;
     --ok: #16a34a;
+    /* El verde de --ok es para iconos y marcas; como texto (3 / 3) no llega a 4,5:1 sobre papel */
+    --ok-text: #14783a;
     --on-ok: #06140e;
     --fail: #dc2626;
     --on-fail: #ffffff;
+    /* Borde de los campos: 3:1 contra el papel (WCAG 1.4.11). --line es más suave y no llega */
+    --field-line: #8a8a8a;
+    /* Texto apagado pero legible (4,5:1 sobre la hoja): los pasos inactivos de la escena de scroll */
+    --idle: #595959;
     --dot: rgb(26 26 26 / 0.14);
 
     /* Escala de seis pasos: 14 · 17 · 22 · 32 · 56 · display */
@@ -91,9 +97,12 @@
     --car-paper: #f5f5f5;
     --car-halo: #f5f5f5;
     --ok: #22c55e;
+    --ok-text: #22c55e;
     --on-ok: #06140e;
     --fail: #f87171;
     --on-fail: #1a0606;
+    --field-line: #6b6b6b;
+    --idle: #8a8a8a;
     --dot: rgb(245 245 245 / 0.12);
     color-scheme: dark;
   }
@@ -130,6 +139,14 @@
   ::selection {
     background: var(--pencil);
     color: var(--pencil-ink);
+  }
+
+  /* El artboard recorta en horizontal: un titular que no cabe (por ejemplo con el espaciado de
+     texto aumentado, WCAG 1.4.12) tiene que partirse, no quedarse cortado */
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: break-word;
   }
 }
 
@@ -387,6 +404,29 @@ html.theme-switching[data-missing] .toolbar * {
   }
 
   .reveal-ready [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Lo que ya está en la primera pantalla al cargar (lo marca un script en línea de Layout.astro sin
+     esperar al módulo): misma entrada que la transición de arriba, pero como animación, que no
+     necesita un primer estado ya pintado. */
+  .reveal-ready [data-reveal].reveal-early {
+    animation: reveal-early var(--dur-ink) var(--ease-out) both;
+    animation-delay: calc(var(--reveal-i, 0) * var(--stagger));
+  }
+  /* Una lente es una vista de herramienta: sin entradas. Lleva más especificidad que la regla de
+     arriba (la clase reveal-ready va en html), si no, la animación seguiría corriendo con una lente. */
+  html[data-lens].reveal-ready [data-reveal].reveal-early {
+    animation: none;
+  }
+}
+@keyframes reveal-early {
+  from {
+    opacity: 0;
+    transform: translateY(var(--dist));
+  }
+  to {
     opacity: 1;
     transform: none;
   }

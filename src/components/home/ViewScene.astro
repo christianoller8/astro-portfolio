@@ -547,11 +547,16 @@ const lenses = [
     justify-content: center;
     min-height: 62svh;
     padding-block: 1.5rem;
-    opacity: 0.32;
-    transition: opacity var(--dur-ui) var(--ease-out);
+    /* Los pasos que no tocan se apagan con el color (--idle, 4,5:1 sobre la hoja) y no con la
+       opacidad, que los dejaba entre 1,6:1 y 2,8:1. El activo conserva tinta y peso completos. */
+    color: var(--idle);
+    transition: color var(--dur-ui) var(--ease-out);
   }
   .vs-step[data-active] {
-    opacity: 1;
+    color: var(--ink);
+  }
+  .vs-step:not([data-active]) :is(.vs-step-more, .vs-step-tools, .vs-step-tools span) {
+    color: inherit;
   }
   .vs-step-title {
     display: flex;
@@ -602,7 +607,7 @@ const lenses = [
     left: 0;
     width: 0.4rem;
     height: 0.4rem;
-    background: var(--ink);
+    background: currentColor;
   }
   .vs-step-tools {
     max-width: 34ch;

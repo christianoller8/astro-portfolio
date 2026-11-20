@@ -80,6 +80,8 @@ function initCanvas() {
 
   const lock = (on: boolean) => {
     root.classList.toggle('canvas-open', on);
+    // La página de detrás queda inerte; la barra no, porque el lienzo empieza debajo de ella y sigue
+    // a la vista: sus enlaces y selectores (tema, idioma) tienen que seguir funcionando.
     for (const el of document.querySelectorAll<HTMLElement>('main, footer')) el.inert = on;
     for (const btn of document.querySelectorAll<HTMLElement>('[data-canvas-open]')) btn.setAttribute('aria-pressed', String(on));
   };

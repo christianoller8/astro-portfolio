@@ -27,7 +27,7 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
     <ul class="back-links" data-reveal style="--reveal-i: 3">
       <li class="back-mail">
         <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
-        <button type="button" class="back-copy" data-copy={site.email} data-copied={t('footer.copied')}>
+        <button type="button" class="back-copy" data-copy={site.email} data-copied={t('footer.copied')} data-failed={t('footer.copyFailed')}>
           {t('footer.copy')}
         </button>
       </li>
@@ -140,27 +140,48 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
 </style>
 
 <script>
-  // Copiar el email: el botón dice "Copiado" un momento y vuelve a su texto
+  // Copiar el email: el botón dice "Copiado" un momento y vuelve a su texto. Compartido con Contacto.
+  // El resultado se anuncia en una región educada (los avisos visuales no los leen los lectores de
+  // pantalla) y, si el portapapeles falla, se dice en lugar de no hacer nada.
+  const live = () => {
+    let region = document.querySelector<HTMLElement>('[data-copy-live]');
+    if (!region) {
+      region = document.createElement('span');
+      region.className = 'sr-only';
+      region.setAttribute('role', 'status');
+      region.setAttribute('aria-live', 'polite');
+      region.dataset.copyLive = '';
+      document.body.append(region);
+    }
+    return region;
+  };
+  // La región existe antes de que cambie su texto: si se creara con el texto puesto, no se anunciaría
+  document.addEventListener('astro:page-load', () => live());
+
   document.addEventListener('click', async (event) => {
     const btn = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-copy]');
     if (!btn || btn.classList.contains('is-done')) return;
+    let message = btn.dataset.copied ?? '';
     try {
       await navigator.clipboard.writeText(btn.dataset.copy ?? '');
     } catch {
-      return;
+      message = btn.dataset.failed ?? '';
     }
+    const region = live();
+    region.textContent = '';
+    requestAnimationFrame(() => (region.textContent = message));
     // Un aviso sale desde el puntero (o desde el botón, con teclado)
     const box = btn.getBoundingClientRect();
     const pointer = event instanceof MouseEvent && (event.clientX || event.clientY);
     const toast = document.createElement('span');
     toast.className = 'kit-toast';
-    toast.textContent = btn.dataset.copied ?? '';
+    toast.textContent = message;
     toast.style.left = `${pointer ? event.clientX : box.left + box.width / 2}px`;
     toast.style.top = `${pointer ? event.clientY - 6 : box.top}px`;
     document.body.append(toast);
     toast.addEventListener('animationend', () => toast.remove(), { once: true });
     const label = btn.textContent;
-    btn.textContent = btn.dataset.copied ?? '';
+    btn.textContent = message;
     btn.classList.add('is-done');
     window.setTimeout(() => {
       btn.textContent = label;

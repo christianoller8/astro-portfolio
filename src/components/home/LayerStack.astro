@@ -157,7 +157,12 @@ const layers = [
   /* El número de orden de cada capa, más apagado que su nombre */
   .ls-num {
     font-variant-numeric: tabular-nums;
-    opacity: 0.55;
+    /* .75 llega a 4,5:1 en el papel y dentro de las etiquetas oscuras, en los dos temas */
+    opacity: 0.75;
+  }
+  /* En la versión plana el texto ya es --muted: bajarle la opacidad lo dejaba bajo 4,5:1 */
+  .ls-flat .ls-num {
+    opacity: 1;
   }
   .ls-label .ls-num,
   .ls-flat .ls-num {

@@ -513,6 +513,10 @@ const isActive = (path: string) => {
     btn.setAttribute('aria-label', (open ? btn.dataset.labelClose : btn.dataset.labelOpen) ?? '');
     menu.hidden = !open;
     document.documentElement.classList.toggle('menu-open', open);
+    // Con el menú abierto la página de detrás no se puede alcanzar con Tab (WCAG 2.4.3): inert la
+    // saca del orden de foco y del árbol de accesibilidad hasta que se cierra
+    const main = document.getElementById('main');
+    if (main) main.inert = open;
   };
 
   // La barra funde su borde con lo que pasa por debajo solo cuando la página se ha movido
@@ -523,8 +527,16 @@ const isActive = (path: string) => {
     markScrolled();
     // Al llegar a otra página el menú vuelve cerrado
     document.documentElement.classList.remove('menu-open');
+    const main = document.getElementById('main');
+    if (main) main.inert = false;
     const btn = document.getElementById('menu-btn');
     btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  });
+
+  // Desde 1024 px el menú de móvil no se ve (display:none): si se ensancha la ventana con él abierto,
+  // se cierra, para que main no se quede inerte y el botón no siga con aria-expanded="true"
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+    if (event.matches) setOpen(false);
   });
 
   document.addEventListener('keydown', (event) => {

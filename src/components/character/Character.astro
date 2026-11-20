@@ -7,8 +7,12 @@ import { PARTS, ART, ROOT, bone, type Art, type PartName } from '@/data/characte
 
 interface Props {
   class?: string;
+  /** Las imágenes no se piden con la página: llevan data-src y las activa un guion cuando hay calma
+      (Pusher.astro). Para el personaje que sale solo en las transiciones. */
+  defer?: boolean;
 }
-const { class: className } = Astro.props;
+const { class: className, defer = false } = Astro.props;
+const pic = (src: string) => (defer ? { 'data-src': src } : { src });
 
 const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/character/*.png', { eager: true });
 const url = async (file: string) => {
@@ -50,11 +54,11 @@ const sides = ['far', 'near'] as const;
         <div class:list={['chr-j', side === 'far' ? 'chr-far chr-leg-far' : 'chr-leg-near']} data-j={`${side}.thigh`} style={at(side === 'far' ? ROOT.legFar : ROOT.legNear)}>
           <div class="chr-j chr-under" data-j={`${side}.shin`} style={joint('thigh', 'knee')}>
             <div class="chr-j chr-under chr-shoe" data-j={`${side}.shoe`} data-shoe="flat" style={joint('shin', 'ankle')}>
-              {img.shoes.map((shoe) => <img class={`chr-shoe-${shoe.name}`} src={shoe.src} style={shoe.style} alt="" />)}
+              {img.shoes.map((shoe) => <img class={`chr-shoe-${shoe.name}`} {...pic(shoe.src)} style={shoe.style} alt="" />)}
             </div>
-            <img src={img.shin.src} style={img.shin.style} alt="" />
+            <img {...pic(img.shin.src)} style={img.shin.style} alt="" />
           </div>
-          <img src={img.thigh.src} style={img.thigh.style} alt="" />
+          <img {...pic(img.thigh.src)} style={img.thigh.style} alt="" />
         </div>
       ))
     }
@@ -66,25 +70,25 @@ const sides = ['far', 'near'] as const;
           <div class:list={['chr-j', `chr-arm-${side}`, side === 'far' && 'chr-far']} data-j={`${side}.upperArm`} style={joint('torso', 'shoulder')}>
             <div class="chr-j chr-over" data-j={`${side}.forearm`} style={joint('upperArm', 'elbow')}>
               <div class="chr-j chr-under chr-hand" data-j={`${side}.hand`} style={joint('forearm', 'wrist')}>
-                {img.hands.map((hand) => <img class={`chr-hand-${hand.name}`} src={hand.src} style={hand.style} alt="" />)}
+                {img.hands.map((hand) => <img class={`chr-hand-${hand.name}`} {...pic(hand.src)} style={hand.style} alt="" />)}
               </div>
-              <img src={img.forearm.src} style={img.forearm.style} alt="" />
+              <img {...pic(img.forearm.src)} style={img.forearm.style} alt="" />
             </div>
-            <img src={img.upperArm.src} style={img.upperArm.style} alt="" />
+            <img {...pic(img.upperArm.src)} style={img.upperArm.style} alt="" />
           </div>
         ))
       }
       <div class="chr-j chr-hood" data-j="hood" style={joint('torso', 'hood')}>
-        <img src={img.hood.src} style={img.hood.style} alt="" />
+        <img {...pic(img.hood.src)} style={img.hood.style} alt="" />
       </div>
       <div class="chr-j chr-head" data-j="head" style={joint('torso', 'neck')}>
-        {img.heads.map((head) => <img class={`chr-head-${head.name}`} src={head.src} style={head.style} alt="" />)}
+        {img.heads.map((head) => <img class={`chr-head-${head.name}`} {...pic(head.src)} style={head.style} alt="" />)}
       </div>
-      <img class="chr-torso-img" src={img.torso.src} style={img.torso.style} alt="" />
+      <img class="chr-torso-img" {...pic(img.torso.src)} style={img.torso.style} alt="" />
       {
         img.cords.map((cord, i) => (
           <div class="chr-j chr-cord" data-j={`cord.${i}`} style={`${joint('torso', 'cords')} margin-left: calc(${i * 26} * var(--u));`}>
-            <img src={cord.src} style={cord.style} alt="" />
+            <img {...pic(cord.src)} style={cord.style} alt="" />
           </div>
         ))
       }
@@ -93,7 +97,7 @@ const sides = ['far', 'near'] as const;
 
   {/* Moldes de los efectos: character.ts los clona al dar cada paso */}
   <div class="chr-bank" hidden>
-    {dust.map((puff) => <img data-fx="dust" data-w={puff.w} src={puff.src} alt="" />)}
+    {dust.map((puff) => <img data-fx="dust" data-w={puff.w} {...pic(puff.src)} alt="" />)}
     <svg data-fx="sweat" viewBox="0 0 24 34">
       <path d="M12 2.5C8 11 4 16.5 4 22.5a8 8 0 0 0 16 0C20 16.5 16 11 12 2.5Z" fill="#ffffff" stroke="#161616" stroke-width="2.6" stroke-linejoin="round"></path>
       <path d="M8.5 22.5a3.6 3.6 0 0 0 2.6 3.6" fill="none" stroke="#b9b9b9" stroke-width="2" stroke-linecap="round"></path>

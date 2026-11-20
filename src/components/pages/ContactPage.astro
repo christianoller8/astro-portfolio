@@ -33,14 +33,14 @@ const topics = [
 >
   <!-- La frase y los datos -->
   <section class="wrap contact" data-cs="<section> ContactPage.astro">
-    <h1 class="contact-title" data-reveal data-ds="H1" data-ds-type>{t('contact.title')}</h1>
+    <h1 class="t-display" data-reveal data-ds="H1" data-ds-type>{t('contact.title')}</h1>
     <div class="contact-top">
       <p class="contact-lead" data-reveal style="--reveal-i: 1">{t('contact.lead')}</p>
       <ul class="data" data-reveal style="--reveal-i: 2">
         <li class="data-row">
           <span class="data-label">Email</span>
           <a class="data-value" href={`mailto:${site.email}`}>{site.email}</a>
-          <button type="button" class="data-action" data-copy={site.email} data-copied={t('footer.copied')}>
+          <button type="button" class="data-action" data-copy={site.email} data-copied={t('footer.copied')} data-failed={t('footer.copyFailed')}>
             {t('footer.copy')}
           </button>
         </li>
@@ -82,6 +82,7 @@ const topics = [
         novalidate
       >
         <div class="form-fields" data-form-fields>
+        <p class="req-note t-small"><span aria-hidden="true">*</span> {t('contact.required')}</p>
         <fieldset class="topics">
           <legend class="field-label">{t('contact.topic')}</legend>
           <div class="topic-row">
@@ -98,12 +99,14 @@ const topics = [
 
         <div class="field-row">
           <div class="field" data-qa-host>
-            <label class="field-label" for="c-name">{t('contact.name')}</label>
+            <label class="field-label" for="c-name">{t('contact.name')}<span class="req" aria-hidden="true">*</span></label>
             <input id="c-name" name="name" autocomplete="name" required />
+            <p class="field-error t-small" id="c-name-err" hidden><span class="err-mark" aria-hidden="true">!</span>{t('contact.err.name')}</p>
           </div>
           <div class="field" data-qa-host>
-            <label class="field-label" for="c-email">{t('contact.email')}</label>
+            <label class="field-label" for="c-email">{t('contact.email')}<span class="req" aria-hidden="true">*</span></label>
             <input id="c-email" name="email" type="email" autocomplete="email" required />
+            <p class="field-error t-small" id="c-email-err" hidden><span class="err-mark" aria-hidden="true">!</span>{t('contact.err.email')}</p>
           </div>
         </div>
         <div class="field" data-qa-host>
@@ -111,9 +114,10 @@ const topics = [
           <input id="c-company" name="company" autocomplete="organization" />
         </div>
         <div class="field" data-qa-host>
-          <label class="field-label" for="c-message">{t('contact.message')}</label>
+          <label class="field-label" for="c-message">{t('contact.message')}<span class="req" aria-hidden="true">*</span></label>
           <textarea id="c-message" name="message" rows="6" required aria-describedby="c-checks"
           ></textarea>
+          <p class="field-error t-small" id="c-message-err" hidden><span class="err-mark" aria-hidden="true">!</span>{t('contact.err.message')}</p>
         </div>
 
         <ul id="c-checks" class="checks" aria-live="polite">
@@ -134,12 +138,22 @@ const topics = [
           </li>
         </ul>
 
+        {/* Resumen de los errores: se rellena al enviar con datos inválidos y se anuncia solo (role=alert) */}
+        <div class="form-alert t-small" role="alert" data-alert></div>
+
         <div class="submit-row">
           <button class="btn btn-primary send" type="submit" data-send>
             <span data-send-label>{t('contact.send')}</span>
             <span class="btn-arrow" aria-hidden="true">→</span>
           </button>
+          {/* El mensaje (región de estado) y, a su lado y fuera de ella, el botón Copiar del aviso: así
+              cambiar su texto no se anuncia dos veces */}
+          <div class="send-feedback">
           <p class="t-small send-state" data-state role="status"></p>
+          <button type="button" class="data-action send-copy" data-fallback-copy data-copy={site.email} data-copied={t('footer.copied')} data-failed={t('footer.copyFailed')} hidden>
+            {t('footer.copy')}
+          </button>
+          </div>
         </div>
         </div>
 
@@ -157,6 +171,9 @@ const topics = [
             sending: t('contact.sending'),
             sent: t('contact.sent'),
             error: t('contact.error'),
+            fallback: t('contact.fallback'),
+            summary: t('contact.err.summary'),
+            labels: { name: t('contact.name'), email: t('contact.email'), message: t('contact.message') },
           })}
         >
         </p>
@@ -203,13 +220,7 @@ const topics = [
   .contact {
     padding-top: clamp(1.5rem, 4vw, 3.5rem);
   }
-  .contact-title {
-    font-size: clamp(3.5rem, 17vw, 15.5rem);
-    font-weight: 700;
-    line-height: 0.82;
-    letter-spacing: -0.06em;
-    margin-left: -0.04em;
-  }
+  /* El H1 va en la escala (.t-display), como el de las demás páginas */
   .contact-top {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -352,7 +363,9 @@ const topics = [
     font: inherit;
     color: var(--ink);
     background: var(--paper);
-    border: 1px solid var(--line);
+    /* --field-line: un gris que llega a 3:1 contra el papel en los dos temas (WCAG 1.4.11);
+       --line, más suave, queda para los separadores */
+    border: 1px solid var(--field-line);
     transition: border-color var(--dur-micro) var(--ease-out);
   }
   .field textarea {
@@ -361,7 +374,62 @@ const topics = [
   .field input:focus,
   .field textarea:focus {
     border-color: var(--pencil);
-    outline: none;
+    outline: 2px solid var(--pencil);
+    outline-offset: 2px;
+  }
+  .req {
+    margin-left: 0.2em;
+  }
+  .req-note {
+    color: var(--muted);
+  }
+  /* Error por campo: borde grueso en --fail (con el mismo tamaño total que el normal) y un texto con
+     marca, para que no dependa solo del color */
+  .field input[aria-invalid='true'],
+  .field textarea[aria-invalid='true'] {
+    padding: calc(0.75rem - 1px) calc(0.9rem - 1px);
+    border: 2px solid var(--fail);
+  }
+  .field-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: var(--fail);
+    font-weight: 600;
+  }
+  .field-error[hidden] {
+    display: none;
+  }
+  .err-mark {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--on-fail);
+    background: var(--fail);
+  }
+  .form-alert {
+    padding: 0.7rem 0.9rem;
+    font-weight: 600;
+    color: var(--on-fail);
+    background: var(--fail);
+  }
+  .form-alert:empty {
+    display: none;
+  }
+  /* El mensaje y el botón Copiar fluyen en línea: el botón va detrás del correo y envuelve con el texto */
+  .send-feedback .send-state {
+    display: inline;
+  }
+  .send-copy[hidden] {
+    display: none;
+  }
+  .send-feedback .send-copy {
+    margin-left: 0.5rem;
+    vertical-align: middle;
   }
   .topics {
     display: grid;
@@ -729,7 +797,46 @@ const topics = [
       return all;
     };
 
-    form.addEventListener('input', check);
+    // Errores por campo (WCAG 3.3.1, 3.3.3, 4.1.3): solo se marcan al enviar; después, cada campo
+    // se limpia en cuanto pasa a ser válido. El texto del error entra en aria-describedby solo
+    // mientras hay error (un elemento oculto referenciado se leería siempre).
+    const alertBox = form.querySelector<HTMLElement>('[data-alert]');
+    const fallbackCopy = form.querySelector<HTMLElement>('[data-fallback-copy]');
+    const labels = (messages.labels ?? {}) as unknown as Record<string, string>;
+    const setInvalid = (name: string, invalid: boolean) => {
+      const el = field(name);
+      const errorId = `c-${name}-err`;
+      const tokens = (el.getAttribute('aria-describedby') ?? '').split(/\s+/).filter((id) => id && id !== errorId);
+      if (invalid) {
+        el.setAttribute('aria-invalid', 'true');
+        tokens.push(errorId);
+      } else {
+        el.removeAttribute('aria-invalid');
+      }
+      form.querySelector<HTMLElement>(`#${errorId}`)!.hidden = !invalid;
+      if (tokens.length) el.setAttribute('aria-describedby', tokens.join(' '));
+      else el.removeAttribute('aria-describedby');
+    };
+    const clearFixed = () => {
+      for (const name of Object.keys(rules)) {
+        if (field(name).getAttribute('aria-invalid') === 'true' && rules[name]()) setInvalid(name, false);
+      }
+      if (alertBox && !Object.keys(rules).some((name) => field(name).getAttribute('aria-invalid') === 'true')) {
+        alertBox.textContent = '';
+      }
+    };
+    // El aviso de después del mailto: el mensaje con el correo en la región de estado y, justo detrás
+    // pero fuera de ella, el botón Copiar (se muestra y se oculta con el mensaje)
+    const showFallback = (on: boolean) => {
+      if (on && state) state.textContent = `${messages.fallback} ${form.dataset.email}`;
+      if (fallbackCopy) fallbackCopy.hidden = !on;
+    };
+
+    form.addEventListener('input', () => {
+      showFallback(false);
+      check();
+      clearFixed();
+    });
     form.addEventListener('click', (event) => {
       if (!(event.target as Element).closest('[data-form-again]')) return;
       form.reset();
@@ -740,15 +847,27 @@ const topics = [
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!check()) {
-        const firstBad = Object.keys(rules).find((name) => !rules[name]());
-        if (firstBad) field(firstBad).focus();
+        const bad = Object.keys(rules).filter((name) => !rules[name]());
+        for (const name of Object.keys(rules)) setInvalid(name, bad.includes(name));
+        if (alertBox) {
+          // Vaciar y poner el texto en el cuadro siguiente: con el mismo texto de antes, el lector no
+          // lo volvería a anunciar en un segundo envío inválido
+          const summary = (messages.summary ?? '').replace('{list}', bad.map((name) => labels[name] ?? name).join(', '));
+          alertBox.textContent = '';
+          requestAnimationFrame(() => (alertBox.textContent = summary));
+        }
+        field(bad[0]).focus();
         return;
       }
+      clearFixed();
       const data = new FormData(form);
       const endpoint = form.dataset.endpoint;
       if (!endpoint) {
         const body = `${data.get('message')}\n\n— ${data.get('name')} (${data.get('email')})${data.get('company') ? ` · ${data.get('company')}` : ''}`;
         window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(`${form.dataset.subject} · ${data.get('topic')}`)}&body=${encodeURIComponent(body)}`;
+        // Sin servicio de envío, abrir el cliente de correo es lo único que pasa, y sin cliente no pasa
+        // nada: el aviso dice qué ha ocurrido y da el correo con su botón de copiar
+        showFallback(true);
         return;
       }
       if (state) state.textContent = messages.sending;

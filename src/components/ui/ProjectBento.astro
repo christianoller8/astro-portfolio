@@ -179,19 +179,16 @@ const decisions = cases[project.slug]?.decisions ?? [];
     color: var(--muted);
   }
 
-  /* Tablet: las decisiones, en fila */
-  @container (min-width: 640px) {
-    .bento-decisions {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-  /* Escritorio: la pieza a la izquierda, el resumen a su lado y las decisiones debajo, a todo el ancho */
+  /* Escritorio: la pieza a la izquierda, el resumen a su lado y las decisiones debajo, a todo el ancho
+     y en tres columnas. Desde 640 px de contenedor eran tres columnas ya, y a 768 px de pantalla
+     quedaban de 14 a 16 caracteres por renglón: por debajo de 900 px, una sola columna. */
   @container (min-width: 900px) {
     .bento-grid {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     }
     .bento-decisions {
       grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>
