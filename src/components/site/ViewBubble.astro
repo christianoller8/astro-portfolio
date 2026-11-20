@@ -67,6 +67,8 @@ const lenses = [
     </svg>
     <span class="vb-bubble" aria-hidden="true">
       <span data-vb-title>{t('bubble.title')}</span>
+      {/* La respuesta a la pregunta, con forma de botón: deja claro que el bocadillo se pulsa */}
+      <span class="vb-yes" data-vb-yes>{t('bubble.yes')}</span>
       <svg class="vb-tail" viewBox="0 0 30 24" aria-hidden="true">
         <path d="M11 1C10 9 7 16 1 22c11-2 19-9 23-20"></path>
       </svg>
@@ -157,6 +159,7 @@ const lenses = [
   .vb-toggle {
     position: relative;
     display: block;
+    cursor: pointer;
   }
   .vb :global(.vb-head) {
     width: var(--vb-head);
@@ -204,7 +207,10 @@ const lenses = [
 
   .vb-bubble {
     left: calc(100% + 0.25rem);
-    padding: 0.55rem 0.9rem 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.4rem 0.45rem 0.45rem 0.9rem;
     /* La misma familia de forma que el panel: un rectángulo de esquinas blandas y desiguales */
     border-radius: 16px 13px 17px 12px / 13px 17px 12px 16px;
     font-size: var(--step-small);
@@ -245,6 +251,28 @@ const lenses = [
         opacity var(--dur-micro) var(--ease-out),
         transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
         visibility 0s;
+    }
+  }
+  /* El "Sí" del bocadillo: una pastilla de tinta, que es lo que se pulsa. Se aclara al pasar el ratón */
+  .vb-yes {
+    padding: 0.3rem 0.65rem 0.35rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    color: var(--vb-paper);
+    background: var(--vb-ink);
+    border-radius: 9px 7px 10px 7px / 7px 10px 7px 9px;
+    transition: background-color var(--dur-micro) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .vb-toggle:hover .vb-yes {
+      background: color-mix(in srgb, var(--vb-ink) 78%, var(--vb-paper));
+    }
+  }
+  /* En los móviles más estrechos la pregunta va en dos líneas para que quepa con su "Sí" */
+  @media (max-width: 359px) {
+    .vb-bubble {
+      width: 13rem;
+      white-space: normal;
     }
   }
   /* Los trazos de la cara giran y se estiran sobre su propio centro (parpadeo y boca, en el guion) */
@@ -565,22 +593,15 @@ const lenses = [
   };
   blinkLater();
 
-  // --- El guiño: la primera vez que habla en la visita acaba guiñando un ojo, y se queda así ---
-  const FACE = 'vb-face';
-  const winked = () => {
-    try {
-      return sessionStorage.getItem(FACE) === 'wink';
-    } catch {
-      return false;
-    }
-  };
+  // --- El guiño: la primera vez que habla acaba guiñando un ojo, y se queda así. Lo recuerda este
+  // guion, que sigue cargado al pasar de una página a otra y empieza de cero cuando la web se
+  // carga de nuevo (al entrar o al recargar): así cada entrada empieza con la cara normal ---
+  let winked = false;
   const wink = () => {
     const box = parts()?.box;
     if (!box) return;
     box.dataset.face = 'wink';
-    try {
-      sessionStorage.setItem(FACE, 'wink');
-    } catch {}
+    winked = true;
     if (still.matches) return;
     // Un cabeceo corto acompaña al guiño
     for (const el of box.querySelectorAll('.vb-head, .vb-face')) {
@@ -590,13 +611,11 @@ const lenses = [
       });
     }
   };
-  // La página se vuelve a pintar en cada navegación: si ya guiñó en esta visita, entra guiñando
-  const restoreFace = () => {
+  // La página se vuelve a pintar en cada navegación: si ya guiñó, la nueva entra guiñando
+  document.addEventListener('astro:after-swap', () => {
     const box = parts()?.box;
-    if (box && winked()) box.dataset.face = 'wink';
-  };
-  document.addEventListener('astro:after-swap', restoreFace);
-  restoreFace();
+    if (box && winked) box.dataset.face = 'wink';
+  });
 
   // --- Hablar: la boca pasa de una forma a otra, sin transición, como en los dibujos animados.
   // Son las siete sílabas de "¿Quie-res ver-lo co-mo yo?": cada paso es una forma de boca
@@ -638,17 +657,12 @@ const lenses = [
     if (event.target instanceof Element && event.target.matches('[data-vb-toggle]:focus-visible') && !isOpen()) talk();
   });
 
-  // El saludo: una vez por visita. La página entra sin bocadillo; un momento después la caricatura
-  // habla y el bocadillo sale. Si en ese momento la página ya está movida o hay una lente, se deja
-  // para la siguiente carga. A los cinco segundos, o al bajar, el bocadillo se va y ya no vuelve solo.
-  const SAID = 'vb-said';
+  // El saludo: cada vez que se carga la web (al entrar o al recargar), no al pasar de una página a
+  // otra, que no vuelve a ejecutar este guion. La página entra sin bocadillo; un momento después
+  // la caricatura habla y el bocadillo sale. Si en ese momento la página ya está movida o hay una
+  // lente, no hay saludo. A los cinco segundos, o al bajar, el bocadillo se va y ya no vuelve solo.
   const SAY_MS = 5200;
   const greet = () => {
-    try {
-      if (sessionStorage.getItem(SAID)) return;
-    } catch {
-      return;
-    }
     // En la home espera a que acabe la intro
     if (root.classList.contains('intro')) {
       window.setTimeout(greet, 300);
@@ -663,9 +677,6 @@ const lenses = [
       window.setTimeout(() => parts()?.box.classList.add('is-saying'), still.matches ? 0 : 160);
       // El bocadillo se queda cinco segundos y se recoge; después solo sale al pasar el ratón
       window.setTimeout(() => parts()?.box.classList.remove('is-saying'), SAY_MS);
-      try {
-        sessionStorage.setItem(SAID, '1');
-      } catch {}
     }, 1000);
   };
   greet();

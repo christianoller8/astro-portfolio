@@ -43,6 +43,7 @@ const toolbar = {
   lenses: { design: t('lens.design'), code: t('lens.code'), qa: t('lens.qa') },
   canvas: t('nav.canvas'),
   bubble: t('bubble.title'),
+  yes: t('bubble.yes'),
   clear: t('lens.clear'),
 };
 ---
@@ -289,6 +290,7 @@ const toolbar = {
         lenses: Record<string, string>;
         canvas: string;
         bubble: string;
+        yes: string;
         clear: string;
       };
       document.querySelectorAll<HTMLAnchorElement>('header a[href]').forEach((link) => {
@@ -300,6 +302,7 @@ const toolbar = {
       });
       // Lo mismo con el bocadillo "Cómo lo veo yo" (ViewBubble), que va fuera de la barra
       document.querySelectorAll('[data-vb-title]').forEach((el) => (el.textContent = toolbar.bubble));
+      document.querySelectorAll('[data-vb-yes]').forEach((el) => (el.textContent = toolbar.yes));
       document.querySelectorAll('[data-vb][aria-label], [data-vb] [aria-label]').forEach((el) => el.setAttribute('aria-label', toolbar.bubble));
       const clear = document.querySelector('[data-vb] [data-lens-clear] span');
       if (clear) clear.textContent = toolbar.clear;
