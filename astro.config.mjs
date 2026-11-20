@@ -25,5 +25,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    // three.js se carga a demanda (las capas 3D de la home). Si el servidor de desarrollo lo
+    // descubre tarde, rehace su caché a mitad de sesión y sirve un 504 "Outdated Optimize Dep":
+    // la sección se quedaba en su versión plana. Preparado desde el arranque, no pasa.
+    optimizeDeps: {
+      include: ['three'],
+    },
   },
 });
