@@ -917,11 +917,13 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - **Transición entre páginas sobre papel**: mientras el personaje empuja la página, el fondo ya
     no es el lienzo con puntos sino la misma hoja con textura, en claro y en oscuro
     (`::view-transition` en `global.css`).
-  - **Menú**: la página actual se marca con una línea de tinta en el borde de abajo del enlace,
-    como una pestaña, en vez del cuadradito centrado. Sigue deslizándose de un enlace a otro.
-  - **Selectores de idioma y tema**: la opción activa va sobre una marca de tinta con el texto en
-    papel (antes, papel sobre tinte: blanco sobre casi blanco en claro). Mismo contraste que el
-    cambio de vista de Proyectos.
+  - **Menú**: la página actual se marca solo con una línea de tinta debajo de la palabra, de su
+    primera letra a la última, sin fondo. (Primero se probó la línea con el enlace sobre tinte,
+    como una pestaña: el fondo no le gustó.) Sigue deslizándose de un enlace a otro.
+  - **Selectores de idioma y tema**: la opción activa va sobre una marca gris, la tinta rebajada
+    con el tono de la hoja (gris oscuro en claro, gris claro en oscuro), con el texto en el tinte
+    de la bandeja; contraste 7:1. (Antes, papel sobre tinte, que no se distinguía; después, tinta
+    y papel puros, que vio "muy negro y muy blanco".)
   - Al aprobarlo: rehacer las miniaturas del lienzo de todas las páginas (cambia la barra).
 
 ## Fase técnica (después del 10 de diseño)

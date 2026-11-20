@@ -403,18 +403,18 @@ html.kit-focus-on :focus-visible:not(input, textarea, select) {
   left: 3px;
   width: var(--seg-cell);
   height: var(--seg-cell);
-  /* La marca es de tinta y la opción activa va en papel encima: se ve cuál está elegida de un
-     vistazo, en claro y en oscuro. (Antes era papel sobre tinte, blanco sobre casi blanco en modo
-     claro, y apenas se distinguía: 20 nov.) Es el mismo contraste que el cambio de vista de
-     Proyectos y las lentes */
-  background: var(--ink);
+  /* La marca de la opción activa: la tinta rebajada con el tono de la hoja (gris oscuro en claro,
+     gris claro en oscuro), con el texto en el tinte de la bandeja. Se ve cuál está elegida de un
+     vistazo sin llegar al negro ni al blanco puros, que a Christian le resultaban demasiado duros
+     (20 nov; antes de eso era papel sobre tinte, blanco sobre casi blanco, y no se distinguía) */
+  background: color-mix(in srgb, var(--ink) 70%, var(--sheet));
   transition: transform var(--dur-ui) var(--ease-out);
 }
 /* La opción activa. El tema sale de html.dark, así está bien antes de que cargue el guion */
 .seg--lang .seg-opt[aria-current],
 :root:not(.dark) .seg--theme [data-theme-set='light'],
 :root.dark .seg--theme [data-theme-set='dark'] {
-  color: var(--paper);
+  color: var(--tint);
 }
 .seg--lang[data-on='1'] .seg-pad,
 :root.dark .seg--theme .seg-pad {

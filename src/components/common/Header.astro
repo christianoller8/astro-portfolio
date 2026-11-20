@@ -330,23 +330,22 @@ const isActive = (path: string) => {
   .nav-link:hover {
     color: var(--ink);
   }
-  /* La marca del enlace activo: una línea de tinta en el borde de abajo, de lado a lado, como una
-     pestaña. Viaja de un enlace a otro con la transición. (Antes era un cuadradito centrado, que
-     a Christian no le convencía: 20 nov) */
+  /* La marca del enlace activo: solo una línea de tinta debajo de la palabra, de su primera letra
+     a la última (0,8rem es el relleno lateral del enlace). Viaja de un enlace a otro con la
+     transición. Sin fondo: Christian probó el cuadradito centrado, y luego la línea con el enlace
+     sobre tinte, y se quedó con la línea sola (20 nov) */
   .nav-link {
     position: relative;
   }
   .nav-ind {
     position: absolute;
-    inset: auto 0 0;
+    inset: auto 0.8rem 0.3rem;
     height: 2px;
     background: var(--ink);
     view-transition-name: nav-ind;
   }
-  /* La página actual, sobre un paso de tinte (la barra ya es papel) */
   .nav-link[aria-current='page'] {
     color: var(--ink);
-    background: var(--tint);
   }
 
   /* --- Derecha: dos grupos --- */
