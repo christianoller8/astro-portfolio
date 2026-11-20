@@ -854,6 +854,12 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     **Todo esto, aprobado el 20 nov.** El guiño y las bocas están
     dibujados en `ViewBubble.astro` encima de la caricatura (referencia suya: un logo de cara
     guiñando; se tomó el gesto, no el dibujo). La marca y la intro conservan la cara normal.
+  - Capas 3D de la home ("Y todo a la vez, en capas"), 20 nov: le salían planas. No era el diseño:
+    él mira la web en su servidor de desarrollo (`localhost:4321`) y Vite devolvía un 504
+    "Outdated Optimize Dep" para three.js; arreglado con `optimizeDeps.include: ['three']` en
+    `astro.config.mjs`. En el modo plano la barra de "Separación" ya se esconde. Preguntó si el
+    boceto debía ir delante: se dejó el orden (boceto y diseño son hojas opacas; código y pruebas,
+    transparentes) y **las capas van numeradas del 1 al 4** en las etiquetas y en la lista.
   - Ya no hace falta, salvo que quiera afinar el gesto con su trazo: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
     tinta negra sobre blanco y con el encuadre de `docs/imgs/avatar/head-front.png`. Se pasa a
     vectores con `.taste-skill/letras/vectorize.cjs`.

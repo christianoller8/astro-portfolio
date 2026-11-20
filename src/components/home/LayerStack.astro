@@ -29,16 +29,24 @@ const layers = [
       </label>
       <ol class="ls-legend" data-reveal style="--reveal-i: 3">
         {
-          layers.map((layer) => <li>{layer.name}</li>)
+          layers.map((layer, i) => (
+            <li>
+              <span class="ls-num">{i + 1}</span>
+              {layer.name}
+            </li>
+          ))
         }
       </ol>
     </div>
 
     <div class="ls-stage" data-layers-stage role="img" aria-label={t('layers.label')} tabindex="0">
-      {/* Los nombres de las capas: layer-stack.ts los pega a la esquina de cada hoja */}
+      {/* Los nombres de las capas: layer-stack.ts los pega a la esquina de cada hoja. Van numerados
+          en el orden en que se hacen (el boceto es la base, las pruebas van encima): sin el número
+          no se leía cuál va primero */}
       {
         layers.map((layer, i) => (
           <span class="ls-label" data-layers-label style={`--up: ${layers.length - 1 - i}`} aria-hidden="true">
+            <span class="ls-num">{i + 1}</span>
             {layer.name}
           </span>
         ))
@@ -51,7 +59,10 @@ const layers = [
       {
         layers.map((layer) => (
           <li data-layer={layer.id}>
-            <span>{layer.name}</span>
+            <span>
+              <span class="ls-num">{layers.indexOf(layer) + 1}</span>
+              {layer.name}
+            </span>
           </li>
         ))
       }
@@ -141,6 +152,16 @@ const layers = [
     padding: 0.55rem 0.8rem;
     font-weight: 600;
     background: var(--paper);
+  }
+
+  /* El número de orden de cada capa, más apagado que su nombre */
+  .ls-num {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.55;
+  }
+  .ls-label .ls-num,
+  .ls-flat .ls-num {
+    margin-right: 0.4em;
   }
 
   /* El escenario: three.js pinta dentro; los nombres de las capas van encima, en HTML */
