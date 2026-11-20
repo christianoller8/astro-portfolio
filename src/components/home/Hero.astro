@@ -179,11 +179,41 @@ const roles = [
   }
   /* Claro: la figura se desvanece a los lados y por abajo */
   .hero-photo-img--light {
-    /* Con la pared gris la foto se ve entera: en los cuatro lados solo un fundido corto, lo justo
-       para que no se vea un borde recto */
+    /* La pared oscura contrasta mucho más con la hoja clara que con la oscura: un fundido recto se
+       ve como un borde borroso. Aquí cada lado se funde con una curva suave (entra y sale despacio),
+       para que el paso a la hoja se note tan poco como en oscuro. Arriba empieza donde la foto
+       asoma por debajo de la barra (11,5 % de su alto) y acaba antes del pelo */
     mask-image:
-      linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
-      linear-gradient(180deg, transparent 16.8%, #000 21%, #000 95%, transparent 100%);
+      linear-gradient(
+        90deg,
+        transparent 0,
+        rgb(0 0 0 / 0.104) 3.6%,
+        rgb(0 0 0 / 0.352) 7.2%,
+        rgb(0 0 0 / 0.648) 10.8%,
+        rgb(0 0 0 / 0.896) 14.4%,
+        #000 18%,
+        #000 82%,
+        rgb(0 0 0 / 0.896) 85.6%,
+        rgb(0 0 0 / 0.648) 89.2%,
+        rgb(0 0 0 / 0.352) 92.8%,
+        rgb(0 0 0 / 0.104) 96.4%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 11.5%,
+        rgb(0 0 0 / 0.104) 13.1%,
+        rgb(0 0 0 / 0.352) 14.7%,
+        rgb(0 0 0 / 0.648) 16.3%,
+        rgb(0 0 0 / 0.896) 17.9%,
+        #000 19.5%,
+        #000 80%,
+        rgb(0 0 0 / 0.896) 84%,
+        rgb(0 0 0 / 0.648) 88%,
+        rgb(0 0 0 / 0.352) 92%,
+        rgb(0 0 0 / 0.104) 96%,
+        transparent 100%
+      );
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
