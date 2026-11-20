@@ -849,8 +849,9 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     bocadillo (antes uno desaparecía y el otro saltaba: lo vio forzado). El saludo sale **cada vez
     que se carga la web** (al entrar o al recargar), no al pasar de una página a otra: primero se
     hizo "una vez por visita" con `sessionStorage` y, al recargar para probarlo, no lo veía. Para
-    que se entienda que se pulsa, el bocadillo lleva un **"Sí"** con forma de botón (la respuesta
-    a la pregunta) y el cursor de mano. El guiño y las bocas están
+    que se entienda que se pulsa, el bocadillo lleva debajo de la pregunta **"Haz clic aquí"** en
+    letra fina y gris, y el cursor de mano (se probó un "Sí" con forma de botón: no lo quiso).
+    **Todo esto, aprobado el 20 nov.** El guiño y las bocas están
     dibujados en `ViewBubble.astro` encima de la caricatura (referencia suya: un logo de cara
     guiñando; se tomó el gesto, no el dibujo). La marca y la intro conservan la cara normal.
   - Ya no hace falta, salvo que quiera afinar el gesto con su trazo: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
