@@ -21,6 +21,8 @@
     --ink: #1a1a1a;
     --muted: #4a4a4a;
     --line: #b6b6b6;
+    /* El canto de la página en la transición (solo en claro: en oscuro se ve sin dibujarlo) */
+    --page-edge: #b6b6b6;
     --tint: #f2f2f2;
     --pencil: var(--ink);
     --pencil-ink: var(--paper);
@@ -463,6 +465,16 @@ html.intro {
    salto de la hoja a los puntos le resultaba brusco (20 nov) */
 ::view-transition {
   background: var(--sheet-bg);
+}
+/* El canto de cada página durante el paneo: una línea fina que marca dónde acaba, para que se vea
+   que es una hoja la que se mueve. En oscuro el canto ya se distinguía solo (y a Christian le
+   gusta así); en claro no, y se dibuja en un gris claro */
+html.is-panning::view-transition-old(root),
+html.is-panning::view-transition-new(root) {
+  /* Solo los cantos izquierdo y derecho: una sombra de 1 px a cada lado, sin línea arriba ni abajo */
+  box-shadow:
+    1px 0 0 var(--page-edge, transparent),
+    -1px 0 0 var(--page-edge, transparent);
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {

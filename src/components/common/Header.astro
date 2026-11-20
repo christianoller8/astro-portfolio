@@ -320,12 +320,12 @@ const isActive = (path: string) => {
     align-items: center;
     min-height: 2.25rem;
     padding: 0 0.8rem;
-    font-size: var(--step-small);
+    /* 16 px (antes 14): sin las lentes ni el CV en la barra hay sitio, y a Christian le quedaba
+       pequeño (20 nov) */
+    font-size: 1rem;
     font-weight: 500;
     color: var(--muted);
-    transition:
-      color var(--dur-micro) var(--ease-out),
-      background-color var(--dur-micro) var(--ease-out);
+    transition: color var(--dur-micro) var(--ease-out);
   }
   .nav-link:hover {
     color: var(--ink);

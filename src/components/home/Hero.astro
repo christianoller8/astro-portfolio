@@ -291,6 +291,25 @@ const roles = [
       opacity: 1;
     }
   }
+  /* Oscuro: los tres oficios van en el mismo gris que "Software developer" y su subrayado en
+     blanco (pedido por Christian el 20 nov; antes, palabra blanca y subrayado gris). Al pasar el
+     ratón o con su lente puesta, la palabra pasa a blanco */
+  :global(:root.dark) .hero-role-btn {
+    color: #8f8f8f;
+    transition: color var(--dur-micro) var(--ease-out);
+  }
+  :global(:root.dark) .hero-role-btn::after {
+    background: var(--ink);
+    opacity: 1;
+  }
+  :global(:root.dark) .hero-role-btn[aria-pressed='true'] {
+    color: var(--ink);
+  }
+  @media (hover: hover) {
+    :global(:root.dark) .hero-role-btn:hover {
+      color: var(--ink);
+    }
+  }
 
   /* --- Titular --- */
   .hero-title {
@@ -316,8 +335,10 @@ const roles = [
     width: min-content;
     color: var(--muted);
   }
+  /* Oscuro: un gris un punto más oscuro que antes (#b4b4b4), que a Christian le quedaba demasiado
+     claro al lado del nombre (20 nov) */
   :global(:root.dark) .hero-role {
-    color: #b4b4b4;
+    color: #8f8f8f;
   }
 
   /* --- Frase, botones y disponibilidad --- */

@@ -924,6 +924,17 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     con el tono de la hoja (gris oscuro en claro, gris claro en oscuro), con el texto en el tinte
     de la bandeja; contraste 7:1. (Antes, papel sobre tinte, que no se distinguía; después, tinta
     y papel puros, que vio "muy negro y muy blanco".)
+  - Aprobados la foto, la transición sobre papel, la línea del menú y los selectores. Tres
+    retoques más, pendientes de su visto bueno:
+    - **Texto del menú a 16 px** (era 14 desde antes de esta tanda; preguntó si lo había
+      encogido: no). Cabe en una línea también a 1024 px.
+    - **Canto de la página en la transición, en claro**: una línea gris de 1 px a cada lado de la
+      página que se mueve (`--page-edge`). En oscuro el canto ya se veía solo y le gusta así.
+    - **Grises del hero en oscuro**: "Software developer" pasa de `#b4b4b4` a `#8f8f8f` (no se
+      había tocado desde el 18 nov; lo veía demasiado claro). Los tres oficios, igual: la palabra
+      en ese gris y el subrayado en blanco (antes, palabra blanca y subrayado gris); al pasar el
+      ratón o con su lente puesta, la palabra pasa a blanco. **El modo claro no se tocó**: ahí
+      los oficios siguen en tinta con el subrayado gris.
   - Al aprobarlo: rehacer las miniaturas del lienzo de todas las páginas (cambia la barra).
 
 ## Fase técnica (después del 10 de diseño)
