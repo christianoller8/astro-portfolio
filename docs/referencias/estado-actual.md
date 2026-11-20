@@ -13,10 +13,11 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   provisionales y las pruebas automáticas de GitHub fallan porque son de la web vieja.
   **Se sigue trabajando en `prototipo-def`**; lo que se quiera publicar se pasa a `main` cuando
   él lo pida.
-- **El CV no está publicado**: el PDF lleva su teléfono y su código postal y decidió publicar sin
-  él. Está guardado en `docs/cv/` (no se despliega) y los botones de CV solo salen si hay un PDF
-  en `public/cv/` (`hasCV` en `src/data/site.ts`). El repositorio es público, así que el archivo
-  sigue viéndose en GitHub.
+- **El CV va en la web, tal cual**: la primera publicación salió sin él porque el PDF lleva su
+  teléfono y su código postal; después, el mismo 20 nov, decidió subirlo así, sabiéndolo. Está en
+  `public/cv/christian-oller-cv.pdf` y los botones de CV (inicio, menú de móvil y pie) salen solos
+  porque el archivo existe (`hasCV` en `src/data/site.ts`). El bloque del CV de Sobre mí no vuelve:
+  lo quitó él en la ronda de textos.
 - Rama `prototipo-def`, subida entera a GitHub.
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
@@ -44,20 +45,26 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   crédito del proyecto Vístalo, por decisión suya); las herramientas llevan logotipo
   (`simple-icons`); Proyectos abre siempre en cajas; el formulario de Contacto va centrado y sin
   el panel de estados. Los textos siguen siendo provisionales. Los 14 puntos, en el roadmap.
+- **Auditoría (20 nov)**: hecha, con dos lotes de arreglos, ocho decisiones suyas (la caricatura se
+  esconde al bajar en móvil, la intro solo la primera vez, un ajuste para apagar los atajos, los
+  bucles paran a los 5 s, sin chips negros, Sobre mí con menos tamaños, "Ver caso" en la home y la
+  lente solo por pestaña) y el CV. Todo pasó por revisores independientes. El detalle está en
+  [auditoria-2026-11-20.md](auditoria-2026-11-20.md).
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.
 
-## La pregunta que sigue abierta
+## Densidad tipográfica (decidida el 20 nov)
 
-- La prueba de densidad no pasa al pie de la letra: pide dos tamaños de letra más el display por
-  pantalla y hay entre 3 y 5 (de una escala de seis). Christian ha preferido seguir con cambios de
-  diseño antes de cerrar; la decisión sobre la densidad sigue pendiente. Hay que preguntárselo.
+- La prueba de densidad pide dos tamaños de letra más el display por pantalla, y había entre 3 y 5
+  (de una escala de seis). Christian eligió recortar solo la primera pantalla de Sobre mí, que ahora
+  va a dos tamaños más el display; en el resto se aceptan los 3–5 tamaños.
 
 ## Resultado de la rúbrica
 
 Ocho pruebas pasan. La de Eloi pasa salvo el iris con el que se cierra la intro, que pidió Christian
-expresamente. La de densidad es la que no pasa del todo.
+expresamente. La de densidad no pasa al pie de la letra fuera de la primera pantalla de Sobre mí, por
+decisión suya (ver arriba).
 
 El inspector de la skill da 0 FAIL en catorce páginas a 1440, 768 y 390 px, con tres excepciones
 declaradas: el nombre del frame (lo toma por una etiqueta sobre el título), la falta de imágenes
@@ -73,16 +80,18 @@ Por orden de urgencia (lista completa en el roadmap):
 
 1. **Formulario**: hoy no envía; abre el correo con el mensaje escrito. Falta el servicio de envío y
    un antispam sin captcha. El estado "enviado" ya está diseñado.
-2. **SEO**: dominio canónico con `www`, `hreflang`, sitemap, JSON-LD, imagen para compartir por
-   página y `llms.txt`.
-3. **Accesibilidad**: versión quieta de cada momento, teclado, foco y contraste. Falta una revisión
-   con lector de pantalla.
+2. **SEO**: hecho lo de la auditoría (dominio con `www`, `hreflang`, sitemap, barras finales,
+   JSON-LD y `llms.txt`). Falta una imagen para compartir por página: hoy hay una para todas.
+3. **Accesibilidad**: los fallos de la auditoría están arreglados (ver su tabla). Falta una revisión
+   con un lector de pantalla real.
 4. **Rendimiento**: precargar la foto del hero del tema activo, `profile.jpg` pesa 7,6 MB en origen
    y three.js son 173 KB (solo se descarga al acercarse a su sección).
-5. **Seguridad**: CSP y cabeceras. El marco de Vístalo carga su web desde otro dominio.
+5. **Seguridad**: las cabeceras están en `vercel.json`; falta una CSP completa. El marco de Vístalo
+   carga su web desde otro dominio (solo al pulsarlo).
 6. **Analítica** sin cookies.
 7. **Tests de Playwright**: lentes, navegación, formulario y accesibilidad.
-8. **Otros**: comprobar la 404 en Vercel y el manifest.
+8. **Otros**: la 404 responde 404 en Vercel (comprobado el 20 nov) y el manifest ya está. Renovar
+   `public/.well-known/security.txt` antes del 19 nov de 2027, cuando caduca.
 
 Después, el **lanzamiento**: publicar en christianoller.dev, grabar el vídeo de los momentos firma y
 enviar a Awwwards la URL en inglés.
@@ -95,8 +104,6 @@ enviar a Awwwards la URL en inglés.
 - **Imágenes reales** de Tempora, Vibora y Learnish, y la sesión de fotos nueva en blanco y negro.
 - **Angular** (resuelto el 20 nov): la web ya no cita versiones, solo "Angular". Él ha tocado
   todas y no quiere un rango. (El PDF del CV sí dice v8–v18: es suyo y no se ha tocado.)
-- **CV**: una versión sin teléfono ni código postal, para volver a ofrecerlo en la web. (Decidido
-  el 20 nov: la web se publica sin CV. El PDF actual sigue en el repositorio, que es público.)
 - **Textos**: revisar todos; los nuevos son provisionales.
 
 ## Cambios recientes que conviene saber

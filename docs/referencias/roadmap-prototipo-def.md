@@ -995,6 +995,10 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
 
 ## Fase técnica (después del 10 de diseño)
 
+Avance del 20 nov: la auditoría de la web publicada y sus dos lotes de arreglos cubren buena parte de
+esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
+[auditoria-2026-11-20.md](auditoria-2026-11-20.md); las casillas se marcan cuando Christian lo apruebe.
+
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.
 - [ ] **SEO**:
   - Dominio canónico con www, `hreflang` y sitemap correctos.

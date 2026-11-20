@@ -29,17 +29,20 @@ arreglos" al final):
 
 ## Decisiones que le tocan a Christian
 
-| Decisión | Opciones | Recomendación |
-|---|---|---|
-| Servicio del formulario | Formspree, Web3Forms u otro (necesita su cuenta) | El que no exija captcha; con él, el aviso de privacidad |
-| El CV en el repositorio | Quitarlo y reescribir el historial (push forzado, irreversible) · hacer el repositorio privado | Hablarlo antes de tocar nada |
-| Material interno público | Dejar `docs/`, `CLAUDE.md` y los scripts sobre la web de Eloi a la vista · sacarlos del repositorio | Sacar al menos el análisis de la web de Eloi |
-| La caricatura en móvil | Esconderla al bajar y mostrarla al subir · que solo asome por el borde | Esconderla al bajar |
-| La intro | En cada carga (ahora) · solo en la primera visita · con pista "toca para saltar" | Primera visita y pista |
-| Atajos 1/2/3/M | Globales (ahora) · solo con el bocadillo abierto · un ajuste para apagarlos | Ajuste para apagarlos (WCAG 2.1.4) |
-| Densidad tipográfica (pendiente desde antes) | Aceptar 3–5 tamaños por pantalla · recortar a 2 + display | Recortar solo la primera pantalla de Sobre mí |
-| Chips negros de las decisiones | Mantener · llevar el dato al título o al cuerpo | Quitarlos: son etiquetas sobre un título |
-| Textos repetidos | Reescribir los 14 sitios con "boceto, diseño, código y pruebas" | Empezar por el pie, que sale en todas las páginas |
+| Decisión | Opciones | Recomendación | Lo que decidió (20 nov) |
+|---|---|---|---|
+| Servicio del formulario | Formspree, Web3Forms u otro (necesita su cuenta) | El que no exija captcha; con él, el aviso de privacidad | Pendiente: necesita su cuenta |
+| El CV en el repositorio | Quitarlo y reescribir el historial (push forzado, irreversible) · hacer el repositorio privado | Hablarlo antes de tocar nada | Ya no hace falta: publica el CV tal cual en la web |
+| Material interno público | Dejar `docs/`, `CLAUDE.md` y los scripts sobre la web de Eloi a la vista · sacarlos del repositorio | Sacar al menos el análisis de la web de Eloi | Pendiente |
+| La caricatura en móvil | Esconderla al bajar y mostrarla al subir · que solo asome por el borde | Esconderla al bajar | La recomendación · hecho |
+| La intro | En cada carga (ahora) · solo en la primera visita · con pista "toca para saltar" | Primera visita y pista | La recomendación · hecho |
+| Atajos 1/2/3/M | Globales (ahora) · solo con el bocadillo abierto · un ajuste para apagarlos | Ajuste para apagarlos (WCAG 2.1.4) | La recomendación · hecho |
+| Animaciones en bucle | Dejarlas · pararlas a los 5 s (WCAG 2.2.2) | Pararlas: el punto de estado, el parpadeo y las capas 3D | La recomendación · hecho |
+| Densidad tipográfica (pendiente desde antes) | Aceptar 3–5 tamaños por pantalla · recortar a 2 + display | Recortar solo la primera pantalla de Sobre mí | La recomendación · hecho |
+| Chips negros de las decisiones | Mantener · llevar el dato al título o al cuerpo | Quitarlos: son etiquetas sobre un título | Quitados; el dato, al final del cuerpo · hecho |
+| "Ver proyecto" y "Ver caso" | Dos textos y dos estilos para lo mismo · uno solo | "Ver caso", con el botón de las cajas | La recomendación · hecho |
+| La lente elegida | Se recuerda siempre · solo mientras dura la pestaña | Solo en la pestaña (`sessionStorage`) | La recomendación · hecho |
+| Textos repetidos | Reescribir los 14 sitios con "boceto, diseño, código y pruebas" | Empezar por el pie, que sale en todas las páginas | Pendiente: los textos son suyos |
 
 Anotado sin proponer cambio: el revisor de diseño marcó que el retrato del hero en modo claro se lee como
 un rectángulo oscuro, contra la regla de `CLAUDE.md` ("fotos nunca como rectángulos"). Christian lo
@@ -153,7 +156,7 @@ Los 14 sitios con la triada:
 
 | Gravedad | Hallazgo | Dónde y prueba | Arreglo |
 |---|---|---|---|
-| Alta | El CV con teléfono, código postal y otra dirección de Gmail sigue en el repositorio público, y en su historial desde el commit `6ce2e9f` | `docs/cv/christian-oller-cv.pdf` | Ver decisiones |
+| Alta | El CV con teléfono, código postal y otra dirección de Gmail sigue en el repositorio público, y en su historial desde el commit `6ce2e9f` | `docs/cv/christian-oller-cv.pdf` | Resuelto por decisión suya (20 nov): el CV se publica tal cual en la web, y su correo ya es el de la web |
 | Alta | El workflow de Playwright se ejecuta en cada push a `main` y los tests esperan títulos y rutas de la web vieja: fallarán (no se pudo ver en GitHub, no hay `gh`) | `.github/workflows/playwright.yml`, `tests/` | Ejecución manual hasta reescribirlos |
 | Media | Cabeceras: solo HSTS. Faltan CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` y `frame-ancestors` | `curl -sI` en vivo; no hay `vercel.json` | `vercel.json` con `headers` (la CSP necesita hashes por los scripts en línea) |
 | Media | El README describe la web antigua (nota 2/10): rutas que no existen, tokens viejos, sin captura ni enlace; dice MIT y no hay `LICENSE`; la descripción del repositorio es "New porfolio with Astro" | `README.md` | README nuevo (skill `readme-de-10`) |
@@ -229,10 +232,41 @@ cinco fallos en la primera versión y los dio por corregidos en la segunda). Pen
 | `vercel.json` | Cabeceras de seguridad (sin CSP completa) y caché de `/textures/`, `/canvas/` y `/og-image.jpg`; se comprueba al publicar |
 | Fuentes sin uso | Quitadas `@fontsource/inter` y `@fontsource/playfair-display` |
 
-**Visto al revisar las capturas** (nuevo, sin arreglar): en el lienzo en modo oscuro, el nombre de cada página
-("Inicio", "Proyectos"…) casi no se lee: gris oscuro sobre fondo oscuro.
+**Visto al revisar las capturas**: en el lienzo en modo oscuro, el nombre de cada página parecía gris oscuro sobre
+fondo oscuro. No se reprodujo: la captura se hizo a mitad de la transición de tema. Medido después: 10,2:1 en
+claro y 12,8:1 en oscuro.
+
+**Segundo lote, decisiones de Christian y CV, hechos el 20 nov** (un escritor; tres revisores independientes, por
+áreas, encontraron 3 fallos medios y 8 bajos, que se corrigieron y volvieron a comprobar). Pendiente de publicar.
+
+| Punto | Resultado medido |
+|---|---|
+| Barras finales | Todos los enlaces internos acaban en `/` (0 sin barra en 19 páginas) y cada canonical coincide con su hreflang; `vercel.json` redirige las URL sin barra (`trailingSlash: true`) |
+| Metadatos | JSON-LD `Person` en todas las páginas y `WebSite` en las portadas; `apple-touch-icon`, iconos de 192 y 512, `favicon.ico`, `manifest.webmanifest`, `llms.txt` y `.well-known/security.txt` (caduca el 19 nov 2027: renovarlo antes) |
+| Color de la barra del navegador | Un solo `theme-color` que sigue el tema que se ve, también al cambiarlo y al navegar |
+| 404 y páginas internas | Sin canonical ni hreflang en la 404, `/sistema/` y `/personaje/`; su enlace de idioma lleva a la portada del otro idioma |
+| Escenario 3D | Deslizador (`role="slider"`) con nombre, valores y texto ("De frente", "60 grados a la izquierda"); flechas, Inicio y Fin; la pista llega al lector de pantalla |
+| Demos | El foco pasa al siguiente elemento lógico en vez de perderse; cada resultado se anuncia |
+| Resúmenes de Sobre mí | Los siete llevan la empresa ("Lo que hice 3, Accenture") |
+| Sin JavaScript | Se ven los enlaces del menú y se oculta el botón que no hace nada |
+| Texto | `text-wrap: pretty` en el texto corrido; el correo se parte tras la `@` a 320 px; Playwright en las herramientas de QA |
+| Higiene del código | Una sola paleta de código en tokens, `--muted-soft` y una escala `--z-*`; diferencia máxima de 2/255 en las capturas |
+| README | `README.md` (inglés) y `README.es.md`, sin licencia |
+| Caricatura en móvil | Se esconde al bajar y vuelve al subir o cerca del principio; nunca con el panel abierto ni con el foco del teclado, y escondida se alcanza con Tab |
+| Intro | Solo en la primera visita (`?intro` la fuerza), con la pista "Toca para saltar" / "Haz clic o pulsa una tecla para saltar" (5,2:1) |
+| Atajos | Ajuste "Atajos de teclado" en el panel; apagados, 1/2/3/M no hacen nada y Esc sigue funcionando |
+| Animaciones en bucle | El punto de estado late dos veces; la caricatura parpadea sus primeros 5 s y cuando habla o se le pasa por encima; las capas 3D paran a los 5 s sin uso |
+| Chips negros | Quitados; el dato va como párrafo gris al final de cada decisión |
+| Primera pantalla de Sobre mí | Dos tamaños más el display (22 y 18 px a 1440) |
+| "Ver caso" | El mismo botón en las tarjetas de la home y en las cajas |
+| Lente | Dura lo que la pestaña (`sessionStorage`) |
+| CV | `public/cv/christian-oller-cv.pdf` (117 KB); botones en inicio, menú de móvil y pie |
+| Miniaturas del lienzo | Regeneradas; el guion ya salta la intro |
+
+Sin hacer, a sabiendas: sin JavaScript, la barra de móvil mide 280 px y el titular baja a media pantalla (caso raro
+y usable). `pnpm lint` falla con 5070 errores que ya estaban (sin investigar).
 
 ## Siguiente paso
 
-Publicar el lote cuando Christian lo pida y comprobar en vivo las cabeceras de `vercel.json`. Después, las
-decisiones de la tabla, una por una.
+Publicar los dos lotes y comprobar en vivo las cabeceras de `vercel.json` y la redirección a la barra final. Quedan
+de Christian: el servicio del formulario, el material interno del repositorio y los textos.
