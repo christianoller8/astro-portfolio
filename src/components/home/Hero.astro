@@ -137,6 +137,8 @@ const roles = [
        el texto se mueven */
     --m-photo: 1;
     --m-clear: 0.88;
+    /* Escritorio: aire entre la barra y el hero. Texto y foto bajan lo mismo */
+    --hero-top: clamp(1.5rem, 4cqi, 3.25rem);
   }
   .hero-stage {
     position: relative;
@@ -146,8 +148,11 @@ const roles = [
     --d: 9.8cqi;
     /* El bloque entero se queda en su columna (también la caja del H1 que dibuja la lente Diseño) */
     max-width: var(--text-col);
-    padding-top: clamp(1.75rem, 3.4cqi, 2.75rem);
+    padding-top: calc(clamp(1.75rem, 3.4cqi, 2.75rem) + var(--hero-top));
     padding-bottom: clamp(2.5rem, 4.4cqi, 3.5rem);
+    /* El hero llega al menos hasta donde acaba la foto (75cqi de alto, 12,6cqi por encima), para
+       que su fundido de abajo no se corte recto */
+    min-height: calc(62.4cqi + var(--hero-top));
   }
 
   /* --- Retrato: fundido en el fondo, sin caja --- */
@@ -155,7 +160,7 @@ const roles = [
      encuadre es el mismo en los dos modos. */
   .hero-photo {
     position: absolute;
-    top: -12.6cqi;
+    top: calc(-12.6cqi + var(--hero-top));
     left: calc(var(--pad) + 58cqi);
     width: 50cqi;
     aspect-ratio: 2 / 3;
@@ -174,11 +179,11 @@ const roles = [
   }
   /* Claro: la figura se desvanece a los lados y por abajo */
   .hero-photo-img--light {
-    /* Con la pared gris la foto se ve entera: a los lados y arriba solo un fundido corto, lo justo
-       para que no se vea un borde recto. Abajo, el mismo fundido que la oscura */
+    /* Con la pared gris la foto se ve entera: en los cuatro lados solo un fundido corto, lo justo
+       para que no se vea un borde recto */
     mask-image:
       linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
-      linear-gradient(180deg, transparent 16.8%, #000 21%, #000 var(--fade-from), transparent var(--fade-to));
+      linear-gradient(180deg, transparent 16.8%, #000 21%, #000 95%, transparent 100%);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
@@ -362,6 +367,7 @@ const roles = [
        sus dos márgenes (100cqi + 2 × --pad); su alto es ese ancho por --m-photo */
     .hero-stage {
       padding-top: calc(var(--m-clear) * var(--m-photo) * (100cqi + 2 * var(--pad)));
+      min-height: 0;
     }
     .hero-roles {
       order: 2;
