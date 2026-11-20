@@ -817,8 +817,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     suave en los cuatro lados. **No se ven iguales**: la pared oscura contrasta mucho con la hoja
     clara y el fundido se nota como un halo. Quedó propuesto y sin respuesta aclarar la pared en la
     versión clara para igualarlas; si vuelve a la home, empezar por ahí.
-- [ ] **Lentes y lienzo en el bocadillo "Cómo lo veo yo"** (D27; hecho el 20 nov, pendiente de su
-  visto bueno):
+- [x] **Lentes y lienzo en el bocadillo de la caricatura** (D27; hecho y aprobado el 20 nov, con
+  la barra, la frase nueva y el menú de móvil):
   - Fuera de la barra de escritorio: la barra queda en marca, menú, idioma, tema y CV.
   - La caricatura, fija abajo a la izquierda, con un bocadillo de cómic. Al pulsarla se abre con
     Diseño, Código, QA y Ver lienzo, y con "Vista normal" si hay una lente puesta
