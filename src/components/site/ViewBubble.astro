@@ -66,7 +66,8 @@ const lenses = [
       </g>
     </svg>
     <span class="vb-bubble" aria-hidden="true">
-      <span data-vb-title>{t('bubble.title')}</span>
+      {/* data-vb-scene: lo que dice al acabar la escena de la home, en lugar de la pregunta */}
+      <span data-vb-title data-vb-scene={t('view.bridge.title')}>{t('bubble.title')}</span>
       {/* Una pista, fina y gris, debajo de la pregunta: deja claro que el bocadillo se pulsa */}
       <span class="vb-hint" data-vb-hint>{t('bubble.hint')}</span>
       <svg class="vb-tail" viewBox="0 0 30 24" aria-hidden="true">
@@ -228,10 +229,12 @@ const lenses = [
       transform var(--dur-micro) var(--ease-in),
       visibility 0s var(--dur-micro);
   }
-  /* Sale cuando la caricatura habla: al saludar (.is-saying, lo pone el guion una vez por visita,
-     con la página arriba del todo y sin lente) y al pasar el ratón o enfocarla. Entra con un
-     pequeño rebote, como un bocadillo que salta */
+  /* Sale cuando la caricatura habla: al saludar (.is-saying, lo pone el guion al cargar la web,
+     con la página arriba del todo y sin lente), al acabar la escena "Tú ves una web. Yo la veo
+     así" de la home (.is-nudge) y al pasar el ratón o enfocarla. Entra con un pequeño rebote,
+     como un bocadillo que salta */
   :global(html:not([data-scrolled]):not([data-lens])) .vb.is-saying .vb-toggle[aria-expanded='false'] .vb-bubble,
+  :global(html:not([data-lens])) .vb.is-nudge .vb-toggle[aria-expanded='false'] .vb-bubble,
   .vb .vb-toggle[aria-expanded='false']:focus-visible .vb-bubble {
     opacity: 1;
     visibility: visible;
@@ -666,6 +669,42 @@ const lenses = [
     }, 1000);
   };
   greet();
+
+  // --- El enlace con la escena de la home ("Tú ves una web. Yo la veo así"): cuando termina, con
+  // las capas 3D a la vista, la caricatura habla otra vez y dice que toda la web se puede ver así.
+  // No se añade ningún bloque a la página (un puente con botones se probó y a Christian no le
+  // convenció: sigue escondido en ViewScene.astro). Una vez por carga de la página ---
+  let sceneWatch: IntersectionObserver | undefined;
+  document.addEventListener('astro:page-load', () => {
+    sceneWatch?.disconnect();
+    const scene = document.querySelector('[data-layers]');
+    if (!scene) return;
+    sceneWatch = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        const p = parts();
+        const line = p?.box.querySelector<HTMLElement>('.vb-bubble [data-vb-title]');
+        if (!p || !line?.dataset.vbScene || isOpen() || away() || root.dataset.lens) return;
+        sceneWatch?.disconnect();
+        const question = line.textContent ?? '';
+        line.textContent = line.dataset.vbScene;
+        p.box.classList.add('is-nudge');
+        if (still.matches) wink();
+        else talk();
+        window.setTimeout(() => {
+          // La página puede haber cambiado entretanto: solo se deshace si la pieza sigue ahí
+          if (!line.isConnected) return;
+          line.closest('[data-vb]')?.classList.remove('is-nudge');
+          // El texto vuelve cuando el bocadillo ya se ha recogido
+          window.setTimeout(() => line.isConnected && (line.textContent = question), 200);
+        }, SAY_MS);
+      },
+      { threshold: 0.35 },
+    );
+    sceneWatch.observe(scene);
+  });
+  document.addEventListener('astro:before-swap', () => sceneWatch?.disconnect());
+
   window.addEventListener(
     'scroll',
     () => {

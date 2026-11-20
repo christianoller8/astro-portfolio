@@ -860,6 +860,12 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     `astro.config.mjs`. En el modo plano la barra de "Separación" ya se esconde. Preguntó si el
     boceto debía ir delante: se dejó el orden (boceto y diseño son hojas opacas; código y pruebas,
     transparentes) y **las capas van numeradas del 1 al 4** en las etiquetas y en la lista.
+  - Enlace con la escena de la home (hecho el 20 nov, pendiente de su visto bueno): al acabar
+    "Tú ves una web. Yo la veo así", con las capas 3D a la vista, la caricatura habla otra vez y
+    su bocadillo dice **"Puedes ver toda esta web así."** durante cinco segundos, una vez por
+    carga. No se añade ningún bloque: el puente con botones que había (`showBridge` en
+    `ViewScene.astro`) sigue escondido porque no le convenció; se reutiliza solo su frase.
+    Comprobado con `.taste-skill/mock-hero/escena-check.mjs`.
   - Ya no hace falta, salvo que quiera afinar el gesto con su trazo: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
     tinta negra sobre blanco y con el encuadre de `docs/imgs/avatar/head-front.png`. Se pasa a
     vectores con `.taste-skill/letras/vectorize.cjs`.
