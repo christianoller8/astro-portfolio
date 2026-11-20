@@ -29,8 +29,9 @@ const decisions = cases[project.slug]?.decisions ?? [];
 
 <article class="bento" data-cs="<article> ProjectBento.astro">
   <header class="bento-head">
-    <h2 class="bento-title">
-      <a href={href} data-morph-title={project.slug}>{title}</a>
+    {/* El nombre de transición va en el h2 (una caja), no en el enlace: en un elemento en línea no hace efecto */}
+    <h2 class="bento-title" data-morph-title={project.slug}>
+      <a href={href}>{title}</a>
     </h2>
     <p class="bento-facts">{facts}</p>
   </header>
@@ -111,9 +112,11 @@ const decisions = cases[project.slug]?.decisions ?? [];
     padding: 1.25rem 1.25rem 1.5rem;
     background: var(--tint);
   }
-  /* La caja grande es la propia pieza: sin relleno, a sangre */
+  /* La caja grande es la propia pieza: sin relleno, a sangre. Si el resumen de al lado queda más
+     alto que ella, lo que sobra debajo es caja y no hoja */
   .bento-visual {
     min-width: 0;
+    background: var(--tint);
   }
 
   .bento-about {

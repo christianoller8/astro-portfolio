@@ -133,7 +133,9 @@ function learnish(root: HTMLElement, target: Element) {
 /** La web se carga a ancho de escritorio (o de móvil, si el marco es estrecho) y se escala al marco */
 function fit(stage: HTMLElement) {
   const frame = stage.querySelector<HTMLIFrameElement>('iframe');
-  if (!frame) return;
+  // Sin ancho (el marco está en una vista escondida, como las cajas de Proyectos con el lienzo a la
+  // vista) no hay nada que medir: se deja como estaba
+  if (!frame || !stage.clientWidth) return;
   const width = stage.clientWidth < 520 ? 390 : 1280;
   const k = stage.clientWidth / width;
   frame.style.width = `${width}px`;

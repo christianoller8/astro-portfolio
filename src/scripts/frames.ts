@@ -25,8 +25,12 @@ const isList = (url: URL) => ['/', '/projects'].includes(plain(url));
  * Devuelve la imagen, o null si no está (entonces no hay morph).
  */
 function tag(slug: string, near?: Element | null) {
-  const within = (selector: string) =>
-    near?.closest('li, article')?.querySelector<HTMLElement>(selector) ?? document.querySelector<HTMLElement>(selector);
+  // Proyectos tiene dos vistas (cajas y lienzo) y las dos llevan estas piezas: valen las de la que
+  // se ve. (Al llegar navegando, la vista guardada ya está aplicada: lo hace el script del <head>
+  // de Layout.astro en astro:after-swap, que corre antes que este.)
+  const shown = (selector: string) =>
+    [...document.querySelectorAll<HTMLElement>(selector)].find((el) => el.getClientRects().length > 0) ?? null;
+  const within = (selector: string) => near?.closest('li, article')?.querySelector<HTMLElement>(selector) ?? shown(selector);
   const visual = within(`[data-morph-visual="${slug}"]`);
   const title = within(`[data-morph-title="${slug}"]`);
   if (!visual) return null;

@@ -131,11 +131,21 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
           // intro-seen: en esta carga el titular ya entra con la intro, así que no se entinta aparte
           if (!skip) root.classList.add('intro', 'intro-seen');
         } catch (e) {}
+        // Proyectos: la vista elegida (cajas o lienzo). En una carga normal la pone un script de la
+        // propia página antes de pintar; al llegar navegando ese script corre después de la foto
+        // de la transición, así que se pone aquí
+        const applyProjectsMode = () => {
+          try {
+            const section = document.querySelector('[data-projects]');
+            if (section && localStorage.getItem('projects-mode') === 'canvas') section.dataset.mode = 'canvas';
+          } catch (e) {}
+        };
         document.addEventListener('astro:after-swap', () => {
           // arrived: se llega navegando desde otra página (el entintado espera a la transición)
           root.classList.add('arrived');
           applyTheme();
           applyLens();
+          applyProjectsMode();
           markReveal();
         });
       })();

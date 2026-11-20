@@ -1,9 +1,12 @@
 ---
-// Proyectos (plan §5.3): los cuatro proyectos como frames de un archivo de diseño, cada uno en su
-// formato (escritorio o móvil) y con un hilo de prototipo hasta la nota que lleva a su caso. Para
-// leer deprisa hay una vista en lista. La vista elegida se recuerda (localStorage).
+// Proyectos (plan §5.3), con dos vistas; la elegida se recuerda (localStorage):
+// - Cajas (la principal, desde el 20 nov): cada proyecto en un bloque de cajas, con su pieza, su
+//   resumen y sus decisiones (ProjectBento.astro). Sustituye a la lista de una línea por proyecto.
+// - Lienzo: los cuatro proyectos como frames de un archivo de diseño, cada uno en su formato
+//   (escritorio o móvil) y con un hilo de prototipo hasta la nota que lleva a su caso.
 import Layout from '@/layouts/Layout.astro';
 import ProjectVisual from '@/components/ui/ProjectVisual.astro';
+import ProjectBento from '@/components/ui/ProjectBento.astro';
 import { getSortedProjects } from '@/utils/projects';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import type { ui } from '@/i18n/ui';
@@ -45,11 +48,11 @@ const items = projects.map((project, i) => {
   description={t('projects.meta.description')}
   frame={t('nav.projects')}
 >
-  <section class="pp" data-projects data-mode="canvas" data-cs="<section> ProjectsPage.astro">
-    <!-- Antes de pintar: la vista que se eligió la última vez -->
+  <section class="pp" data-projects data-mode="boxes" data-cs="<section> ProjectsPage.astro">
+    <!-- Antes de pintar: la vista que se eligió la última vez (por defecto, las cajas) -->
     <script is:inline>
       try {
-        if (localStorage.getItem('projects-mode') === 'list') document.currentScript.parentElement.dataset.mode = 'list';
+        if (localStorage.getItem('projects-mode') === 'canvas') document.currentScript.parentElement.dataset.mode = 'canvas';
       } catch (e) {}
     </script>
 
@@ -59,19 +62,23 @@ const items = projects.map((project, i) => {
         <p class="t-lead pp-lead" data-reveal style="--reveal-i: 1">{t('projects.page.lead')}</p>
       </div>
       <div class="pp-mode" role="group" aria-label={t('projects.mode.label')} data-seg data-reveal style="--reveal-i: 2">
-        <button type="button" class="pp-mode-btn" data-projects-mode="canvas" aria-pressed="true">
+        <button type="button" class="pp-mode-btn" data-projects-mode="boxes" aria-pressed="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <rect x="1.5" y="2" width="8" height="7"></rect>
+            <rect x="11.5" y="2" width="3" height="7"></rect>
+            <rect x="1.5" y="11" width="3.5" height="3"></rect>
+            <rect x="6.5" y="11" width="3.5" height="3"></rect>
+            <rect x="11.5" y="11" width="3" height="3"></rect>
+          </svg>
+          {t('projects.mode.boxes')}
+        </button>
+        <button type="button" class="pp-mode-btn" data-projects-mode="canvas" aria-pressed="false">
           <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <rect x="1.5" y="2.5" width="7" height="5"></rect>
             <rect x="10.5" y="5.5" width="4" height="8"></rect>
             <rect x="2.5" y="10" width="5" height="3.5"></rect>
           </svg>
           {t('projects.mode.canvas')}
-        </button>
-        <button type="button" class="pp-mode-btn" data-projects-mode="list" aria-pressed="false">
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-            <path d="M2 4h12M2 8h12M2 12h12"></path>
-          </svg>
-          {t('projects.mode.list')}
         </button>
       </div>
     </div>
@@ -142,21 +149,13 @@ const items = projects.map((project, i) => {
       </div>
     </div>
 
-    <!-- Vista en lista -->
-    <ol class="wrap plist">
+    <!-- Vista en cajas (la principal). Las dos vistas llevan las piezas del paso animado de la
+         tarjeta al caso (data-morph-*): frames.ts usa las de la vista que se está viendo -->
+    <ol class="wrap pboxes">
       {
-        items.map(({ project, href, kind, format }) => (
+        projects.map((project) => (
           <li>
-            <a class="plist-row" href={href}>
-              <h2 class="plist-title">{project.data.title}</h2>
-              <span class="plist-desc">{project.data.description}</span>
-              <span class="plist-facts">
-                {[kind, format, project.data.status, project.data.role, project.data.year].filter(Boolean).join(' · ')}
-              </span>
-              <span class="plist-arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
+            <ProjectBento project={project} lang={lang} interactive />
           </li>
         ))
       }
@@ -209,8 +208,8 @@ const items = projects.map((project, i) => {
     background: var(--pencil);
   }
 
-  .pp[data-mode='canvas'] .plist,
-  .pp[data-mode='list'] .pp-canvas {
+  .pp[data-mode='canvas'] .pboxes,
+  .pp[data-mode='boxes'] .pp-canvas {
     display: none;
   }
 
@@ -379,78 +378,15 @@ const items = projects.map((project, i) => {
     }
   }
 
-  /* ---------- Lista: una línea por proyecto ---------- */
-  .plist {
+  /* ---------- Cajas: un bloque por proyecto (ProjectBento.astro), con aire entre uno y otro ---------- */
+  .pboxes {
     display: grid;
-    gap: 3px;
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-  }
-  .plist-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: 0.5rem 1rem;
-    padding: 1.1rem 1.1rem 1.2rem;
-    background: var(--tint);
-    transition:
-      background-color var(--dur-micro) var(--ease-out),
-      color var(--dur-micro) var(--ease-out);
-  }
-  .plist-facts {
-    font: 600 var(--step-small)/1.4 var(--font-sans);
-    color: var(--muted);
-  }
-  .plist-title {
-    font-size: var(--step-title);
-    font-weight: 650;
-    line-height: 1;
-    letter-spacing: -0.035em;
-  }
-  .plist-desc,
-  .plist-facts {
-    grid-column: 1 / -1;
-  }
-  .plist-desc {
-    max-width: 56ch;
-  }
-  .plist-arrow {
-    grid-area: 1 / 2;
-    font-size: var(--step-lead);
-    transition: transform var(--dur-micro) var(--ease-out);
-  }
-  .plist-row:hover,
-  .plist-row:focus-visible {
-    color: var(--paper);
-    background: var(--ink);
-  }
-  .plist-row:hover .plist-facts,
-  .plist-row:focus-visible .plist-facts {
-    color: color-mix(in srgb, var(--paper) 76%, var(--ink));
-  }
-  .plist-row:hover .plist-arrow {
-    transform: translateX(4px);
-  }
-  @media (min-width: 900px) {
-    .plist-row {
-      grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) auto;
-      gap: 0.35rem 1.5rem;
-      padding: 1.25rem 1.5rem 1.35rem;
-    }
-    .plist-desc {
-      grid-area: 1 / 2;
-    }
-    .plist-facts {
-      grid-area: 2 / 2;
-    }
-    .plist-arrow {
-      grid-area: 1 / 3;
-    }
+    gap: clamp(4.5rem, 9vw, 8rem);
+    margin-top: clamp(3rem, 6vw, 5rem);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .pp-mode-btn,
-    .plist-row,
-    .plist-arrow,
     .board-cta span {
       transition: none;
     }
@@ -459,13 +395,15 @@ const items = projects.map((project, i) => {
 
 <script>
   import { drawThread, playThread } from '@/scripts/kit';
+  // Las interfaces de las cajas se pueden tocar
+  import '@/scripts/project-demos';
 
   // Cambio de vista (se recuerda) y el hilo de cada proyecto, que se vuelve a dibujar al señalarlo
   document.addEventListener('click', (event) => {
     const btn = (event.target as Element | null)?.closest<HTMLElement>('[data-projects-mode]');
     const section = btn?.closest<HTMLElement>('[data-projects]');
     if (!btn || !section) return;
-    const mode = btn.dataset.projectsMode === 'list' ? 'list' : 'canvas';
+    const mode = btn.dataset.projectsMode === 'canvas' ? 'canvas' : 'boxes';
     section.dataset.mode = mode;
     sync(section);
     try {
@@ -474,6 +412,8 @@ const items = projects.map((project, i) => {
       /* sin almacenamiento: la vista vale solo para esta página */
     }
     if (mode === 'canvas') redraw(section);
+    // Al volver a las cajas, lo que se mide con su ancho (la web de Vístalo abierta en su marco) se ajusta de nuevo
+    else window.dispatchEvent(new Event('resize'));
   });
 
   function sync(section: HTMLElement) {
@@ -481,7 +421,7 @@ const items = projects.map((project, i) => {
       btn.setAttribute('aria-pressed', String(btn.dataset.projectsMode === section.dataset.mode));
     });
   }
-  /** Los hilos se miden con el tablero a la vista: al volver de la lista hay que repetirlos */
+  /** Los hilos se miden con el tablero a la vista: al volver de las cajas hay que repetirlos */
   function redraw(section: HTMLElement) {
     section.querySelectorAll<SVGSVGElement>('svg[data-thread-from]').forEach((svg) => {
       const from = document.querySelector(svg.dataset.threadFrom ?? '');
@@ -503,12 +443,12 @@ const items = projects.map((project, i) => {
     const section = document.querySelector<HTMLElement>('[data-projects]');
     if (!section) return;
     try {
-      if (localStorage.getItem('projects-mode') === 'list') section.dataset.mode = 'list';
+      if (localStorage.getItem('projects-mode') === 'canvas') section.dataset.mode = 'canvas';
     } catch {
       /* sin almacenamiento */
     }
     sync(section);
     // Las fuentes cambian el alto de las notas: los hilos se repiten cuando han cargado
-    document.fonts?.ready.then(() => redraw(section));
+    document.fonts?.ready.then(() => section.dataset.mode === 'canvas' && redraw(section));
   });
 </script>

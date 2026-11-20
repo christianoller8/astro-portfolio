@@ -873,8 +873,14 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     una caja grande con su pieza (la interfaz que se toca), una caja con el resumen, el papel y
     "Ver caso", y una fila con sus tres decisiones (`src/data/cases.ts`). Cajas del sistema: planas,
     rectas, sobre `--tint`. Sin filtros ni vistas, que con cuatro proyectos sobran.
-  - Se ve en la página interna de pruebas `/cajas` (fuera de buscadores y del sitemap). **Falta
-    decidir dónde va** (página de Proyectos, home o las dos) y quitar la página de pruebas después.
+  - Dónde va (decidido por él el 20 nov): en la **página de Proyectos, como vista principal**. La
+    vista en lista de una línea por proyecto desaparece; el Lienzo (tablero con hilos) queda como
+    segunda vista. La vista elegida se sigue recordando (`projects-mode`: `boxes` o `canvas`). La
+    página de pruebas `/cajas` ya se quitó. En la home no se pone: ya hay una tarjeta por proyecto.
+  - Cada proyecto está ahora dos veces en la página (una por vista, la otra escondida). Por eso
+    `frames.ts` coge para el paso animado al caso las piezas de la vista que se ve, y la vista
+    guardada se aplica también al llegar navegando (script del `<head>` de `Layout.astro`).
+  - Pendiente de su visto bueno. Después: rehacer las miniaturas del lienzo de Proyectos.
   - Falta de él: un vídeo corto por app (8–15 s, sin sonido, una sola acción). Cuando llegue el
     primero se añade el campo `video` al esquema de proyectos y la caja grande lo enseña.
 
