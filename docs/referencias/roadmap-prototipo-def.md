@@ -897,11 +897,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     "de momento". Es una imagen usada de máscara, no una tercera familia de letra.
   - Pendiente de él: su firma a mano (varias pruebas con rotulador grueso sobre papel blanco, en
     foto), para sustituir a la de la fuente.
-  - La intro presenta la misma marca (hecho el 20 nov, pendiente de su visto bueno): la caricatura
-    se traza como antes y, a su lado, la firma **se escribe letra a letra, como en una máquina de
-    escribir**, con un cursor que parpadea (lo pidió así). Sustituye a "made by chris". Como la
-    firma es una imagen, se destapa a saltos en el punto donde acaba cada letra
-    (`IntroScreen.astro`); si cambia la imagen de la firma hay que volver a medir esos puntos.
+  - Pendiente de decidir: si la intro, que dibuja la caricatura con "made by chris", pasa a
+    escribir la firma.
 
 ## Fase técnica (después del 10 de diseño)
 
