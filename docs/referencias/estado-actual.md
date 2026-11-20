@@ -65,6 +65,10 @@ reales en páginas interiores y el texto que pasa bajo la escena fija en móvil.
 
 ## Fase técnica: lo que hay que hacer
 
+**Auditoría de la web publicada (20 nov)**: [auditoria-2026-11-20.md](auditoria-2026-11-20.md). Tiene los
+hallazgos priorizados, "Lo primero" (arreglos sin decisiones) y las decisiones pendientes de Christian. Manda
+sobre la lista de abajo, que es anterior.
+
 Por orden de urgencia (lista completa en el roadmap):
 
 1. **Formulario**: hoy no envía; abre el correo con el mensaje escrito. Falta el servicio de envío y
