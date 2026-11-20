@@ -12,13 +12,13 @@ for (const lang of ['es', 'en']) {
     for (const [key, path] of Object.entries(PAGES)) {
       const p = await browser.newPage({ width: 1440, height: 900, dsf: 1 });
       await p.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: theme }] });
-      await p.send('Page.addScriptToEvaluateOnNewDocument', { source: `try { localStorage.removeItem('lens'); localStorage.removeItem('theme'); } catch (e) {}` });
+      await p.send('Page.addScriptToEvaluateOnNewDocument', { source: `try { localStorage.removeItem('lens'); localStorage.removeItem('theme'); localStorage.setItem('intro-seen', '1'); } catch (e) {}` });
       await p.goto(origin + (lang === 'en' ? '/en' : '') + path, { settleMs: 1200 });
       // Todo a la vista: sin entradas escalonadas pendientes y con las imágenes cargadas
       await p.eval(() => {
         const s = document.createElement('style');
         // La caricatura con su bocadillo va fija en la ventana: en la captura alta caería en medio de la página
-        s.textContent = '[data-reveal]{opacity:1!important;transform:none!important}*{animation-duration:0s!important;animation-delay:0s!important;transition:none!important}[data-vb]{display:none!important}';
+        s.textContent = '[data-reveal]{opacity:1!important;transform:none!important}*{animation-duration:0s!important;animation-delay:0s!important;transition:none!important}[data-vb]{display:none!important}.stack-card{animation:none!important;opacity:1!important;transform:none!important}';
         document.head.append(s);
         document.querySelectorAll('img[loading=lazy]').forEach((img) => { img.loading = 'eager'; });
         window.scrollTo(0, 1200); window.scrollTo(0, 0);
@@ -27,6 +27,9 @@ for (const lang of ['es', 'en']) {
       // El frame es la barra más el artboard (D23): la miniatura empieza con la barra
       const h = await p.eval(() => Math.round(document.querySelector('.artboard').offsetHeight + (document.querySelector('.toolbar')?.offsetHeight ?? 0)));
       sizes[`${lang}-${key}`] = h;
+      // Nada a medias: si algo de la página sigue con opacidad menor que 1 (otra entrada ligada al scroll), se avisa
+      const faded = await p.eval(() => [...document.querySelectorAll('.artboard *')].filter((e) => e.offsetHeight > 20 && getComputedStyle(e).opacity !== '1' && getComputedStyle(e).visibility !== 'hidden' && getComputedStyle(e).display !== 'none').slice(0, 3).map((e) => e.tagName + '.' + String(e.className).slice(0, 30) + ' ' + getComputedStyle(e).opacity));
+      if (faded.length) console.log('AVISO opacidad a medias', lang, theme, key, JSON.stringify(faded));
       const { data } = await p.send('Page.captureScreenshot', { format: 'jpeg', quality: 92, captureBeyondViewport: true, clip: { x: 0, y: 0, width: 1440, height: 1800, scale: 1 } });
       writeFileSync(`${dir}/${lang}-${key}-${theme}.jpg`, Buffer.from(data, 'base64'));
       await p.close?.();
