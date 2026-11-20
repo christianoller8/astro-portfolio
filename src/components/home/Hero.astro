@@ -26,9 +26,9 @@ const roles = [
   panel (referencia: la página "nosotros" de Vístalo).
   - Oscuro: la foto tal cual (card.jpg). Su pared oscura se desvanece en el papel oscuro.
   - Claro: la misma foto "de día" (card-light.jpg): la pared pasa a blanco y se conservan la franja
-    de luz roja y la sombra en la pared. El titular va en modo de fusión "diferencia": oscuro sobre
-    el blanco y claro sobre la chaqueta negra.
-  Las dos tienen el mismo encuadre: la cara queda junto al nombre y el oficio cruza la chaqueta.
+    de luz roja y la sombra en la pared.
+  Texto y foto no se pisan (D22, 20 nov): en escritorio el texto ocupa su columna a la izquierda y
+  la foto la suya a la derecha; en móvil la foto va arriba y el texto empieza donde ella termina.
   card-light.jpg se genera con .taste-skill/recorte/ (person.swift saca la máscara de la persona
   con macOS y luz.cjs monta la versión clara).
   [data-ink] marca las piezas que entran escalonadas al acabar la intro (--ink-i es su turno).
@@ -123,28 +123,37 @@ const roles = [
   }
   .hero-inner {
     position: relative;
-    /* El ancho del contenido manda en todo el hero: titular, foto y solape */
+    /* El ancho del contenido manda en todo el hero: titular, columnas y foto */
     container-type: inline-size;
-    /* El contenedor aísla la fusión del titular: el papel tiene que estar dentro */
     background: var(--paper);
+    /* Móvil: proporción de la foto (alto / ancho) y punto de su alto en el que ya es transparente.
+       El texto empieza justo ahí. En claro la foto es cuadrada; en oscuro, más alta */
+    --m-photo: 1;
+    --m-clear: 0.88;
   }
-  /* Sin z-index: el titular tiene que fundirse con la foto, que va justo antes en el HTML */
+  :global(:root.dark) .hero-inner {
+    --m-photo: 1.18;
+    --m-clear: 0.92;
+  }
   .hero-stage {
     position: relative;
-    /* "Software developer" llega casi al borde derecho; el nombre, a unas siete décimas del ancho.
-       Con margen: por debajo de 96 px el eje óptico de Bricolage ensancha un poco las letras */
-    --d: 12.6cqi;
+    /* Columna del texto: hasta el 54 % del ancho. "Christian Oller" la llena y "Software developer"
+       va en dos líneas, así nada entra en la foto (que empieza en el 58 %) */
+    --text-col: 54cqi;
+    --d: 9.8cqi;
+    /* El bloque entero se queda en su columna (también la caja del H1 que dibuja la lente Diseño) */
+    max-width: var(--text-col);
     padding-top: clamp(1.75rem, 3.4cqi, 2.75rem);
     padding-bottom: clamp(2.5rem, 4.4cqi, 3.5rem);
   }
 
   /* --- Retrato: fundido en el fondo, sin caja --- */
-  /* La foto se coloca respecto al contenido: la cara cae a la derecha del nombre y por encima de
-     la segunda línea. El encuadre es el mismo en los dos modos. */
+  /* La foto va en su columna, a la derecha del texto, con la cara a la altura del nombre. El
+     encuadre es el mismo en los dos modos. */
   .hero-photo {
     position: absolute;
     top: -12.6cqi;
-    left: calc(var(--pad) + 55.5cqi);
+    left: calc(var(--pad) + 58cqi);
     width: 50cqi;
     aspect-ratio: 2 / 3;
     pointer-events: none;
@@ -239,29 +248,31 @@ const roles = [
     font-size: var(--d);
     font-weight: var(--wght-ink);
     font-stretch: var(--wdth-ink);
+    /* Siempre el corte de display: por debajo de 96 px el eje óptico ensancha las letras y el nombre
+       se saldría de su columna en tablet */
+    font-variation-settings: 'opsz' 96;
     line-height: 0.9;
     letter-spacing: -0.045em;
-    white-space: nowrap;
   }
   .hero-name,
   .hero-role {
     display: block;
   }
-  /* Claro: el oficio cruza la chaqueta, así que va en "diferencia": este tono da gris sobre el
-     blanco y claro sobre lo negro. El nombre no: pasa por la luz roja y la diferencia lo teñiría */
-  .hero-role {
-    color: #b5b5b5;
-    mix-blend-mode: difference;
+  .hero-name {
+    white-space: nowrap;
   }
-  /* Oscuro: todo el fondo es oscuro, no hace falta fundir */
+  /* El oficio, en gris: una palabra por línea ("Software" / "developer") para no salir de la columna */
+  .hero-role {
+    width: min-content;
+    color: var(--muted);
+  }
   :global(:root.dark) .hero-role {
     color: #b4b4b4;
-    mix-blend-mode: normal;
   }
 
   /* --- Frase, botones y disponibilidad --- */
   .hero-copy {
-    max-width: 62cqi;
+    max-width: var(--text-col);
     margin-top: clamp(1.5rem, 3cqi, 2.5rem);
   }
   .hero-phrase {
@@ -311,7 +322,7 @@ const roles = [
     }
   }
 
-  /* --- Móvil: la foto arriba, a todo el ancho, y el nombre montado sobre la chaqueta --- */
+  /* --- Móvil: la foto arriba, a todo el ancho, y el texto empieza donde ella termina --- */
   @container (max-width: 640px) {
     .hero-photo {
       top: 0;
@@ -319,41 +330,34 @@ const roles = [
       width: 100%;
     }
     /* Claro: encima de la cabeza solo hay blanco, así que la foto se sube. La luz llega de borde a
-       borde; la chaqueta sigue entera bajo el titular y se desvanece después, antes de los oficios */
+       borde y la chaqueta se desvanece antes del nombre. Oscuro: la foto entera, con su pared */
     .hero-photo {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 1 / var(--m-photo);
     }
     .hero-photo-img--light {
       object-position: 50% 52%;
-      mask-image: linear-gradient(180deg, #000 70%, transparent 88%);
-    }
-    .hero-stage {
-      padding-top: 52cqi;
-    }
-    /* Oscuro: la foto entera, con su pared */
-    :global(:root.dark) .hero-photo {
-      aspect-ratio: 1 / 1.18;
+      mask-image: linear-gradient(180deg, #000 70%, transparent calc(var(--m-clear) * 100%));
     }
     .hero-photo-img--dark {
       object-position: 50% 30%;
-      mask-image: linear-gradient(180deg, #000 48%, transparent 92%);
+      mask-image: linear-gradient(180deg, #000 48%, transparent calc(var(--m-clear) * 100%));
     }
-    :global(:root.dark) .hero-stage {
-      padding-top: 71cqi;
+    /* El texto arranca donde la foto ya es transparente. La foto ocupa el ancho del contenido más
+       sus dos márgenes (100cqi + 2 × --pad); su alto es ese ancho por --m-photo */
+    .hero-stage {
+      padding-top: calc(var(--m-clear) * var(--m-photo) * (100cqi + 2 * var(--pad)));
     }
     .hero-roles {
       order: 2;
       min-height: 0;
       /* En los móviles más estrechos baja un poco para que los tres oficios quepan en una línea */
       font-size: min(1.0625rem, 5.2cqi);
-      margin-top: 24cqi;
-    }
-    :global(:root.dark) .hero-roles {
       margin-top: 1.25rem;
     }
     .hero-stage {
       display: flex;
       flex-direction: column;
+      max-width: none;
     }
     .hero-title {
       order: 1;
@@ -362,13 +366,10 @@ const roles = [
     }
     .hero-name {
       font-size: 1.39em;
-      /* En móvil el nombre también cae sobre la chaqueta (y lejos de la luz roja) */
-      color: #e5e5e5;
-      mix-blend-mode: difference;
     }
-    :global(:root.dark) .hero-name {
-      color: inherit;
-      mix-blend-mode: normal;
+    /* En móvil "Software developer" cabe en una línea */
+    .hero-role {
+      width: auto;
     }
     .hero-roles-x {
       margin-inline: 0.45em;

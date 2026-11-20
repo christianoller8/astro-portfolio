@@ -1,15 +1,18 @@
 ---
-// Barra de estado de la lente activa, pegada abajo como la de una herramienta: el nombre de la lente,
-// sus cifras (medidas en el navegador por src/scripts/lenses.ts) y la salida a la vista normal.
+// Barra de estado de la lente activa, pegada abajo como la de una herramienta: el frame en el que
+// estás y su tamaño real, el nombre de la lente, sus cifras (medidas en el navegador por
+// src/scripts/lenses.ts) y la salida a la vista normal.
 // En móvil y tablet lleva también el cambio de lente, para pasar de una a otra sin abrir el menú.
 import { useTranslations } from '@/i18n/utils';
 import LensSwitch from './LensSwitch.astro';
 
 interface Props {
   lang: 'es' | 'en';
+  /** Nombre del frame (la página); el tamaño lo escribe kit.ts */
+  frame: string;
 }
 
-const { lang } = Astro.props;
+const { lang, frame } = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -29,6 +32,7 @@ const t = useTranslations(lang);
   })}
 >
   <div class="lens-bar-switch"><LensSwitch variant="dock" lang={lang} /></div>
+  <p class="lens-bar-frame" aria-hidden="true">{frame} <span data-frame-size></span></p>
   <p class="lens-bar-title" data-lens-title aria-live="polite"></p>
   <ul class="lens-bar-stats" data-lens-stats></ul>
   <button type="button" class="lens-bar-close" data-lens-clear>
@@ -76,6 +80,26 @@ const t = useTranslations(lang);
     flex: none;
     font-size: var(--step-small);
     font-weight: 700;
+  }
+  /* El frame en el que estás, como en la herramienta: "Inicio 1440 × 7570" */
+  .lens-bar-frame {
+    display: none;
+    flex: none;
+    gap: 0.5rem;
+    align-items: baseline;
+    font-size: var(--step-small);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .lens-bar-frame span {
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    color: color-mix(in srgb, var(--paper) 68%, var(--ink));
+  }
+  @media (min-width: 1024px) {
+    .lens-bar-frame {
+      display: flex;
+    }
   }
   .lens-bar-switch {
     display: none;

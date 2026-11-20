@@ -202,13 +202,22 @@ function initCoords(signal: AbortSignal) {
   });
 }
 
-/** Tamaño real del frame (el artboard) junto a su nombre; se actualiza al cambiar el ancho o el alto. */
+/**
+ * Tamaño real del frame junto a su nombre; se actualiza al cambiar el ancho o el alto. El frame es
+ * la barra más el artboard (D23), salvo en la 404, donde la barra va fuera, sobre el lienzo.
+ * El nombre sale en la barra de estado de las lentes y, en la 404, encima del frame.
+ */
 function initFrameSize(signal: AbortSignal) {
-  const label = document.querySelector<HTMLElement>('[data-frame-size]');
+  const labels = document.querySelectorAll<HTMLElement>('[data-frame-size]');
   const artboard = document.querySelector<HTMLElement>('.artboard');
-  if (!label || !artboard || !('ResizeObserver' in window)) return;
+  if (!labels.length || !artboard || !('ResizeObserver' in window)) return;
+  const bar = document.documentElement.hasAttribute('data-missing')
+    ? null
+    : document.querySelector<HTMLElement>('.toolbar');
   const observer = new ResizeObserver(() => {
-    label.textContent = `${Math.round(artboard.offsetWidth)} × ${Math.round(artboard.offsetHeight)}`;
+    const height = artboard.offsetHeight + (bar?.offsetHeight ?? 0);
+    const size = `${Math.round(artboard.offsetWidth)} × ${Math.round(height)}`;
+    labels.forEach((label) => (label.textContent = size));
   });
   observer.observe(artboard);
   signal.addEventListener('abort', () => observer.disconnect());

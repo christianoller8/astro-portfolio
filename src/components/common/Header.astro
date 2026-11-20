@@ -24,7 +24,9 @@ const isActive = (path: string) => {
 };
 ---
 
-<!-- La barra de herramientas (plan §5.1): marca · menú · vista (lentes y lienzo) · preferencias (idioma, modo, CV) -->
+<!-- La barra de herramientas (plan §5.1): marca · menú · vista (lentes y lienzo) · preferencias (idioma, modo, CV).
+     Desde el 20 nov (D23) es la primera fila del artboard: mismo papel, mismo ancho y alineada con el contenido. -->
+
 <header class="toolbar" data-cs="<header> Header.astro">
   <div class="toolbar-inner">
     <a href={translatePath('/')} class="brand" aria-label={t('aria.home')} data-sel>
@@ -171,19 +173,28 @@ const isActive = (path: string) => {
 </header>
 
 <style>
+  /* La barra va dentro de la página: papel, del ancho del artboard (deja ver el lienzo a los lados)
+     y con el contenido alineado con el de las secciones (.wrap). En el paneo se queda quieta. */
   .toolbar {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--canvas);
+    margin-inline: var(--gutter);
+    background: var(--paper);
     view-transition-name: toolbar;
+  }
+  /* 404: el frame que falta no tiene papel, así que la barra sigue sobre el lienzo */
+  :global(html[data-missing]) .toolbar {
+    background: var(--canvas);
   }
   .toolbar-inner {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    max-width: 82rem;
     height: var(--toolbar-h);
-    padding-inline: var(--gutter);
+    margin-inline: auto;
+    padding-inline: var(--pad);
   }
 
   /* --- Marca: la caricatura reducida y "made by chris" en una línea. Al pasar el ratón se selecciona --- */
@@ -260,9 +271,10 @@ const isActive = (path: string) => {
     background: var(--ink);
     view-transition-name: nav-ind;
   }
+  /* La página actual, sobre un paso de tinte (la barra ya es papel) */
   .nav-link[aria-current='page'] {
     color: var(--ink);
-    background: var(--paper);
+    background: var(--tint);
   }
 
   /* --- Derecha: dos grupos --- */
@@ -402,9 +414,9 @@ const isActive = (path: string) => {
     display: grid;
     grid-template-rows: 1fr auto auto;
     height: calc(100dvh - var(--toolbar-h));
-    padding: 1rem var(--gutter) max(1.25rem, env(safe-area-inset-bottom));
+    padding: 1rem var(--pad) max(1.25rem, env(safe-area-inset-bottom));
     overflow-y: auto;
-    background: var(--canvas);
+    background: var(--paper);
   }
   .mobile-menu[hidden] {
     display: none;
@@ -439,7 +451,7 @@ const isActive = (path: string) => {
     margin-top: 1rem;
   }
   .mobile-actions .btn-quiet {
-    background: var(--paper);
+    background: var(--tint);
   }
 
   /* Entrada del menú: la capa aparece y los enlaces suben uno detrás de otro */
@@ -471,7 +483,8 @@ const isActive = (path: string) => {
     }
   }
 
-  @media (max-width: 359px) {
+  /* La barra lleva ahora los márgenes del contenido (D23): por debajo de 390 px "made by" no cabe */
+  @media (max-width: 389px) {
     .brand-made {
       display: none;
     }

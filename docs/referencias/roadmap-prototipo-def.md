@@ -23,6 +23,7 @@
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
+| **Ajustes de diseño** | **En curso** (20 nov): hero y barra hechos, a falta de tu visto bueno |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -657,6 +658,53 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - **Textos que he cambiado** (provisionales): el título de Contacto y un titular en inglés.
 
 **Hecho cuando**: pasa toda la rúbrica. Ahí el diseño está de 10.
+
+## Ajustes de diseño (después de E5)
+
+El 20 nov, en vez de cerrar el diseño, Christian pidió cambios, empezando por la home. Se trabajan
+igual: un punto por parada y la casilla se marca con su visto bueno.
+
+- [ ] **Hero sin texto encima de la foto** (D22; hecho el 20 nov, pendiente de tu visto bueno):
+  - Antes de tocar nada se hizo una maqueta (CSS inyectado sobre la web construida) y la aprobaste.
+  - Escritorio: el texto en su columna (hasta el 54 % del ancho del contenido) y la foto en la suya
+    (desde el 58 %; antes, el 55,5 %). Titular de 150 a 118 px a 1440 (`--d` de 12,6 a 9,8 cqi) y
+    "Software developer" en dos líneas. El H1 y la frase no salen de su columna, así que la caja que
+    dibuja la lente Diseño también se queda en ella.
+  - Claro: sin el modo de fusión "diferencia" (ya no hace falta): el oficio va en el gris secundario,
+    que es el tono que daba la fusión sobre blanco.
+  - Móvil: la foto arriba y el texto debajo, empezando donde la máscara de la foto llega a
+    transparente (el 88 % de su alto en claro y el 92 % en oscuro). El nombre ya no monta sobre la
+    chaqueta.
+  - Comprobado a 1920, 1440, 1280, 1024, 768, 390 y 320 px, en claro y oscuro: el texto acaba antes
+    de la foto (8 px de aire a 768, donde el borde de la foto ya es transparente, y unos 45 px en
+    escritorio) y nada desborda. Capturas en `.taste-skill/mock-hero/verify/`.
+- [ ] **Barra dentro de la página** (D23; hecho el 20 nov, pendiente de tu visto bueno):
+  - La barra es la primera fila del artboard: papel, el ancho del frame (deja ver el lienzo a los
+    lados) y su contenido alineado con el de las secciones (82rem). La página actual del menú va
+    sobre un paso de tinte y el menú de móvil, sobre papel.
+  - El nombre del frame encima del artboard solo queda en la 404 (allí la barra sigue sobre el
+    lienzo). En el resto de páginas sale en la barra de estado de las lentes ("Inicio 1371 × 9643",
+    en escritorio) y en el lienzo.
+  - En el paneo la barra se queda quieta como antes (conserva el cuadradito que se desliza). En el
+    cambio de modo cambia con los frames, no con el lienzo.
+  - **Miniaturas del lienzo repetidas** (las 32 y `canvas-sizes.json`): ahora incluyen la barra, y la
+    altura de cada frame es la barra más el artboard (igual que en la barra de estado de las lentes).
+    Las alturas guardadas venían desfasadas de antes (los casos medían unos 1.300 px menos).
+    `canvas-thumbs-resize.cjs` pasa de jimp a sharp (ya es dependencia del proyecto), así funciona
+    también en Windows.
+  - **Lienzo navegable**: la cámara coloca la miniatura de la página actual exactamente sobre la
+    página real (comprobado a 1440, 1280 y 1100 px, en Inicio, Sobre mí y en inglés). De paso, un
+    fallo que ya estaba: en la home no se marcaba "Estás aquí" y el lienzo se abría alejado.
+  - **Revisión con contexto limpio**: confirmó dos fallos (la cámara del lienzo y el cambio de tema
+    en la 404, donde la barra sigue sobre el lienzo) y avisó de otros que se comprobaron en el
+    navegador: a 360 px la barra no cabía ("made by" se oculta ahora por debajo de 390 px) y en tablet
+    el nombre se salía de su columna porque el eje óptico ensancha las letras (el titular usa ahora
+    siempre el corte de display, `opsz` 96).
+  - **Inspector**: 0 FAIL en Inicio y Sobre mí con las excepciones `eyebrow`, `few-pictures`,
+    `covered-text` y, nueva, `headline-lines` (el H1 en tres líneas por D22).
+  - **Tests de Playwright desfasados** (no por este cambio): `tests/example.spec.ts` viene de `main` y
+    falla en 7 de 12 casos (títulos con "|", el id `#mobile-menu-btn` y dos `<nav>` en la home por la
+    web de ejemplo). Se rehacen en la fase técnica.
 
 ## Fase técnica (después del 10 de diseño)
 

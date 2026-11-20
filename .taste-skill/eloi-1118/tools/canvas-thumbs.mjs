@@ -23,7 +23,8 @@ for (const lang of ['es', 'en']) {
         window.scrollTo(0, 1200); window.scrollTo(0, 0);
       });
       await sleep(1400);
-      const h = await p.eval(() => Math.round(document.querySelector('.artboard').offsetHeight));
+      // El frame es la barra más el artboard (D23): la miniatura empieza con la barra
+      const h = await p.eval(() => Math.round(document.querySelector('.artboard').offsetHeight + (document.querySelector('.toolbar')?.offsetHeight ?? 0)));
       sizes[`${lang}-${key}`] = h;
       const { data } = await p.send('Page.captureScreenshot', { format: 'jpeg', quality: 92, captureBeyondViewport: true, clip: { x: 0, y: 0, width: 1440, height: 1800, scale: 1 } });
       writeFileSync(`${dir}/${lang}-${key}-${theme}.jpg`, Buffer.from(data, 'base64'));

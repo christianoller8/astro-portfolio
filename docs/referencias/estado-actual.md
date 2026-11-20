@@ -8,17 +8,16 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 
 - Rama `prototipo-def`, subida entera a GitHub.
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
-- **Lo siguiente: la fase técnica**, que aún no ha empezado.
+- **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
+  cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
+  página (D23). Los dos están hechos y esperan su visto bueno (ver "Ajustes de diseño" en el roadmap).
+- **Después: la fase técnica**, que aún no ha empezado.
 
-## La última pregunta, sin contestar
+## La pregunta que sigue abierta
 
-Al terminar la rúbrica quedó abierta esta decisión de Christian:
-
-- ¿Da el diseño por cerrado y se empieza la fase técnica, o antes se apura la prueba de densidad?
-  Esa prueba no pasa al pie de la letra: pide dos tamaños de letra más el display por pantalla y
-  hay entre 3 y 5 (de una escala de seis).
-
-No se debe dar por contestada: hay que preguntárselo.
+- La prueba de densidad no pasa al pie de la letra: pide dos tamaños de letra más el display por
+  pantalla y hay entre 3 y 5 (de una escala de seis). Christian ha preferido seguir con cambios de
+  diseño antes de cerrar; la decisión sobre la densidad sigue pendiente. Hay que preguntárselo.
 
 ## Resultado de la rúbrica
 
@@ -61,6 +60,22 @@ enviar a Awwwards la URL en inglés.
 - **Textos**: revisar todos; los nuevos son provisionales.
 
 ## Cambios recientes que conviene saber
+
+- **20 nov**: la barra es la primera fila del artboard y el nombre del frame ya no va encima de él
+  (sale en la barra de estado de las lentes, en el lienzo y en la 404). En el hero, texto y foto van
+  en columnas separadas.
+- **Inspector tras el 20 nov**: la excepción `eyebrow` sigue haciendo falta, pero ya no por el
+  nombre del frame: el inspector toma las versiones de la trayectoria ("v7.0" encima de "Vístalo")
+  por etiquetas sobre un título; antes quedaban tapadas por la misma excepción. Y hay una nueva,
+  `headline-lines`: el H1 del hero ocupa tres líneas ("Christian Oller" / "Software" / "developer")
+  por D22. La alternativa, "Software developer" en una línea, obliga a bajar el titular a unos 85 px.
+- **20 nov, lienzo navegable**: en la home nunca se marcaba "Estás aquí" y el lienzo se abría ya
+  alejado, porque la ruta "/" se quedaba en "" al quitarle la barra final (`canvas.ts`). Arreglado.
+  Además, la cámara coloca la miniatura de la página actual justo encima de la página real (la
+  miniatura empieza con la barra).
+- **20 nov**: las miniaturas del lienzo se regeneraron en la torre (Windows). El primer argumento de
+  las herramientas de `.taste-skill/eloi-1118/tools/` se pasa como URL de archivo
+  (`file:///C:/…/scripts/lib/cdp.mjs`) y el recorte usa sharp en vez de jimp.
 
 - La trayectoria (`src/data/experience.ts`) sale ahora del CV: siete etapas, con Accenture y
   Vall d'Hebron, más formación e idiomas.

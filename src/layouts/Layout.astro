@@ -48,7 +48,7 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
 ---
 
 <!doctype html>
-<html lang={lang} data-intro={intro ? '1' : undefined}>
+<html lang={lang} data-intro={intro ? '1' : undefined} data-missing={missing ? '' : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -149,16 +149,22 @@ const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
     >
     <Header />
     <main id="main" class="frame">
-      <p class="frame-label kit-frame-name" aria-hidden="true">
-        {frame}
-        <span data-frame-size></span>
-      </p>
+      {
+        /* El nombre del frame encima del artboard solo queda en la 404, donde el frame es lo que
+           falta. En el resto va en la barra de estado de las lentes y en el lienzo (D23) */
+        missing && (
+          <p class="frame-label kit-frame-name" aria-hidden="true">
+            {frame}
+            <span data-frame-size></span>
+          </p>
+        )
+      }
       <div class:list={['artboard', missing && 'artboard--missing']}>
         <slot />
         {!missing && <Footer />}
       </div>
     </main>
-    <LensPanel lang={lang} />
+    <LensPanel lang={lang} frame={frame} />
     {intro && <IntroScreen />}
     <Pusher />
     <CanvasMap />

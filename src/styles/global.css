@@ -178,21 +178,24 @@
   padding: var(--gutter);
   padding-top: 0;
 }
-/* El nombre del frame va siempre a la vista, fuera del artboard, como en una herramienta de diseño
+/* El nombre del frame fuera del artboard, como en una herramienta de diseño. Desde el 20 nov (D23)
+   solo sale en la 404; en el resto de páginas va en la barra de estado de las lentes y en el lienzo
    (el aspecto es el de .kit-frame-name; el tamaño real lo escribe kit.ts) */
 .frame-label {
   align-items: center;
   height: var(--frame-label-h);
   padding-left: max(0px, 0.75rem - var(--gutter));
 }
+/* La barra es la primera fila del artboard: el papel empieza justo debajo de ella */
 .artboard {
   background: var(--paper);
-  min-height: calc(100svh - var(--toolbar-h) - var(--frame-label-h) - var(--gutter));
+  min-height: calc(100svh - var(--toolbar-h) - var(--gutter));
   overflow-x: clip;
 }
 /* 404: el frame que no existe. Sin papel: solo su contorno discontinuo sobre el lienzo. */
 .artboard--missing {
   display: grid;
+  min-height: calc(100svh - var(--toolbar-h) - var(--frame-label-h) - var(--gutter));
   background: none;
   outline: 1.5px dashed var(--graphite);
   outline-offset: -1.5px;
@@ -302,11 +305,13 @@ html.theme-switching *::after {
     fill 150ms linear 150ms,
     stroke 150ms linear 150ms !important;
 }
+/* El lienzo cambia primero; la barra, que es papel, cambia con los frames (en la 404 va sobre el
+   lienzo, así que cambia con él) */
 html.theme-switching body,
-html.theme-switching .toolbar,
-html.theme-switching .toolbar *,
 html.theme-switching .frame-label,
-html.theme-switching .frame-label * {
+html.theme-switching .frame-label *,
+html.theme-switching[data-missing] .toolbar,
+html.theme-switching[data-missing] .toolbar * {
   transition-delay: 0s !important;
 }
 

@@ -307,8 +307,10 @@ const toolbar = {
         if (name && text) text.textContent = name;
       });
     }
-    const label = document.querySelector('.frame-label');
-    if (label?.firstChild) label.firstChild.textContent = `${path} `;
+    // El nombre del frame es la ruta: encima del frame y en la barra de estado de las lentes
+    document.querySelectorAll('.frame-label, .lens-bar-frame').forEach((label) => {
+      if (label.firstChild) label.firstChild.textContent = `${path} `;
+    });
 
     // Los hilos se miden con su idioma a la vista
     const redraw = () =>

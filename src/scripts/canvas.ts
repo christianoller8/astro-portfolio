@@ -3,6 +3,9 @@
 import { navigate } from 'astro:transitions/client';
 
 const FRAME_W = 320;
+/** Las miniaturas recortan 1370 px de ancho de una captura a 1440, y su primera fila (56 px) es la barra */
+const CAPTURE_W = 1370;
+const CAPTURE_BAR = 56;
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 2.2;
 
@@ -27,7 +30,8 @@ function initCanvas() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const flight = () => (reduce.matches ? 0 : 800);
 
-  const here = (location.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/').replace(/\/$/, '');
+  // "/" y "/en/" son la home: sin la barra final queda vacío, y vacío es "/"
+  const here = location.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
   // En una ruta que no existe (404) ningún frame es "aquí": el lienzo se abre ya alejado
   const found = frames.find((frame) => frame.dataset.canvasFrame === here);
   const current = found ?? frames[0];
@@ -58,7 +62,11 @@ function initCanvas() {
       y: (box.height - 48 - bounds.h * k) / 2 - bounds.y * k,
     };
   };
-  /** Un frame ocupando el sitio del frame real de la página: de ahí sale y ahí entra la cámara */
+  /**
+   * Un frame ocupando el sitio del frame real de la página: de ahí sale y ahí entra la cámara.
+   * La miniatura empieza con la barra (D23): se sube lo que mide esa fila a la escala de la miniatura,
+   * así la barra de la miniatura queda debajo de la real y su papel coincide con el de la página.
+   */
   const fitFrame = (frame: HTMLElement): Camera => {
     const box = overlay.getBoundingClientRect();
     const style = getComputedStyle(root);
@@ -66,7 +74,8 @@ function initCanvas() {
     const gutterPx = gutter < 5 ? gutter * 16 : gutter;
     const side = document.querySelector<HTMLElement>('.artboard')?.getBoundingClientRect().left ?? gutterPx;
     const k = (box.width - side * 2) / FRAME_W;
-    return { k, x: side - +frame.dataset.x! * k, y: 36 - +frame.dataset.y! * k };
+    const bar = CAPTURE_BAR * ((FRAME_W * k) / CAPTURE_W);
+    return { k, x: side - +frame.dataset.x! * k, y: -bar - +frame.dataset.y! * k };
   };
 
   const lock = (on: boolean) => {

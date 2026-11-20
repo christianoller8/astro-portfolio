@@ -68,6 +68,7 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
   que cambia de un equipo a otro.
 - El resto de `.taste-skill/` (capturas) no está en git: se queda en cada equipo.
 - Las miniaturas del lienzo (`public/canvas/`) se regeneran con `canvas-thumbs.mjs` y
-  `canvas-thumbs-resize.cjs` cada vez que cambia el diseño de una página.
+  `canvas-thumbs-resize.cjs` cada vez que cambia el diseño de una página. En Windows, la ruta de
+  `cdp.mjs` se pasa como URL de archivo (`file:///C:/…`); el recorte usa sharp.
 - **Solo en macOS**: `.taste-skill/recorte/person.swift` (máscara de persona con Vision) y los
   comandos `sips`. En Windows no existen; si hace falta recortar otra foto, buscar alternativa.
