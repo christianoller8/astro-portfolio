@@ -944,8 +944,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     sigue viendo al llegar con el teclado, que es lo que indica dónde está el foco.
   - Las miniaturas del lienzo de todas las páginas se rehicieron al cerrar la tanda.
 
-- [ ] **Sobre mí: foto nueva y Angular sin versiones** (hecho el 20 nov, pendiente de su visto
-  bueno):
+- [x] **Sobre mí: foto nueva y Angular sin versiones** (hecho y aprobado el 20 nov; miniaturas
+  del lienzo rehechas):
   - **Foto**: el retrato de la luz circular que pasó él, **en blanco y negro**
     (`src/assets/images/about.jpg`, hecha con `.taste-skill/recorte/sobre-mi.cjs`; el original en
     color, en `docs/imgs/sobre-mi-luz.jpg`). La misma en los dos modos, encuadrada en 4:5 sobre el
@@ -958,7 +958,6 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     "v8 → v15" (bio de Sobre mí en los dos idiomas, el rótulo del hilo de la trayectoria, la etapa
     de la cronología y las herramientas por lente). Las etiquetas "v7.0, v6.0…" de la trayectoria
     no son de Angular: son la numeración de las etapas y se quedan.
-  - Al aprobarlo: rehacer las miniaturas del lienzo de Sobre mí y de la home.
 
 ## Fase técnica (después del 10 de diseño)
 
