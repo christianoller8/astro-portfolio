@@ -977,8 +977,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
      logotipos y diseños." (sin repetir los tres oficios y sin tecnologías). El segundo párrafo,
      que sí nombra herramientas, no lo mencionó y sigue igual.
   9. Vístalo se queda; **Eloi Cotonat, fuera** de la bio y de la trayectoria (`experience.ts`).
-     Sigue saliendo en el papel del proyecto Vístalo ("Eloi Cotonat: pruebas, foto y vídeo") y en
-     el texto de su caso: es el crédito de su parte del trabajo y no se quitó sin preguntar.
+     En el papel del proyecto Vístalo ("Eloi Cotonat: pruebas, foto y vídeo") y en el texto de
+     su caso **se queda**: preguntado, él decidió dejar ahí el crédito de su parte del trabajo.
   10. "Cómo trabajo": el título pasa al tamaño grande de la escala; sus tres principios tenían
       el mismo tamaño que él y no se leía como título.
   11. Herramientas: fuera los tres botones "Ver la web como…". Cada herramienta es una pieza con
