@@ -36,7 +36,7 @@ export const ui = {
     'aria.close': 'Cerrar menú',
 
     // Lentes
-    'bubble.title': 'Cómo lo veo yo',
+    'bubble.title': '¿Quieres verlo como yo?',
     'lens.label': 'Ver la web como',
     'lens.design': 'Diseño',
     'lens.code': 'Código',
@@ -308,7 +308,7 @@ export const ui = {
     'aria.menu': 'Open menu',
     'aria.close': 'Close menu',
 
-    'bubble.title': 'How I see it',
+    'bubble.title': 'Want to see it my way?',
     'lens.label': 'View this site as',
     'lens.design': 'Design',
     'lens.code': 'Code',

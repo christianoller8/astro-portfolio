@@ -830,8 +830,13 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - La barra, el mismo día: aire arriba (`--toolbar-top`, de 6 a 14 px, contado dentro de
     `--toolbar-h`), idioma y tema más separados y **sin el botón de CV en escritorio** (el CV sigue
     en el hero, en Sobre mí, en el pie y en el menú de móvil).
-  - Sin decidir: en el menú de móvil las lentes y el lienzo siguen estando, así que en móvil hay
-    dos entradas. Y de la misma conversación quedan por hacer: enlazar "Tú ves una web. Yo la veo
+  - Después pidió: frase "¿Quieres verlo como yo?", bocadillo cerrado más cuadrado (como el
+    abierto) y quitar las lentes y el lienzo del menú de móvil. Hecho: el bocadillo es la única
+    entrada en todos los tamaños y el menú de móvil queda en enlaces, idioma, tema y CV.
+  - Pendiente de él: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en
+    tinta negra sobre blanco y con el encuadre de `docs/imgs/avatar/head-front.png`. Se pasa a
+    vectores con `.taste-skill/letras/vectorize.cjs`.
+  - De la misma conversación quedan por hacer: enlazar "Tú ves una web. Yo la veo
     así" con el bocadillo, las cajas de proyectos con vídeo al estilo de poulo.site y mirar por
     qué han dejado de verse las capas 3D de la home.
 

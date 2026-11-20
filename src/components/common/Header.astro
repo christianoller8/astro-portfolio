@@ -1,7 +1,6 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import LangSwitch from './LangSwitch.astro';
-import LensSwitch from '@/components/site/LensSwitch.astro';
 import Caricature from '@/components/site/Caricature.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
@@ -28,8 +27,8 @@ const isActive = (path: string) => {
 <!-- La barra de herramientas (plan §5.1): marca · menú · preferencias (idioma y modo). El CV ya no va
      aquí en escritorio (20 nov): está en el hero, en Sobre mí y en el pie de todas las páginas.
      Desde el 20 nov (D23) es la primera fila del artboard: mismo papel, mismo ancho y alineada con el contenido.
-     Las lentes y el lienzo ya no van aquí en escritorio: están en el bocadillo "Cómo lo veo yo"
-     (ViewBubble.astro). En el menú de móvil siguen. -->
+     Las lentes y el lienzo ya no van aquí, ni en la barra ni en el menú de móvil: están en el
+     bocadillo de la caricatura (ViewBubble.astro), abajo a la izquierda en todos los tamaños. -->
 
 <header class="toolbar" data-cs="<header> Header.astro">
   <div class="toolbar-inner">
@@ -107,19 +106,12 @@ const isActive = (path: string) => {
         }
       </ul>
     </nav>
-    <div class="mobile-view" style="--i: 4">
-      <p class="t-small">{t('lens.label')}</p>
-      <LensSwitch variant="bar" lang={lang} />
-    </div>
     {/* Por debajo de 480 px los selectores de idioma y tema no caben en la barra: van aquí */}
-    <div class="mobile-prefs" style="--i: 5">
+    <div class="mobile-prefs" style="--i: 4">
       <LangSwitch size="menu" />
       <ThemeToggle size="menu" />
     </div>
-    <div class="mobile-actions" style="--i: 6">
-      <button type="button" class="btn btn-quiet" data-canvas-open>
-        {t('nav.canvas')}
-      </button>
+    <div class="mobile-actions" style="--i: 5">
       <a class="btn btn-primary" href={site.cv} download>
         {t('nav.cv.download')}
       </a>
@@ -355,31 +347,20 @@ const isActive = (path: string) => {
   .mobile-menu a[aria-current='page'] {
     color: var(--ink);
   }
-  .mobile-view {
-    display: grid;
-    justify-items: start;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-    color: var(--muted);
-  }
   .mobile-prefs {
     display: flex;
     gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
   }
   @media (min-width: 480px) {
     .mobile-prefs {
       display: none;
     }
   }
+  /* La única acción del menú: descargar el CV, a todo el ancho */
   .mobile-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
     margin-top: 1rem;
-  }
-  .mobile-actions .btn-quiet {
-    background: var(--tint);
   }
 
   /* Entrada del menú: la capa aparece y los enlaces suben uno detrás de otro */
@@ -388,7 +369,6 @@ const isActive = (path: string) => {
       animation: menu-in var(--dur-ui) var(--ease-out) both;
     }
     .mobile-menu:not([hidden]) li,
-    .mobile-menu:not([hidden]) .mobile-view,
     .mobile-menu:not([hidden]) .mobile-prefs,
     .mobile-menu:not([hidden]) .mobile-actions {
       animation: menu-item-in var(--dur-ink) var(--ease-out) both;

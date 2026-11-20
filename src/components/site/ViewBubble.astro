@@ -1,7 +1,8 @@
 ---
-// "Cómo lo veo yo": la caricatura, abajo a la izquierda, con un bocadillo de cómic. Al pulsarla se
-// abre con las tres lentes y el lienzo, que antes iban en la barra (20 nov: Christian los quiso
-// fuera de la barra, que quedaba cargada).
+// "¿Quieres verlo como yo?": la caricatura, abajo a la izquierda, con un bocadillo de cómic. Al
+// pulsarla se abre con las tres lentes y el lienzo, que antes iban en la barra y en el menú de
+// móvil (20 nov: Christian los quiso fuera de la barra, que quedaba cargada). Es la única entrada
+// en todos los tamaños.
 // - El bocadillo está dibujado con la tinta de la caricatura y conserva sus colores en modo oscuro,
 //   igual que ella.
 // - Los botones no tienen lógica propia: llevan data-lens-set, data-lens-clear y data-canvas-open,
@@ -168,8 +169,9 @@ const lenses = [
 
   .vb-bubble {
     left: calc(100% + 0.25rem);
-    padding: 0.55rem 1.1rem 0.6rem;
-    border-radius: 48% 52% 50% 50% / 60% 58% 42% 40%;
+    padding: 0.55rem 0.9rem 0.6rem;
+    /* La misma familia de forma que el panel: un rectángulo de esquinas blandas y desiguales */
+    border-radius: 16px 13px 17px 12px / 13px 17px 12px 16px;
     font-size: var(--step-small);
     font-weight: 700;
     line-height: 1.2;
