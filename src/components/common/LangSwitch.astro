@@ -4,9 +4,11 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils
 interface Props {
   /** "menu": celdas grandes, para el menú de móvil */
   size?: 'bar' | 'menu';
+  /** Página sin versión en el otro idioma (la 404, las internas): el selector lleva a su portada */
+  langHome?: boolean;
 }
 
-const { size = 'bar' } = Astro.props;
+const { size = 'bar', langHome = false } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
@@ -27,7 +29,7 @@ const langs = ['es', 'en'] as const;
     langs.map((code) => (
       <a
         class="seg-opt"
-        href={translatePath(Astro.url.pathname, code)}
+        href={translatePath(langHome ? '/' : Astro.url.pathname, code)}
         hreflang={code}
         aria-label={t(`aria.lang.${code}`)}
         aria-current={lang === code ? 'true' : undefined}

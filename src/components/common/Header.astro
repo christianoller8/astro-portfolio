@@ -5,6 +5,12 @@ import sign from '@/assets/images/brand/chris.webp';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site, hasCV } from '@/data/site';
 
+interface Props {
+  /** Página sin versión en el otro idioma: el selector de idioma lleva a la portada */
+  langHome?: boolean;
+}
+const { langHome = false } = Astro.props;
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
@@ -69,7 +75,7 @@ const isActive = (path: string) => {
     <div class="toolbar-end">
       <div class="tool-prefs">
         <div class="tool-segs">
-          <LangSwitch />
+          <LangSwitch langHome={langHome} />
           <ThemeToggle />
         </div>
         <button
@@ -118,10 +124,10 @@ const isActive = (path: string) => {
     </nav>
     {/* Por debajo de 480 px los selectores de idioma y tema no caben en la barra: van aquí */}
     <div class="mobile-prefs" style="--i: 4">
-      <LangSwitch size="menu" />
+      <LangSwitch size="menu" langHome={langHome} />
       <ThemeToggle size="menu" />
     </div>
-    {/* Solo si el PDF está en public/cv/ (hoy no: se publicó sin él, ver src/data/site.ts) */}
+    {/* Solo si el PDF está en public/cv/ (desde el 20 nov está: Christian lo publicó tal cual, ver src/data/site.ts) */}
     {
       hasCV && (
         <div class="mobile-actions" style="--i: 5">
@@ -140,7 +146,7 @@ const isActive = (path: string) => {
   .toolbar {
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: var(--z-toolbar);
     margin-inline: var(--gutter);
     view-transition-name: toolbar;
   }
@@ -484,6 +490,54 @@ const isActive = (path: string) => {
   @media (max-width: 1023px) {
     :global(html.menu-open) {
       overflow: hidden;
+    }
+  }
+
+  /* Sin JavaScript (html no lleva la clase "js", que pone el script de Layout.astro antes del primer
+     pintado) el botón de menú no abre nada y la navegación quedaba escondida. Entonces el botón se
+     va y la lista de enlaces se queda a la vista, en una fila bajo la barra y sin tapar la página.
+     El selector de tema tampoco funciona sin JS: se esconde. */
+  :global(html:not(.js)) .menu-btn,
+  :global(html:not(.js) .seg--theme) {
+    display: none;
+  }
+  @media (max-width: 1023px) {
+    :global(html:not(.js)) .toolbar {
+      position: relative;
+    }
+    /* Sin JS nadie quita el atributo [hidden], y el preflight de Tailwind lo esconde con
+       !important DENTRO de la capa "base": entre declaraciones !important gana la capa anterior, así
+       que una regla fuera de capa (aunque lleve !important) pierde. Va en la misma capa, donde
+       decide la especificidad. */
+    @layer base {
+      :global(html:not(.js)) .mobile-menu[hidden] {
+        display: block !important;
+      }
+    }
+    :global(html:not(.js)) .mobile-menu[hidden] {
+      position: static;
+      height: auto;
+      padding: 0 var(--pad) 0.75rem;
+      overflow: visible;
+      background: none;
+    }
+    :global(html:not(.js)) .mobile-menu ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1.25rem;
+    }
+    :global(html:not(.js)) .mobile-menu a:not(.btn) {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      padding: 0;
+      font-size: 1.125rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+    :global(html:not(.js)) .mobile-menu .mobile-prefs {
+      margin-top: 0.25rem;
     }
   }
 

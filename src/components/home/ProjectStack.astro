@@ -49,8 +49,10 @@ const hints: Record<string, string> = {
                   <p class="stack-desc">{project.data.description}</p>
                   <p class="stack-facts">{facts}</p>
                 </div>
-                <a class="stack-cta" href={href} aria-label={`${t('projects.view')}: ${project.data.title}`}>
-                  {t('projects.view')} <span aria-hidden="true">→</span>
+                {/* El mismo botón y el mismo texto ("Ver caso") que las cajas de Proyectos: antes aquí
+                    era un enlace de texto, "Ver proyecto", de 26 px (decisión de Christian, 20 nov) */}
+                <a class="btn btn-primary stack-cta" href={href} aria-label={`${t('projects.case')}: ${project.data.title}`}>
+                  {t('projects.case')} <span aria-hidden="true">→</span>
                 </a>
               </div>
               <div class="stack-visual">
@@ -143,15 +145,9 @@ const hints: Record<string, string> = {
     background: var(--ink);
     pointer-events: none;
   }
+  /* La forma del botón es la de .btn-primary (kit.css), la misma que en las cajas de Proyectos */
   .stack-cta {
-    display: inline-flex;
     justify-self: start;
-    align-items: center;
-    min-height: 1.75rem;
-    gap: 0.4rem;
-    font-weight: 600;
-    font-size: var(--step-small);
-    color: var(--pencil);
   }
   .stack-cta span {
     transition: transform var(--dur-micro) var(--ease-out);

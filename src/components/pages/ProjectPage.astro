@@ -163,7 +163,7 @@ const tag = (key: string) => L[key as 'problem'];
               <li class="decision" data-reveal style={`--reveal-i: ${i}`}>
                 <h3 class="decision-title">{decision.title[lang]}</h3>
                 <p class="decision-body">{decision.body[lang]}</p>
-                <p class="decision-note">{decision.note[lang]}</p>
+                <p class="decision-datum">{decision.note[lang]}</p>
               </li>
             ))}
           </ol>
@@ -445,14 +445,6 @@ const tag = (key: string) => L[key as 'problem'];
     padding: 1.25rem 1.25rem 1.5rem;
     background: var(--tint);
   }
-  .decision-note {
-    display: inline-block;
-    margin-top: 1.25rem;
-    padding: 0.15rem 0.45rem;
-    font: 600 var(--step-small)/1.3 var(--font-sans);
-    color: var(--paper);
-    background: var(--ink);
-  }
   .decision-title {
     font-size: var(--step-lead);
     font-weight: 650;
@@ -464,6 +456,15 @@ const tag = (key: string) => L[key as 'problem'];
     max-width: 40ch;
     margin-top: 0.75rem;
     color: var(--muted);
+  }
+  /* El dato de la decisión iba en un chip negro (.decision-note) debajo del cuerpo. El 20 nov Christian
+     decidió quitar el chip: ahora es texto muted, plano, tras el cuerpo. Es su propio párrafo y no un
+     span dentro del cuerpo: un lector de pantalla lo leía pegado a la última frase */
+  .decision-datum {
+    max-width: 40ch;
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: var(--step-small);
   }
 
   /* ---------- Código ---------- */
@@ -482,15 +483,12 @@ const tag = (key: string) => L[key as 'problem'];
   }
   .code-panel {
     min-width: 0;
-    background: #121212;
-  }
-  /* En oscuro el papel ya es casi negro: el panel sube un paso para no perderse */
-  :global(:root.dark) .code-panel {
-    background: #242426;
+    /* Los colores del panel son los --code-* de global.css (en oscuro suben un paso para no perderse) */
+    background: var(--code-bg);
   }
   .code-file {
     padding: 0.7rem 1rem;
-    color: #a3a3a3;
+    color: var(--code-file);
   }
   .code-file code {
     font: 500 0.8125rem/1.3 var(--font-mono);

@@ -1,0 +1,30 @@
+# Christian Oller
+
+> Portfolio de Christian Oller, software developer que diseña, programa y prueba webs y apps (Angular, Astro, React, Figma, Cypress y Playwright). Cofundador de Vístalo. Disponible en remoto desde España. La web está en español y en inglés. / Portfolio of Christian Oller, a software developer who designs, builds and tests websites and apps. Co-founder of Vístalo. Available remotely from Spain. The site is in Spanish and English.
+
+## Español
+
+- [Inicio](https://www.christianoller.dev/): Christian Oller, software developer: diseño, programo y pruebo webs y apps.
+- [Proyectos](https://www.christianoller.dev/projects/): Tempora, Vibora, Learnish y Vístalo: apps y webs diseñadas, programadas y probadas por Christian Oller.
+- [Tempora](https://www.christianoller.dev/projects/tempora/): App para que los equipos sanitarios organicen sus turnos, fichen sus horas y sepan de un vistazo quién está trabajando.
+- [Vibora](https://www.christianoller.dev/projects/vibora/): App que gestiona las reservas de pistas de pádel: horarios libres, reservas y confirmaciones.
+- [Learnish](https://www.christianoller.dev/projects/learnish/): App para aprender inglés con lecciones cortas y repaso de vocabulario.
+- [Vístalo](https://www.christianoller.dev/projects/vistalo/): La web de Vístalo, la agencia creativa que cofundé: webs, fotos y Google para negocios pequeños.
+- [Sobre mí](https://www.christianoller.dev/about/): Trayectoria, formación y forma de trabajar: Angular, Astro, React, Figma, Cypress y Playwright. En remoto desde España.
+- [Contacto](https://www.christianoller.dev/contact/): Escribe a Christian Oller por una oferta de empleo o un proyecto de diseño y desarrollo.
+
+## English
+
+- [Home](https://www.christianoller.dev/en/): Christian Oller, software developer: I design, build and test websites and apps.
+- [Projects](https://www.christianoller.dev/en/projects/): Tempora, Vibora, Learnish and Vístalo: apps and websites designed, built and tested by Christian Oller.
+- [Tempora](https://www.christianoller.dev/en/projects/tempora/): An app that helps healthcare teams organise their shifts, clock their hours and see at a glance who is on duty.
+- [Vibora](https://www.christianoller.dev/en/projects/vibora/): An app that manages padel court bookings: free slots, reservations and confirmations.
+- [Learnish](https://www.christianoller.dev/en/projects/learnish/): An app to learn English with short lessons and vocabulary review.
+- [Vístalo](https://www.christianoller.dev/en/projects/vistalo/): The website of Vístalo, the creative agency I co-founded: websites, photos and Google presence for small businesses.
+- [About](https://www.christianoller.dev/en/about/): Experience, education and way of working: Angular, Astro, React, Figma, Cypress and Playwright. Remote from Spain.
+- [Contact](https://www.christianoller.dev/en/contact/): Write to Christian Oller about a job or a design and development project.
+
+## Optional
+
+- [CV (PDF)](https://www.christianoller.dev/cv/christian-oller-cv.pdf): Christian's CV, available to download from the site (hero, menu and footer).
+- [Sitemap](https://www.christianoller.dev/sitemap-index.xml): every public page, with its language alternates.

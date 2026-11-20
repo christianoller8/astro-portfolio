@@ -67,9 +67,9 @@ const decisions = cases[project.slug]?.decisions ?? [];
         <ol class="bento-decisions">
           {decisions.map((decision) => (
             <li class="bento-box bento-decision">
-              <p class="bento-note">{decision.note[lang]}</p>
               <h3 class="bento-decision-title">{decision.title[lang]}</h3>
               <p class="bento-decision-body">{decision.body[lang]}</p>
+              <p class="bento-datum">{decision.note[lang]}</p>
             </li>
           ))}
         </ol>
@@ -160,14 +160,7 @@ const decisions = cases[project.slug]?.decisions ?? [];
     flex-direction: column;
     align-items: flex-start;
   }
-  .bento-note {
-    padding: 0.15rem 0.45rem;
-    font: 600 var(--step-small)/1.3 var(--font-sans);
-    color: var(--paper);
-    background: var(--ink);
-  }
   .bento-decision-title {
-    margin-top: 1.75rem;
     font-size: var(--step-lead);
     font-weight: 650;
     line-height: 1.08;
@@ -177,6 +170,14 @@ const decisions = cases[project.slug]?.decisions ?? [];
   .bento-decision-body {
     margin-top: 0.6rem;
     color: var(--muted);
+  }
+  /* El dato de la decisión ("3 cifras + 1 tabla") iba en un chip negro encima del título. El 20 nov
+     Christian decidió quitar el chip: ahora es texto muted, plano, tras el cuerpo (su propio párrafo,
+     para que un lector de pantalla no lo lea pegado a la última frase) */
+  .bento-datum {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: var(--step-small);
   }
 
   /* Escritorio: la pieza a la izquierda, el resumen a su lado y las decisiones debajo, a todo el ancho

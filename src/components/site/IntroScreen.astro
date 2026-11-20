@@ -1,20 +1,34 @@
 ---
 // Pantalla de la intro (plan §4.3 A). Solo se ve con html.intro, que decide el <head> antes del
-// primer pintado: primera visita de la sesión, sin ancla en la URL, sin "reducir movimiento" y sin
-// ahorro de datos. El trazado empieza con CSS, sin esperar al JavaScript; las fases siguientes las
-// marca src/scripts/intro.ts con las clases is-filled e is-leaving.
+// primer pintado: primera visita a la web en este navegador (bandera intro-seen en localStorage; con
+// ?intro se fuerza), sin ancla en la URL, sin "reducir movimiento" y sin ahorro de datos. Decisión de
+// Christian del 20 nov: antes salía en cada carga de la home. El trazado empieza con CSS, sin esperar
+// al JavaScript; las fases siguientes las marca src/scripts/intro.ts con las clases is-filled e
+// is-leaving. Una pista dice que se puede saltar (aparece a los 0,6 s): "Toca" en pantallas táctiles,
+// "Haz clic o pulsa una tecla" en el resto.
 import Caricature from './Caricature.astro';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const t = useTranslations(Astro.props.lang);
 ---
 
 <div class="intro-screen" data-intro-screen aria-hidden="true">
   <Caricature variant="lockup" class="intro-logo" />
+  <p class="intro-hint">
+    <span class="intro-hint-touch">{t('intro.skip.touch')}</span>
+    <span class="intro-hint-pointer">{t('intro.skip.pointer')}</span>
+  </p>
 </div>
 
 <style>
   .intro-screen {
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: var(--z-intro);
     display: none;
     place-items: center;
     color: var(--ink);
@@ -29,6 +43,38 @@ import Caricature from './Caricature.astro';
   .intro-screen :global(.intro-logo) {
     width: clamp(15rem, 34vw, 30rem);
     height: auto;
+  }
+  /* La pista para saltarla: discreta, abajo, a los 0,6 s. --muted sobre --canvas da 5,2:1 en claro y
+     5,5:1 en oscuro (mínimo 4,5:1) */
+  .intro-hint {
+    position: absolute;
+    inset: auto 0 max(1.5rem, calc(env(safe-area-inset-bottom) + 1rem));
+    text-align: center;
+    font-size: var(--step-small);
+    color: var(--muted);
+    opacity: 0;
+    animation: intro-hint-in 300ms var(--ease-out) 600ms forwards;
+  }
+  .intro-hint-touch {
+    display: none;
+  }
+  @media (pointer: coarse) {
+    .intro-hint-touch {
+      display: inline;
+    }
+    .intro-hint-pointer {
+      display: none;
+    }
+  }
+  @keyframes intro-hint-in {
+    to {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .intro-hint {
+      animation-duration: 1ms;
+    }
   }
 
   /* 1 · Trazado (800 ms): todos los contornos a la vez, en línea fina de grafito. Es la animación

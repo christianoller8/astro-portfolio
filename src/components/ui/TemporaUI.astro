@@ -9,8 +9,13 @@ interface Props {
   interactive?: boolean;
 }
 
+import { useTranslations } from '@/i18n/utils';
+
 const { lang, notes, interactive = false } = Astro.props;
 const Action = interactive ? 'button' : 'span';
+// Lo que anuncia la región educada de la demo (project-demos.ts rellena {name} y {shift})
+const t = useTranslations(lang);
+const say = { added: t('demo.say.added'), clocked: t('demo.say.clocked') };
 
 const copy = {
   es: {
@@ -71,7 +76,7 @@ const rows = [
   role={interactive ? 'group' : 'img'}
   aria-label={`Tempora — ${copy.title}`}
   data-demo={interactive ? 'tempora' : undefined}
-  data-demo-data={interactive ? JSON.stringify({ next, done: copy.done }) : undefined}
+  data-demo-data={interactive ? JSON.stringify({ next, done: copy.done, say }) : undefined}
 >
   <div class="tp-top" data-sketch="box">
     <span class="tp-logo" data-sketch="text">Tempora</span>

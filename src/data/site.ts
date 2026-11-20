@@ -6,6 +6,8 @@ const cvPath = '/cv/christian-oller-cv.pdf';
 
 export const site = {
   name: 'Christian Oller',
+  // El mismo oficio que dicen la descripción por defecto y el JSON-LD de Layout.astro
+  jobTitle: 'Software developer',
   // Su correo, el que indicó él el 20 nov (hasta entonces la web mostraba contacto@christianoller.com)
   email: 'christianoller.dev@gmail.com',
   linkedin: 'https://www.linkedin.com/in/christian-oller',
@@ -17,9 +19,10 @@ export const site = {
 
 /**
  * Los botones de CV (inicio, menú de móvil y pie) solo aparecen cuando el PDF existe en public/cv/.
- * Hoy no está: el 20 nov Christian decidió publicar la web sin el CV, porque el PDF lleva su
- * teléfono y su código postal. El archivo se guardó en docs/cv/, que no se publica. Para volver a
- * ofrecerlo basta con poner en public/cv/ una versión sin esos datos, con este mismo nombre.
+ * Desde el 20 nov el PDF está ahí: Christian decidió publicarlo tal cual, con su teléfono y su
+ * código postal (antes lo había guardado en docs/cv/, que no se publica). Los botones siguen
+ * dependiendo de que el archivo exista: si algún día se quita de public/cv/, desaparecen solos.
+ * Para cambiar el CV basta con sustituir el PDF, con este mismo nombre.
  */
 export const hasCV = fs.existsSync(path.join(process.cwd(), 'public', cvPath));
 

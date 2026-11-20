@@ -1,6 +1,7 @@
 // La cámara del lienzo navegable (CanvasMap.astro): abrir y cerrar (tecla M, "Ver lienzo", Esc),
 // arrastrar, hacer zoom con la rueda o el pellizco, y entrar en un frame.
 import { navigate } from 'astro:transitions/client';
+import { shortcutsOn } from './shortcuts';
 
 const FRAME_W = 320;
 /** Las miniaturas recortan 1370 px de ancho de una captura a 1440, y su primera fila (56 px) es la barra */
@@ -178,7 +179,8 @@ function initCanvas() {
       if (event.key === 'Escape' && open) {
         event.preventDefault();
         hide();
-      } else if (event.key.toLowerCase() === 'm') {
+      } else if (event.key.toLowerCase() === 'm' && shortcutsOn()) {
+        // La M solo con los atajos encendidos (WCAG 2.1.4); Escape de arriba sigue valiendo siempre
         event.preventDefault();
         if (open) hide();
         else show();

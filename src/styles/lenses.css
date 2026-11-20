@@ -34,7 +34,7 @@ html[data-lens='design'] .artboard {
 .lens-layer {
   position: absolute;
   inset: 0;
-  z-index: 40;
+  z-index: var(--z-overlay);
   overflow: clip;
   pointer-events: none;
   transition: opacity 200ms var(--ease-out);

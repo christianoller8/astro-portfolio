@@ -95,7 +95,7 @@ const lenses = [
             {lens.id === 'qa' && <path d="m2.5 8.5 3.5 3.5 7.5-8" />}
           </svg>
           <span>{lens.label}</span>
-          <kbd>{lens.key}</kbd>
+          <kbd data-key-hint>{lens.key}</kbd>
         </button>
       ))
     }
@@ -107,7 +107,7 @@ const lenses = [
         <rect x="1.5" y="12" width="5.5" height="2"></rect>
       </svg>
       <span>{t('nav.canvas')}</span>
-      <kbd>M</kbd>
+      <kbd data-key-hint>M</kbd>
     </button>
     {/* Solo con una lente puesta: la salida */}
     <button type="button" class="vb-row vb-row--clear" data-lens-clear aria-keyshortcuts="Escape">
@@ -116,6 +116,16 @@ const lenses = [
       </svg>
       <span>{t('lens.clear')}</span>
       <kbd>Esc</kbd>
+    </button>
+    {/* Atajos de teclado (WCAG 2.1.4, decisión de Christian del 20 nov): encendido por defecto; apagado,
+        1, 2, 3 y M no hacen nada y el panel esconde sus teclas. Lo lleva src/scripts/shortcuts.ts */}
+    <button type="button" class="vb-row vb-row--switch" role="switch" aria-checked="true" data-shortcuts-switch>
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <rect x="1.5" y="3.5" width="13" height="9"></rect>
+        <path d="M4 6.5h1M7.5 6.5h1M11 6.5h1M4.5 9.5h7"></path>
+      </svg>
+      <span>{t('bubble.shortcuts')}</span>
+      <span class="vb-switch" aria-hidden="true"></span>
     </button>
     </div>
     <svg class="vb-tail" viewBox="0 0 30 24" aria-hidden="true">
@@ -134,13 +144,14 @@ const lenses = [
     position: fixed;
     left: max(calc(var(--gutter) * 0.5), env(safe-area-inset-left));
     bottom: calc(1rem + env(safe-area-inset-bottom));
-    z-index: 49;
+    z-index: var(--z-bubble);
     color: var(--vb-ink);
     /* En el paneo entre páginas se queda quieta, como la barra */
     view-transition-name: view-bubble;
     transition:
       bottom var(--dur-ui) var(--ease-out),
       opacity var(--dur-micro) var(--ease-out),
+      transform var(--dur-ui) var(--ease-out),
       visibility 0s;
   }
   /* Con una lente puesta sube por encima de su barra de estado */
@@ -389,6 +400,33 @@ const lenses = [
   .vb-row--clear {
     display: none;
   }
+  /* El interruptor de atajos: va aparte de las lentes, con una línea fina encima. La pastilla es un
+     cuadrado de tinta que se desplaza (esquinas rectas, sin sombra); encendido, el fondo es de tinta */
+  .vb-row--switch {
+    margin-top: 0.25rem;
+    border-top: 1px solid color-mix(in srgb, var(--vb-ink) 22%, var(--vb-paper));
+  }
+  .vb-switch {
+    position: relative;
+    width: 1.75rem;
+    height: 1rem;
+    border: 1.5px solid currentColor;
+  }
+  .vb-switch::before {
+    content: '';
+    position: absolute;
+    inset: 2px auto 2px 2px;
+    width: 0.5rem;
+    background: currentColor;
+    transition: translate var(--dur-micro) var(--ease-out);
+  }
+  .vb-row--switch[aria-checked='true'] .vb-switch {
+    background: var(--vb-ink);
+  }
+  .vb-row--switch[aria-checked='true'] .vb-switch::before {
+    background: var(--vb-paper);
+    translate: 0.75rem 0;
+  }
   :global(html[data-lens]) .vb-row--clear {
     display: grid;
   }
@@ -424,10 +462,26 @@ const lenses = [
     .vb-panel {
       bottom: 2rem;
     }
+    /* Se esconde mientras la página baja (la marca html.vb-away la pone el guion, decisión de
+       Christian del 20 nov) y vuelve al subir. Con el panel abierto o con el foco de teclado en
+       ella se queda; un deslizamiento corto de abajo a arriba. Sin movimiento, cambia de golpe
+       (la regla de más abajo quita las transiciones).
+       Se esconde con opacidad y desplazamiento, no con visibility: así el tabulador sigue llegando
+       a ella (el foco la muestra, ver focusin en el guion) y el puntero no la toca (pointer-events) */
+    :global(html.vb-away) .vb:not(:has(.vb-toggle[aria-expanded='true'])):not(:has(:focus-visible)) {
+      opacity: 0;
+      transform: translateY(0.75rem);
+      pointer-events: none;
+      transition:
+        opacity var(--dur-micro) var(--ease-in),
+        transform var(--dur-micro) var(--ease-in);
+    }
   }
 </style>
 
 <script>
+  import { shortcutsOn } from '@/scripts/shortcuts';
+
   // La página se vuelve a pintar en cada navegación: los oyentes van en el documento, una sola vez
   const parts = () => {
     const box = document.querySelector<HTMLElement>('[data-vb]');
@@ -503,7 +557,8 @@ const lenses = [
     }
     if (!isOpen()) return;
     // Elegir una opción o pulsar fuera lo cierra. Al abrir el lienzo el foco es suyo (canvas.ts)
-    if (!target?.closest('[data-vb-panel]') || target.closest('button')) setOpen(false, !target?.closest('[data-canvas-open]'));
+    // (El interruptor de atajos no cierra el panel: es un ajuste, no una opción)
+    if (!target?.closest('[data-vb-panel]') || target.closest('button:not([data-shortcuts-switch])')) setOpen(false, !target?.closest('[data-canvas-open]'));
   });
 
   // En la fase de captura: con el panel abierto, Escape lo cierra y no llega a quitar la lente
@@ -519,7 +574,7 @@ const lenses = [
         return;
       }
       // M abre el lienzo (canvas.ts): antes, el foco pasa a la caricatura para que vuelva a ella al cerrarlo
-      if (event.key.toLowerCase() === 'm' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+      if (event.key.toLowerCase() === 'm' && shortcutsOn() && !event.metaKey && !event.ctrlKey && !event.altKey) {
         p.toggle.focus({ preventScroll: true });
         setOpen(false, false);
         return;
@@ -565,8 +620,30 @@ const lenses = [
   // Escondida (intro, lienzo o menú abiertos) o con la pestaña en segundo plano, no se mueve
   const away = () => document.hidden || ['intro', 'canvas-open', 'menu-open'].some((cls) => root.classList.contains(cls));
 
+  // Parpadeo (WCAG 2.2.2: un movimiento que se repite sin parar y dura más de 5 s tiene que poder
+  // pararse). Christian decidió el 20 nov que parpadee solo durante los primeros 5 s tras cargar la
+  // web y, después, solo mientras habla, está con el puntero encima o tiene el foco. Hasta entonces
+  // el parpadeo seguía para siempre, cada 3,6 a 6,4 s.
+  const BLINK_WINDOW_MS = 5000;
+  // Los 5 s cuentan desde que la caricatura se ve por primera vez (en la primera visita, al acabar
+  // la intro); si empezaran al cargar el módulo, se gastarían con ella escondida. Se mira cada
+  // 100 ms hasta que se ve; en el primer instante que `away()` es falso arranca la cuenta.
+  let bornAt = 0;
+  const watchBirth = window.setInterval(() => {
+    if (document.hidden || away()) return;
+    bornAt = performance.now();
+    window.clearInterval(watchBirth);
+  }, 100);
+  const lively = () => {
+    const toggle = parts()?.toggle;
+    return (
+      (bornAt > 0 && performance.now() - bornAt < BLINK_WINDOW_MS) ||
+      !!talking ||
+      !!toggle?.matches(':hover, :focus-visible')
+    );
+  };
   const blink = () => {
-    if (still.matches || away()) return;
+    if (still.matches || away() || !lively()) return;
     for (const name of EYES) {
       trace(name)?.animate([{ transform: 'scaleY(1)' }, { transform: 'scaleY(0.12)', offset: 0.45 }, { transform: 'scaleY(1)' }], {
         duration: 180,
@@ -620,6 +697,8 @@ const lenses = [
   const talk = () => {
     if (still.matches || away() || talking) return;
     let at = 0;
+    // Al empezar a hablar parpadea una vez, aunque ya haya pasado la ventana de los primeros 5 s
+    window.setTimeout(blink, 220);
     const step = () => {
       const box = parts()?.box;
       if (!box || at >= PHRASE.length) {
@@ -709,11 +788,46 @@ const lenses = [
   });
   document.addEventListener('astro:before-swap', () => sceneWatch?.disconnect());
 
+  // --- Tablet y móvil (menos de 1024 px): la caricatura, fija abajo, tapaba renglones y botones al
+  // leer. Christian decidió el 20 nov que se esconda mientras la página baja y vuelva al subir o
+  // cerca del principio; con el panel abierto o con el foco en ella no se esconde. En escritorio
+  // no cambia nada (la regla de CSS solo vale por debajo de 1024 px). html.vb-away la pone esto y
+  // la quita el CSS cuando el panel está abierto ---
+  const small = window.matchMedia('(max-width: 1023px)');
+  const NEAR_TOP = 120; // px desde arriba: aquí siempre se ve
+  const STEP = 8; // px de scroll seguidos antes de decidir que se baja o se sube
+  let lastY = window.scrollY;
+  let travel = 0;
+  const showAgain = () => root.classList.remove('vb-away');
   window.addEventListener(
     'scroll',
     () => {
-      if (window.scrollY > 120) parts()?.box.classList.remove('is-saying');
+      const y = window.scrollY;
+      if (y > 120) parts()?.box.classList.remove('is-saying');
+      // Con el foco de teclado en ella no se esconde (el CSS también lo impide)
+      const focused = !!parts()?.box.querySelector(':focus-visible');
+      if (!small.matches || isOpen() || focused) {
+        showAgain();
+        lastY = y;
+        return;
+      }
+      // Se acumula el recorrido en un mismo sentido, para que un temblor de unos píxeles no cuente
+      const delta = y - lastY;
+      lastY = y;
+      // Un cambio de sentido empieza la cuenta de cero
+      travel = Math.sign(travel) === Math.sign(delta) ? travel + delta : delta;
+      if (y < NEAR_TOP || travel < -STEP) showAgain();
+      else if (travel > STEP) root.classList.add('vb-away');
     },
     { passive: true },
   );
+  // Al llegar con el teclado, o al abrir el panel, se ve; al cambiar de página la cuenta se reinicia
+  document.addEventListener('focusin', (event) => {
+    if (event.target instanceof Element && event.target.closest('[data-vb]')) showAgain();
+  });
+  document.addEventListener('astro:page-load', () => {
+    lastY = window.scrollY;
+    travel = 0;
+    showAgain();
+  });
 </script>

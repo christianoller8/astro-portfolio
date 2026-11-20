@@ -3,8 +3,10 @@
 //   frame (.lens-layer) y se colocan midiendo cada pieza: no tocan el HTML de la página.
 // - La barra de estado de abajo (LensPanel.astro) lleva las cifras de la lente activa.
 // - Con ratón, Diseño y Código inspeccionan la pieza que hay bajo el puntero.
-// El estado vive en html[data-lens] y en localStorage; el script inline del <head> lo restaura antes
-// de pintar. Los estilos están en src/styles/lenses.css.
+// El estado vive en html[data-lens] y en sessionStorage (dura lo que la pestaña); el script inline
+// del <head> lo restaura antes de pintar. Los estilos están en src/styles/lenses.css.
+
+import { shortcutsOn } from './shortcuts';
 
 type Lens = 'design' | 'code' | 'qa';
 type Group = 'structure' | 'alt' | 'name' | 'target' | 'label' | 'contrast';
@@ -89,8 +91,9 @@ export function setLens(next: Lens | null) {
   if (next) root.dataset.lens = next;
   else delete root.dataset.lens;
   try {
-    if (next) localStorage.setItem(STORAGE_KEY, next);
-    else localStorage.removeItem(STORAGE_KEY);
+    // Solo mientras dure la pestaña (decisión de Christian, 20 nov): antes iba en localStorage
+    if (next) sessionStorage.setItem(STORAGE_KEY, next);
+    else sessionStorage.removeItem(STORAGE_KEY);
   } catch {
     /* sin almacenamiento: la lente vive solo en esta página */
   }
@@ -823,7 +826,9 @@ document.addEventListener('keydown', (event) => {
   const el = event.target as HTMLElement | null;
   if (el?.closest?.('input, textarea, select, [contenteditable="true"]')) return;
   if (root.classList.contains('canvas-open')) return;
+  // Escape sigue valiendo siempre; las teclas 1, 2 y 3 solo con los atajos encendidos (WCAG 2.1.4)
   if (event.key === 'Escape' && currentLens()) setLens(null);
+  if (!shortcutsOn()) return;
   const index = ['1', '2', '3'].indexOf(event.key);
   if (index >= 0) setLens(LENSES[index] === currentLens() ? null : LENSES[index]);
 });

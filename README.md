@@ -1,309 +1,161 @@
-# Christian Oller — Developer Portfolio
+<a name="readme-top"></a>
 
-A bilingual (ES/EN) personal portfolio built with Astro 5, featuring static site generation, native i18n routing, View Transitions, and a class-based dark mode system.
+<div align="center">
 
-[![Astro](https://img.shields.io/badge/Astro-5.16-FF5D01?logo=astro&logoColor=white)](https://astro.build)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
-[![Playwright](https://img.shields.io/badge/Playwright-E2E-45ba4b?logo=playwright&logoColor=white)](https://playwright.dev)
+**English** · [Español](./README.es.md)
 
+# Christian Oller, portfolio
+
+Bilingual portfolio of a software developer who designs, builds and tests. Every page is a frame in a design tool you can poke at.
+
+**[Live site](https://www.christianoller.dev)** · [Architecture](#architecture) · [Getting started](#getting-started) · [Design decisions](#where-the-design-decisions-live)
+
+<a href="https://www.christianoller.dev">
+  <img src="./public/og-image.jpg" alt="Home page of the portfolio in dark mode: the name Christian Oller, the words software developer and a portrait lit by a red band" width="720">
+</a>
+
+</div>
+
+## About the project
+
+A portfolio usually says what its author can do. This one lets the visitor check it: the same page can be read as a design, as code or as a test report, and the projects can be tried instead of described.
+
+### Key features
+
+- **Three lenses**: designer, developer and QA. Each one redraws the page as its own tool would (selection boxes and measures, element tags, checks that pass or fail).
+- **Navigable canvas**: every page laid out as frames on an artboard, with the prototype threads between them. Open it from the speech bubble of the cartoon in the corner, or with the `M` key.
+- **Page changes as camera moves**: pages pan like frames on a canvas, with a character pushing the old one out. With reduced motion, all of it stops.
+- **Projects you can try**: small interactive demos of Tempora, Vibora and Learnish, and the live Vístalo site inside its frame.
+- **Layers in 3D**: sketch, design, code and tests of a sample page, spread out with three.js. Drag, or use the arrow keys, to turn them. Without WebGL they show flat.
+- **Two languages**: Spanish at the root, English under `/en/`, with the same keys in both dictionaries.
+- **Light and dark themes**, kept between visits.
+
+### Scope and non-goals
+
+| Status | Capability | Note |
+| --- | --- | --- |
+| Done | Static site, Spanish and English | Pre-rendered with Astro, no server runtime |
+| Done | Contact form without a backend | Opens the visitor's email client with the message written; with `PUBLIC_FORM_ENDPOINT` set it submits there instead |
+| Not done | Real screenshots of Tempora, Vibora and Learnish | Their interfaces are HTML fragments built for the site |
+| Out of scope | CMS, accounts, analytics, cookies | The site loads no third-party scripts of its own; the only third-party code is the live Vístalo site, embedded in an iframe only when a visitor clicks to open that demo |
+
+## Architecture
+
+```mermaid
 ---
-
-## Overview
-
-Static portfolio site with no server-side runtime. Every page is pre-rendered at build time. The i18n system uses Astro's native routing — Spanish pages live at the root (`/about`), English pages are prefixed with `/en/` (`/en/about`). A shared Page Component pattern eliminates route duplication while keeping each locale's route file to four lines.
-
+title: How the site is built
 ---
-
-## Features
-
-- **Static Site Generation** — zero runtime, deployable to any CDN
-- **Native Astro i18n** — type-safe dictionary, locale-aware path translation, path-preserving language switcher
-- **View Transitions** — page fade animations + shared element transitions on project cover images
-- **Dark Mode** — class-based (`.dark` on `<html>`), persisted in `localStorage`, no FOUC
-- **Content Collections** — Zod-validated Markdown schema for projects
-- **Accessibility** — `eslint-plugin-jsx-a11y` enforced at lint time
-- **E2E Testing** — Playwright suite covering dark mode, mobile menu, navigation, and SEO meta
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Astro 5.16.7 |
-| Styling | Tailwind CSS v4 (via Vite plugin — no config file) |
-| Typography | `@tailwindcss/typography` |
-| Fonts | Inter (sans), Playfair Display (serif) via `@fontsource` |
-| Language | TypeScript (strict mode) |
-| Linting | ESLint 9 flat config + `typescript-eslint` + `eslint-plugin-astro` + `eslint-plugin-jsx-a11y` |
-| Formatting | Prettier + `prettier-plugin-astro` + `prettier-plugin-tailwindcss` |
-| Testing | Playwright (Chromium, Mobile Chrome, Mobile Safari) |
-| CI | GitHub Actions |
-| Package manager | pnpm |
-
----
-
-## Project Structure
-
-```
-.
-├── public/                  # favicon.svg, robots.txt
-├── src/
-│   ├── assets/
-│   │   └── images/          # Optimized via astro:assets (project covers, profile photo)
-│   ├── components/
-│   │   ├── common/
-│   │   │   ├── Header.astro       # Sticky nav, language switcher, ThemeToggle
-│   │   │   ├── Footer.astro       # Social links, copyright
-│   │   │   └── ThemeToggle.astro  # Sun/moon toggle, View Transitions safe
-│   │   ├── landing/
-│   │   │   ├── Hero.astro         # Two-column hero (text + profile photo)
-│   │   │   ├── Services.astro     # 4-service grid with hover animations
-│   │   │   ├── LogoGrid.astro     # 24-technology icon grid
-│   │   │   ├── AboutSummary.astro # Asymmetric personal intro section
-│   │   │   └── FeaturedWork.astro # Filtered featured projects grid
-│   │   └── pages/
-│   │       ├── HomePage.astro     # Landing composition — receives lang prop
-│   │       ├── AboutPage.astro    # Full about page — receives lang prop
-│   │       ├── ContactPage.astro  # Contact info + form — receives lang prop
-│   │       ├── ProjectsPage.astro # Project grid — receives lang prop
-│   │       └── ProjectPage.astro  # Project detail — receives lang + project props
-│   ├── content/
-│   │   ├── config.ts              # Zod schema for the projects collection
-│   │   └── projects/              # One .md file per project and locale
-│   │       ├── es/                # Spanish entries (project-N.md)
-│   │       └── en/                # English entries (same filenames)
-│   ├── i18n/
-│   │   ├── ui.ts                  # Translation dictionary (as const, ~50 keys/locale)
-│   │   └── utils.ts               # getLangFromUrl, useTranslations, useTranslatedPath
-│   ├── layouts/
-│   │   └── Layout.astro           # Base layout: SEO tags, canonical, OG, ClientRouter
-│   ├── pages/
-│   │   ├── index.astro            # / → <HomePage lang="es" />
-│   │   ├── about.astro            # /about  → <AboutPage lang="es" />
-│   │   ├── contact.astro          # /contact → <ContactPage lang="es" />
-│   │   ├── projects/
-│   │   │   ├── index.astro        # /projects
-│   │   │   └── [slug].astro       # /projects/:slug
-│   │   └── en/
-│   │       ├── index.astro        # /en
-│   │       ├── about.astro        # /en/about  → <AboutPage lang="en" />
-│   │       ├── contact.astro      # /en/contact → <ContactPage lang="en" />
-│   │       └── projects/
-│   │           ├── index.astro    # /en/projects
-│   │           └── [slug].astro   # /en/projects/:slug
-│   └── styles/
-│       └── global.css             # Tailwind v4 entry, @theme tokens, dark mode variant
-├── tests/
-│   └── example.spec.ts            # Playwright E2E suite
-├── astro.config.mjs
-├── eslint.config.mjs
-├── playwright.config.ts
-├── prettier.config.mjs
-└── tsconfig.json
+flowchart LR
+    copy["i18n dictionary (ui.ts)"]
+    content["Project content (Markdown)"]
+    pages["Pages and components (Astro)"]
+    build["astro build"]
+    html["Static HTML, CSS and JS"]
+    cdn["Vercel"]
+    copy --> pages
+    content --> pages
+    pages --> build --> html --> cdn
 ```
 
----
+The text lives in one dictionary and the projects in Markdown; Astro turns both into static pages that Vercel serves. The browser gets plain HTML, and the scripts in `src/scripts/` add the lenses, the canvas, the demos and the page transitions on top.
 
-## i18n Architecture
+### Technical decisions
 
-The site uses [Astro's built-in i18n routing](https://docs.astro.build/en/guides/internationalization/) with `prefixDefaultLocale: false`. Spanish (default) has no URL prefix; English is prefixed with `/en/`.
+| Decision | Discarded alternative | Why, and what it costs |
+| --- | --- | --- |
+| Every user-facing string in `src/i18n/ui.ts`, with the same keys in `es` and `en`; one shared page component per page, and a five-line route file per language that only picks the language | Duplicated pages per language | One copy of the layout and no drift between languages; every new string needs both versions |
+| Astro `ClientRouter` for page changes without reload, which makes the pan between pages possible | Full page loads | Smooth transitions and a persistent toolbar; every script has to bind again on `astro:page-load` and clean up before the swap |
+| three.js loaded only when the layers section is close to the screen | Bundling it with the home page | The first load stays light; the section shows its flat version until the library arrives |
+| Surfaces and colours as tokens in `src/styles/global.css` (`--sheet`, `--paper`, `--ink`), with a dark value for each | Per-component colours | One place to change a colour, and both themes stay in sync; components cannot invent a shade |
 
-### How it works
+<details>
+<summary><strong>Project structure</strong></summary>
 
-**Dictionary** (`src/i18n/ui.ts`) — `as const` object with full TypeScript inference. Adding a key to `es` without adding it to `en` is a compile-time error.
+| Path | Responsibility |
+| --- | --- |
+| `src/pages/` and `src/components/pages/` | Routes (Spanish at the root, English under `/en/`) and the page components they share |
+| `src/components/home/` | Hero, the interactive project cards, the scroll scene and the 3D layers |
+| `src/components/site/`, `src/components/common/` | Toolbar, lenses, canvas map, intro and footer |
+| `src/components/character/`, `src/scripts/character.ts` | The articulated character that moves the pages |
+| `src/scripts/` | Behaviour: lenses, canvas, page transitions, demos, 3D layers |
+| `src/styles/` | `global.css` (tokens and base), `kit.css` (tool pieces) and `lenses.css` |
+| `src/i18n/ui.ts` | All the text, in Spanish and English |
+| `src/data/`, `src/content/projects/` | Career data, case-study content and the four projects |
+| `docs/referencias/` | Design plan, decisions, audit and status notes (in Spanish) |
 
-**Utilities** (`src/i18n/utils.ts`):
+</details>
 
-```ts
-// Detects the active locale from the URL pathname
-getLangFromUrl(url: URL): 'es' | 'en'
+## Tech stack
 
-// Returns a t(key) function with fallback to the default locale
-useTranslations(lang): (key) => string
+| Layer | Technology | Purpose |
+| --- | --- | --- |
+| Framework | Astro 5 | Static pages, i18n routing, content collections, view transitions |
+| Styling | Tailwind CSS 4 and hand-written CSS | Tokens, layout and the tool-like pieces |
+| Language | TypeScript | Scripts and data |
+| 3D | three.js 0.170 | The layered view |
+| Fonts | Bricolage Grotesque and IBM Plex Mono | Text and code, served from the site itself |
+| Hosting | Vercel | Static hosting, with headers set in `vercel.json` |
 
-// Returns a translatePath(path, targetLang?) function
-// Strips any existing locale prefix before adding the new one
-// translatePath('/en/about', 'es') → '/about'
-// translatePath('/about', 'en')    → '/en/about'
-useTranslatedPath(lang): (path, l?) => string
-```
-
-**Page Component pattern** — all page logic lives in `src/components/pages/`. Route files are thin wrappers:
-
-```astro
----
-// src/pages/en/about.astro
-import AboutPage from '@/components/pages/AboutPage.astro';
----
-<AboutPage lang="en" />
-```
-
-Adding a third locale only requires creating a new route folder with wrapper files.
-
-**Language switcher** — uses `translatePath(Astro.url.pathname, targetLang)` so switching from `/en/projects` goes to `/projects`, not `/`.
-
-### Project content
-
-Project content is bilingual: each project has one Markdown file per locale (`src/content/projects/es/` and `src/content/projects/en/`). `src/utils/projects.ts` filters by locale and strips the folder from the slug, so URLs stay `/projects/<slug>` and `/en/projects/<slug>`. If an EN entry is missing, the ES entry is used as a fallback.
-
----
-
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js ≥ 18
-- pnpm (`npm install -g pnpm`)
+- Node.js 22
+- pnpm
 
-### Installation
+### Run it
 
 ```bash
 git clone https://github.com/christianoller8/astro-portfolio.git
 cd astro-portfolio
 pnpm install
+pnpm dev
 ```
 
-### Development
+Open <http://localhost:4321>.
+
+To see the production build:
 
 ```bash
-pnpm dev        # Start dev server at http://localhost:4321
-pnpm build      # Build for production → ./dist/
-pnpm preview    # Preview the production build locally
-pnpm lint       # Run ESLint
-pnpm format     # Format with Prettier
+pnpm build
+pnpm preview --port 4400
 ```
 
----
+`pnpm preview` serves `dist/`, so run `pnpm build` again after changing code.
 
-## Available Routes
+### Environment variables
 
-| Spanish | English | Page |
-|---|---|---|
-| `/` | `/en` | Home |
-| `/about` | `/en/about` | About |
-| `/contact` | `/en/contact` | Contact |
-| `/projects` | `/en/projects` | Projects index |
-| `/projects/:slug` | `/en/projects/:slug` | Project detail |
+| Variable | Required | Default | Description |
+| --- | :---: | --- | --- |
+| `PUBLIC_FORM_ENDPOINT` | No | empty | Endpoint that receives the contact form. Empty: the form opens the visitor's email client |
 
----
-
-## Content Collections
-
-Projects live in `src/content/projects/<locale>/` (`es/` and `en/`) as Markdown files. Each file is validated against a Zod schema at build time.
-
-### Schema
-
-```ts
-{
-  title: string
-  description: string   // Used for SEO meta and og:description
-  year: number
-  client: string
-  tags: string[]        // Technology tags displayed as #tag
-  image: ImageMetadata  // image() helper; path relative to the .md file, e.g. '../../../assets/images/project-1.jpg'
-  featured: boolean     // default: false — controls visibility in FeaturedWork
-  link?: string         // Optional external URL (live demo or repo)
-}
-```
-
-### Adding a project
-
-1. Create `src/content/projects/es/my-project.md` (Spanish) and `src/content/projects/en/my-project.md` (English) with the **same filename**
-2. Add the frontmatter following the schema above in both files (translate `title`, `description`, `client` and prose tags; keep `year`, `featured`, `link` and `image` in sync)
-3. Write the project description in the Markdown body of each file (rendered with `@tailwindcss/typography`)
-4. Add the cover image to `src/assets/images/` and reference it as `../../../assets/images/<file>` in the frontmatter
-
-The slug is the filename without the locale folder, so `my-project` is served at `/projects/my-project` (ES) and `/en/projects/my-project` (EN). Slugs must match across locales; an EN file missing for a slug falls back to the ES entry.
-
----
-
-## Design System
-
-Tailwind v4 is configured entirely in `src/styles/global.css` via `@theme` — there is no `tailwind.config.js`.
-
-### Color tokens
-
-| Token | Light | Dark |
-|---|---|---|
-| `background` | `#e5e5e5` | `#2c2c2e` |
-| `primary` | `#1a1a1a` | `#f5f5f5` |
-| `secondary` | `#4a4a4a` | `#a3a3a3` |
-| `surface` | `#ffffff` | `#171717` |
-
-### Dark mode
-
-Dark mode is class-based (`.dark` on `<html>`). The Layout applies it before first render via an inline script, reading from `localStorage` with a `prefers-color-scheme` fallback. The same script re-runs on `astro:after-swap` to persist the preference across View Transition navigations.
-
-### Typography
-
-- `font-sans` → Inter
-- `font-serif` → Playfair Display (headings)
-
----
-
-## Testing
-
-E2E tests run with Playwright against the dev server.
+## Testing and verification
 
 ```bash
-# Install browsers (first time only)
-npx playwright install
-
-# Run all tests
-npx playwright test
-
-# Run with UI
-npx playwright test --ui
+pnpm astro check
 ```
 
-### Test suite (`tests/example.spec.ts`)
+`pnpm astro check` type-checks the TypeScript and the Astro templates and must report 0 errors. Before publishing, build the site and look at it with `pnpm preview` in a real browser.
 
-| Test | What it covers |
-|---|---|
-| Dark mode toggle | Click toggle, verify `.dark` class, persist after reload, toggle back |
-| Mobile menu | Menu hidden by default, opens on tap, closes after navigation |
-| Desktop navigation | Nav links route correctly in desktop viewport |
-| View Transitions + dark mode | Dark mode persists across SPA navigations |
-| SEO meta titles | Home and Projects pages have correct `<title>` values |
+The Playwright suite in `tests/` still targets an earlier version of the site, so its workflow only runs by hand until it is rewritten.
 
-Browsers: Chromium, Mobile Chrome (Pixel 5), Mobile Safari (iPhone 12).
+## Status and roadmap
 
-CI runs tests on every push and pull request to `main` via `.github/workflows/playwright.yml`. Test reports are uploaded as artifacts with 30-day retention.
+**Status:** active. The next steps and the open decisions are in `docs/referencias/estado-actual.md` and `docs/referencias/roadmap-prototipo-def.md`.
 
----
+## Where the design decisions live
 
-## Configuration
+The design is written down, in Spanish, in `docs/referencias/`:
 
-### Before deploying, update these values
+- [`estado-actual.md`](./docs/referencias/estado-actual.md): where the work is today.
+- [`plan-diseno-awwwards.md`](./docs/referencias/plan-diseno-awwwards.md): the design plan and its numbered decisions.
+- [`roadmap-prototipo-def.md`](./docs/referencias/roadmap-prototipo-def.md): the order of work and what is done.
+- [`auditoria-2026-11-20.md`](./docs/referencias/auditoria-2026-11-20.md): the audit of the published site and what was fixed.
 
-**`astro.config.mjs`** — replace the placeholder with your real domain:
+## Author
 
-```js
-site: 'https://your-domain.com',  // Required for canonical URLs and og:image
-```
+Designed, built and tested by **Christian Oller**.
 
-**`src/pages/index.astro`** and **`src/pages/en/index.astro`** — update the page title and description with your actual name and tagline.
+[Website](https://www.christianoller.dev) · [GitHub](https://github.com/christianoller8) · [LinkedIn](https://www.linkedin.com/in/christian-oller)
 
-**`src/components/landing/Hero.astro`** — replace placeholder content with your real bio.
-
-**`src/components/common/Footer.astro`** — update social links (Twitter/X, GitHub, LinkedIn).
-
-**`src/components/pages/ContactPage.astro`** — update the email address and connect the form to a backend (Formspree, Netlify Forms, Resend, etc. — currently the form has no `action` and submissions are not processed).
-
----
-
-## Pending
-
-- [ ] Internationalize landing components (`Hero`, `Services`, `LogoGrid`, `AboutSummary`)
-- [ ] Wire up contact form to a mail service
-- [ ] Add `@astrojs/sitemap` for SEO
-- [ ] Migrate project images from `public/` to `src/assets/` to enable Astro's automatic image optimization pipeline
-- [ ] Add `aria-current="page"` to active nav links
-
----
-
-## License
-
-MIT
+<p align="right"><a href="#readme-top">Back to top</a></p>

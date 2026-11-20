@@ -15,13 +15,41 @@ const replay = (el: Element, className: string) => {
   el.classList.add(className);
 };
 
+/**
+ * Región educada de cada demo: lo que cambia en pantalla (una fila nueva, "Fichado", "Reserva
+ * confirmada") no lo leía un lector de pantalla. La región se crea al cargar la página, antes de
+ * que cambie su texto, porque una región creada con el texto ya puesto no se anuncia (WCAG 4.1.3).
+ */
+const region = (root: HTMLElement) => {
+  let node = root.querySelector<HTMLElement>(':scope > [data-demo-live-region]');
+  if (!node) {
+    node = document.createElement('span');
+    node.className = 'sr-only';
+    node.setAttribute('role', 'status');
+    node.setAttribute('aria-live', 'polite');
+    node.dataset.demoLiveRegion = '';
+    root.append(node);
+  }
+  return node;
+};
+const say = (root: HTMLElement, template: string | undefined, values: Record<string, string>) => {
+  if (!template) return;
+  const text = template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? '');
+  const node = region(root);
+  node.textContent = '';
+  requestAnimationFrame(() => (node.textContent = text));
+};
+document.addEventListener('astro:page-load', () => {
+  document.querySelectorAll<HTMLElement>('[data-demo]:not([data-demo="live"])').forEach(region);
+});
+
 /* ---------- Tempora ---------- */
 
 type Person = { name: string; initials: string; unit: string; shift: string };
 
 function tempora(root: HTMLElement, target: Element) {
   const [shifts, done, pending] = root.querySelectorAll('[data-demo-stat]');
-  const info = data<{ next: Person[]; done: string }>(root);
+  const info = data<{ next: Person[]; done: string; say: { added: string; clocked: string } }>(root);
 
   if (target.closest('[data-demo-add]')) {
     const template = root.querySelector<HTMLTemplateElement>('template[data-demo-row]');
@@ -42,11 +70,20 @@ function tempora(root: HTMLElement, target: Element) {
     // La tabla no crece sin fin: se quedan las seis filas más recientes
     const rows = root.querySelectorAll('.tp-row:not(.tp-row--head)');
     if (rows.length > 6) rows[rows.length - 1].remove();
+    say(root, info.say.added, { name: person.name, shift: person.shift });
     return;
   }
 
   const chip = target.closest<HTMLElement>('[data-demo-clock]');
   if (chip) {
+    const row = chip.closest('.tp-row');
+    // El nombre sin las iniciales del avatar (el <i>, que va aria-hidden)
+    const person = row?.querySelector('.tp-person')?.cloneNode(true) as HTMLElement | undefined;
+    person?.querySelector('i')?.remove();
+    const name = person?.textContent?.trim() ?? '';
+    // El chip pasa a estar desactivado y el foco se perdería en body (WCAG 2.4.3): va al siguiente
+    // "Pendiente" de la tabla y, si no queda ninguno, al botón de añadir turno
+    const following = [...root.querySelectorAll<HTMLElement>('[data-demo-clock]')].find((el) => el !== chip);
     chip.textContent = info.done;
     chip.classList.remove('is-pending');
     chip.removeAttribute('data-demo-clock');
@@ -54,13 +91,21 @@ function tempora(root: HTMLElement, target: Element) {
     replay(chip, 'is-just');
     bump(done, 1);
     bump(pending, -1);
+    (following ?? root.querySelector<HTMLElement>('[data-demo-add]'))?.focus({ preventScroll: true });
+    say(root, info.say.clocked, { name });
   }
 }
 
 /* ---------- Vibora ---------- */
 
 function vibora(root: HTMLElement, target: Element) {
-  const info = data<{ free: string; mine: string; confirmed: string; pick: string }>(root);
+  const info = data<{
+    free: string;
+    mine: string;
+    confirmed: string;
+    pick: string;
+    say: { picked: string; unpicked: string; confirmed: string };
+  }>(root);
   const bar = root.querySelector('.vb-bar');
   const summary = root.querySelector('[data-demo-summary]');
   const confirm = root.querySelector<HTMLButtonElement>('[data-demo-confirm]');
@@ -78,6 +123,7 @@ function vibora(root: HTMLElement, target: Element) {
     bar?.classList.remove('is-done');
     if (summary) summary.textContent = on ? `${slot.dataset.demoSlot} · 90 min` : info.pick;
     if (confirm) confirm.disabled = !on;
+    say(root, on ? info.say.picked : info.say.unpicked, { slot: slot.dataset.demoSlot ?? '' });
     return;
   }
 
@@ -86,13 +132,17 @@ function vibora(root: HTMLElement, target: Element) {
     if (!picked) return;
     summary.textContent = `${info.confirmed} · ${picked.dataset.demoSlot}`;
     bar.classList.add('is-done');
+    // Con la reserva hecha "Confirmar" se esconde (visibility:hidden) y el foco se perdía en body
+    // (WCAG 2.4.3): vuelve a la pista reservada, que sigue en la tabla
+    picked.focus({ preventScroll: true });
+    say(root, info.say.confirmed, { slot: picked.dataset.demoSlot ?? '' });
   }
 }
 
 /* ---------- Learnish ---------- */
 
 function learnish(root: HTMLElement, target: Element) {
-  const info = data<{ cards: [string, string][]; of: string }>(root);
+  const info = data<{ cards: [string, string][]; of: string; say: { answer: string; card: string } }>(root);
   const answer = root.querySelector<HTMLElement>('[data-demo-answer]');
   const reveal = root.querySelector<HTMLElement>('[data-demo-reveal]');
   const buttons = root.querySelectorAll<HTMLButtonElement>('[data-demo-next]');
@@ -103,6 +153,7 @@ function learnish(root: HTMLElement, target: Element) {
     answer.hidden = false;
     buttons.forEach((btn) => (btn.disabled = false));
     buttons[1]?.focus({ preventScroll: true });
+    say(root, info.say.answer, { answer: answer.textContent?.trim() ?? '' });
     return;
   }
 
@@ -125,6 +176,7 @@ function learnish(root: HTMLElement, target: Element) {
     const card = root.querySelector('[data-demo-card]');
     if (card) replay(card, 'is-next');
     reveal.focus({ preventScroll: true });
+    say(root, info.say.card, { word });
   }
 }
 

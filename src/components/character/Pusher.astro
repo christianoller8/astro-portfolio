@@ -61,7 +61,7 @@ import Character from './Character.astro';
     top: 0;
     /* Empieza un margen de lienzo antes: así las manos llegan al canto del frame, no al del lienzo */
     left: calc(-1 * var(--gutter));
-    z-index: 90;
+    z-index: var(--z-toast);
     width: calc(var(--pusher-gap) + var(--gutter));
     height: 100dvh;
     pointer-events: none;

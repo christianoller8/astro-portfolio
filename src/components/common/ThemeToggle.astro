@@ -46,6 +46,9 @@ const t = useTranslations(getLangFromUrl(Astro.url));
     root.classList.add('theme-switching');
     window.setTimeout(() => root.classList.remove('theme-switching'), 340);
     root.classList.toggle('dark', dark);
+    // La barra del navegador sigue a la hoja del tema que se ve (la lee del token, no se repite aquí)
+    const sheet = getComputedStyle(root).getPropertyValue('--sheet').trim();
+    if (sheet) document.querySelector('meta[name="theme-color"]')?.setAttribute('content', sheet);
     sync();
     // El almacenamiento puede estar bloqueado: el tema cambia igual, solo no se recuerda
     try {

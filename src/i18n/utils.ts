@@ -26,8 +26,22 @@ export function useTranslatedPath(lang: keyof typeof ui) {
       }
     }
 
-    if (l === defaultLang) return cleanPath;
-
-    return `/${l}${cleanPath === '/' ? '' : cleanPath}`;
+    const translated = l === defaultLang ? cleanPath : `/${l}${cleanPath === '/' ? '' : cleanPath}`;
+    return withTrailingSlash(translated);
   };
+}
+
+/**
+ * Toda ruta interna acaba en "/": Vercel redirige las URLs sin barra a la que lleva barra
+ * (vercel.json, trailingSlash) y así el menú, el pie, el hreflang y el canonical dicen lo mismo
+ * y no hay dos URLs para una misma página. Respeta el ancla (#...) y la consulta (?...), y no
+ * toca los archivos con extensión (/cv.pdf).
+ */
+export function withTrailingSlash(path: string) {
+  const match = path.match(/^([^?#]*)(.*)$/);
+  const base = match?.[1] ?? path;
+  const rest = match?.[2] ?? '';
+  const last = base.split('/').pop() ?? '';
+  if (base.endsWith('/') || last.includes('.')) return path;
+  return `${base}/${rest}`;
 }

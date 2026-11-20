@@ -472,18 +472,12 @@ const lenses = [
     right: 0;
     bottom: 0;
     width: min(17.5rem, 62%);
-    color: #e8e8e8;
-    background: #101010;
-  }
-  :global(:root.dark) .vs-tree {
-    background: #242426;
-  }
-  :global(:root.dark) .vs-tree .vs-panel-title {
-    background: #303033;
+    color: var(--code-fg-soft);
+    background: var(--code-bg);
   }
   .vs-tree .vs-panel-title {
-    color: #a9afbd;
-    background: #1b1d22;
+    color: var(--code-bar-fg);
+    background: var(--code-bar);
   }
   .vs-tree pre {
     margin: 0;

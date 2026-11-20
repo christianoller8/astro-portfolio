@@ -16,9 +16,9 @@ const copy = {
     exist: 'Los frames que sí existen',
     pages: [
       { key: 'home', path: '/', name: 'Inicio' },
-      { key: 'projects', path: '/projects', name: 'Proyectos' },
-      { key: 'about', path: '/about', name: 'Sobre mí' },
-      { key: 'contact', path: '/contact', name: 'Contacto' },
+      { key: 'projects', path: '/projects/', name: 'Proyectos' },
+      { key: 'about', path: '/about/', name: 'Sobre mí' },
+      { key: 'contact', path: '/contact/', name: 'Contacto' },
     ],
   },
   en: {
@@ -28,10 +28,10 @@ const copy = {
     canvas: 'View the canvas',
     exist: 'The frames that do exist',
     pages: [
-      { key: 'home', path: '/en', name: 'Home' },
-      { key: 'projects', path: '/en/projects', name: 'Projects' },
-      { key: 'about', path: '/en/about', name: 'About' },
-      { key: 'contact', path: '/en/contact', name: 'Contact' },
+      { key: 'home', path: '/en/', name: 'Home' },
+      { key: 'projects', path: '/en/projects/', name: 'Projects' },
+      { key: 'about', path: '/en/about/', name: 'About' },
+      { key: 'contact', path: '/en/contact/', name: 'Contact' },
     ],
   },
 };
@@ -39,7 +39,7 @@ const langs = ['es', 'en'] as const;
 // La barra de arriba se genera en español; para /en/… se cambian sus textos y enlaces en el navegador
 const t = useTranslations('en');
 const toolbar = {
-  links: { '/': ['/en', t('nav.home')], '/projects': ['/en/projects', t('nav.projects')], '/about': ['/en/about', t('nav.about')], '/contact': ['/en/contact', t('nav.contact')] },
+  links: { '/': ['/en/', t('nav.home')], '/projects': ['/en/projects/', t('nav.projects')], '/about': ['/en/about/', t('nav.about')], '/contact': ['/en/contact/', t('nav.contact')] },
   lenses: { design: t('lens.design'), code: t('lens.code'), qa: t('lens.qa') },
   canvas: t('nav.canvas'),
   bubble: t('bubble.title'),
@@ -96,7 +96,7 @@ const toolbar = {
               </a>
               <button type="button" class="btn btn-quiet" data-canvas-open>
                 {copy[lang].canvas}
-                <kbd>M</kbd>
+                <kbd data-key-hint>M</kbd>
               </button>
             </div>
           </div>
@@ -321,7 +321,8 @@ const toolbar = {
         aria: Record<string, string>;
         panel: Record<string, string>;
       };
-      document.querySelectorAll<HTMLAnchorElement>('header a[href]').forEach((link) => {
+      // Sin los del selector de idioma (llevan hreflang): en la 404 apuntan a las portadas, y "/" es también la clave de "Inicio"
+      document.querySelectorAll<HTMLAnchorElement>('header a[href]:not([hreflang])').forEach((link) => {
         const to = toolbar.links[link.getAttribute('href')?.replace(/(.)\/$/, '$1') ?? ''];
         if (!to) return;
         link.setAttribute('href', to[0]);

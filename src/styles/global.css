@@ -78,6 +78,41 @@
     --dur-camera: 800ms;
     --stagger: 50ms;
     --dist: 12px;
+
+    /* Escala de capas (z-index): de menos a más. Antes eran números sueltos en 14 archivos y un
+       comentario decía que la barra tenía 10 cuando tenía 50. Los órdenes locales de dentro de un
+       componente (1, 2, 3...) no entran aquí: solo ordenan a sus hermanos. */
+    --z-sel: 30; /* cuadro de selección y su medida (kit.css) */
+    --z-sel-label: 31;
+    --z-sel-coords: 32;
+    --z-overlay: 40; /* capas del boceto y de las lentes, sobre la página */
+    --z-canvas: 45; /* el lienzo navegable, bajo la barra para que siga usable */
+    --z-lens: 48; /* barra de estado de las lentes */
+    --z-bubble: 49; /* la caricatura con su bocadillo */
+    --z-toolbar: 50;
+    --z-skip: 70; /* enlace de salto, al recibir el foco */
+    --z-toast: 90; /* avisos y el personaje que empuja la página */
+    --z-focus: 95; /* el cuadro de foco de teclado */
+    --z-intro: 100;
+    /* Dentro de la transición de vista (las pseudo-capas heredan estas variables de html) */
+    --z-vt-morph: 4;
+    --z-vt-pusher: 5;
+    --z-vt-chrome: 10; /* barra y bocadillo, quietos durante el paneo */
+    --z-vt-nav-ind: 11; /* la línea del menú, por encima de la barra */
+
+    /* Paneles de código (el árbol de la escena de Inicio, "Sobre mí" y el código de los casos): un
+       solo juego. Son de tinta en los dos temas; en oscuro el papel ya es casi negro, así que el panel
+       sube un paso para no perderse. */
+    --code-bg: #121212;
+    --code-bar: #1b1d22; /* la barra de título del panel */
+    --code-fg: #d4d4d4;
+    --code-fg-soft: #e8e8e8; /* el árbol de la escena, un punto más claro */
+    --code-hi: #ffffff;
+    --code-dim: #8e8e93; /* comentarios y signos */
+    --code-file: #a3a3a3; /* el nombre del archivo */
+    --code-bar-fg: #a9afbd;
+    /* El gris de apoyo del hero en oscuro: Christian lo pidió un punto más oscuro que --muted (20 nov) */
+    --muted-soft: var(--muted);
     color-scheme: light;
   }
 
@@ -103,6 +138,9 @@
     --on-fail: #1a0606;
     --field-line: #6b6b6b;
     --idle: #8a8a8a;
+    --muted-soft: #8f8f8f;
+    --code-bg: #242426;
+    --code-bar: #303033;
     --dot: rgb(245 245 245 / 0.12);
     color-scheme: dark;
   }
@@ -123,6 +161,20 @@
     font-size: var(--step-body);
     line-height: 1.55;
     font-optical-sizing: auto;
+  }
+
+  /* Texto corrido: "pretty" evita que un párrafo acabe con una palabra sola (28 de 80 textos largos
+     a 390 px la dejaban). Es de elemento, así que los titulares y los párrafos que ya piden
+     "balance" por clase (la entradilla de Sobre mí) lo conservan. */
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  /* Atajos de teclado apagados (src/scripts/shortcuts.ts): las teclas sueltas que se enseñan (1, 2, 3
+     y M, marcadas con data-key-hint) desaparecen; Esc no se marca porque sigue valiendo */
+  html[data-shortcuts='off'] [data-key-hint] {
+    display: none;
   }
 
   /* 404: el frame que falta no tiene hoja; la página entera es lienzo */
@@ -363,7 +415,7 @@ html.theme-switching[data-missing] .toolbar * {
 /* Aviso que sale desde el puntero (copiar el email) */
 .kit-toast {
   position: fixed;
-  z-index: 90;
+  z-index: var(--z-toast);
   padding: 0.2rem 0.55rem;
   font: 600 var(--step-small)/1.4 var(--font-sans);
   white-space: nowrap;
@@ -436,7 +488,7 @@ html.theme-switching[data-missing] .toolbar * {
 .sketch-layer {
   position: absolute;
   inset: 0;
-  z-index: 40;
+  z-index: var(--z-overlay);
   pointer-events: none;
   overflow: visible;
 }
@@ -508,7 +560,7 @@ html.intro {
 }
 /* El canto de cada página durante el paneo: una línea fina que marca dónde acaba, para que se vea
    que es una hoja la que se mueve. En oscuro el canto ya se distinguía solo (y a Christian le
-   gusta así); en claro no, y se dibuja en un gris claro */
+   gusta así); en claro no, y se dibuja con --page-edge (un gris medio, que en oscuro no se define) */
 html.is-panning::view-transition-old(root),
 html.is-panning::view-transition-new(root) {
   /* Solo los cantos izquierdo y derecho: una sombra de 1 px a cada lado, sin línea arriba ni abajo */
@@ -535,7 +587,7 @@ html.frame-back::view-transition-new(root) {
 /* El hueco donde va el personaje: pegado al canto derecho de la página de la izquierda */
 ::view-transition-group(pusher) {
   animation: pusher-fwd var(--dur-pan) var(--ease-pan) both;
-  z-index: 5;
+  z-index: var(--z-vt-pusher);
 }
 html.frame-back::view-transition-group(pusher) {
   animation-name: pusher-back;
@@ -548,14 +600,14 @@ html.frame-back::view-transition-group(pusher) {
 }
 /* La línea del enlace activo del menú se desliza hasta el nuevo enlace al cambiar de página */
 ::view-transition-group(nav-ind) {
-  /* Por encima de la barra (que va fija, con z-index 10) */
-  z-index: 11;
+  /* Por encima de la barra, que durante la transición va en su propia capa (--z-vt-chrome) */
+  z-index: var(--z-vt-nav-ind);
   animation-duration: 600ms;
   animation-timing-function: var(--ease-camera);
 }
 ::view-transition-group(toolbar) {
   animation: none;
-  z-index: 10;
+  z-index: var(--z-vt-chrome);
 }
 ::view-transition-old(toolbar) {
   display: none;
@@ -566,7 +618,7 @@ html.frame-back::view-transition-group(pusher) {
 /* La caricatura con su bocadillo (ViewBubble) tampoco se mueve en el paneo */
 ::view-transition-group(view-bubble) {
   animation: none;
-  z-index: 10;
+  z-index: var(--z-vt-chrome);
 }
 ::view-transition-old(view-bubble) {
   display: none;
@@ -592,7 +644,7 @@ html.is-morph::view-transition-group(pusher) {
 ::view-transition-group(morph-title) {
   animation-duration: 700ms;
   animation-timing-function: var(--ease-camera);
-  z-index: 4;
+  z-index: var(--z-vt-morph);
 }
 /* Las dos versiones de cada pieza se relevan pronto y rápido: la interfaz se maqueta distinto a cada
    tamaño y, si se cruzaran despacio, se verían las dos a la vez */

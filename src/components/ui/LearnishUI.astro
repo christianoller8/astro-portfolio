@@ -6,7 +6,12 @@ interface Props {
   interactive?: boolean;
 }
 
+import { useTranslations } from '@/i18n/utils';
+
 const { lang, interactive = false } = Astro.props;
+// Lo que anuncia la región educada de la demo (project-demos.ts rellena {answer} y {word})
+const t = useTranslations(lang);
+const say = { answer: t('demo.say.answer'), card: t('demo.say.card') };
 
 // Las tarjetas que van saliendo al responder
 const cards = [
@@ -51,7 +56,7 @@ const copy = {
   role={interactive ? 'group' : 'img'}
   aria-label={`Learnish — ${copy.lesson}`}
   data-demo={interactive ? 'learnish' : undefined}
-  data-demo-data={interactive ? JSON.stringify({ cards, of: copy.of }) : undefined}
+  data-demo-data={interactive ? JSON.stringify({ cards, of: copy.of, say }) : undefined}
 >
   <div class="ln-top">
     <span class="ln-logo" data-sketch="text">Learnish</span>

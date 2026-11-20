@@ -13,7 +13,8 @@ import IntroScreen from '../components/site/IntroScreen.astro';
 import Pusher from '../components/character/Pusher.astro';
 import CanvasMap from '../components/site/CanvasMap.astro';
 import { ClientRouter } from 'astro:transitions';
-import { getLangFromUrl, useTranslatedPath, useTranslations } from '@/i18n/utils';
+import { getLangFromUrl, useTranslatedPath, useTranslations, withTrailingSlash } from '@/i18n/utils';
+import { site } from '@/data/site';
 
 interface Props {
   title: string;
@@ -42,9 +43,46 @@ const {
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// Canonical y hreflang salen de la misma función y acaban siempre en "/": la página dice lo mismo de
+// sí misma en las dos etiquetas (antes el hreflang inglés de la home era /en y su canonical /en/).
+const canonicalURL = new URL(withTrailingSlash(Astro.url.pathname), Astro.site);
 const esURL = new URL(useTranslatedPath('es')(Astro.url.pathname), Astro.site);
 const enURL = new URL(useTranslatedPath('en')(Astro.url.pathname), Astro.site);
+// La 404 y las páginas internas no se indexan: sin canonical ni hreflang (apuntarían a /404/ o a
+// rutas /en/ que no existen), y su selector de idioma lleva a la portada del otro idioma
+const indexable = !noindex && !missing;
+const isHome = ['/', '/en/'].includes(withTrailingSlash(Astro.url.pathname));
+
+// Datos estructurados (schema.org): quién es y, en las portadas, qué es la web. Los enlaces salen de
+// src/data/site.ts para que no haya dos copias.
+const siteURL = new URL('/', Astro.site).href;
+const person = {
+  '@type': 'Person',
+  '@id': `${siteURL}#christian-oller`,
+  name: site.name,
+  url: siteURL,
+  jobTitle: site.jobTitle,
+  sameAs: [site.linkedin, site.github],
+};
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    person,
+    ...(isHome
+      ? [
+          {
+            '@type': 'WebSite',
+            '@id': `${siteURL}#website`,
+            name: site.name,
+            url: new URL(lang === 'en' ? '/en/' : '/', Astro.site).href,
+            inLanguage: lang === 'en' ? 'en-US' : 'es-ES',
+            description,
+            author: { '@id': person['@id'] },
+          },
+        ]
+      : []),
+  ],
+};
 // La imagen para redes es siempre absoluta y en el host canónico (los rastreadores no resuelven rutas
 // relativas a un host que redirige). 1200 x 630 es el formato que piden Open Graph y las tarjetas grandes.
 const imageURL = new URL(image, Astro.site);
@@ -55,28 +93,37 @@ const imageURL = new URL(image, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    {/* Color de la barra del navegador en móvil: la hoja de la página (--sheet) del tema que se ve.
+        Una sola etiqueta y no una por prefers-color-scheme: quien elige en la web un tema distinto al
+        de su sistema vería la barra del otro. El guion del head pone el valor al aplicar el tema y
+        tras cada navegación (la mezcla del head de Astro repone el de arriba, claro, sin JavaScript) */}
+    <meta name="theme-color" content="#d6d6d6" />
     <meta name="generator" content={Astro.generator} />
 
     {
-      noindex ? (
-        <meta name="robots" content="noindex" />
-      ) : (
+      indexable ? (
         <>
           <link rel="canonical" href={canonicalURL} />
           <link rel="alternate" hreflang="es-ES" href={esURL} />
           <link rel="alternate" hreflang="en-US" href={enURL} />
           <link rel="alternate" hreflang="x-default" href={esURL} />
         </>
+      ) : (
+        noindex && <meta name="robots" content="noindex" />
       )
     }
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={imageURL} />
@@ -85,7 +132,7 @@ const imageURL = new URL(image, Astro.site);
     <meta property="og:image:alt" content={t('meta.og.alt')} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={Astro.url} />
+    <meta name="twitter:url" content={canonicalURL} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL} />
@@ -97,6 +144,9 @@ const imageURL = new URL(image, Astro.site);
       // Antes del primer pintado: tema, lente guardada, entradas y si toca la intro
       (() => {
         const root = document.documentElement;
+        // "js": sin esta clase (JavaScript apagado o roto) la navegación de móvil se ve abierta y el
+        // botón de menú, que no haría nada, se esconde (Header.astro)
+        root.classList.add('js');
         const applyTheme = () => {
           let theme = 'light';
           try {
@@ -105,11 +155,29 @@ const imageURL = new URL(image, Astro.site);
               (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
           } catch (e) {}
           root.classList.toggle('dark', theme === 'dark');
+          // --sheet de cada tema (global.css): el color de la barra del navegador
+          const bar = document.querySelector('meta[name="theme-color"]');
+          if (bar) bar.setAttribute('content', theme === 'dark' ? '#171717' : '#d6d6d6');
         };
         const applyLens = () => {
+          // La lente puesta se recuerda mientras dure la pestaña (sessionStorage): al cerrarla y volver
+          // otro día, la web se ve normal. Decisión de Christian, 20 nov; antes iba en localStorage y
+          // se quedaba puesta para siempre. El valor viejo de localStorage se borra para que no
+          // quede basura (y nadie vuelva a verlo puesto sin haberlo elegido).
           try {
-            const lens = localStorage.getItem('lens');
+            localStorage.removeItem('lens');
+          } catch (e) {}
+          try {
+            const lens = sessionStorage.getItem('lens');
             if (lens) root.dataset.lens = lens;
+          } catch (e) {}
+        };
+        // Atajos de una tecla (1, 2, 3 y M) apagados por quien los ajustó en el panel de la caricatura
+        // (src/scripts/shortcuts.ts). Astro cambia los atributos de html al navegar: se repone.
+        const applyShortcuts = () => {
+          try {
+            if (localStorage.getItem('shortcuts') === 'off') root.dataset.shortcuts = 'off';
+            else delete root.dataset.shortcuts;
           } catch (e) {}
         };
         const markReveal = () => {
@@ -121,27 +189,43 @@ const imageURL = new URL(image, Astro.site);
         };
         applyTheme();
         applyLens();
+        applyShortcuts();
         markReveal();
         try {
-          // La intro sale cada vez que se carga la home (al entrar o al recargar), no al llegar a ella
-          // navegando desde otra página, que es un cambio de página sin recarga.
-          // ?intro la fuerza aunque haya ancla, "reducir movimiento" o ahorro de datos.
+          // La intro sale solo en la primera visita a la web en este navegador (decisión de Christian,
+          // 20 nov: antes salía en cada carga de la home, 3 a 5 s cada vez). Lo recuerda la bandera
+          // intro-seen en localStorage; si no se puede leer (almacenamiento bloqueado), se enseña,
+          // como antes. Tampoco sale al llegar a la home navegando desde otra página, que es un
+          // cambio de página sin recarga.
+          // ?intro la fuerza aunque haya ancla, "reducir movimiento", ahorro de datos o visita previa.
           const replay = new URLSearchParams(location.search).has('intro');
+          let seen = false;
+          try {
+            seen = !!localStorage.getItem('intro-seen');
+          } catch (e) {}
           const skip =
             root.dataset.intro !== '1' ||
             (!replay &&
-              (location.hash ||
+              (seen ||
+                location.hash ||
                 window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
                 (navigator.connection && navigator.connection.saveData) ||
                 navigator.webdriver));
           // intro-seen: en esta carga el titular ya entra con la intro, así que no se entinta aparte
-          if (!skip) root.classList.add('intro', 'intro-seen');
+          if (!skip) {
+            root.classList.add('intro', 'intro-seen');
+            // Se apunta al empezar, no al acabar: quien la salta o cierra la pestaña ya la ha visto
+            try {
+              localStorage.setItem('intro-seen', '1');
+            } catch (e) {}
+          }
         } catch (e) {}
         document.addEventListener('astro:after-swap', () => {
           // arrived: se llega navegando desde otra página (el entintado espera a la transición)
-          root.classList.add('arrived');
+          root.classList.add('arrived', 'js');
           applyTheme();
           applyLens();
+          applyShortcuts();
           markReveal();
         });
       })();
@@ -151,10 +235,10 @@ const imageURL = new URL(image, Astro.site);
   <body class="antialiased">
     <a
       href="#main"
-      class="bg-pencil text-pencil-ink sr-only z-[70] px-4 py-3 font-semibold focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      class="bg-pencil text-pencil-ink sr-only z-(--z-skip) px-4 py-3 font-semibold focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >{t('aria.skip')}</a
     >
-    <Header />
+    <Header langHome={!indexable} />
     <main id="main" class="frame">
       {
         /* El nombre del frame encima del artboard solo queda en la 404, donde el frame es lo que
@@ -173,7 +257,7 @@ const imageURL = new URL(image, Astro.site);
     </main>
     <ViewBubble lang={lang} />
     <LensPanel lang={lang} frame={frame} />
-    {intro && <IntroScreen />}
+    {intro && <IntroScreen lang={lang} />}
     <Pusher />
     <CanvasMap />
     <script is:inline>
@@ -200,6 +284,7 @@ const imageURL = new URL(image, Astro.site);
 <script>
   import '@/scripts/reveal';
   import '@/scripts/lenses';
+  import '@/scripts/shortcuts';
   import '@/scripts/frames';
   import '@/scripts/intro';
   import '@/scripts/kit';

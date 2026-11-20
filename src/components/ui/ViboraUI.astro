@@ -6,7 +6,12 @@ interface Props {
   interactive?: boolean;
 }
 
+import { useTranslations } from '@/i18n/utils';
+
 const { lang, interactive = false } = Astro.props;
+// Lo que anuncia la región educada de la demo (project-demos.ts rellena {slot})
+const t = useTranslations(lang);
+const say = { picked: t('demo.say.picked'), unpicked: t('demo.say.unpicked'), confirmed: t('demo.say.confirmed') };
 
 const copy = {
   es: {
@@ -51,7 +56,7 @@ const grid = [
   aria-label={`Vibora — ${copy.title}`}
   data-demo={interactive ? 'vibora' : undefined}
   data-demo-data={interactive
-    ? JSON.stringify({ free: copy.free, mine: copy.mine, confirmed: copy.confirmed, pick: copy.pick, cta: copy.cta })
+    ? JSON.stringify({ free: copy.free, mine: copy.mine, confirmed: copy.confirmed, pick: copy.pick, cta: copy.cta, say })
     : undefined}
 >
   <div class="vb-top">

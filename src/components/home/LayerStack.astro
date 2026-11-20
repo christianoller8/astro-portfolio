@@ -39,7 +39,26 @@ const layers = [
       </ol>
     </div>
 
-    <div class="ls-stage" data-layers-stage role="img" aria-label={t('layers.label')} tabindex="0">
+    {/* El escenario se gira con el teclado (flechas, Inicio y Fin) además de arrastrando: es un
+        control deslizante del giro, no una imagen. Su valor son los grados de giro (la escena limita
+        el giro a ±60°) y layer-stack.ts mantiene aria-valuenow y aria-valuetext al día. Las
+        instrucciones (la pista de abajo) son su descripción accesible. */}
+    <div
+      class="ls-stage"
+      data-layers-stage
+      data-text-zero={t('layers.rotate.zero')}
+      data-text-left={t('layers.rotate.left')}
+      data-text-right={t('layers.rotate.right')}
+      role="slider"
+      aria-label={t('layers.label')}
+      aria-describedby="ls-hint"
+      aria-orientation="horizontal"
+      aria-valuemin="-60"
+      aria-valuemax="60"
+      aria-valuenow="25"
+      aria-valuetext={t('layers.rotate.right').replace('{n}', '25')}
+      tabindex="0"
+    >
       {/* Los nombres de las capas: layer-stack.ts los pega a la esquina de cada hoja. Van numerados
           en el orden en que se hacen (el boceto es la base, las pruebas van encima): sin el número
           no se leía cuál va primero */}
@@ -51,7 +70,7 @@ const layers = [
           </span>
         ))
       }
-      <p class="ls-hint" aria-hidden="true">{t('layers.hint')}</p>
+      <p class="ls-hint" id="ls-hint">{t('layers.hint')}</p>
     </div>
 
     {/* Sin WebGL: las mismas capas, planas */}

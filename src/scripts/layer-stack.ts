@@ -298,13 +298,27 @@ async function start(section: HTMLElement, signal: AbortSignal) {
     const z = distance * 1.14;
     camera.position.set(0, z * half * 0.13, z);
   };
+  // La oscilación continua de las capas (WCAG 2.2.2: un movimiento que dura más de 5 s sin parar
+  // tiene que poder pararse). Christian decidió el 20 nov que se pare a los 5 s sin que nadie las
+  // toque (al verse la sección, al arrastrar, con el teclado o con el control de separación) y que
+  // vuelva a moverse al tocarlas. Se apaga y se enciende con un fundido (swayK), no de golpe.
+  const SWAY_MS = 5000;
+  let lastPoke = performance.now();
+  let swayK = 0;
+  const poke = () => {
+    lastPoke = performance.now();
+    wake();
+  };
   const draw = (time: number) => {
     raf = 0;
     const ease = reduce ? 1 : 0.085;
     view.yaw += (target.yaw - view.yaw) * ease;
     view.pitch += (target.pitch - view.pitch) * ease;
     view.gap += (target.gap - view.gap) * ease;
-    const sway = reduce ? 0 : Math.sin(time / 2600) * 0.035;
+    const swaying = !reduce && time - lastPoke < SWAY_MS;
+    swayK += ((swaying ? 1 : 0) - swayK) * 0.05;
+    if (!swaying && swayK < 0.0005) swayK = 0;
+    const sway = Math.sin(time / 2600) * 0.035 * swayK;
     group.rotation.set(view.pitch, view.yaw + sway, 0);
     meshes.forEach((mesh, i) => (mesh.position.z = (i - (meshes.length - 1) / 2) * view.gap));
     group.updateMatrixWorld();
@@ -318,11 +332,18 @@ async function start(section: HTMLElement, signal: AbortSignal) {
       corner.set(-width / 2, height / 2, 0).applyMatrix4(mesh.matrixWorld).project(camera);
       label.style.transform = `translate(${((corner.x * 0.5 + 0.5) * w).toFixed(1)}px, ${((-corner.y * 0.5 + 0.5) * h).toFixed(1)}px)`;
     });
-    if (visible) raf = requestAnimationFrame(draw);
+    // Con todo quieto (sin oscilación, sin giro ni separación en camino) no hace falta seguir
+    // pintando: lo despierta wake() al tocarlas, al cambiar de tamaño o de tema
+    const settled =
+      swayK === 0 &&
+      Math.abs(target.yaw - view.yaw) < 1e-4 &&
+      Math.abs(target.pitch - view.pitch) < 1e-4 &&
+      Math.abs(target.gap - view.gap) < 1e-4;
+    if (visible && !settled) raf = requestAnimationFrame(draw);
   };
-  const wake = () => {
+  function wake() {
     if (!raf) raf = requestAnimationFrame(draw);
-  };
+  }
 
   // Al entrar en pantalla, las capas se separan
   const gapOf = (value: number) => 0.03 + value * 0.62;
@@ -331,7 +352,7 @@ async function start(section: HTMLElement, signal: AbortSignal) {
       visible = entry.isIntersecting;
       if (visible) {
         if (entry.intersectionRatio > 0.35) target.gap = gapOf(Number(range?.value ?? 55) / 100);
-        wake();
+        poke();
       }
     },
     { threshold: [0, 0.35, 0.6] },
@@ -341,7 +362,7 @@ async function start(section: HTMLElement, signal: AbortSignal) {
     'input',
     () => {
       target.gap = gapOf(Number(range.value) / 100);
-      wake();
+      poke();
     },
     { signal },
   );
@@ -354,6 +375,7 @@ async function start(section: HTMLElement, signal: AbortSignal) {
       drag = { x: event.clientX, y: event.clientY, yaw: target.yaw, pitch: target.pitch };
       stage.setPointerCapture(event.pointerId);
       stage.classList.add('is-dragging');
+      poke();
     },
     { signal },
   );
@@ -363,7 +385,7 @@ async function start(section: HTMLElement, signal: AbortSignal) {
       if (!drag) return;
       target.yaw = Math.max(-1.05, Math.min(1.05, drag.yaw + (event.clientX - drag.x) * 0.006));
       if (event.pointerType === 'mouse') target.pitch = Math.max(-0.5, Math.min(0.6, drag.pitch + (event.clientY - drag.y) * 0.005));
-      wake();
+      poke();
     },
     { signal },
   );
@@ -373,14 +395,34 @@ async function start(section: HTMLElement, signal: AbortSignal) {
   };
   stage.addEventListener('pointerup', release, { signal });
   stage.addEventListener('pointercancel', release, { signal });
+  // El escenario es un control deslizante del giro (role="slider", ±60°): su valor y su texto se
+  // actualizan al girar, con el ratón, el dedo o el teclado, para que un lector de pantalla diga cuánto
+  const announce = () => {
+    const degrees = Math.round((target.yaw * 180) / Math.PI);
+    const clamped = Math.max(-60, Math.min(60, degrees));
+    stage.setAttribute('aria-valuenow', String(clamped));
+    // Texto humano: sin signo ni guion, la dirección va en palabras (positivo = hacia la derecha)
+    const side = clamped < 0 ? stage.dataset.textLeft : stage.dataset.textRight;
+    const text = clamped === 0 ? stage.dataset.textZero : side?.replace('{n}', String(Math.abs(clamped)));
+    if (text) stage.setAttribute('aria-valuetext', text);
+  };
+  announce();
+  stage.addEventListener('pointermove', () => drag && announce(), { signal });
   stage.addEventListener(
     'keydown',
     (event) => {
-      const step = event.key === 'ArrowLeft' ? -0.12 : event.key === 'ArrowRight' ? 0.12 : 0;
-      if (!step) return;
+      // Flechas (las de arriba y abajo también, como cualquier slider), Inicio y Fin para los extremos
+      const limit = 1.05;
+      let next = target.yaw;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') next -= 0.12;
+      else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') next += 0.12;
+      else if (event.key === 'Home') next = -limit;
+      else if (event.key === 'End') next = limit;
+      else return;
       event.preventDefault();
-      target.yaw = Math.max(-1.05, Math.min(1.05, target.yaw + step));
-      wake();
+      target.yaw = Math.max(-limit, Math.min(limit, next));
+      announce();
+      poke();
     },
     { signal },
   );

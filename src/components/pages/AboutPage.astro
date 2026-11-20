@@ -114,7 +114,9 @@ const tests =
               <p class="job-summary">{job.summary[lang]}</p>
               {/* En móvil el detalle va plegado; en escritorio se abre al cargar (script de abajo) */}
               <details class="job-more" data-job-more>
-                <summary>
+                {/* Los siete resúmenes se leían igual ("Lo que hice 3"): el nombre accesible lleva la
+                    empresa y conserva el texto visible entero (WCAG 2.5.3 y 2.4.6) */}
+                <summary aria-label={`${t('about.job.more')} ${job.highlights[lang].length}, ${job.company}`}>
                   {t('about.job.more')}
                   <span aria-hidden="true">{job.highlights[lang].length}</span>
                 </summary>
@@ -240,18 +242,19 @@ const tests =
     gap: 1.25rem;
     max-width: 38rem;
   }
+  /* Primera pantalla: el titular (display) y solo dos tamaños de texto, el de entradilla para el
+     primer párrafo y el del cuerpo para todo lo demás, incluida la lista de datos. Antes había
+     cinco (14, 16-18, 22 y 32 px). Decisión de Christian, 20 nov. */
   .about-lead {
-    /* Un párrafo de presentación, no un titular: hasta 36 px */
-    font-size: var(--step-title);
+    font-size: var(--step-lead);
     font-weight: 600;
-    line-height: 1.14;
-    letter-spacing: -0.03em;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
     text-wrap: balance;
   }
   .about-text p:not(.about-lead) {
-    font-size: var(--step-lead);
-    line-height: 1.4;
-    letter-spacing: -0.01em;
+    font-size: var(--step-body);
+    line-height: 1.55;
     color: var(--muted);
   }
   .about-facts {
@@ -267,10 +270,11 @@ const tests =
     background: var(--tint);
   }
   .about-facts dt {
-    font: 600 var(--step-small)/1.5 var(--font-sans);
+    font: 600 var(--step-body)/1.5 var(--font-sans);
     color: var(--muted);
   }
   .about-facts dd {
+    font-size: var(--step-body);
     font-weight: 600;
   }
   /* El retrato de la luz circular, en blanco y negro, el mismo en los dos modos (20 nov; antes era
@@ -567,18 +571,15 @@ const tests =
     padding: 1.5rem 1.5rem 1.6rem;
     overflow-x: auto;
     font: 400 0.9375rem/1.7 var(--font-mono);
-    color: #d4d4d4;
-    background: #121212;
-  }
-  :global(:root.dark) .ex-code {
-    background: #242426;
+    color: var(--code-fg);
+    background: var(--code-bg);
   }
   .ex-code span {
-    color: #8e8e93;
+    color: var(--code-dim);
   }
   .ex-code b {
     font-weight: 500;
-    color: #fff;
+    color: var(--code-hi);
   }
   .ex-test {
     max-width: 30rem;

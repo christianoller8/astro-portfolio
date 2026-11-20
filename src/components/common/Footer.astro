@@ -7,6 +7,8 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const currentYear = new Date().getFullYear();
 const subject = encodeURIComponent(t('contact.mailto.subject'));
+// El correo, partido en la "@" para dejar un salto de línea posible justo detrás (<wbr>)
+const [emailLocal, emailDomain] = site.email.split('@');
 ---
 
 <!-- El reverso del artboard: mismos datos, colores invertidos -->
@@ -26,7 +28,7 @@ const subject = encodeURIComponent(t('contact.mailto.subject'));
 
     <ul class="back-links" data-reveal style="--reveal-i: 3">
       <li class="back-mail">
-        <a class="link" href={`mailto:${site.email}`}>{site.email}</a>
+        <a class="link" href={`mailto:${site.email}`}>{emailLocal}@<wbr />{emailDomain}</a>
         <button type="button" class="back-copy" data-copy={site.email} data-copied={t('footer.copied')} data-failed={t('footer.copyFailed')}>
           {t('footer.copy')}
         </button>
