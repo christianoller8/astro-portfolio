@@ -23,7 +23,7 @@
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
-| **Ajustes de diseño** | **En curso** (20 nov): hero y barra hechos, a falta de tu visto bueno |
+| **Ajustes de diseño** | **En curso** (20 nov): hero y barra aprobados; la foto clara sobre gris, hecha y a falta de tu visto bueno |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -196,8 +196,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
         claro sobre la chaqueta). "Christian Oller" va en tinta normal, porque pasa por la luz
         roja y la diferencia lo teñía de azul. En móvil las dos líneas caen sobre la chaqueta y
         van las dos en diferencia.
-      - Cómo se genera `card-light.jpg` (hay que repetirlo si cambia la foto), en
-        `.taste-skill/recorte/`:
+      - Cómo se generaba `card-light.jpg` hasta el 20 nov (desde D24 se hace con `luz-gris.cjs`,
+        ver "Ajustes de diseño"), en `.taste-skill/recorte/`:
         1. `person.swift` saca la máscara de la persona con la segmentación de macOS.
         2. `luz.cjs` pone la pared en blanco, conserva la franja roja (el exceso de rojo sobre
            la pared), redibuja la sombra con la propia silueta (en la foto es solo un 5 % más
@@ -664,7 +664,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
 El 20 nov, en vez de cerrar el diseño, Christian pidió cambios, empezando por la home. Se trabajan
 igual: un punto por parada y la casilla se marca con su visto bueno.
 
-- [ ] **Hero sin texto encima de la foto** (D22; hecho el 20 nov, pendiente de tu visto bueno):
+- [x] **Hero sin texto encima de la foto** (D22; hecho y aprobado el 20 nov):
   - Antes de tocar nada se hizo una maqueta (CSS inyectado sobre la web construida) y la aprobaste.
   - Escritorio: el texto en su columna (hasta el 54 % del ancho del contenido) y la foto en la suya
     (desde el 58 %; antes, el 55,5 %). Titular de 150 a 118 px a 1440 (`--d` de 12,6 a 9,8 cqi) y
@@ -678,7 +678,7 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Comprobado a 1920, 1440, 1280, 1024, 768, 390 y 320 px, en claro y oscuro: el texto acaba antes
     de la foto (8 px de aire a 768, donde el borde de la foto ya es transparente, y unos 45 px en
     escritorio) y nada desborda. Capturas en `.taste-skill/mock-hero/verify/`.
-- [ ] **Barra dentro de la página** (D23; hecho el 20 nov, pendiente de tu visto bueno):
+- [x] **Barra dentro de la página** (D23; hecho y aprobado el 20 nov):
   - La barra es la primera fila del artboard: papel, el ancho del frame (deja ver el lienzo a los
     lados) y su contenido alineado con el de las secciones (82rem). La página actual del menú va
     sobre un paso de tinte y el menú de móvil, sobre papel.
@@ -705,6 +705,29 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - **Tests de Playwright desfasados** (no por este cambio): `tests/example.spec.ts` viene de `main` y
     falla en 7 de 12 casos (títulos con "|", el id `#mobile-menu-btn` y dos `<nav>` en la home por la
     web de ejemplo). Se rehacen en la fase técnica.
+- [ ] **Foto clara sin sombra ni franja, sobre gris** (D24; hecha el 20 nov, pendiente de tu visto
+  bueno):
+  - Pediste quitar en modo claro la sombra y la línea roja de la pared, y un fondo algo más gris.
+  - `card-light.jpg` es ahora tu figura (la de `card.jpg`) sobre un gris claro, más hondo detrás de
+    los hombros (#e0e0e0) y que se abre a blanco hacia arriba y hacia los lados. Arriba, donde la
+    foto asoma bajo la barra, ya es blanco: no hay línea. Las máscaras del hero son las mismas.
+  - La luz roja de la cara se queda (es de la foto) y el texto no cambia de color.
+  - En el borde de la figura se cambia la pared vieja por el gris, así no queda cerco oscuro ni
+    rojizo (en la oreja, a la altura de la franja, se notaba).
+  - Cómo se genera, en Windows o en macOS, desde la raíz:
+    1. `mascara-diferencia.cjs` recuperó tu máscara de persona comparando el `card-light.jpg`
+       anterior con `card.jpg` (allí la figura iba pegada tal cual). Está guardada en
+       `docs/imgs/card-mascara.png`, así que para esta foto ya no hace falta `person.swift`.
+    2. `node .taste-skill/recorte/luz-gris.cjs src/assets/images/card.jpg docs/imgs/card-mascara.png src/assets/images/card-light.jpg`
+       monta la versión clara. El gris se ajusta con variables de entorno; los valores por defecto
+       son los de ahora.
+  - Probadas antes cinco variantes en la página: un gris uniforme llegaba a los bordes del artboard
+    en móvil y el frame se confundía con el lienzo; uno concentrado detrás del cuerpo, no.
+  - Comprobado a 1920, 1440, 1280, 1024, 768, 390 y 320 px: justo bajo la barra la foto es papel
+    (254 de 255) en todos los anchos. El oscuro no cambia. Capturas en
+    `.taste-skill/mock-hero/verify-gray/`.
+  - Miniaturas del lienzo: repetidas las dos de la home en claro (`es-home-light.jpg` y
+    `en-home-light.jpg`). Las alturas no cambian.
 
 ## Fase técnica (después del 10 de diseño)
 

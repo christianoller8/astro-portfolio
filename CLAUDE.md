@@ -8,7 +8,7 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 1. `docs/referencias/estado-actual.md`: dónde está el trabajo hoy y qué toca ahora.
 2. `docs/referencias/roadmap-prototipo-def.md`: el orden de trabajo, con casillas y una tabla de
    estado. Es la fuente de verdad de lo hecho y lo pendiente.
-3. `docs/referencias/plan-diseno-awwwards.md`: el plan de diseño y las decisiones (D1–D21). Donde
+3. `docs/referencias/plan-diseno-awwwards.md`: el plan de diseño y las decisiones (D1–D24). Donde
    contradiga a `concepto.md`, manda el plan.
 
 ## Cómo trabajamos (decisiones de Christian)
@@ -72,3 +72,5 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
   `cdp.mjs` se pasa como URL de archivo (`file:///C:/…`); el recorte usa sharp.
 - **Solo en macOS**: `.taste-skill/recorte/person.swift` (máscara de persona con Vision) y los
   comandos `sips`. En Windows no existen; si hace falta recortar otra foto, buscar alternativa.
+  La foto clara del hero ya no depende de ellos: `.taste-skill/recorte/luz-gris.cjs` la monta con
+  sharp a partir de `card.jpg` y de su máscara guardada (`docs/imgs/card-mascara.png`).

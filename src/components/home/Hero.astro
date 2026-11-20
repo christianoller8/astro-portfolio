@@ -25,12 +25,13 @@ const roles = [
   Hero: el retrato (la foto de la luz roja, en los dos modos) va fundido en el fondo, sin caja ni
   panel (referencia: la página "nosotros" de Vístalo).
   - Oscuro: la foto tal cual (card.jpg). Su pared oscura se desvanece en el papel oscuro.
-  - Claro: la misma foto "de día" (card-light.jpg): la pared pasa a blanco y se conservan la franja
-    de luz roja y la sombra en la pared.
+  - Claro: la misma foto "de día" (card-light.jpg, D24): la figura sobre un gris claro, sin la
+    franja de luz de la pared ni sombra. El gris se abre a blanco hacia arriba (donde la foto asoma
+    bajo la barra) y hacia los lados, así que se funde con el papel sin corte.
   Texto y foto no se pisan (D22, 20 nov): en escritorio el texto ocupa su columna a la izquierda y
   la foto la suya a la derecha; en móvil la foto va arriba y el texto empieza donde ella termina.
-  card-light.jpg se genera con .taste-skill/recorte/ (person.swift saca la máscara de la persona
-  con macOS y luz.cjs monta la versión clara).
+  card-light.jpg se genera con .taste-skill/recorte/luz-gris.cjs a partir de card.jpg y de su
+  máscara de persona (docs/imgs/card-mascara.png).
   [data-ink] marca las piezas que entran escalonadas al acabar la intro (--ink-i es su turno).
 -->
 <section class="hero" data-cs="<section> Hero.astro">

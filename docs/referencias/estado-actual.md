@@ -10,7 +10,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
   cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
-  página (D23). Los dos están hechos y esperan su visto bueno (ver "Ajustes de diseño" en el roadmap).
+  página (D23), ya aprobados. Después, la foto clara sin sombra ni franja, sobre gris (D24): hecha y
+  a la espera de su visto bueno (ver "Ajustes de diseño" en el roadmap).
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta
@@ -61,6 +62,10 @@ enviar a Awwwards la URL en inglés.
 
 ## Cambios recientes que conviene saber
 
+- **20 nov, foto clara (D24)**: sin la franja roja ni la sombra, sobre un gris claro que se abre a
+  blanco. Se genera en cualquier equipo con `.taste-skill/recorte/luz-gris.cjs` y la máscara
+  guardada en `docs/imgs/card-mascara.png` (sacada de la foto anterior con `mascara-diferencia.cjs`).
+  Para esta foto ya no hace falta `person.swift`.
 - **20 nov**: la barra es la primera fila del artboard y el nombre del frame ya no va encima de él
   (sale en la barra de estado de las lentes, en el lienzo y en la 404). En el hero, texto y foto van
   en columnas separadas.
