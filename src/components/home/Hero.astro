@@ -28,8 +28,9 @@ const roles = [
   - Claro: la misma foto "de día" (card-light.webp, D24 y D25): la figura sola, sin la franja de
     luz de la pared ni sombra, con fondo transparente para que se vea la hoja con su textura.
     Detrás del cuerpo lleva un velo oscuro muy suave, que hace de pared y se apaga hacia arriba
-    (donde la foto asoma bajo la barra) y hacia los lados. En escritorio la figura no se funde por
-    abajo: queda sentada sobre una línea de base, para que no parezca que flota.
+    (donde la foto asoma bajo la barra) y hacia los lados.
+  En escritorio el fundido de abajo es el mismo en los dos modos: al cambiar de tema la figura no
+  se mueve. (Se probó sentarla sobre una línea de base en claro; a Christian no le gustó.)
   El hero no pinta fondo propio: se ve la hoja del artboard.
   Texto y foto no se pisan (D22, 20 nov): en escritorio el texto ocupa su columna a la izquierda y
   la foto la suya a la derecha; en móvil la foto va arriba y el texto empieza donde ella termina.
@@ -62,7 +63,6 @@ const roles = [
         class="hero-photo-img hero-photo-img--dark"
       />
     </figure>
-    <span class="hero-base" aria-hidden="true"></span>
 
     <div class="hero-stage">
       <ul class="hero-roles" aria-label={t('hero.roles.label')} data-ink style="--ink-i: 0">
@@ -166,36 +166,19 @@ const roles = [
     height: 100%;
     object-fit: cover;
   }
-  /* Claro: la figura se desvanece solo a los lados. Por abajo no se funde: la corta el borde del
-     hero y queda sentada sobre la línea de base (.hero-base), para que no parezca que flota */
+  /* El fundido de abajo es el mismo en los dos modos (--fade-from, --fade-to), para que al cambiar
+     de uno a otro la figura no se mueva ni cambie de altura */
+  .hero-photo {
+    --fade-from: 75%;
+    --fade-to: 92%;
+  }
+  /* Claro: la figura se desvanece a los lados y por abajo */
   .hero-photo-img--light {
-    mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 90%, transparent 100%);
-  }
-  /* La línea de base del modo claro: de lado a lado del artboard, en el borde de abajo del hero */
-  .hero-base {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 100vw;
-    height: 1px;
-    translate: -50% 0;
-    background: var(--ink);
-    pointer-events: none;
-  }
-  :global(:root.dark) .hero-base {
-    display: none;
-  }
-  /* Para que la figura llegue siempre a la línea, en claro la caja de la foto baja hasta el borde
-     del hero. Si el texto ocupa más alto que la foto (tablet), la foto crece un poco para cubrirlo;
-     si ocupa menos (escritorio), se recorta por abajo como antes. El oscuro conserva su caja */
-  @container (width > 640px) {
-    :global(:root:not(.dark)) .hero-photo {
-      bottom: 0;
-      aspect-ratio: auto;
-    }
-    .hero-photo-img--light {
-      object-position: 50% 0;
-    }
+    mask-image:
+      linear-gradient(90deg, transparent 0, #000 18%, #000 90%, transparent 100%),
+      linear-gradient(180deg, #000 var(--fade-from), transparent var(--fade-to));
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
   }
   /* Oscuro: la foto entera. Se desvanece a los lados y hacia abajo: no se ve ningún borde */
   .hero-photo-img--dark {
@@ -205,7 +188,7 @@ const roles = [
        asoma al 16,8 % de su alto (12,6cqi de 75cqi); el pelo, oscuro como la hoja, no lo acusa */
     mask-image:
       linear-gradient(90deg, transparent 0, #000 30%, #000 82%, transparent 100%),
-      linear-gradient(180deg, transparent 16.8%, #000 25%, #000 71%, transparent 96%);
+      linear-gradient(180deg, transparent 16.8%, #000 25%, #000 var(--fade-from), transparent var(--fade-to));
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
@@ -355,10 +338,6 @@ const roles = [
       top: 0;
       left: 0;
       width: 100%;
-    }
-    /* En móvil la foto va arriba y el texto la sujeta por debajo: sin línea de base */
-    .hero-base {
-      display: none;
     }
     /* Claro: encima de la cabeza solo hay blanco, así que la foto se sube. La luz llega de borde a
        borde y la chaqueta se desvanece antes del nombre. Oscuro: la foto entera, con su pared */
