@@ -1,7 +1,7 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import LangSwitch from './LangSwitch.astro';
-import Caricature from '@/components/site/Caricature.astro';
+import sign from '@/assets/images/brand/chris.webp';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 
@@ -32,9 +32,15 @@ const isActive = (path: string) => {
 
 <header class="toolbar" data-cs="<header> Header.astro">
   <div class="toolbar-inner">
+    {/* La marca es una firma, "Chris" (20 nov): la caricatura ya está en la intro y en el bocadillo
+        de abajo, y repetida aquí sobraba. De momento es la palabra en Rock Salt, guardada como
+        imagen (.taste-skill/letras/firma.mjs) y usada de máscara para que tome el color de la
+        tinta; la idea es sustituirla por la firma de Christian escrita a mano */}
     <a href={translatePath('/')} class="brand" aria-label={t('aria.home')} data-sel>
-      <Caricature variant="mark" class="brand-head" />
-      <span class="brand-name" aria-hidden="true"><span class="brand-made">made by</span> chris</span>
+      <span
+        class="brand-sign"
+        style={`--sign: url(${sign.src}); --sign-ratio: ${sign.width} / ${sign.height}`}
+        aria-hidden="true"></span>
     </a>
 
     <nav class="toolbar-nav" aria-label={t('nav.menu')}>
@@ -178,40 +184,33 @@ const isActive = (path: string) => {
     padding-top: var(--toolbar-top);
   }
 
-  /* --- Marca: la caricatura reducida y "made by chris" en una línea. Al pasar el ratón se selecciona --- */
+  /* --- Marca: la firma. Al pasar el ratón se selecciona --- */
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
     margin-left: -0.375rem;
     padding: 0.25rem 0.5rem 0.25rem 0.375rem;
-    white-space: nowrap;
   }
   /* En la barra la selección va sin la etiqueta de medida: taparía el nombre del frame */
   .brand::after {
     display: none;
   }
-  .brand :global(.brand-head) {
-    flex: none;
-    width: auto;
-    height: 2.25rem;
-  }
-  .brand-name {
-    font-size: 1.125rem;
-    font-weight: var(--wght-ink);
-    letter-spacing: -0.035em;
-  }
-  .brand-made {
-    font-weight: 400;
-    letter-spacing: -0.02em;
+  /* La imagen de la firma hace de máscara: lo que se ve es la tinta del tema */
+  .brand-sign {
+    display: block;
+    width: 6.5rem;
+    aspect-ratio: var(--sign-ratio);
+    background: var(--ink);
+    -webkit-mask: var(--sign) center / contain no-repeat;
+    mask: var(--sign) center / contain no-repeat;
+    rotate: -3deg;
   }
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .brand :global(.brand-head) {
-      transform-origin: 50% 85%;
-      transition: transform var(--dur-ui) var(--spring);
+    .brand-sign {
+      transition: rotate var(--dur-ui) var(--spring);
     }
-    .brand:hover :global(.brand-head) {
-      transform: rotate(-7deg);
+    .brand:hover .brand-sign {
+      rotate: -7deg;
     }
   }
 
@@ -392,12 +391,6 @@ const isActive = (path: string) => {
     }
   }
 
-  /* La barra lleva ahora los márgenes del contenido (D23): por debajo de 390 px "made by" no cabe */
-  @media (max-width: 389px) {
-    .brand-made {
-      display: none;
-    }
-  }
 
   @media (min-width: 1024px) {
     .toolbar-nav {

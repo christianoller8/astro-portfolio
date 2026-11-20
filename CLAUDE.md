@@ -8,7 +8,7 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 1. `docs/referencias/estado-actual.md`: dónde está el trabajo hoy y qué toca ahora.
 2. `docs/referencias/roadmap-prototipo-def.md`: el orden de trabajo, con casillas y una tabla de
    estado. Es la fuente de verdad de lo hecho y lo pendiente.
-3. `docs/referencias/plan-diseno-awwwards.md`: el plan de diseño y las decisiones (D1–D27). Donde
+3. `docs/referencias/plan-diseno-awwwards.md`: el plan de diseño y las decisiones (D1–D28). Donde
    contradiga a `concepto.md`, manda el plan.
 
 ## Cómo trabajamos (decisiones de Christian)

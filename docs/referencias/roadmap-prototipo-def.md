@@ -891,6 +891,14 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Falta de él: un vídeo corto por app (8–15 s, sin sonido, una sola acción). Cuando llegue el
     primero se añade el campo `video` al esquema de proyectos y la caja grande lo enseña.
 
+- [ ] **La marca de la barra, una firma** (D28; hecho el 20 nov, pendiente de su visto bueno):
+  - "Chris" en Rock Salt en lugar de la caricatura con "made by chris". Elegida por él entre doce,
+    "de momento". Es una imagen usada de máscara, no una tercera familia de letra.
+  - Pendiente de él: su firma a mano (varias pruebas con rotulador grueso sobre papel blanco, en
+    foto), para sustituir a la de la fuente.
+  - Pendiente de decidir: si la intro, que dibuja la caricatura con "made by chris", pasa a
+    escribir la firma. Y rehacer las miniaturas del lienzo de todas las páginas cuando lo apruebe.
+
 ## Fase técnica (después del 10 de diseño)
 
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.
