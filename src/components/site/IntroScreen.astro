@@ -3,11 +3,21 @@
 // primer pintado: primera visita de la sesión, sin ancla en la URL, sin "reducir movimiento" y sin
 // ahorro de datos. El trazado empieza con CSS, sin esperar al JavaScript; las fases siguientes las
 // marca src/scripts/intro.ts con las clases is-filled e is-leaving.
+// La marca que presenta es la de la barra (D28): la caricatura se traza y, a su lado, la firma
+// "Chris" se escribe letra a letra, como en una máquina de escribir (pedido por Christian el
+// 20 nov; antes las letras eran "made by chris", trazadas en contorno).
 import Caricature from './Caricature.astro';
+import sign from '@/assets/images/brand/chris.webp';
 ---
 
 <div class="intro-screen" data-intro-screen aria-hidden="true">
-  <Caricature variant="lockup" class="intro-logo" />
+  <div class="intro-logo">
+    <Caricature variant="head" class="intro-head" />
+    <span class="intro-sign" style={`--sign: url(${sign.src}); --sign-ratio: ${sign.width} / ${sign.height}`}>
+      <span class="intro-sign-ink"></span>
+      <span class="intro-caret"></span>
+    </span>
+  </div>
 </div>
 
 <style>
@@ -26,21 +36,26 @@ import Caricature from './Caricature.astro';
     display: grid;
     animation: intro-failsafe 0.01s 7s forwards;
   }
-  .intro-screen :global(.intro-logo) {
-    width: clamp(15rem, 34vw, 30rem);
+  .intro-logo {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.4vw, 2.25rem);
+  }
+  .intro-screen :global(.intro-head) {
+    flex: none;
+    width: clamp(4.5rem, 9.5vw, 8.5rem);
     height: auto;
   }
 
-  /* 1 · Trazado (800 ms): todos los contornos a la vez, en línea fina de grafito. Es la animación
-     del vídeo de referencia (docs/referencias/analisis-video-intro.md) */
+  /* 1 · Trazado (800 ms): todos los contornos de la caricatura a la vez, en línea fina de grafito.
+     Es la animación del vídeo de referencia (docs/referencias/analisis-video-intro.md) */
   .intro-screen :global(.car-halo),
   .intro-screen :global(.car-paper),
   .intro-screen :global(.car-tone) {
     opacity: 0;
     transition: opacity 200ms linear;
   }
-  .intro-screen :global(.car-ink),
-  .intro-screen :global(.car-name path) {
+  .intro-screen :global(.car-ink) {
     fill-opacity: 0;
     stroke: var(--graphite);
     stroke-width: 10;
@@ -54,16 +69,49 @@ import Caricature from './Caricature.astro';
       stroke-opacity 200ms linear 200ms;
   }
 
-  /* 2 · Relleno (200 ms): se pintan el pelo, la barba y las letras; el contorno se retira después */
+  /* …y mientras tanto la firma se escribe letra a letra. Es una imagen usada de máscara (como en
+     la barra), así que se destapa de izquierda a derecha a saltos: uno por letra, en el punto
+     donde acaba cada una (medido sobre la imagen: C 22 %, H 45,1 %, R 74,9 %, I 83,5 %, S 100 %).
+     Un cursor va delante y parpadea */
+  .intro-sign {
+    position: relative;
+    width: clamp(10rem, 22vw, 19rem);
+    aspect-ratio: var(--sign-ratio);
+    rotate: -3deg;
+  }
+  .intro-sign-ink {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    -webkit-mask: var(--sign) center / contain no-repeat;
+    mask: var(--sign) center / contain no-repeat;
+    clip-path: inset(-10% 100% -10% 0);
+    animation: intro-type 700ms step-end 150ms forwards;
+  }
+  .intro-caret {
+    position: absolute;
+    top: 6%;
+    bottom: 6%;
+    left: 0;
+    width: max(2px, 1%);
+    background: var(--ink);
+    animation:
+      intro-caret 700ms step-end 150ms forwards,
+      intro-blink 480ms step-end infinite;
+  }
+
+  /* 2 · Relleno (200 ms): se pintan el pelo y la barba, el contorno se retira y el cursor se va */
   .intro-screen.is-filled :global(.car-halo),
   .intro-screen.is-filled :global(.car-paper),
   .intro-screen.is-filled :global(.car-tone) {
     opacity: 1;
   }
-  .intro-screen.is-filled :global(.car-ink),
-  .intro-screen.is-filled :global(.car-name path) {
+  .intro-screen.is-filled :global(.car-ink) {
     fill-opacity: 1;
     stroke-opacity: 0;
+  }
+  .intro-screen.is-filled .intro-caret {
+    visibility: hidden;
   }
 
   /* 3 · Salida: el iris se cierra sobre la marca y deja ver la web (la mecánica de eloicotonat.com) */
@@ -74,6 +122,52 @@ import Caricature from './Caricature.astro';
   @keyframes intro-trace {
     to {
       stroke-dashoffset: 0;
+    }
+  }
+  /* Con step-end cada valor se mantiene hasta el siguiente: una letra más en cada paso */
+  @keyframes intro-type {
+    0% {
+      clip-path: inset(-10% 100% -10% 0);
+    }
+    20% {
+      clip-path: inset(-10% 78% -10% 0);
+    }
+    40% {
+      clip-path: inset(-10% 54.9% -10% 0);
+    }
+    60% {
+      clip-path: inset(-10% 25.1% -10% 0);
+    }
+    80% {
+      clip-path: inset(-10% 16.5% -10% 0);
+    }
+    100% {
+      clip-path: inset(-10% 0 -10% 0);
+    }
+  }
+  @keyframes intro-caret {
+    0% {
+      left: 0;
+    }
+    20% {
+      left: 22%;
+    }
+    40% {
+      left: 45.1%;
+    }
+    60% {
+      left: 74.9%;
+    }
+    80% {
+      left: 83.5%;
+    }
+    100% {
+      left: 101%;
+    }
+  }
+  @keyframes intro-blink {
+    50% {
+      opacity: 0;
     }
   }
   @keyframes intro-iris {
