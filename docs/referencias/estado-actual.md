@@ -10,9 +10,9 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
   cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
-  página (D23) y la foto clara sin sombra ni franja (D24), ya aprobados. Después, la hoja con
-  textura de papel en toda la página (D25): hecha y a la espera de su visto bueno. Lo siguiente,
-  ya acordado, son los selectores de tema e idioma (ver "Ajustes de diseño" en el roadmap).
+  página (D23), la foto clara sin sombra ni franja (D24) y la hoja con textura de papel en toda la
+  página (D25), ya aprobados. Después, los selectores de tema e idioma (D26): hechos y a la espera
+  de su visto bueno (ver "Ajustes de diseño" en el roadmap).
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta
@@ -63,6 +63,9 @@ enviar a Awwwards la URL en inglés.
 
 ## Cambios recientes que conviene saber
 
+- **20 nov, selectores (D26)**: tema e idioma usan la pieza `.seg` de `kit.css` (bandeja con dos
+  opciones y una marca bajo la activa). Por debajo de 480 px van en el menú de móvil, no en la
+  barra. La barra va justa: antes de añadirle algo, medir a 1024 y a 1360 px en español.
 - **20 nov, hoja con textura (D25)**: la página ya no es un color plano. `--sheet` es la hoja (gris
   `#d6d6d6` en claro) y se pinta con `--sheet-bg`, que lleva la textura de papel
   (`public/textures/`, generada con `.taste-skill/papel/papel.cjs`). `--paper` queda para las

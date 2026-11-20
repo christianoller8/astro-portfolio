@@ -28,7 +28,10 @@ export const ui = {
     'aria.skip': 'Saltar al contenido',
     'aria.lang.es': 'Cambiar a español',
     'aria.lang.en': 'Cambiar a inglés',
-    'aria.theme': 'Cambiar entre tema claro y oscuro',
+    'aria.lang': 'Idioma',
+    'aria.theme': 'Tema',
+    'aria.theme.light': 'Tema claro',
+    'aria.theme.dark': 'Tema oscuro',
     'aria.menu': 'Abrir menú',
     'aria.close': 'Cerrar menú',
 
@@ -297,7 +300,10 @@ export const ui = {
     'aria.skip': 'Skip to content',
     'aria.lang.es': 'Switch to Spanish',
     'aria.lang.en': 'Switch to English',
-    'aria.theme': 'Toggle light and dark theme',
+    'aria.lang': 'Language',
+    'aria.theme': 'Theme',
+    'aria.theme.light': 'Light theme',
+    'aria.theme.dark': 'Dark theme',
     'aria.menu': 'Open menu',
     'aria.close': 'Close menu',
 

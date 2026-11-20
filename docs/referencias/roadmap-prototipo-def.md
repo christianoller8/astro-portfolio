@@ -23,7 +23,7 @@
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
-| **Ajustes de diseño** | **En curso** (20 nov): hero, barra y foto clara aprobados; la hoja con textura de papel, hecha y a falta de tu visto bueno. Después, los selectores de tema e idioma |
+| **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara y hoja con textura de papel aprobados; los selectores de tema e idioma, hechos y a falta de tu visto bueno |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -728,7 +728,7 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     `.taste-skill/mock-hero/verify-gray/`.
   - Miniaturas del lienzo: repetidas las dos de la home en claro (`es-home-light.jpg` y
     `en-home-light.jpg`). Las alturas no cambian.
-- [ ] **Hoja con textura de papel** (D25; hecha el 20 nov, pendiente de tu visto bueno):
+- [x] **Hoja con textura de papel** (D25; hecha y aprobada el 20 nov):
   - Viste el fondo en carterogunsola.com/writing y lo quisiste en toda la página y en los dos
     modos, pero fijo: sin la estela que allí deja el ratón.
   - Cómo está hecho: allí es un shader que se redibuja en cada fotograma (por eso reacciona al
@@ -773,10 +773,28 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Comprobado en Inicio, Proyectos, dos casos, Sobre mí, Contacto y la 404, a 1440 y 390 px, en
     claro y oscuro, más la barra con la página desplazada, la lente Diseño, el menú de móvil y el
     cambio de modo. Capturas en `.taste-skill/mock-hero/audit/` y `states/`.
-- [ ] **Selectores de tema e idioma** (acordado el 20 nov, sin empezar): los dos con la misma forma,
-  enseñando las dos opciones y marcando la activa, como el de día y noche de la misma web de
-  referencia pero con esquinas rectas, como el resto de la barra. No se aplica a los botones de
-  acción (CV, Ver proyectos, Ver lienzo). Por comprobar: si en móvil cabe en la barra o va al menú.
+- [ ] **Selectores de tema e idioma** (D26; hechos el 20 nov, pendientes de tu visto bueno):
+  - Los dos con la misma pieza (`.seg`, en `kit.css`): una bandeja con las dos opciones a la vista
+    y una marca bajo la activa. Esquinas rectas, como elegiste, y a juego con la bandeja de lentes.
+  - Tema: sol y luna, dibujados con el trazo de los demás iconos de la barra. La marca se desliza al
+    cambiar. Pulsar la opción que ya está activa no hace nada.
+  - Idioma: ES y EN. La marca cambia con la barra al pasar de página, sin transición propia (va
+    debajo de las siglas; como capa aparte las taparía o quedaría tapada).
+  - Revisión con contexto limpio: avisó de eso mismo (la marca se perdía durante el cambio de
+    idioma) y de que guardar el tema podía fallar con el almacenamiento bloqueado. Corregidos.
+  - Los tests de Playwright de `tests/example.spec.ts`, que ya estaban desfasados, buscan además
+    `.theme-toggle-btn`, que ya no existe. Se rehacen en la fase técnica.
+  - No se aplica a los botones de acción (CV, Ver proyectos, Ver lienzo).
+  - Móvil: por debajo de 480 px no caben en la barra junto a la marca y el botón del menú, y van
+    dentro del menú, en una fila propia con celdas de 44 px. De 480 a 1023 px van en la barra, con
+    celdas de 36 px.
+  - Lo que arrastra en la barra: ocupan unos 45 px más que antes. Los rótulos de las lentes y de
+    "Ver lienzo" aparecen ahora a partir de 1360 px (antes, 1280; entre medias van en icono) y a
+    1024–1099 px el menú va más apretado. Medido a 14 anchos (de 320 a 1920 px) y en los dos
+    idiomas: todo en una línea, sin desbordes.
+  - Componentes: `ThemeToggle.astro` (rehecho) y `LangSwitch.astro` (nuevo), los dos con una
+    variante para el menú.
+  - Miniaturas del lienzo: repetidas las 32 (la barra sale en todas). Las alturas no cambian.
 
 ## Fase técnica (después del 10 de diseño)
 

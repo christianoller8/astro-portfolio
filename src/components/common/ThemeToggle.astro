@@ -1,82 +1,57 @@
 ---
 import { getLangFromUrl, useTranslations } from '@/i18n/utils';
 
+interface Props {
+  /** "menu": celdas grandes, para el menú de móvil */
+  size?: 'bar' | 'menu';
+}
+
+const { size = 'bar' } = Astro.props;
 const t = useTranslations(getLangFromUrl(Astro.url));
 ---
 
-<button
-  type="button"
-  class="theme-toggle-btn text-muted hover:text-ink inline-grid size-10 place-items-center transition-colors"
-  aria-label={t('aria.theme')}
->
-  <svg
-    class="sun-icon hidden h-5 w-5"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z"
-      fill-rule="evenodd"
-      clip-rule="evenodd"></path>
-  </svg>
-
-  <svg
-    class="moon-icon hidden h-5 w-5"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-  </svg>
-</button>
+<!-- Selector de tema (D26): las dos opciones a la vista y la activa marcada (la pieza .seg de kit.css).
+     La marca y el color de los iconos salen de html.dark, así que están bien antes de que cargue el guion. -->
+<div class:list={['seg', 'seg--theme', size === 'menu' && 'seg--lg']} role="group" aria-label={t('aria.theme')}>
+  <span class="seg-pad" aria-hidden="true"></span>
+  <button type="button" class="seg-opt" data-theme-set="light" aria-pressed="false" aria-label={t('aria.theme.light')} title={t('aria.theme.light')}>
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" aria-hidden="true">
+      <circle cx="8" cy="8" r="2.75"></circle>
+      <path d="M8 1.25v1.5M8 13.25v1.5M1.25 8h1.5M13.25 8h1.5M3.23 3.23l1.06 1.06M11.71 11.71l1.06 1.06M12.77 3.23l-1.06 1.06M4.29 11.71l-1.06 1.06"></path>
+    </svg>
+  </button>
+  <button type="button" class="seg-opt" data-theme-set="dark" aria-pressed="false" aria-label={t('aria.theme.dark')} title={t('aria.theme.dark')}>
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="miter" aria-hidden="true">
+      <path d="M13.5 9.6A5.75 5.75 0 0 1 6.4 2.5a5.75 5.75 0 1 0 7.1 7.1Z"></path>
+    </svg>
+  </button>
+</div>
 
 <script>
-  // Re-run logic on every page navigation
-  document.addEventListener('astro:page-load', () => {
-    const buttons = document.querySelectorAll('.theme-toggle-btn');
+  // Un solo oyente para todos los selectores (el de la barra y el del menú de móvil)
+  const root = document.documentElement;
+  const sync = () => {
+    const dark = root.classList.contains('dark');
+    for (const btn of document.querySelectorAll<HTMLElement>('[data-theme-set]')) {
+      btn.setAttribute('aria-pressed', String((btn.dataset.themeSet === 'dark') === dark));
+    }
+  };
 
-    // Helper: Update UI state for all buttons
-    const updateIcons = (isDark: boolean) => {
-      buttons.forEach((btn) => {
-        const sun = btn.querySelector('.sun-icon');
-        const moon = btn.querySelector('.moon-icon');
-
-        if (isDark) {
-          sun?.classList.remove('hidden');
-          moon?.classList.add('hidden');
-        } else {
-          sun?.classList.add('hidden');
-          moon?.classList.remove('hidden');
-        }
-      });
-    };
-
-    const isDark = document.documentElement.classList.contains('dark');
-    updateIcons(isDark);
-
-    buttons.forEach((btn) => {
-      const newBtn = btn.cloneNode(true) as HTMLButtonElement;
-      btn.parentNode?.replaceChild(newBtn, btn);
-
-      newBtn.addEventListener('click', () => {
-        // Toggle Logic
-        const isDarkNow = document.documentElement.classList.contains('dark');
-        // En dos tiempos (estilos en global.css): primero cambia el lienzo y después los frames
-        const root = document.documentElement;
-        root.classList.add('theme-switching');
-        window.setTimeout(() => root.classList.remove('theme-switching'), 340);
-
-        if (isDarkNow) {
-          document.documentElement.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-          updateIcons(false);
-        } else {
-          document.documentElement.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-          updateIcons(true);
-        }
-      });
-    });
+  document.addEventListener('click', (event) => {
+    const btn = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-theme-set]') : null;
+    if (!btn) return;
+    const dark = btn.dataset.themeSet === 'dark';
+    if (dark === root.classList.contains('dark')) return;
+    // El cambio de color va escalonado (estilos en global.css)
+    root.classList.add('theme-switching');
+    window.setTimeout(() => root.classList.remove('theme-switching'), 340);
+    root.classList.toggle('dark', dark);
+    sync();
+    // El almacenamiento puede estar bloqueado: el tema cambia igual, solo no se recuerda
+    try {
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch {}
   });
+
+  document.addEventListener('astro:page-load', sync);
 </script>

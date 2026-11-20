@@ -361,3 +361,74 @@ html.kit-focus-on :focus-visible:not(input, textarea, select) {
     transition: none;
   }
 }
+
+/* ---------- Selector de dos opciones: tema e idioma (D26) ---------- */
+/* Una bandeja de tinte con las dos opciones a la vista y una marca (.seg-pad) debajo de la activa, que
+   se desliza de una a otra. Esquinas rectas, como el resto de la barra. Es para elegir entre dos
+   estados; las acciones (CV, Ver lienzo) siguen siendo botones. */
+.seg {
+  --seg-cell: 2rem;
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--seg-cell);
+  gap: 2px;
+  padding: 3px;
+  background: var(--tint);
+}
+.seg--lg {
+  --seg-cell: 2.75rem;
+}
+.seg-opt {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  height: var(--seg-cell);
+  font-size: var(--step-small);
+  font-weight: 600;
+  color: var(--muted);
+  transition:
+    color var(--dur-micro) var(--ease-out),
+    transform var(--dur-micro) var(--ease-out);
+}
+.seg-opt:hover {
+  color: var(--ink);
+}
+.seg-opt:active {
+  transform: scale(0.94);
+}
+.seg-pad {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: var(--seg-cell);
+  height: var(--seg-cell);
+  background: var(--paper);
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+/* En oscuro el papel es más oscuro que el tinte: la marca sube un paso hacia la tinta */
+:root.dark .seg-pad {
+  background: color-mix(in srgb, var(--ink) 14%, var(--tint));
+}
+/* La opción activa. El tema sale de html.dark, así está bien antes de que cargue el guion */
+.seg--lang .seg-opt[aria-current],
+:root:not(.dark) .seg--theme [data-theme-set='light'],
+:root.dark .seg--theme [data-theme-set='dark'] {
+  color: var(--ink);
+}
+.seg--lang[data-on='1'] .seg-pad,
+:root.dark .seg--theme .seg-pad {
+  transform: translateX(calc(var(--seg-cell) + 2px));
+}
+/* Al cambiar de tema la marca se desliza enseguida, aunque los colores esperen su turno */
+html.theme-switching .seg--theme .seg-pad {
+  transition:
+    transform var(--dur-ui) var(--ease-out),
+    background-color 150ms linear 150ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .seg-pad,
+  html.theme-switching .seg--theme .seg-pad {
+    transition: none !important;
+  }
+}

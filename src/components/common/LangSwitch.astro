@@ -1,0 +1,39 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
+
+interface Props {
+  /** "menu": celdas grandes, para el menú de móvil */
+  size?: 'bar' | 'menu';
+}
+
+const { size = 'bar' } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const langs = ['es', 'en'] as const;
+---
+
+<!-- Selector de idioma (D26): la misma pieza que el de tema (.seg de kit.css). La marca de la opción
+     activa cambia con la barra al pasar de página. No lleva transición propia: va debajo de las
+     siglas, y como capa aparte quedaría encima de ellas o debajo de la barra. -->
+<div
+  class:list={['seg', 'seg--lang', size === 'menu' && 'seg--lg']}
+  role="group"
+  aria-label={t('aria.lang')}
+  data-on={langs.indexOf(lang)}
+>
+  <span class="seg-pad" aria-hidden="true"></span>
+  {
+    langs.map((code) => (
+      <a
+        class="seg-opt"
+        href={translatePath(Astro.url.pathname, code)}
+        hreflang={code}
+        aria-label={t(`aria.lang.${code}`)}
+        aria-current={lang === code ? 'true' : undefined}
+      >
+        {code.toUpperCase()}
+      </a>
+    ))
+  }
+</div>
