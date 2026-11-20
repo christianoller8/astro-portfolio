@@ -17,7 +17,8 @@ for (const lang of ['es', 'en']) {
       // Todo a la vista: sin entradas escalonadas pendientes y con las imágenes cargadas
       await p.eval(() => {
         const s = document.createElement('style');
-        s.textContent = '[data-reveal]{opacity:1!important;transform:none!important}*{animation-duration:0s!important;animation-delay:0s!important;transition:none!important}';
+        // La caricatura con su bocadillo va fija en la ventana: en la captura alta caería en medio de la página
+        s.textContent = '[data-reveal]{opacity:1!important;transform:none!important}*{animation-duration:0s!important;animation-delay:0s!important;transition:none!important}[data-vb]{display:none!important}';
         document.head.append(s);
         document.querySelectorAll('img[loading=lazy]').forEach((img) => { img.loading = 'eager'; });
         window.scrollTo(0, 1200); window.scrollTo(0, 0);
