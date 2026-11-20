@@ -88,6 +88,13 @@
 [data-sel][data-size]:is(:focus-visible, .is-selected)::after {
   opacity: 1;
 }
+/* DESACTIVADO (20 nov), no borrado: el cuadro de selección al pasar el ratón por encima de una
+   pieza con [data-sel] (la firma de la barra, las imágenes de los proyectos, la foto de Sobre mí,
+   la 404…). A Christian no le gusta esa animación y la quiso fuera de toda la web "por ahora".
+   Para recuperarla basta con quitar este comentario: las piezas conservan su atributo data-sel y
+   kit.ts sigue midiendo su tamaño. El cuadro se sigue viendo al llegar con el teclado
+   (:focus-visible, arriba), que es lo que indica dónde está el foco, y en las piezas marcadas
+   como seleccionadas (.is-selected).
 @media (hover: hover) {
   [data-sel]:hover {
     outline: 1px solid var(--ink);
@@ -101,6 +108,7 @@
     opacity: 1;
   }
 }
+*/
 
 /* ---------- Cotas: una línea con topes y su valor en el centro ---------- */
 .kit-dim {

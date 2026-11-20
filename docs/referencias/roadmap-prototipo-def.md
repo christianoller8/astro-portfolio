@@ -935,6 +935,13 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
       en ese gris y el subrayado en blanco (antes, palabra blanca y subrayado gris); al pasar el
       ratón o con su lente puesta, la palabra pasa a blanco. **El modo claro no se tocó**: ahí
       los oficios siguen en tinta con el subrayado gris.
+    Dio por buenos el menú y los colores ("de ahí no quiero tocar nada"; el modo claro se queda
+    como está). La línea del canto en claro la pidió más oscura: `--page-edge` pasa a `#8a8a8a`.
+  - **Cuadro de selección al pasar el ratón, desactivado** (20 nov): el recuadro con tiradores y
+    medida que salía al pasar el ratón por las piezas con `data-sel` (la firma, las imágenes de los
+    proyectos, la foto de Sobre mí…) no le gusta. Está **comentado, no borrado**, en `kit.css`
+    (bloque `[data-sel]:hover`), por si lo quiere de vuelta: basta con quitar el comentario. Se
+    sigue viendo al llegar con el teclado, que es lo que indica dónde está el foco.
   - Al aprobarlo: rehacer las miniaturas del lienzo de todas las páginas (cambia la barra).
 
 ## Fase técnica (después del 10 de diseño)
