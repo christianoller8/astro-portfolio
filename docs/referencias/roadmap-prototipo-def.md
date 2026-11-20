@@ -801,7 +801,22 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     alto de la foto; en móvil, del 0 al 8 %). El pelo no lo acusa porque es del tono de la hoja.
   - Abajo, menos fundido: la figura aguanta sólida hasta el 71 % (antes, 62 %); en móvil, hasta el
     58 % (antes, 48 %). El punto donde se desvanece del todo no cambia.
-  - Pendiente: repetir las miniaturas de la home en oscuro (`es-home-dark.jpg`, `en-home-dark.jpg`).
+  - Las miniaturas de la home se repitieron al cerrar el punto siguiente.
+- [x] **Hero: la misma foto en los dos modos y aire arriba** (cerrado por Christian el 20 nov: "esto
+  de diseño ya está todo", no quiere tocar más la home por ahora):
+  - La foto es la misma en claro y en oscuro (`card-dark.jpg`): la de la luz roja con su pared gris,
+    pero sin la sombra que la figura proyectaba en la pared. Sale de `card.jpg` con
+    `.taste-skill/recorte/sin-sombra.cjs`, que rehace la pared de la derecha. La versión recortada
+    sobre transparente (`card-light.webp`) ya no se usa en el hero; el archivo y su guion siguen.
+  - Se probó sentar la figura recortada sobre una línea de base: no le gustó.
+  - En móvil, el encuadre, el fundido y la altura a la que empieza el texto son los mismos en los
+    dos modos (antes la foto oscura era más alta).
+  - En escritorio, texto y foto bajan juntos unos 48 px respecto a la barra (`--hero-top`), y el
+    hero llega al menos hasta donde acaba la foto.
+  - Fundidos en escritorio: en oscuro, los de antes (anchos, casi no se notan). En claro, una curva
+    suave en los cuatro lados. **No se ven iguales**: la pared oscura contrasta mucho con la hoja
+    clara y el fundido se nota como un halo. Quedó propuesto y sin respuesta aclarar la pared en la
+    versión clara para igualarlas; si vuelve a la home, empezar por ahí.
 
 ## Fase técnica (después del 10 de diseño)
 

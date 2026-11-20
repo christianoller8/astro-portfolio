@@ -12,7 +12,9 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
   página (D23), la foto clara sin sombra ni franja (D24) y la hoja con textura de papel en toda la
   página (D25) y los selectores de tema e idioma (D26). Los cinco están hechos y aprobados (ver
-  "Ajustes de diseño" en el roadmap). No hay ningún ajuste a medias: toca preguntarle qué sigue.
+  "Ajustes de diseño" en el roadmap). Después retocó la foto del hero (la misma en los dos modos,
+  con su pared gris y sin sombra) y dio la home por cerrada: no quiere tocarla más por ahora. Lo
+  siguiente es una idea nueva que va a explicar él.
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta
@@ -74,10 +76,11 @@ enviar a Awwwards la URL en inglés.
   de móvil) usa `--sheet-bg`, nunca `--paper`.** La barra termina en un fundido, no en una línea.
   Una mezcla (`mix-blend-mode`) dentro de un elemento con máscara o con entrada escalonada queda
   aislada: hay que ponerla en el elemento de fuera (pasó con el retrato de Sobre mí).
-- **20 nov, foto clara (D24 y D25)**: sin la franja roja ni la sombra, con fondo transparente
-  (`card-light.webp`) y un velo claro detrás. Se genera en cualquier equipo con
-  `.taste-skill/recorte/luz-gris.cjs` y la máscara guardada en `docs/imgs/card-mascara.png` (sacada
-  de la foto anterior con `mascara-diferencia.cjs`). Para esta foto ya no hace falta `person.swift`.
+- **20 nov, foto del hero**: los dos modos usan `card-dark.jpg`, la foto de la luz roja con su
+  pared gris y sin la sombra de la figura. Se genera con `.taste-skill/recorte/sin-sombra.cjs` a
+  partir de `card.jpg` y de la máscara guardada en `docs/imgs/card-mascara.png`. La versión
+  recortada sobre transparente (`card-light.webp`, de `luz-gris.cjs`) fue la foto clara de D24 y
+  D25 y ya no se usa. En claro el fundido de la foto se nota más que en oscuro (ver el roadmap).
 - **20 nov**: la barra es la primera fila del artboard y el nombre del frame ya no va encima de él
   (sale en la barra de estado de las lentes, en el lienzo y en la 404). En el hero, texto y foto van
   en columnas separadas.
