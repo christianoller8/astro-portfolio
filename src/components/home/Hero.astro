@@ -174,10 +174,11 @@ const roles = [
   }
   /* Claro: la figura se desvanece a los lados y por abajo */
   .hero-photo-img--light {
-    /* Prueba: con la pared gris lleva los mismos fundidos que la oscura */
+    /* Con la pared gris la foto se ve entera: a los lados y arriba solo un fundido corto, lo justo
+       para que no se vea un borde recto. Abajo, el mismo fundido que la oscura */
     mask-image:
-      linear-gradient(90deg, transparent 0, #000 30%, #000 82%, transparent 100%),
-      linear-gradient(180deg, transparent 16.8%, #000 25%, #000 var(--fade-from), transparent var(--fade-to));
+      linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
+      linear-gradient(180deg, transparent 16.8%, #000 21%, #000 var(--fade-from), transparent var(--fade-to));
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
