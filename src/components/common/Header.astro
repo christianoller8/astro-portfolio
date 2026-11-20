@@ -228,8 +228,8 @@ const isActive = (path: string) => {
 
   /* La firma se escribe a máquina al cargar la web (pedido por Christian el 20 nov): se destapa de
      izquierda a derecha a saltos, uno por letra, en el punto donde acaba cada una (medido sobre la
-     imagen: C 22 %, H 45,1 %, R 74,9 %, I 83,5 %, S 100 %), con un cursor delante que parpadea un
-     par de veces y se va. Solo al cargar: al pasar de una página a otra (html.arrived) la barra se
+     imagen: C 22 %, H 45,1 %, R 74,9 %, I 83,5 %, S 100 %), con un cursor delante que desaparece en
+     cuanto se escribe la S (los parpadeos del final no le gustaron). Solo al cargar: al pasar de una página a otra (html.arrived) la barra se
      vuelve a pintar y la firma ya está escrita. En la home espera a que acabe la intro */
   @media (prefers-reduced-motion: no-preference) {
     :global(html:not(.arrived)) .brand-sign-ink {
@@ -246,7 +246,7 @@ const isActive = (path: string) => {
       animation:
         brand-caret 700ms step-end 450ms both,
         brand-blink 460ms step-end infinite,
-        brand-caret-out 1ms linear 2450ms forwards;
+        brand-caret-out 1ms linear 1150ms forwards;
     }
     :global(html.intro) .brand-sign-ink,
     :global(html.intro) .brand-caret {

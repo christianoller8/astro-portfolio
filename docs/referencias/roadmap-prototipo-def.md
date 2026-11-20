@@ -900,7 +900,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - **La intro no se toca**: sigue dibujando la caricatura con "made by chris". Se llegó a cambiar
     para que escribiera la firma y él lo mandó revertir: lo había entendido mal.
   - Lo que pidió: que **la firma de la barra se escriba a máquina**, letra a letra y con un cursor
-    que parpadea y se va, en claro y en oscuro (hecho el 20 nov, pendiente de su visto bueno).
+    delante, en claro y en oscuro (hecho el 20 nov, pendiente de su visto bueno). El cursor
+    desaparece en cuanto se escribe la S: los parpadeos del final los mandó quitar.
     Solo al cargar la web, no al pasar de una página a otra; en la home espera a que acabe la
     intro. Como la firma es una imagen, se destapa a saltos donde acaba cada letra (`Header.astro`):
     si cambia la imagen hay que volver a medir esos puntos.
