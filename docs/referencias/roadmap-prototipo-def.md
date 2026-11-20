@@ -908,6 +908,22 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     intro. Como la firma es una imagen, se destapa a saltos donde acaba cada letra (`Header.astro`):
     si cambia la imagen hay que volver a medir esos puntos.
 
+- [ ] **Cuatro retoques del 20 nov** (hechos, pendientes de su visto bueno):
+  - **Foto clara tan ancha como la oscura**: medidas, las dos paredes ocupaban casi lo mismo,
+    pero en claro el fundido lateral (18 % del ancho) hacía que se viera unos 100 px más estrecha,
+    porque la pared oscura a medio fundir sobre la hoja clara ya no se lee como foto. El fundido
+    lateral de la clara pasa al 9 %. La oscura no se toca. Coste: el borde de la clara es algo
+    más marcado.
+  - **Transición entre páginas sobre papel**: mientras el personaje empuja la página, el fondo ya
+    no es el lienzo con puntos sino la misma hoja con textura, en claro y en oscuro
+    (`::view-transition` en `global.css`).
+  - **Menú**: la página actual se marca con una línea de tinta en el borde de abajo del enlace,
+    como una pestaña, en vez del cuadradito centrado. Sigue deslizándose de un enlace a otro.
+  - **Selectores de idioma y tema**: la opción activa va sobre una marca de tinta con el texto en
+    papel (antes, papel sobre tinte: blanco sobre casi blanco en claro). Mismo contraste que el
+    cambio de vista de Proyectos.
+  - Al aprobarlo: rehacer las miniaturas del lienzo de todas las páginas (cambia la barra).
+
 ## Fase técnica (después del 10 de diseño)
 
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.

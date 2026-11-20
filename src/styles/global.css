@@ -458,10 +458,11 @@ html.intro {
   --dur-pan: 2000ms;
   --ease-pan: cubic-bezier(0.62, 0.02, 0.34, 1);
 }
+/* Lo que se ve entre una página y otra mientras el personaje la empuja: la misma hoja de papel de
+   las páginas, en claro y en oscuro. Antes era el lienzo con su trama de puntos, y a Christian el
+   salto de la hoja a los puntos le resultaba brusco (20 nov) */
 ::view-transition {
-  background-color: var(--canvas);
-  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
-  background-size: 20px 20px;
+  background: var(--sheet-bg);
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -493,7 +494,7 @@ html.frame-back::view-transition-group(pusher) {
 ::view-transition-new(pusher) {
   animation: none;
 }
-/* El cuadradito del enlace activo del menú se desliza hasta el nuevo enlace al cambiar de página */
+/* La línea del enlace activo del menú se desliza hasta el nuevo enlace al cambiar de página */
 ::view-transition-group(nav-ind) {
   /* Por encima de la barra (que va fija, con z-index 10) */
   z-index: 11;

@@ -403,18 +403,18 @@ html.kit-focus-on :focus-visible:not(input, textarea, select) {
   left: 3px;
   width: var(--seg-cell);
   height: var(--seg-cell);
-  background: var(--paper);
+  /* La marca es de tinta y la opción activa va en papel encima: se ve cuál está elegida de un
+     vistazo, en claro y en oscuro. (Antes era papel sobre tinte, blanco sobre casi blanco en modo
+     claro, y apenas se distinguía: 20 nov.) Es el mismo contraste que el cambio de vista de
+     Proyectos y las lentes */
+  background: var(--ink);
   transition: transform var(--dur-ui) var(--ease-out);
-}
-/* En oscuro el papel es más oscuro que el tinte: la marca sube un paso hacia la tinta */
-:root.dark .seg-pad {
-  background: color-mix(in srgb, var(--ink) 14%, var(--tint));
 }
 /* La opción activa. El tema sale de html.dark, así está bien antes de que cargue el guion */
 .seg--lang .seg-opt[aria-current],
 :root:not(.dark) .seg--theme [data-theme-set='light'],
 :root.dark .seg--theme [data-theme-set='dark'] {
-  color: var(--ink);
+  color: var(--paper);
 }
 .seg--lang[data-on='1'] .seg-pad,
 :root.dark .seg--theme .seg-pad {

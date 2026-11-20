@@ -330,16 +330,16 @@ const isActive = (path: string) => {
   .nav-link:hover {
     color: var(--ink);
   }
-  /* El cuadradito de selección del enlace activo: viaja de un enlace a otro con la transición */
+  /* La marca del enlace activo: una línea de tinta en el borde de abajo, de lado a lado, como una
+     pestaña. Viaja de un enlace a otro con la transición. (Antes era un cuadradito centrado, que
+     a Christian no le convencía: 20 nov) */
   .nav-link {
     position: relative;
   }
   .nav-ind {
     position: absolute;
-    bottom: 3px;
-    left: calc(50% - 2.5px);
-    width: 5px;
-    height: 5px;
+    inset: auto 0 0;
+    height: 2px;
     background: var(--ink);
     view-transition-name: nav-ind;
   }

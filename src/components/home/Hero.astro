@@ -182,21 +182,24 @@ const roles = [
     /* La pared oscura contrasta mucho más con la hoja clara que con la oscura: un fundido recto se
        ve como un borde borroso. Aquí cada lado se funde con una curva suave (entra y sale despacio),
        para que el paso a la hoja se note tan poco como en oscuro. Arriba empieza donde la foto
-       asoma por debajo de la barra (11,5 % de su alto) y acaba antes del pelo */
+       asoma por debajo de la barra (11,5 % de su alto) y acaba antes del pelo.
+       A los lados el fundido es corto (9 % del ancho; antes, 18 %): con uno más largo la pared
+       se veía unos 100 px más estrecha que en oscuro, donde el mismo fundido casi no se nota, y
+       Christian quiso las dos fotos igual de anchas (20 nov) */
     mask-image:
       linear-gradient(
         90deg,
         transparent 0,
-        rgb(0 0 0 / 0.104) 3.6%,
-        rgb(0 0 0 / 0.352) 7.2%,
-        rgb(0 0 0 / 0.648) 10.8%,
-        rgb(0 0 0 / 0.896) 14.4%,
-        #000 18%,
-        #000 82%,
-        rgb(0 0 0 / 0.896) 85.6%,
-        rgb(0 0 0 / 0.648) 89.2%,
-        rgb(0 0 0 / 0.352) 92.8%,
-        rgb(0 0 0 / 0.104) 96.4%,
+        rgb(0 0 0 / 0.104) 1.8%,
+        rgb(0 0 0 / 0.352) 3.6%,
+        rgb(0 0 0 / 0.648) 5.4%,
+        rgb(0 0 0 / 0.896) 7.2%,
+        #000 9%,
+        #000 91%,
+        rgb(0 0 0 / 0.896) 92.8%,
+        rgb(0 0 0 / 0.648) 94.6%,
+        rgb(0 0 0 / 0.352) 96.4%,
+        rgb(0 0 0 / 0.104) 98.2%,
         transparent 100%
       ),
       linear-gradient(
