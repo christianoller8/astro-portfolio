@@ -23,7 +23,7 @@
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
-| **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara y hoja con textura de papel aprobados; los selectores de tema e idioma, hechos y a falta de tu visto bueno |
+| **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara, hoja con textura de papel y selectores de tema e idioma, aprobados. A la espera de tu siguiente cambio |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
 
@@ -773,7 +773,7 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Comprobado en Inicio, Proyectos, dos casos, Sobre mí, Contacto y la 404, a 1440 y 390 px, en
     claro y oscuro, más la barra con la página desplazada, la lente Diseño, el menú de móvil y el
     cambio de modo. Capturas en `.taste-skill/mock-hero/audit/` y `states/`.
-- [ ] **Selectores de tema e idioma** (D26; hechos el 20 nov, pendientes de tu visto bueno):
+- [x] **Selectores de tema e idioma** (D26; hechos y aprobados el 20 nov):
   - Los dos con la misma pieza (`.seg`, en `kit.css`): una bandeja con las dos opciones a la vista
     y una marca bajo la activa. Esquinas rectas, como elegiste, y a juego con la bandeja de lentes.
   - Tema: sol y luna, dibujados con el trazo de los demás iconos de la barra. La marca se desliza al

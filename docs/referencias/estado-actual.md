@@ -11,8 +11,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
   cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
   página (D23), la foto clara sin sombra ni franja (D24) y la hoja con textura de papel en toda la
-  página (D25), ya aprobados. Después, los selectores de tema e idioma (D26): hechos y a la espera
-  de su visto bueno (ver "Ajustes de diseño" en el roadmap).
+  página (D25) y los selectores de tema e idioma (D26). Los cinco están hechos y aprobados (ver
+  "Ajustes de diseño" en el roadmap). No hay ningún ajuste a medias: toca preguntarle qué sigue.
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta
