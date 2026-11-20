@@ -507,6 +507,17 @@ html.frame-back::view-transition-group(pusher) {
 ::view-transition-new(toolbar) {
   animation: none;
 }
+/* La caricatura con su bocadillo (ViewBubble) tampoco se mueve en el paneo */
+::view-transition-group(view-bubble) {
+  animation: none;
+  z-index: 10;
+}
+::view-transition-old(view-bubble) {
+  display: none;
+}
+::view-transition-new(view-bubble) {
+  animation: none;
+}
 
 /* --- De la tarjeta al caso (plan §4.3 D): en vez de panear, la imagen del proyecto crece hasta
    ser la cabecera del caso y el título viaja hasta el H1; lo demás se funde. Al volver, regresan a

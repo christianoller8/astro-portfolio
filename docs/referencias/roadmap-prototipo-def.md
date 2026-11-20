@@ -817,6 +817,20 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     suave en los cuatro lados. **No se ven iguales**: la pared oscura contrasta mucho con la hoja
     clara y el fundido se nota como un halo. Quedó propuesto y sin respuesta aclarar la pared en la
     versión clara para igualarlas; si vuelve a la home, empezar por ahí.
+- [ ] **Lentes y lienzo en el bocadillo "Cómo lo veo yo"** (D27; hecho el 20 nov, pendiente de su
+  visto bueno):
+  - Fuera de la barra de escritorio: la barra queda en marca, menú, idioma, tema y CV.
+  - La caricatura, fija abajo a la izquierda, con un bocadillo de cómic. Al pulsarla se abre con
+    Diseño, Código, QA y Ver lienzo, y con "Vista normal" si hay una lente puesta
+    (`src/components/site/ViewBubble.astro`). Con teclado: Tab hasta la caricatura, Enter, flechas
+    y Esc; los atajos 1, 2, 3 y M no cambian.
+  - Con la página movida o una lente puesta queda la cabeza sola; con una lente sube por encima de
+    su barra de estado. Se esconde con el lienzo abierto, el menú de móvil y la intro.
+  - Comprobado con `.taste-skill/mock-hero/vb-check.mjs` (escritorio, oscuro y móvil).
+  - Sin decidir: en el menú de móvil las lentes y el lienzo siguen estando, así que en móvil hay
+    dos entradas. Y de la misma conversación quedan por hacer: enlazar "Tú ves una web. Yo la veo
+    así" con el bocadillo, las cajas de proyectos con vídeo al estilo de poulo.site y mirar por
+    qué han dejado de verse las capas 3D de la home.
 
 ## Fase técnica (después del 10 de diseño)
 

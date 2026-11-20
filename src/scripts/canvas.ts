@@ -87,7 +87,11 @@ function initCanvas() {
   const show = (from?: HTMLElement | null) => {
     if (open) return;
     open = true;
-    trigger = from ?? (document.activeElement as HTMLElement | null);
+    // Desde el bocadillo "Cómo lo veo yo", el foco vuelve a la caricatura: su panel se cierra al elegir
+    trigger =
+      from?.closest('[data-vb]')?.querySelector<HTMLElement>('[data-vb-toggle]') ??
+      from ??
+      (document.activeElement as HTMLElement | null);
     window.clearTimeout(timer);
     // El menú de móvil, si estaba abierto, se cierra
     const menuBtn = document.getElementById('menu-btn');

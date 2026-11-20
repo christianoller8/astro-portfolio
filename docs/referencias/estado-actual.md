@@ -13,8 +13,12 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   página (D23), la foto clara sin sombra ni franja (D24) y la hoja con textura de papel en toda la
   página (D25) y los selectores de tema e idioma (D26). Los cinco están hechos y aprobados (ver
   "Ajustes de diseño" en el roadmap). Después retocó la foto del hero (la misma en los dos modos,
-  con su pared gris y sin sombra) y dio la home por cerrada: no quiere tocarla más por ahora. Lo
-  siguiente es una idea nueva que va a explicar él.
+  con su pared gris y sin sombra) y dio la home por cerrada: no quiere tocarla más por ahora.
+- **Idea nueva, en marcha (20 nov)**: las lentes y el lienzo le cargaban la barra. Ya están en el
+  bocadillo "Cómo lo veo yo" de la caricatura, abajo a la izquierda (D27), a falta de su visto
+  bueno. De la misma idea quedan: enlazar la sección "Tú ves una web. Yo la veo así" con el
+  bocadillo, organizar los proyectos en cajas con un vídeo corto de cada app (referencia:
+  poulo.site; los vídeos los graba él) y mirar por qué no se ven las capas 3D de la home.
 - **Después: la fase técnica**, que aún no ha empezado.
 
 ## La pregunta que sigue abierta

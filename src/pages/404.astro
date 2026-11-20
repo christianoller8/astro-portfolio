@@ -42,6 +42,8 @@ const toolbar = {
   links: { '/': ['/en', t('nav.home')], '/projects': ['/en/projects', t('nav.projects')], '/about': ['/en/about', t('nav.about')], '/contact': ['/en/contact', t('nav.contact')] },
   lenses: { design: t('lens.design'), code: t('lens.code'), qa: t('lens.qa') },
   canvas: t('nav.canvas'),
+  bubble: t('bubble.title'),
+  clear: t('lens.clear'),
 };
 ---
 
@@ -286,6 +288,8 @@ const toolbar = {
         links: Record<string, [string, string]>;
         lenses: Record<string, string>;
         canvas: string;
+        bubble: string;
+        clear: string;
       };
       document.querySelectorAll<HTMLAnchorElement>('header a[href]').forEach((link) => {
         const to = toolbar.links[link.getAttribute('href')?.replace(/(.)\/$/, '$1') ?? ''];
@@ -294,14 +298,19 @@ const toolbar = {
         // La marca lleva el logo dentro: solo se cambia el texto de los enlaces del menú
         if (!link.children.length) link.textContent = to[1];
       });
-      document.querySelectorAll<HTMLElement>('header [data-canvas-open]').forEach((btn) => {
+      // Lo mismo con el bocadillo "Cómo lo veo yo" (ViewBubble), que va fuera de la barra
+      document.querySelectorAll('[data-vb-title]').forEach((el) => (el.textContent = toolbar.bubble));
+      document.querySelectorAll('[data-vb][aria-label], [data-vb] [aria-label]').forEach((el) => el.setAttribute('aria-label', toolbar.bubble));
+      const clear = document.querySelector('[data-vb] [data-lens-clear] span');
+      if (clear) clear.textContent = toolbar.clear;
+      document.querySelectorAll<HTMLElement>('header [data-canvas-open], [data-vb] [data-canvas-open]').forEach((btn) => {
         // El texto del botón es su primer nodo de texto con contenido (lleva icono y tecla aparte)
         const node = [...btn.childNodes].find((n) => n.nodeType === 3 && n.textContent?.trim());
         const label = btn.querySelector('span:not([aria-hidden])') ?? node;
         if (label) label.textContent = toolbar.canvas;
         if (btn.title) btn.title = `${toolbar.canvas} (M)`;
       });
-      document.querySelectorAll<HTMLElement>('header [data-lens-set]').forEach((btn) => {
+      document.querySelectorAll<HTMLElement>('header [data-lens-set], [data-vb] [data-lens-set]').forEach((btn) => {
         const name = toolbar.lenses[btn.dataset.lensSet ?? ''];
         const text = btn.querySelector('span');
         if (name && text) text.textContent = name;

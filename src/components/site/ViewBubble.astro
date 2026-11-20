@@ -1,0 +1,398 @@
+---
+// "Cómo lo veo yo": la caricatura, abajo a la izquierda, con un bocadillo de cómic. Al pulsarla se
+// abre con las tres lentes y el lienzo, que antes iban en la barra (20 nov: Christian los quiso
+// fuera de la barra, que quedaba cargada).
+// - El bocadillo está dibujado con la tinta de la caricatura y conserva sus colores en modo oscuro,
+//   igual que ella.
+// - Los botones no tienen lógica propia: llevan data-lens-set, data-lens-clear y data-canvas-open,
+//   y de eso se encargan lenses.ts y canvas.ts. Los atajos (1, 2, 3, M y Esc) son los de siempre.
+// - El bocadillo se ve con la página arriba del todo y al pasar el ratón o enfocar la caricatura;
+//   con la página movida o con una lente puesta queda solo la cabeza, para no tapar el contenido.
+import Caricature from './Caricature.astro';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const lenses = [
+  { id: 'design', key: '1', label: t('lens.design') },
+  { id: 'code', key: '2', label: t('lens.code') },
+  { id: 'qa', key: '3', label: t('lens.qa') },
+] as const;
+---
+
+<div class="vb" data-vb>
+  <button
+    type="button"
+    class="vb-toggle"
+    data-vb-toggle
+    aria-expanded="false"
+    aria-controls="vb-panel"
+    aria-label={t('bubble.title')}
+  >
+    <Caricature variant="head" class="vb-head" />
+    <span class="vb-bubble" aria-hidden="true">
+      <span data-vb-title>{t('bubble.title')}</span>
+      <svg class="vb-tail" viewBox="0 0 30 24" aria-hidden="true">
+        <path d="M11 1C10 9 7 16 1 22c11-2 19-9 23-20"></path>
+      </svg>
+    </span>
+  </button>
+
+  <div id="vb-panel" class="vb-panel" data-vb-panel role="group" aria-label={t('bubble.title')} hidden>
+    <p class="vb-title" data-vb-title aria-hidden="true">{t('bubble.title')}</p>
+    {
+      lenses.map((lens) => (
+        <button type="button" class="vb-row" data-lens-set={lens.id} aria-pressed="false" aria-keyshortcuts={lens.key}>
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            {lens.id === 'design' && (
+              <>
+                <rect x="3" y="3" width="10" height="10" />
+                <rect x="1.5" y="1.5" width="3" height="3" fill="currentColor" stroke="none" />
+                <rect x="11.5" y="11.5" width="3" height="3" fill="currentColor" stroke="none" />
+              </>
+            )}
+            {lens.id === 'code' && <path d="M5.5 4 2 8l3.5 4M10.5 4 14 8l-3.5 4" />}
+            {lens.id === 'qa' && <path d="m2.5 8.5 3.5 3.5 7.5-8" />}
+          </svg>
+          <span>{lens.label}</span>
+          <kbd>{lens.key}</kbd>
+        </button>
+      ))
+    }
+    <button type="button" class="vb-row" data-canvas-open aria-keyshortcuts="M">
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <rect x="1.5" y="2" width="5.5" height="7.5"></rect>
+        <rect x="9.5" y="2" width="5" height="4"></rect>
+        <rect x="9.5" y="8.5" width="5" height="5.5"></rect>
+        <rect x="1.5" y="12" width="5.5" height="2"></rect>
+      </svg>
+      <span>{t('nav.canvas')}</span>
+      <kbd>M</kbd>
+    </button>
+    {/* Solo con una lente puesta: la salida */}
+    <button type="button" class="vb-row vb-row--clear" data-lens-clear aria-keyshortcuts="Escape">
+      <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="m3.5 3.5 9 9M12.5 3.5l-9 9"></path>
+      </svg>
+      <span>{t('lens.clear')}</span>
+      <kbd>Esc</kbd>
+    </button>
+    <svg class="vb-tail" viewBox="0 0 30 24" aria-hidden="true">
+      <path d="M11 1C10 9 7 16 1 22c11-2 19-9 23-20"></path>
+    </svg>
+  </div>
+</div>
+
+<style>
+  .vb {
+    /* La tinta y el papel de la caricatura: no cambian con el tema */
+    --vb-ink: var(--car-ink);
+    --vb-paper: var(--car-paper);
+    --vb-head: 3.625rem;
+    --vb-line: 2.6px;
+    position: fixed;
+    left: max(calc(var(--gutter) * 0.5), env(safe-area-inset-left));
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    z-index: 49;
+    color: var(--vb-ink);
+    /* En el paneo entre páginas se queda quieta, como la barra */
+    view-transition-name: view-bubble;
+    transition:
+      bottom var(--dur-ui) var(--ease-out),
+      opacity var(--dur-micro) var(--ease-out),
+      visibility 0s;
+  }
+  /* Con una lente puesta sube por encima de su barra de estado */
+  :global(html[data-lens]) .vb {
+    bottom: calc(var(--lens-bar-h) + 0.75rem + env(safe-area-inset-bottom));
+  }
+  :global(html.intro) .vb,
+  :global(html.canvas-open) .vb,
+  :global(html.menu-open) .vb {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur-micro) var(--ease-in),
+      visibility 0s var(--dur-micro);
+  }
+
+  .vb-toggle {
+    position: relative;
+    display: block;
+  }
+  .vb :global(.vb-head) {
+    width: var(--vb-head);
+    height: auto;
+    transform-origin: 50% 100%;
+    transition: transform var(--dur-micro) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .vb-toggle:hover :global(.vb-head) {
+      transform: rotate(-5deg);
+    }
+  }
+  .vb-toggle:active :global(.vb-head) {
+    transform: scale(0.96);
+  }
+
+  /* --- El bocadillo y el panel: el mismo globo de tinta, con más peso abajo y a la derecha --- */
+  .vb-bubble,
+  .vb-panel {
+    position: absolute;
+    bottom: 2.5rem;
+    background: var(--vb-paper);
+    border: var(--vb-line) solid var(--vb-ink);
+    box-shadow: 2px 2.5px 0 var(--vb-ink);
+    transform-origin: 0 100%;
+  }
+  .vb-tail {
+    position: absolute;
+    left: 12px;
+    bottom: -19.5px;
+    width: 30px;
+    height: 24px;
+    overflow: visible;
+  }
+  .vb-tail path {
+    fill: var(--vb-paper);
+    stroke: var(--vb-ink);
+    stroke-width: var(--vb-line);
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .vb-bubble {
+    left: calc(100% + 0.25rem);
+    padding: 0.55rem 1.1rem 0.6rem;
+    border-radius: 48% 52% 50% 50% / 60% 58% 42% 40%;
+    font-size: var(--step-small);
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition:
+      opacity var(--dur-micro) var(--ease-out),
+      transform var(--dur-micro) var(--ease-out),
+      visibility 0s;
+  }
+  /* Con la página movida, con una lente o con el panel abierto, queda solo la cabeza */
+  :global(html[data-scrolled]) .vb-bubble,
+  :global(html[data-lens]) .vb-bubble,
+  .vb-toggle[aria-expanded='true'] .vb-bubble {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.7);
+    transition:
+      opacity var(--dur-micro) var(--ease-in),
+      transform var(--dur-micro) var(--ease-in),
+      visibility 0s var(--dur-micro);
+  }
+  /* …y vuelve al pasar el ratón o enfocar la caricatura */
+  @media (hover: hover) {
+    .vb .vb-toggle[aria-expanded='false']:hover .vb-bubble {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: none;
+      transition:
+        opacity var(--dur-micro) var(--ease-out),
+        transform var(--dur-micro) var(--ease-out),
+        visibility 0s;
+    }
+  }
+  .vb .vb-toggle[aria-expanded='false']:focus-visible .vb-bubble {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .vb-panel {
+    left: calc(var(--vb-head) + 0.25rem);
+    min-width: 12.5rem;
+    padding: 0.75rem 0.625rem 0.625rem;
+    border-radius: 26px 22px 28px 20px / 22px 28px 20px 26px;
+  }
+  .vb-panel[hidden] {
+    display: none;
+  }
+  .vb-title {
+    margin: 0 0.5rem 0.5rem;
+    font-size: var(--step-small);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .vb-row {
+    display: grid;
+    grid-template-columns: 1rem 1fr auto;
+    align-items: center;
+    gap: 0.625rem;
+    width: 100%;
+    min-height: 2.25rem;
+    padding: 0 0.5rem;
+    font-size: var(--step-small);
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+    color: inherit;
+  }
+  .vb-row svg {
+    display: block;
+  }
+  .vb-row kbd {
+    font: 500 0.75rem/1 var(--font-mono);
+    opacity: 0.6;
+  }
+  /* Al pasar el ratón o enfocar, un tinte; la opción activa, en tinta. Con los colores de la
+     caricatura y no con --pencil, que en modo oscuro es claro y no se vería sobre el globo blanco */
+  @media (hover: hover) {
+    .vb-row:hover {
+      background: color-mix(in srgb, var(--vb-ink) 12%, var(--vb-paper));
+    }
+  }
+  .vb-row:focus-visible {
+    background: color-mix(in srgb, var(--vb-ink) 12%, var(--vb-paper));
+  }
+  .vb-row[aria-pressed='true'] {
+    background: var(--vb-ink);
+    color: var(--vb-paper);
+  }
+  .vb-row--clear {
+    display: none;
+  }
+  :global(html[data-lens]) .vb-row--clear {
+    display: grid;
+  }
+  @media (pointer: coarse) {
+    .vb-row {
+      min-height: 2.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .vb-panel:not([hidden]) {
+      animation: vb-pop var(--dur-ui) var(--ease-out) both;
+    }
+  }
+  @keyframes vb-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+  /* Sin movimiento: todo cambia de golpe y la cabeza no se ladea */
+  @media (prefers-reduced-motion: reduce) {
+    .vb,
+    .vb-bubble,
+    .vb :global(.vb-head) {
+      transition: none !important;
+    }
+    .vb-toggle:hover :global(.vb-head),
+    .vb-toggle:active :global(.vb-head) {
+      transform: none;
+    }
+  }
+
+  /* Tablet y móvil: la cabeza, algo más pequeña */
+  @media (max-width: 1023px) {
+    .vb {
+      --vb-head: 3rem;
+      bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    }
+    .vb-bubble,
+    .vb-panel {
+      bottom: 2rem;
+    }
+  }
+</style>
+
+<script>
+  // La página se vuelve a pintar en cada navegación: los oyentes van en el documento, una sola vez
+  const parts = () => {
+    const box = document.querySelector<HTMLElement>('[data-vb]');
+    const toggle = box?.querySelector<HTMLButtonElement>('[data-vb-toggle]');
+    const panel = box?.querySelector<HTMLElement>('[data-vb-panel]');
+    return box && toggle && panel ? { box, toggle, panel } : null;
+  };
+  const isOpen = () => parts()?.toggle.getAttribute('aria-expanded') === 'true';
+  const rows = (panel: HTMLElement) => [...panel.querySelectorAll<HTMLButtonElement>('button')].filter((btn) => btn.offsetParent !== null);
+
+  /** Abre o cierra el panel. Al cerrar, el foco vuelve a la caricatura si estaba dentro (salvo refocus: false) */
+  const setOpen = (open: boolean, refocus = true) => {
+    const p = parts();
+    if (!p || open === isOpen()) return;
+    const hadFocus = refocus && p.panel.contains(document.activeElement);
+    p.toggle.setAttribute('aria-expanded', String(open));
+    p.panel.hidden = !open;
+    if (open) {
+      const list = rows(p.panel);
+      (list.find((btn) => btn.getAttribute('aria-pressed') === 'true') ?? list[0])?.focus({ preventScroll: true });
+    } else if (hadFocus) {
+      p.toggle.focus({ preventScroll: true });
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest('[data-vb-toggle]')) {
+      setOpen(!isOpen());
+      return;
+    }
+    if (!isOpen()) return;
+    // Elegir una opción o pulsar fuera lo cierra. Al abrir el lienzo el foco es suyo (canvas.ts)
+    if (!target?.closest('[data-vb-panel]') || target.closest('button')) setOpen(false, !target?.closest('[data-canvas-open]'));
+  });
+
+  // En la fase de captura: con el panel abierto, Escape lo cierra y no llega a quitar la lente
+  document.addEventListener(
+    'keydown',
+    (event) => {
+      const p = parts();
+      if (!p || !isOpen()) return;
+      const root = document.documentElement.classList;
+      // Con el lienzo o el menú abiertos la caricatura está escondida: el panel se cierra y la tecla sigue su camino
+      if (root.contains('canvas-open') || root.contains('menu-open')) {
+        setOpen(false, false);
+        return;
+      }
+      // M abre el lienzo (canvas.ts): antes, el foco pasa a la caricatura para que vuelva a ella al cerrarlo
+      if (event.key.toLowerCase() === 'm' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        p.toggle.focus({ preventScroll: true });
+        setOpen(false, false);
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        p.toggle.focus({ preventScroll: true });
+        setOpen(false);
+        return;
+      }
+      const list = rows(p.panel);
+      const at = list.indexOf(document.activeElement as HTMLButtonElement);
+      const next =
+        event.key === 'ArrowDown' ? (at + 1) % list.length
+        : event.key === 'ArrowUp' ? (at <= 0 ? list.length - 1 : at - 1)
+        : event.key === 'Home' ? 0
+        : event.key === 'End' ? list.length - 1
+        : -1;
+      if (next < 0) return;
+      event.preventDefault();
+      list[next]?.focus({ preventScroll: true });
+    },
+    true,
+  );
+
+  // Al salir con el tabulador, se cierra
+  document.addEventListener('focusout', (event) => {
+    const p = parts();
+    if (!p || !isOpen()) return;
+    const to = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+    if (to && !p.box.contains(to)) setOpen(false);
+  });
+</script>

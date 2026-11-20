@@ -8,7 +8,7 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 1. `docs/referencias/estado-actual.md`: dónde está el trabajo hoy y qué toca ahora.
 2. `docs/referencias/roadmap-prototipo-def.md`: el orden de trabajo, con casillas y una tabla de
    estado. Es la fuente de verdad de lo hecho y lo pendiente.
-3. `docs/referencias/plan-diseno-awwwards.md`: el plan de diseño y las decisiones (D1–D26). Donde
+3. `docs/referencias/plan-diseno-awwwards.md`: el plan de diseño y las decisiones (D1–D27). Donde
    contradiga a `concepto.md`, manda el plan.
 
 ## Cómo trabajamos (decisiones de Christian)
@@ -52,6 +52,8 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
 - `src/pages/` y `src/components/pages/`: las páginas (Inicio, Proyectos, casos, Sobre mí, Contacto, 404).
 - `src/components/home/`: hero, proyectos que se tocan, "Cómo lo veo yo", capas 3D y trayectoria.
 - `src/components/site/` y `src/components/common/`: barra, lentes, lienzo navegable, intro y pie.
+  Las lentes y el lienzo se abren desde el bocadillo de la caricatura (`ViewBubble.astro`, D27), no
+  desde la barra.
 - `src/components/character/`, `src/scripts/character.ts`, `src/data/character-rig.ts`: el personaje
   articulado que mueve las páginas.
 - `src/scripts/`: comportamiento (lentes, lienzo, transiciones, demos, capas 3D con three.js).
