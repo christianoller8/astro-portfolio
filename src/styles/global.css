@@ -51,7 +51,10 @@
     --wght-ink: 650;
     --wdth-ink: 100%;
 
-    --toolbar-h: 3.5rem;
+    /* Aire entre el borde de la ventana y la barra (de 6 px en móvil a 14 px en escritorio). Va
+       contado en --toolbar-h, que es todo lo que ocupa la barra fija */
+    --toolbar-top: clamp(0.375rem, 1vw, 0.875rem);
+    --toolbar-h: calc(3.5rem + var(--toolbar-top));
     /* Margen de lienzo alrededor del frame: de 10 px en móvil a 40 px en pantallas anchas */
     --gutter: clamp(0.625rem, 2.4vw, 2.5rem);
     --frame-label-h: 2.25rem;

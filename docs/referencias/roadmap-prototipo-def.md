@@ -827,6 +827,9 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   - Con la página movida o una lente puesta queda la cabeza sola; con una lente sube por encima de
     su barra de estado. Se esconde con el lienzo abierto, el menú de móvil y la intro.
   - Comprobado con `.taste-skill/mock-hero/vb-check.mjs` (escritorio, oscuro y móvil).
+  - La barra, el mismo día: aire arriba (`--toolbar-top`, de 6 a 14 px, contado dentro de
+    `--toolbar-h`), idioma y tema más separados y **sin el botón de CV en escritorio** (el CV sigue
+    en el hero, en Sobre mí, en el pie y en el menú de móvil).
   - Sin decidir: en el menú de móvil las lentes y el lienzo siguen estando, así que en móvil hay
     dos entradas. Y de la misma conversación quedan por hacer: enlazar "Tú ves una web. Yo la veo
     así" con el bocadillo, las cajas de proyectos con vídeo al estilo de poulo.site y mirar por
