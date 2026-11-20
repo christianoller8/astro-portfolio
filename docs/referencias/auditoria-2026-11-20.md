@@ -209,7 +209,7 @@ Los 14 sitios con la triada:
 ## Estado de los arreglos
 
 **"Lo primero", hecho el 20 nov** (un solo lote, revisado por un revisor independiente, que encontró
-cinco fallos en la primera versión y los dio por corregidos en la segunda). Pendiente de publicar.
+cinco fallos en la primera versión y los dio por corregidos en la segunda). Publicado el 20 nov.
 
 | Punto | Resultado medido |
 |---|---|
@@ -237,7 +237,9 @@ fondo oscuro. No se reprodujo: la captura se hizo a mitad de la transición de t
 claro y 12,8:1 en oscuro.
 
 **Segundo lote, decisiones de Christian y CV, hechos el 20 nov** (un escritor; tres revisores independientes, por
-áreas, encontraron 3 fallos medios y 8 bajos, que se corrigieron y volvieron a comprobar). Pendiente de publicar.
+áreas, encontraron 3 fallos medios y 8 bajos, que se corrigieron y volvieron a comprobar). Publicado el 20 nov y
+comprobado en vivo: redirección 308 a la barra final, cabeceras de `vercel.json`, CV, iconos, manifest, `llms.txt`,
+`security.txt`, caché de las miniaturas y 404.
 
 | Punto | Resultado medido |
 |---|---|
@@ -268,5 +270,6 @@ y usable). `pnpm lint` falla con 5070 errores que ya estaban (sin investigar).
 
 ## Siguiente paso
 
-Publicar los dos lotes y comprobar en vivo las cabeceras de `vercel.json` y la redirección a la barra final. Quedan
-de Christian: el servicio del formulario, el material interno del repositorio y los textos.
+Quedan de Christian: el servicio del formulario, el material interno del repositorio y los textos. Pendiente técnico:
+una imagen para compartir por página, la CSP completa, una revisión con un lector de pantalla real y los errores de
+`pnpm lint`.

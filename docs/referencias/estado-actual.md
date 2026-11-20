@@ -48,8 +48,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 - **Auditoría (20 nov)**: hecha, con dos lotes de arreglos, ocho decisiones suyas (la caricatura se
   esconde al bajar en móvil, la intro solo la primera vez, un ajuste para apagar los atajos, los
   bucles paran a los 5 s, sin chips negros, Sobre mí con menos tamaños, "Ver caso" en la home y la
-  lente solo por pestaña) y el CV. Todo pasó por revisores independientes. El detalle está en
-  [auditoria-2026-11-20.md](auditoria-2026-11-20.md).
+  lente solo por pestaña) y el CV. Todo pasó por revisores independientes y se publicó el mismo
+  día, comprobado en vivo. El detalle está en [auditoria-2026-11-20.md](auditoria-2026-11-20.md).
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.
