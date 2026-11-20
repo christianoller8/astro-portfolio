@@ -3,7 +3,7 @@ import ThemeToggle from './ThemeToggle.astro';
 import LangSwitch from './LangSwitch.astro';
 import sign from '@/assets/images/brand/chris.webp';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '@/i18n/utils';
-import { site } from '@/data/site';
+import { site, hasCV } from '@/data/site';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -121,11 +121,16 @@ const isActive = (path: string) => {
       <LangSwitch size="menu" />
       <ThemeToggle size="menu" />
     </div>
-    <div class="mobile-actions" style="--i: 5">
-      <a class="btn btn-primary" href={site.cv} download>
-        {t('nav.cv.download')}
-      </a>
-    </div>
+    {/* Solo si el PDF está en public/cv/ (hoy no: se publicó sin él, ver src/data/site.ts) */}
+    {
+      hasCV && (
+        <div class="mobile-actions" style="--i: 5">
+          <a class="btn btn-primary" href={site.cv} download>
+            {t('nav.cv.download')}
+          </a>
+        </div>
+      )
+    }
   </div>
 </header>
 

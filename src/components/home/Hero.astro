@@ -4,7 +4,7 @@ import portraitDark from '@/assets/images/card-dark.jpg';
 // Prueba (20 nov): en claro, la misma foto con su pared gris que en oscuro. Antes: card-light.webp
 import portraitLight from '@/assets/images/card-dark.jpg';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
-import { site } from '@/data/site';
+import { site, hasCV } from '@/data/site';
 
 interface Props {
   lang: 'es' | 'en';
@@ -106,10 +106,15 @@ const roles = [
             {t('hero.cta.projects')}
             <span class="btn-arrow" aria-hidden="true">→</span>
           </a>
-          <a class="btn btn-quiet" href={site.cv} download>
-            {t('hero.cta.cv')}
-            <span class="btn-arrow" aria-hidden="true">↓</span>
-          </a>
+          {/* Solo si el PDF está en public/cv/ (hoy no: se publicó sin él, ver src/data/site.ts) */}
+          {
+            hasCV && (
+              <a class="btn btn-quiet" href={site.cv} download>
+                {t('hero.cta.cv')}
+                <span class="btn-arrow" aria-hidden="true">↓</span>
+              </a>
+            )
+          }
         </div>
 
         <p class="hero-status t-small" data-ink style="--ink-i: 5">

@@ -1,5 +1,5 @@
 // Trayectoria, formación e idiomas, de lo más reciente a lo más antiguo (Sobre mí y resumen del inicio).
-// Fuente: el CV de Christian (public/cv/christian-oller-cv.pdf, recibido el 18 nov 2026) y, para
+// Fuente: el CV de Christian (docs/cv/christian-oller-cv.pdf, recibido el 18 nov 2026) y, para
 // Vístalo, lo que contó él. Los textos resumen sus propias frases del CV.
 
 type Lang = 'es' | 'en';

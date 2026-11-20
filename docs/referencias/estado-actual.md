@@ -6,6 +6,17 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
 
 ## Dónde estamos
 
+- **Publicado el 20 de noviembre de 2026**: Christian pidió pasar `prototipo-def` a `main`, que
+  es lo que Vercel despliega en christianoller.dev. Fue un avance directo (`main` no tenía nada
+  propio), sin forzar. La web publicada es el diseño tal como iba ese día, **con cosas sin
+  terminar a sabiendas**: el formulario no envía (abre el correo), los textos de los casos son
+  provisionales y las pruebas automáticas de GitHub fallan porque son de la web vieja.
+  **Se sigue trabajando en `prototipo-def`**; lo que se quiera publicar se pasa a `main` cuando
+  él lo pida.
+- **El CV no está publicado**: el PDF lleva su teléfono y su código postal y decidió publicar sin
+  él. Está guardado en `docs/cv/` (no se despliega) y los botones de CV solo salen si hay un PDF
+  en `public/cv/` (`hasCV` en `src/data/site.ts`). El repositorio es público, así que el archivo
+  sigue viéndose en GitHub.
 - Rama `prototipo-def`, subida entera a GitHub.
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
@@ -80,8 +91,8 @@ enviar a Awwwards la URL en inglés.
 - **Imágenes reales** de Tempora, Vibora y Learnish, y la sesión de fotos nueva en blanco y negro.
 - **Angular** (resuelto el 20 nov): la web ya no cita versiones, solo "Angular". Él ha tocado
   todas y no quiere un rango. (El PDF del CV sí dice v8–v18: es suyo y no se ha tocado.)
-- **CV público**: el repositorio es público e incluye el PDF con su teléfono y su código postal.
-  Preguntado; sin respuesta todavía.
+- **CV**: una versión sin teléfono ni código postal, para volver a ofrecerlo en la web. (Decidido
+  el 20 nov: la web se publica sin CV. El PDF actual sigue en el repositorio, que es público.)
 - **Textos**: revisar todos; los nuevos son provisionales.
 
 ## Cambios recientes que conviene saber
