@@ -841,8 +841,12 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
     `trazo-7`): si se regenera el dibujo hay que revisarlos en `ViewBubble.astro`.
   - Ajustes posteriores, a ojo con él: al hablar la boca **no se estira**, pasa de una forma a
     otra por sílaba (entreabierta, en "o", abierta), como en los dibujos animados; estirarla le
-    pareció poco natural. Y la cara: entra con la del dibujo, habla y **al acabar guiña un ojo y
-    sonríe con la boca abierta; así se queda el resto de la visita**. El guiño y las bocas están
+    pareció poco natural. Y la cara: entra con la del dibujo, habla y **al acabar guiña un ojo;
+    así se queda el resto de la visita**. La boca en reposo es siempre la del dibujo (la sonrisa
+    abierta fija se probó y no la quiso; queda solo como una de las formas al hablar). El
+    bocadillo sale al entrar, **dura cinco segundos y se recoge**; después, solo al pasar el
+    ratón. Y el paso del bocadillo al panel es **un solo globo que crece** desde el tamaño del
+    bocadillo (antes uno desaparecía y el otro saltaba: lo vio forzado). El guiño y las bocas están
     dibujados en `ViewBubble.astro` encima de la caricatura (referencia suya: un logo de cara
     guiñando; se tomó el gesto, no el dibujo). La marca y la intro conservan la cara normal.
   - Ya no hace falta, salvo que quiera afinar el gesto con su trazo: el dibujo de una cara contenta (ojos en U invertida) para el bocadillo, en

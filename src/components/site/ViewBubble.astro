@@ -7,12 +7,14 @@
 //   igual que ella.
 // - Los botones no tienen lógica propia: llevan data-lens-set, data-lens-clear y data-canvas-open,
 //   y de eso se encargan lenses.ts y canvas.ts. Los atajos (1, 2, 3, M y Esc) son los de siempre.
-// - La cara no se queda en la de la marca: entra con ella, habla y, al acabar, guiña un ojo y
-//   sonríe con la boca abierta; así se queda el resto de la visita (pedido por Christian para que
-//   no sea la misma cara en todas partes).
+// - La cara no se queda en la de la marca: entra con ella, habla y, al acabar, guiña un ojo; así
+//   se queda el resto de la visita (pedido por Christian para que no sea la misma cara en todas
+//   partes). La boca, en reposo, es siempre la del dibujo.
 // - En reposo queda solo la cabeza, que parpadea de vez en cuando. El bocadillo sale cuando
-//   "habla" (mueve la boca): una vez por visita, un segundo después de entrar, y al pasar el ratón
-//   o enfocarla. Con la página movida o con una lente puesta no sale solo, para no tapar contenido.
+//   "habla" (mueve la boca): una vez por visita, un segundo después de entrar, y se recoge a los
+//   cinco segundos; después, solo al pasar el ratón o enfocarla. Con la página movida o con una
+//   lente puesta no sale solo, para no tapar contenido.
+// - El bocadillo y el panel son un solo globo: al abrir, crece; al cerrar, encoge.
 import Caricature from './Caricature.astro';
 import { useTranslations } from '@/i18n/utils';
 
@@ -72,6 +74,8 @@ const lenses = [
   </button>
 
   <div id="vb-panel" class="vb-panel" data-vb-panel role="group" aria-label={t('bubble.title')} hidden>
+    {/* El contenido va en su propia caja para que no se salga mientras el globo crece o encoge */}
+    <div class="vb-panel-in">
     <p class="vb-title" data-vb-title aria-hidden="true">{t('bubble.title')}</p>
     {
       lenses.map((lens) => (
@@ -110,6 +114,7 @@ const lenses = [
       <span>{t('lens.clear')}</span>
       <kbd>Esc</kbd>
     </button>
+    </div>
     <svg class="vb-tail" viewBox="0 0 30 24" aria-hidden="true">
       <path d="M11 1C10 9 7 16 1 22c11-2 19-9 23-20"></path>
     </svg>
@@ -264,21 +269,17 @@ const lenses = [
   .vb[data-face='wink'] :global([data-part='trazo-1']) {
     transform: translateY(12px);
   }
-  /* La boca. En reposo: la línea del dibujo (cara normal) o la sonrisa abierta (tras el guiño).
-     Al hablar: la forma de cada momento */
-  .vb[data-face='wink']:not([data-mouth]) .vb-m--wide,
+  /* La boca. En reposo, antes y después del guiño, es la del dibujo (pedido por Christian: la
+     sonrisa abierta fija no le convenció). Al hablar, la forma de cada momento */
   .vb[data-mouth='wide'] .vb-m--wide,
   .vb[data-mouth='half'] .vb-m--half,
   .vb[data-mouth='o'] .vb-m--o {
     visibility: visible;
   }
-  .vb[data-face='wink']:not([data-mouth]) :global([data-part='trazo-6']),
   .vb[data-mouth]:not([data-mouth='closed']) :global([data-part='trazo-6']) {
     visibility: hidden;
   }
   /* La boca abierta del todo tapa la línea y el tono de debajo del labio */
-  .vb[data-face='wink']:not([data-mouth]) :global([data-part='trazo-7']),
-  .vb[data-face='wink']:not([data-mouth]) :global([data-part='barba-2']),
   .vb[data-mouth='wide'] :global([data-part='trazo-7']),
   .vb[data-mouth='wide'] :global([data-part='barba-2']) {
     visibility: hidden;
@@ -313,11 +314,24 @@ const lenses = [
   .vb-panel[hidden] {
     display: none;
   }
+  /* El bocadillo y el panel son el mismo globo: al abrir crece desde el tamaño del bocadillo y al
+     cerrar vuelve a él (lo anima el guion). Mientras tanto el contenido queda recortado en su caja */
+  .vb-panel.is-closing {
+    pointer-events: none;
+  }
+  .vb-panel-in {
+    height: 100%;
+    overflow: hidden;
+  }
   .vb-title {
     margin: 0 0.5rem 0.5rem;
     font-size: var(--step-small);
     font-weight: 700;
     line-height: 1.2;
+    white-space: nowrap;
+  }
+  .vb-row:focus-visible {
+    outline-offset: -2px;
   }
   .vb-row {
     display: grid;
@@ -366,17 +380,6 @@ const lenses = [
     }
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .vb-panel:not([hidden]) {
-      animation: vb-pop var(--dur-ui) var(--ease-out) both;
-    }
-  }
-  @keyframes vb-pop {
-    from {
-      opacity: 0;
-      transform: scale(0.85);
-    }
-  }
   /* Sin movimiento: todo cambia de golpe y la cabeza no se ladea */
   @media (prefers-reduced-motion: reduce) {
     .vb,
@@ -417,13 +420,55 @@ const lenses = [
   const isOpen = () => parts()?.toggle.getAttribute('aria-expanded') === 'true';
   const rows = (panel: HTMLElement) => [...panel.querySelectorAll<HTMLButtonElement>('button')].filter((btn) => btn.offsetParent !== null);
 
+  // Las esquinas del bocadillo y del panel (las mismas que en el CSS), para pasar de unas a otras
+  const BUBBLE_RADIUS = '16px 13px 17px 12px / 13px 17px 12px 16px';
+  const PANEL_RADIUS = '26px 22px 28px 20px / 22px 28px 20px 26px';
+  /** El paso del bocadillo al panel: un solo globo que crece desde el tamaño del bocadillo (están
+   *  anclados en el mismo punto, abajo a la izquierda) y, al cerrar, encoge hasta él y se va */
+  const morph = (p: NonNullable<ReturnType<typeof parts>>, open: boolean, bubbleShown: boolean) => {
+    const { panel } = p;
+    const bubble = p.box.querySelector<HTMLElement>('.vb-bubble');
+    const inner = panel.querySelector<HTMLElement>('.vb-panel-in');
+    for (const el of [panel, inner]) el?.getAnimations().forEach((anim) => anim.cancel());
+    panel.classList.toggle('is-closing', !open);
+    if (!bubble || !inner || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      panel.hidden = !open;
+      panel.classList.remove('is-closing');
+      return;
+    }
+    panel.hidden = false;
+    const size = (el: HTMLElement) => ({ width: `${el.offsetWidth}px`, minWidth: `${el.offsetWidth}px`, height: `${el.offsetHeight}px` });
+    const small = { ...size(bubble), borderRadius: BUBBLE_RADIUS };
+    const big = { ...size(panel), borderRadius: PANEL_RADIUS };
+    if (open) {
+      // Si el bocadillo estaba a la vista, el globo ya está ahí: solo crece. Si no, además aparece
+      panel.animate([{ ...small, opacity: bubbleShown ? 1 : 0 }, { opacity: 1, offset: 0.3 }, { ...big, opacity: 1 }], {
+        duration: 300,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      });
+      inner.animate([{ opacity: 0 }, { opacity: 0, offset: 0.3 }, { opacity: 1 }], { duration: 300, easing: 'ease-out' });
+      return;
+    }
+    inner.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 100, easing: 'ease-in', fill: 'forwards' });
+    panel
+      .animate([{ ...big, opacity: 1 }, { opacity: 1, offset: 0.6 }, { ...small, opacity: 0 }], { duration: 200, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' })
+      .finished.then(() => {
+        if (!isOpen()) panel.hidden = true;
+        panel.classList.remove('is-closing');
+        inner.getAnimations().forEach((anim) => anim.cancel());
+      })
+      .catch(() => {});
+  };
+
   /** Abre o cierra el panel. Al cerrar, el foco vuelve a la caricatura si estaba dentro (salvo refocus: false) */
   const setOpen = (open: boolean, refocus = true) => {
     const p = parts();
     if (!p || open === isOpen()) return;
     const hadFocus = refocus && p.panel.contains(document.activeElement);
+    const bubble = p.box.querySelector('.vb-bubble');
+    const bubbleShown = !!bubble && getComputedStyle(bubble).visibility === 'visible';
     p.toggle.setAttribute('aria-expanded', String(open));
-    p.panel.hidden = !open;
+    morph(p, open, bubbleShown);
     if (open) {
       const list = rows(p.panel);
       (list.find((btn) => btn.getAttribute('aria-pressed') === 'true') ?? list[0])?.focus({ preventScroll: true });
@@ -595,8 +640,9 @@ const lenses = [
 
   // El saludo: una vez por visita. La página entra sin bocadillo; un momento después la caricatura
   // habla y el bocadillo sale. Si en ese momento la página ya está movida o hay una lente, se deja
-  // para la siguiente carga. Al bajar, el bocadillo se va y ya no vuelve solo.
+  // para la siguiente carga. A los cinco segundos, o al bajar, el bocadillo se va y ya no vuelve solo.
   const SAID = 'vb-said';
+  const SAY_MS = 5200;
   const greet = () => {
     try {
       if (sessionStorage.getItem(SAID)) return;
@@ -615,6 +661,8 @@ const lenses = [
       if (still.matches) wink();
       else talk();
       window.setTimeout(() => parts()?.box.classList.add('is-saying'), still.matches ? 0 : 160);
+      // El bocadillo se queda cinco segundos y se recoge; después solo sale al pasar el ratón
+      window.setTimeout(() => parts()?.box.classList.remove('is-saying'), SAY_MS);
       try {
         sessionStorage.setItem(SAID, '1');
       } catch {}
