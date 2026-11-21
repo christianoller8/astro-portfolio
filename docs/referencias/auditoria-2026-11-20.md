@@ -35,7 +35,7 @@ arreglos" al final):
 | El CV en el repositorio | Quitarlo y reescribir el historial (push forzado, irreversible) · hacer el repositorio privado | Hablarlo antes de tocar nada | Ya no hace falta: publica el CV tal cual en la web |
 | Material interno público | Dejar `docs/`, `CLAUDE.md` y los scripts sobre la web de Eloi a la vista · sacarlos del repositorio | Sacar al menos el análisis de la web de Eloi | Pendiente |
 | La caricatura en móvil | Esconderla al bajar y mostrarla al subir · que solo asome por el borde | Esconderla al bajar | La recomendación · hecho |
-| La intro | En cada carga (ahora) · solo en la primera visita · con pista "toca para saltar" | Primera visita y pista | La recomendación · hecho |
+| La intro | En cada carga (ahora) · solo en la primera visita · con pista "toca para saltar" | Primera visita y pista | La recomendación · hecho. El 21 nov la devolvió a cada carga de la home; la pista se queda |
 | Atajos 1/2/3/M | Globales (ahora) · solo con el bocadillo abierto · un ajuste para apagarlos | Ajuste para apagarlos (WCAG 2.1.4) | La recomendación · hecho |
 | Animaciones en bucle | Dejarlas · pararlas a los 5 s (WCAG 2.2.2) | Pararlas: el punto de estado, el parpadeo y las capas 3D | La recomendación · hecho |
 | Densidad tipográfica (pendiente desde antes) | Aceptar 3–5 tamaños por pantalla · recortar a 2 + display | Recortar solo la primera pantalla de Sobre mí | La recomendación · hecho |
@@ -255,7 +255,7 @@ comprobado en vivo: redirección 308 a la barra final, cabeceras de `vercel.json
 | Higiene del código | Una sola paleta de código en tokens, `--muted-soft` y una escala `--z-*`; diferencia máxima de 2/255 en las capturas |
 | README | `README.md` (inglés) y `README.es.md`, sin licencia |
 | Caricatura en móvil | Se esconde al bajar y vuelve al subir o cerca del principio; nunca con el panel abierto ni con el foco del teclado, y escondida se alcanza con Tab |
-| Intro | Solo en la primera visita (`?intro` la fuerza), con la pista "Toca para saltar" / "Haz clic o pulsa una tecla para saltar" (5,2:1) |
+| Intro | Solo en la primera visita (`?intro` la fuerza), con la pista "Toca para saltar" / "Haz clic o pulsa una tecla para saltar" (5,2:1). El 21 nov vuelve a salir en cada carga de la home, por decisión suya |
 | Atajos | Ajuste "Atajos de teclado" en el panel; apagados, 1/2/3/M no hacen nada y Esc sigue funcionando |
 | Animaciones en bucle | El punto de estado late dos veces; la caricatura parpadea sus primeros 5 s y cuando habla o se le pasa por encima; las capas 3D paran a los 5 s sin uso |
 | Chips negros | Quitados; el dato va como párrafo gris al final de cada decisión |

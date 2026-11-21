@@ -46,10 +46,17 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   (`simple-icons`); Proyectos abre siempre en cajas; el formulario de Contacto va centrado y sin
   el panel de estados. Los textos siguen siendo provisionales. Los 14 puntos, en el roadmap.
 - **Auditoría (20 nov)**: hecha, con dos lotes de arreglos, ocho decisiones suyas (la caricatura se
-  esconde al bajar en móvil, la intro solo la primera vez, un ajuste para apagar los atajos, los
+  esconde al bajar en móvil, la intro solo la primera vez (el 21 nov la devolvió a cada carga), un
+  ajuste para apagar los atajos, los
   bucles paran a los 5 s, sin chips negros, Sobre mí con menos tamaños, "Ver caso" en la home y la
   lente solo por pestaña) y el CV. Todo pasó por revisores independientes y se publicó el mismo
   día, comprobado en vivo. El detalle está en [auditoria-2026-11-20.md](auditoria-2026-11-20.md).
+- **21 nov: ronda de cambios de diseño.** Christian dejó en pausa lo que queda de la auditoría
+  (formulario, material interno del repositorio, textos y lo técnico menor) para hacer cambios de
+  diseño; cuando diga que están todos, se retoma por ahí. El primero, aprobado: los proyectos de la
+  home se apilan al hacer scroll (D29, sobre la referencia de kigo.studio). Además, la intro vuelve
+  a salir en cada carga de la home: al recargar no la veía y la quiso de vuelta (la pista para
+  saltarla se queda; `?intro` la fuerza aunque haya ancla).
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.
