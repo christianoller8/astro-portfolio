@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { useTranslations } from '@/i18n/utils';
+import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site } from '@/data/site';
 import type { ui } from '@/i18n/ui';
 
@@ -10,6 +10,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 // El correo, partido en la "@" para dejar un salto de línea posible justo detrás (<wbr>)
 const [emailLocal, emailDomain] = site.email.split('@');
 
@@ -157,6 +158,11 @@ const topics = [
           </button>
           </div>
         </div>
+        {/* Qué pasa con los datos al enviar: una línea tenue, pegada al botón */}
+        <p class="t-small send-note">
+          {t('contact.note')}
+          <a class="link" href={translatePath('/privacy')}>{t('footer.privacy')}</a>
+        </p>
         </div>
 
         {/* Estado "enviado": sustituye a los campos */}
@@ -527,6 +533,12 @@ const topics = [
   }
   .send-state {
     color: var(--muted);
+  }
+  .send-note {
+    color: var(--muted);
+  }
+  .send-note a {
+    color: var(--ink);
   }
   /* Un campo con contenido válido lo dice en su borde */
   .field input:not(:placeholder-shown):valid,

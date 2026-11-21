@@ -37,7 +37,7 @@ A portfolio usually says what its author can do. This one lets the visitor check
 | Done | Static site, Spanish and English | Pre-rendered with Astro, no server runtime |
 | Done | Contact form without a backend | Opens the visitor's email client with the message written; with `PUBLIC_FORM_ENDPOINT` set it submits there instead |
 | Not done | Real screenshots of Tempora, Vibora and Learnish | Their interfaces are HTML fragments built for the site |
-| Out of scope | CMS, accounts, analytics, cookies | The site loads no third-party scripts of its own; the only third-party code is the live Vístalo site, embedded in an iframe only when a visitor clicks to open that demo |
+| Out of scope | CMS, accounts, cookies | The site sets no cookies. Third-party code is limited to two pieces: Vercel Web Analytics (cookieless, aggregated data only, served from the site's own domain, loaded only on the deployed site, and skipped when a visitor opts out on the [privacy page](https://www.christianoller.dev/en/privacy/) or sends Global Privacy Control), and the live Vístalo site, embedded in an iframe only when a visitor clicks to open that demo |
 
 ## Architecture
 

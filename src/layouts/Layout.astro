@@ -15,6 +15,7 @@ import CanvasMap from '../components/site/CanvasMap.astro';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath, useTranslations, withTrailingSlash } from '@/i18n/utils';
 import { site } from '@/data/site';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
@@ -86,6 +87,34 @@ const jsonLd = {
 // La imagen para redes es siempre absoluta y en el host canónico (los rastreadores no resuelven rutas
 // relativas a un host que redirige). 1200 x 630 es el formato que piden Open Graph y las tarjetas grandes.
 const imageURL = new URL(image, Astro.site);
+// La analítica solo existe en la web publicada: Vercel pone VERCEL en el entorno de la compilación.
+// En local (pnpm dev, pnpm build, preview) no se carga nada ni se registra ninguna visita, y las
+// pruebas y capturas no ensucian las cifras.
+const onVercel = Boolean(process.env.VERCEL);
+// Además del gancho: el script de la analítica lo añade inject() al <head> mientras la página corre,
+// así que el cambio de página sin recarga lo quitaría (no viene en el HTML de la página nueva) y la
+// página nueva lo volvería a cargar y a ejecutar. Se marca para que el router de Astro lo conserve
+// (con la misma marca en el <head> nuevo se queda con el que ya funciona) y como ya ejecutado
+// (data-astro-exec): sin eso, tras el cambio el router lo reemplaza por una copia y lo ejecuta otra
+// vez. Comprobado el 21 nov con .taste-skill/privacidad/persist.mjs: una sola carga del script
+const beforeSend = `window.webAnalyticsBeforeSend = function (event) {
+  var off = window.__analyticsOff === true;
+  try { if (localStorage.getItem('analytics-off') === '1') off = true; } catch (e) {}
+  if (off || navigator.globalPrivacyControl === true) return null;
+  return event;
+};
+if (!window.__analyticsKeep) {
+  window.__analyticsKeep = true;
+  document.addEventListener('astro:before-swap', function (event) {
+    var script = document.head.querySelector('script[data-sdkn^="@vercel/analytics"]');
+    if (!script || !event.newDocument) return;
+    script.setAttribute('data-astro-transition-persist', 'vercel-analytics');
+    script.setAttribute('data-astro-exec', '');
+    var mark = event.newDocument.createElement('meta');
+    mark.setAttribute('data-astro-transition-persist', 'vercel-analytics');
+    event.newDocument.head.appendChild(mark);
+  });
+}`;
 ---
 
 <!doctype html>
@@ -219,6 +248,22 @@ const imageURL = new URL(image, Astro.site);
         });
       })();
     </script>
+
+    {
+      onVercel && (
+        <>
+          {/* El gancho que documenta Vercel: antes de enviar cada evento decide si se descarta (null).
+              Se descarta si quien visita lo pidió en /privacy/ (bandera en localStorage, o en memoria
+              si el navegador bloquea el almacenamiento) o si su navegador envía Global Privacy Control.
+              Se lee en cada evento, así que el botón de la página de privacidad surte efecto al
+              instante y sin recargar. Tiene que estar antes del componente, que lo lee al arrancar */}
+          <script is:inline set:html={beforeSend} />
+          {/* Al final del head: el componente es un elemento propio y el analizador del HTML cierra
+              el head al encontrarlo, así que nada que vaya detrás se queda en él */}
+          <Analytics />
+        </>
+      )
+    }
   </head>
 
   <body class="antialiased">

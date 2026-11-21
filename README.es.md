@@ -37,7 +37,7 @@ Un portfolio suele contar lo que sabe hacer su autor. Este deja que el visitante
 | Hecho | Web estática en español e inglés | Prerenderizada con Astro, sin servidor |
 | Hecho | Formulario de contacto sin backend | Abre el cliente de correo del visitante con el mensaje escrito; con `PUBLIC_FORM_ENDPOINT` definida lo envía allí |
 | Pendiente | Capturas reales de Tempora, Vibora y Learnish | Sus interfaces son fragmentos de HTML hechos para la web |
-| Fuera de alcance | CMS, cuentas, analítica, cookies | La web no carga scripts de terceros por sí misma; lo único ajeno es la web real de Vístalo, que se incrusta en un iframe solo cuando el visitante pulsa para abrir esa demo |
+| Fuera de alcance | CMS, cuentas, cookies | La web no usa cookies. Lo ajeno se reduce a dos piezas: Vercel Web Analytics (sin cookies, solo datos agregados, servida desde el propio dominio de la web, cargada solo en la web publicada y omitida si el visitante la desactiva en la [página de privacidad](https://www.christianoller.dev/privacy/) o envía Global Privacy Control), y la web real de Vístalo, que se incrusta en un iframe solo cuando el visitante pulsa para abrir esa demo |
 
 ## Arquitectura
 

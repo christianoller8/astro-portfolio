@@ -49,7 +49,8 @@ const [emailLocal, emailDomain] = site.email.split('@');
     <p class="wordmark" aria-hidden="true">Christian Oller</p>
 
     <p class="t-small back-credits">
-      {t('footer.credits')} © {currentYear} Christian Oller
+      <span>{t('footer.credits')} © {currentYear} Christian Oller</span>
+      <a class="link" href={translatePath('/privacy')}>{t('footer.privacy')}</a>
     </p>
   </div>
 </footer>
@@ -137,7 +138,17 @@ const [emailLocal, emailDomain] = site.email.split('@');
     white-space: nowrap;
   }
   .back-credits {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 1.5rem;
     color: color-mix(in srgb, var(--paper) 72%, var(--ink));
+  }
+  /* Zona táctil de 2.5 rem como los demás enlaces del pie, sin cambiar el aspecto de la línea */
+  .back-credits a {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
   }
 </style>
 

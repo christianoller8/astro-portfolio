@@ -1,0 +1,333 @@
+---
+// Privacidad: qué datos trata la web, uno a uno y en lenguaje llano. Un solo componente sirve a /privacy/
+// y /en/privacy/. El texto largo (provisional, Christian lo revisa al final) vive aquí como un objeto
+// es/en, como en la 404; las cadenas cortas (título, botón, estado) salen de src/i18n/ui.ts.
+// Cada párrafo es una lista de trozos: texto suelto o un enlace.
+import Layout from '@/layouts/Layout.astro';
+import { useTranslations } from '@/i18n/utils';
+import { site } from '@/data/site';
+import type { ui } from '@/i18n/ui';
+
+interface Props {
+  lang: keyof typeof ui;
+}
+
+type Part = string | { href: string; text: string };
+interface Section {
+  id: string;
+  title: string;
+  paragraphs: Part[][];
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const mail: Part = { href: `mailto:${site.email}`, text: site.email };
+const vercelPolicy = 'https://vercel.com/legal/privacy-policy';
+const aepd = 'https://www.aepd.es';
+
+const copy: Record<
+  keyof typeof ui,
+  { lead: string; updated: string; sections: Section[] }
+> = {
+  es: {
+    lead: 'Esta web no usa cookies ni te sigue por internet. Aquí está todo lo que pasa con tus datos cuando la visitas o me escribes.',
+    updated: 'Última actualización: 21 de noviembre de 2026',
+    sections: [
+      {
+        id: 'responsable',
+        title: 'Quién es el responsable',
+        paragraphs: [['Christian Oller. Para cualquier cosa sobre tus datos, escríbeme a ', mail, '.']],
+      },
+      {
+        id: 'visita',
+        title: 'Al visitar la web',
+        paragraphs: [
+          [
+            'La web está alojada en Vercel (Vercel Inc., Estados Unidos). Para servir las páginas y protegerlas de abusos, Vercel registra datos técnicos de cada visita, como la dirección IP, el navegador y la página pedida. Puedes ver cómo los trata en su ',
+            { href: vercelPolicy, text: 'política de privacidad' },
+            '.',
+          ],
+        ],
+      },
+      {
+        id: 'analitica',
+        title: 'Analítica sin cookies',
+        paragraphs: [
+          [
+            'Para saber cuánta gente entra, qué páginas ve y desde dónde llega, uso Vercel Web Analytics. No usa cookies: cada visita se cuenta con un identificador que se crea a partir de la petición y se borra a las 24 horas, y solo veo datos agregados (páginas vistas, la web de la que vienes, país, tipo de dispositivo, sistema y navegador). No puedo saber quién eres. Lo hago por mi interés legítimo en saber qué funciona en mi portfolio. Si tu navegador pide no ser rastreado (Global Privacy Control), tus visitas no se cuentan; y si lo prefieres, puedes desactivarlo aquí mismo: se guarda en tu navegador.',
+          ],
+        ],
+      },
+      {
+        // Cierto mientras el formulario abra el correo. Si se define PUBLIC_FORM_ENDPOINT (un servicio
+        // de envío), este apartado, su versión inglesa y contact.note (ui.ts) hay que reescribirlos
+        // nombrando el servicio que recibe los mensajes
+        id: 'escribes',
+        title: 'Si me escribes',
+        paragraphs: [
+          [
+            'El formulario de contacto abre tu programa de correo: la web no recibe ni guarda nada. El mensaje llega a mi cuenta de Gmail (Google) y solo uso tus datos para responderte y seguir la conversación. Los borro cuando ya no hacen falta, o antes si me lo pides.',
+          ],
+        ],
+      },
+      {
+        id: 'navegador',
+        title: 'Lo que guarda tu navegador',
+        paragraphs: [
+          [
+            'Ninguna cookie. Solo las preferencias que eliges tú, para que la web las recuerde: el tema claro u oscuro, si apagas los atajos de teclado y la lente con la que miras la web (esta, solo mientras la pestaña está abierta). Y, si lo pides en esta página, la marca para no contar tus visitas. Nada de esto sale de tu navegador, y puedes borrarlo desde su configuración.',
+          ],
+        ],
+      },
+      {
+        id: 'derechos',
+        title: 'Tus derechos',
+        paragraphs: [
+          [
+            'Puedes pedirme acceder a tus datos, corregirlos, borrarlos, limitar su uso, oponerte a él o llevártelos escribiendo a ',
+            mail,
+            '. Si crees que no los he tratado bien, puedes reclamar ante la Agencia Española de Protección de Datos (',
+            { href: aepd, text: 'aepd.es' },
+            ').',
+          ],
+        ],
+      },
+    ],
+  },
+  en: {
+    lead: "This site uses no cookies and doesn't follow you around the web. Here is everything that happens to your data when you visit it or write to me.",
+    updated: 'Last updated: 21 November 2026',
+    sections: [
+      {
+        id: 'responsable',
+        title: 'Who is responsible',
+        paragraphs: [['Christian Oller. For anything about your data, write to ', mail, '.']],
+      },
+      {
+        id: 'visita',
+        title: 'When you visit',
+        paragraphs: [
+          [
+            'The site is hosted by Vercel (Vercel Inc., United States). To serve the pages and protect them from abuse, Vercel logs technical data about each visit, such as the IP address, the browser and the page requested. You can read how it handles them in its ',
+            { href: vercelPolicy, text: 'privacy policy' },
+            '.',
+          ],
+        ],
+      },
+      {
+        id: 'analitica',
+        title: 'Cookieless analytics',
+        paragraphs: [
+          [
+            "To know how many people visit, which pages they see and where they come from, I use Vercel Web Analytics. It uses no cookies: each visit is counted with an identifier built from the request and deleted after 24 hours, and I only see aggregated data (pages viewed, the site you came from, country, device type, operating system and browser). I can't tell who you are. I do it out of my legitimate interest in knowing what works in my portfolio. If your browser asks not to be tracked (Global Privacy Control), your visits aren't counted; and if you prefer, you can turn it off right here: the choice is saved in your browser.",
+          ],
+        ],
+      },
+      {
+        id: 'escribes',
+        title: 'If you write to me',
+        paragraphs: [
+          [
+            "The contact form opens your email app: the site receives and stores nothing. The message reaches my Gmail account (Google) and I only use your data to reply and keep the conversation going. I delete it when it's no longer needed, or sooner if you ask.",
+          ],
+        ],
+      },
+      {
+        id: 'navegador',
+        title: 'What your browser stores',
+        paragraphs: [
+          [
+            'No cookies. Only the preferences you choose, so the site remembers them: light or dark theme, whether you turn the keyboard shortcuts off, and the lens you view the site through (this one only while the tab is open). Plus, if you ask for it on this page, the flag that stops your visits being counted. None of it leaves your browser, and you can clear it in its settings.',
+          ],
+        ],
+      },
+      {
+        id: 'derechos',
+        title: 'Your rights',
+        paragraphs: [
+          [
+            "You can ask me to access, correct, delete, restrict, object to or take away your data by writing to ",
+            mail,
+            ". If you think I haven't handled it properly, you can complain to the Spanish Data Protection Agency (",
+            { href: aepd, text: 'aepd.es' },
+            ').',
+          ],
+        ],
+      },
+    ],
+  },
+};
+
+const { lead, updated, sections } = copy[lang];
+---
+
+<Layout title={t('privacy.meta.title')} description={t('privacy.meta.description')} frame={t('footer.privacy')}>
+  <section class="wrap privacy" data-cs="<section> PrivacyPage.astro">
+    <h1 class="t-display" data-reveal data-ds="H1" data-ds-type>{t('privacy.title')}</h1>
+    <p class="privacy-lead" data-reveal style="--reveal-i: 1">{lead}</p>
+
+    <div class="privacy-body">
+      {
+        sections.map((section) => (
+          <section class="privacy-section" aria-labelledby={`privacy-${section.id}`} data-reveal>
+            <h2 id={`privacy-${section.id}`}>{section.title}</h2>
+            {section.paragraphs.map((parts) => (
+              <p>
+                {parts.map((part) =>
+                  typeof part === 'string' ? (
+                    part
+                  ) : (
+                    <a class="link" href={part.href}>{part.text}</a>
+                  ),
+                )}
+              </p>
+            ))}
+            {section.id === 'analitica' && (
+              <div class="optout">
+                {/* El botón dice lo que hará (su texto cambia), sin aria-pressed: con los dos, un lector
+                    leería "Volver a contar mis visitas, pulsado", que se entiende al revés (revisión,
+                    21 nov). El resultado se dice aparte, en una región educada que existe desde el
+                    principio (si naciera con el texto puesto, no se anunciaría) */}
+                <button
+                  type="button"
+                  class="btn btn-quiet optout-btn"
+                  data-optout
+                  data-label-on={t('privacy.optout.on')}
+                  data-label-off={t('privacy.optout.off')}
+                  data-status={t('privacy.optout.status')}
+                  data-status-on={t('privacy.optout.again')}
+                >
+                  {t('privacy.optout.on')}
+                </button>
+                <p class="optout-status" role="status" aria-live="polite" data-optout-status />
+              </div>
+            )}
+          </section>
+        ))
+      }
+    </div>
+
+    <p class="privacy-updated" data-reveal>{updated}</p>
+  </section>
+</Layout>
+
+<style>
+  .privacy {
+    padding-top: clamp(2rem, 5vw, 4.5rem);
+  }
+  /* Solo dos tamaños de texto, más el titular: el de entradilla (lead, subtítulos de sección) y el
+     del cuerpo (párrafos, botón, estado y fecha) */
+  .privacy-lead {
+    max-width: 38ch;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    font-size: var(--step-lead);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .privacy-body {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .privacy-section {
+    display: grid;
+    gap: 1rem;
+    max-width: 62ch;
+  }
+  .privacy-section h2 {
+    font-size: var(--step-lead);
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .privacy-section p {
+    font-size: var(--step-body);
+    line-height: 1.6;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .privacy-section p a {
+    color: var(--ink);
+  }
+  .optout {
+    display: grid;
+    justify-items: start;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .optout-btn {
+    font-size: var(--step-body);
+  }
+  /* Apagado: el botón pasa a lápiz para que se vea sin leer */
+  .optout-btn[data-off] {
+    background: var(--pencil);
+    color: var(--pencil-ink);
+  }
+  .optout-status {
+    font-size: var(--step-body);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .optout-status:empty {
+    display: none;
+  }
+  .privacy-updated {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    font-size: var(--step-body);
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  // La marca "no contar mis visitas" vive en localStorage (clave analytics-off). Si el navegador bloquea
+  // el almacenamiento, el botón sigue funcionando mientras dure la página: la bandera pasa también por
+  // window.__analyticsOff, que lee el gancho de la analítica (Layout.astro). Los clics se atienden en
+  // el documento y el estado se pinta en cada astro:page-load, así que sobrevive a las navegaciones sin
+  // recarga, que sustituyen el cuerpo entero.
+  declare global {
+    interface Window {
+      __analyticsOff?: boolean;
+    }
+  }
+
+  const KEY = 'analytics-off';
+
+  const isOff = () => {
+    if (window.__analyticsOff === true) return true;
+    try {
+      return localStorage.getItem(KEY) === '1';
+    } catch {
+      return false;
+    }
+  };
+
+  /** changed: tras un clic también se dice que las visitas vuelven a contarse; al cargar, solo el apagado */
+  const paint = (changed = false) => {
+    const btn = document.querySelector<HTMLButtonElement>('[data-optout]');
+    if (!btn) return;
+    const off = isOff();
+    btn.toggleAttribute('data-off', off);
+    btn.textContent = (off ? btn.dataset.labelOff : btn.dataset.labelOn) ?? '';
+    const status = document.querySelector<HTMLElement>('[data-optout-status]');
+    if (status) status.textContent = (off ? btn.dataset.status : changed ? btn.dataset.statusOn : '') ?? '';
+  };
+
+  document.addEventListener('astro:page-load', () => paint());
+
+  document.addEventListener('click', (event) => {
+    const btn = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-optout]');
+    if (!btn) return;
+    const next = !isOff();
+    window.__analyticsOff = next;
+    try {
+      if (next) localStorage.setItem(KEY, '1');
+      else localStorage.removeItem(KEY);
+    } catch {
+      // Almacenamiento bloqueado: la bandera en memoria basta para esta página
+    }
+    paint(true);
+  });
+</script>

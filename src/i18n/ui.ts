@@ -232,6 +232,17 @@ export const ui = {
     'footer.form': 'Ir al formulario',
     'footer.credits':
       'Hecho en capas: boceto, diseño, código y pruebas.',
+    'footer.privacy': 'Privacidad',
+
+    // Privacidad (el texto largo vive en PrivacyPage.astro)
+    'privacy.meta.title': 'Privacidad · Christian Oller',
+    'privacy.meta.description':
+      'Qué datos trata esta web: sin cookies, con analítica anónima de Vercel que puedes desactivar, y qué pasa si me escribes.',
+    'privacy.title': 'Privacidad',
+    'privacy.optout.on': 'No contar mis visitas',
+    'privacy.optout.off': 'Volver a contar mis visitas',
+    'privacy.optout.status': 'Tus visitas no se cuentan en este navegador.',
+    'privacy.optout.again': 'Tus visitas vuelven a contarse.',
 
     // Sobre mí
     'about.meta.title': 'Sobre mí · Christian Oller',
@@ -277,6 +288,7 @@ export const ui = {
     'contact.topic.other': 'Otra cosa',
     'contact.message': 'Mensaje',
     'contact.send': 'Enviar mensaje',
+    'contact.note': 'Al enviar se abre tu correo. Solo uso tus datos para responderte.',
     'contact.check.name': 'Nombre escrito',
     'contact.check.email': 'Email válido',
     'contact.check.message': 'Mensaje de al menos 20 caracteres',
@@ -516,6 +528,17 @@ export const ui = {
     'footer.form': 'Go to the form',
     'footer.credits':
       'Made in layers: sketch, design, code and tests.',
+    'footer.privacy': 'Privacy',
+
+    // Privacy (the long text lives in PrivacyPage.astro)
+    'privacy.meta.title': 'Privacy · Christian Oller',
+    'privacy.meta.description':
+      'What data this site handles: no cookies, anonymous Vercel analytics you can turn off, and what happens if you write to me.',
+    'privacy.title': 'Privacy',
+    'privacy.optout.on': "Don't count my visits",
+    'privacy.optout.off': 'Count my visits again',
+    'privacy.optout.status': 'Your visits are not counted in this browser.',
+    'privacy.optout.again': 'Your visits are counted again.',
 
     'about.meta.title': 'About · Christian Oller',
     'about.meta.description':
@@ -558,6 +581,7 @@ export const ui = {
     'contact.topic.other': 'Something else',
     'contact.message': 'Message',
     'contact.send': 'Send message',
+    'contact.note': 'Sending opens your email app. I only use your data to reply.',
     'contact.check.name': 'Name filled in',
     'contact.check.email': 'Valid email',
     'contact.check.message': 'Message of at least 20 characters',

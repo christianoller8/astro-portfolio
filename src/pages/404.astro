@@ -15,6 +15,7 @@ const copy = {
     home: 'Volver al inicio',
     canvas: 'Ver el lienzo',
     exist: 'Los frames que sí existen',
+    privacy: { path: '/privacy/', name: 'Privacidad' },
     pages: [
       { key: 'home', path: '/', name: 'Inicio' },
       { key: 'projects', path: '/projects/', name: 'Proyectos' },
@@ -28,6 +29,7 @@ const copy = {
     home: 'Back to home',
     canvas: 'View the canvas',
     exist: 'The frames that do exist',
+    privacy: { path: '/en/privacy/', name: 'Privacy' },
     pages: [
       { key: 'home', path: '/en/', name: 'Home' },
       { key: 'projects', path: '/en/projects/', name: 'Projects' },
@@ -116,6 +118,10 @@ const toolbar = {
                 <kbd data-key-hint>M</kbd>
               </button>
             </div>
+            {/* La 404 no lleva pie: el enlace de privacidad va aquí, con el texto y la ruta de su idioma */}
+            <p class="nf-privacy t-small">
+              <a class="link" href={copy[lang].privacy.path}>{copy[lang].privacy.name}</a>
+            </p>
           </div>
 
           <nav class="nf-frames" aria-label={copy[lang].exist}>
@@ -176,6 +182,15 @@ const toolbar = {
   }
   .nf-code {
     color: var(--muted);
+  }
+  .nf-privacy {
+    margin-top: 1.5rem;
+    color: var(--muted);
+  }
+  .nf-privacy a {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
   }
   .nf-code code {
     font: 500 0.8125rem/1.3 var(--font-mono);
