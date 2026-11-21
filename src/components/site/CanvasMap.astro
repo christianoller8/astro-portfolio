@@ -31,7 +31,10 @@ const cases = projects.map((project, i) => ({
   x: 120 + i * 350,
   y: 550,
 }));
-const frames = [...main, ...cases].map((frame) => ({
+// La 404 (decisión de Christian, 21 nov): una página más del archivo, al final de la fila de arriba.
+// Sin hilo, porque ningún enlace lleva a ella: se llega con una ruta que no existe
+const notFound = { key: '404', path: '/404', name: '404', x: main.length * 430, y: 0 };
+const frames = [...main, ...cases, notFound].map((frame) => ({
   ...frame,
   href: translatePath(frame.path),
   height: (sizes as Record<string, number>)[`${lang}-${frame.key}`] ?? 0,
@@ -50,7 +53,9 @@ const threads = [
     return { d: `M${x1} ${y1}C${x1} ${n(y1 + 90)} ${x2} ${n(y2 - 90)} ${x2} ${y2}`, head: [x2, y2, 90], dot: [x1, y1] };
   }),
 ];
-const bounds = { x: -20, y: -44, w: 1610 + 40, h: 550 + H + 64 };
+// El archivo entero: del borde izquierdo al derecho del frame más alejado, con 20 px a cada lado
+const right = Math.max(...frames.map((frame) => frame.x)) + W;
+const bounds = { x: -20, y: -44, w: right + 40, h: 550 + H + 64 };
 ---
 
 <div

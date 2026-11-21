@@ -33,8 +33,11 @@ function initCanvas() {
 
   // "/" y "/en/" son la home: sin la barra final queda vacío, y vacío es "/"
   const here = location.pathname.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') || '/';
-  // En una ruta que no existe (404) ningún frame es "aquí": el lienzo se abre ya alejado
-  const found = frames.find((frame) => frame.dataset.canvasFrame === here);
+  // En una ruta que no existe se está en la 404, que tiene su frame (desde el 21 nov): la página la
+  // delata su sección [data-nf], porque la ruta puede ser cualquiera
+  const found =
+    frames.find((frame) => frame.dataset.canvasFrame === here) ??
+    (document.querySelector('[data-nf]') ? frames.find((frame) => frame.dataset.canvasFrame === '/404') : undefined);
   const current = found ?? frames[0];
   frames.forEach((frame) => frame.toggleAttribute('aria-current', false));
   if (found) current.setAttribute('aria-current', 'page');

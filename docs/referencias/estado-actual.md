@@ -56,7 +56,9 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   diseño; cuando diga que están todos, se retoma por ahí. El primero, aprobado: los proyectos de la
   home se apilan al hacer scroll (D29, sobre la referencia de kigo.studio). Además, la intro vuelve
   a salir en cada carga de la home: al recargar no la veía y la quiso de vuelta (la pista para
-  saltarla se queda; `?intro` la fuerza aunque haya ancla).
+  saltarla se queda; `?intro` la fuerza aunque haya ancla). Y la 404 entra en el lienzo: un frame
+  más al final de la fila de arriba, sin hilo (ningún enlace lleva a ella), y en la 404 es el frame
+  "Estás aquí".
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.

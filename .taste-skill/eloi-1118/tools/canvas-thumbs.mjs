@@ -4,7 +4,8 @@
 import { writeFileSync } from 'node:fs';
 const [CDP, dir, origin] = process.argv.slice(2);
 const { Browser, sleep } = await import(CDP);
-const PAGES = { home: '/', projects: '/projects/', 'p-tempora': '/projects/tempora/', 'p-vibora': '/projects/vibora/', 'p-learnish': '/projects/learnish/', 'p-vistalo': '/projects/vistalo/', about: '/about/', contact: '/contact/' };
+// La 404 entra en el lienzo desde el 21 nov: se captura en /404/, que no existe y la enseña
+const PAGES = { home: '/', projects: '/projects/', 'p-tempora': '/projects/tempora/', 'p-vibora': '/projects/vibora/', 'p-learnish': '/projects/learnish/', 'p-vistalo': '/projects/vistalo/', about: '/about/', contact: '/contact/', '404': '/404/' };
 const browser = await Browser.launch();
 const sizes = {};
 for (const lang of ['es', 'en']) {
