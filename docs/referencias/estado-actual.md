@@ -66,6 +66,7 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   no contar las visitas de ese navegador (también respeta Global Privacy Control). Todo lo de
   este día se publicó el 21 nov y se comprobó en vivo. Después, el cambio de modo claro/oscuro
   pasó a ser un círculo desde el botón (D30, sobre ky.fyi): al claro se abre, al oscuro se cierra.
+  Y en el pie, al final de la última línea, "Volver arriba ↑".
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.

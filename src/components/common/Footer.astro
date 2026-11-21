@@ -51,6 +51,12 @@ const [emailLocal, emailDomain] = site.email.split('@');
     <p class="t-small back-credits">
       <span>{t('footer.credits')} © {currentYear} Christian Oller</span>
       <a class="link" href={translatePath('/privacy')}>{t('footer.privacy')}</a>
+      {/* Volver arriba (decisión de Christian, 21 nov). Sin JavaScript, "#" ya sube al principio y
+          no deja ancla en la dirección (la intro se salta si la hay); con él, sube con suavidad */}
+      <a class="link back-top" href="#" data-back-top>
+        {t('footer.top')}
+        <span class="back-top-arrow" aria-hidden="true">↑</span>
+      </a>
     </p>
   </div>
 </footer>
@@ -150,6 +156,24 @@ const [emailLocal, emailDomain] = site.email.split('@');
     min-height: 2.5rem;
     align-items: center;
   }
+  /* Al final de la línea, a la derecha; en pantallas estrechas baja a su propia línea */
+  .back-top {
+    gap: 0.4em;
+    margin-left: auto;
+  }
+  .back-top-arrow {
+    transition: transform 200ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .back-top:hover .back-top-arrow {
+      transform: translateY(-3px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .back-top-arrow {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
@@ -170,6 +194,34 @@ const [emailLocal, emailDomain] = site.email.split('@');
   };
   // La región existe antes de que cambie su texto: si se creara con el texto puesto, no se anunciaría
   document.addEventListener('astro:page-load', () => live());
+
+  // Volver arriba: sube con suavidad (de golpe con "reducir movimiento") y sin dejar "#" en la
+  // dirección. Con el teclado, el foco pasa al enlace de salto, lo primero de la página, para que el
+  // siguiente Tab siga desde arriba; con el ratón no se mueve el foco, solo se suelta el enlace.
+  // En la fase de captura de window, antes que el router de Astro: si no, él trataría "#" como un
+  // ancla de la página (la pondría en la dirección y movería el foco) y este clic llegaría tarde
+  window.addEventListener(
+    'click',
+    (event) => {
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('[data-back-top]');
+      if (!link) return;
+      event.preventDefault();
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const smooth = !reduce && window.scrollY > 0;
+      window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'instant' });
+      if (event.detail !== 0) {
+        link.blur();
+        return;
+      }
+      // Con el teclado, el foco se mueve al llegar arriba: el enlace de salto cambia de sitio al
+      // recibirlo, y ese cambio cortaba el desplazamiento suave a mitad de camino
+      const focusTop = () => document.querySelector<HTMLElement>('a[href="#main"]')?.focus({ preventScroll: true });
+      if (!smooth) focusTop();
+      else if ('onscrollend' in window) window.addEventListener('scrollend', focusTop, { once: true });
+      else window.setTimeout(focusTop, 900);
+    },
+    { capture: true },
+  );
 
   document.addEventListener('click', async (event) => {
     const btn = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-copy]');

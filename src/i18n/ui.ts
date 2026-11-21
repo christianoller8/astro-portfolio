@@ -233,6 +233,7 @@ export const ui = {
     'footer.credits':
       'Hecho en capas: boceto, diseño, código y pruebas.',
     'footer.privacy': 'Privacidad',
+    'footer.top': 'Volver arriba',
 
     // Privacidad (el texto largo vive en PrivacyPage.astro)
     'privacy.meta.title': 'Privacidad · Christian Oller',
@@ -529,6 +530,7 @@ export const ui = {
     'footer.credits':
       'Made in layers: sketch, design, code and tests.',
     'footer.privacy': 'Privacy',
+    'footer.top': 'Back to top',
 
     // Privacy (the long text lives in PrivacyPage.astro)
     'privacy.meta.title': 'Privacy · Christian Oller',
