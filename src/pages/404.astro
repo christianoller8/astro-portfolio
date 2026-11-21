@@ -388,6 +388,22 @@ const toolbar = {
       label('.seg--lang', aria.lang);
       label('.seg--lang [hreflang="es"]', aria.langEs);
       label('.seg--lang [hreflang="en"]', aria.langEn);
+      // La página se genera con el español marcado en el selector: en /en/… se marca el inglés (la
+      // opción, con aria-current, y la marca de debajo, con data-on). Sin que la marca se deslice:
+      // es el estado de partida, no un cambio
+      document.querySelectorAll<HTMLElement>('.seg--lang').forEach((seg) => {
+        const pad = seg.querySelector<HTMLElement>('.seg-pad');
+        if (pad) pad.style.transition = 'none';
+        seg.dataset.on = '1';
+        seg.querySelectorAll('[hreflang]').forEach((opt) => {
+          if (opt.getAttribute('hreflang') === 'en') opt.setAttribute('aria-current', 'true');
+          else opt.removeAttribute('aria-current');
+        });
+        if (pad) {
+          void pad.offsetWidth;
+          pad.style.transition = '';
+        }
+      });
       label('.seg--theme', aria.theme);
       document.querySelectorAll<HTMLElement>('[data-theme-set]').forEach((btn) => {
         const text = btn.dataset.themeSet === 'dark' ? aria.themeDark : aria.themeLight;

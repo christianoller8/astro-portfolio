@@ -58,7 +58,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   a salir en cada carga de la home: al recargar no la veía y la quiso de vuelta (la pista para
   saltarla se queda; `?intro` la fuerza aunque haya ancla). Y la 404 entra en el lienzo: un frame
   más al final de la fila de arriba, sin hilo (ningún enlace lleva a ella), y en la 404 es el frame
-  "Estás aquí".
+  "Estás aquí". En la 404 en inglés, el lienzo y el selector de idioma ya salen en inglés (antes
+  salían en español: la 404 es un solo archivo que se genera en español).
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.
