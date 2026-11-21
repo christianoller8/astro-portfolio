@@ -6,6 +6,7 @@
 import Layout from '@/layouts/Layout.astro';
 import Character from '@/components/character/Character.astro';
 import { useTranslations } from '@/i18n/utils';
+import sizes from '@/data/canvas-sizes.json';
 
 const copy = {
   es: {
@@ -70,6 +71,22 @@ const toolbar = {
     css: t('lens.stat.css'),
     load: t('lens.stat.load'),
     passed: t('lens.stat.passed'),
+  },
+  // El lienzo (CanvasMap) también se genera en español: sus textos y la altura de cada página en
+  // inglés, por la clave de cada frame (las miniaturas inglesas miden otra cosa)
+  canvasMap: {
+    projects: t('nav.projects'),
+    label: t('canvas.label'),
+    here: t('canvas.here'),
+    hint: t('canvas.hint'),
+    hintTouch: t('canvas.hint.touch'),
+    fit: t('canvas.fit'),
+    close: t('canvas.close'),
+    sizes: Object.fromEntries(
+      Object.entries(sizes as Record<string, number>)
+        .filter(([key]) => key.startsWith('en-'))
+        .map(([key, height]) => [key.slice(3), height]),
+    ),
   },
 };
 ---
@@ -320,6 +337,16 @@ const toolbar = {
         clear: string;
         aria: Record<string, string>;
         panel: Record<string, string>;
+        canvasMap: {
+          projects: string;
+          label: string;
+          here: string;
+          hint: string;
+          hintTouch: string;
+          fit: string;
+          close: string;
+          sizes: Record<string, number>;
+        };
       };
       // Sin los del selector de idioma (llevan hreflang): en la 404 apuntan a las portadas, y "/" es también la clave de "Inicio"
       document.querySelectorAll<HTMLAnchorElement>('header a[href]:not([hreflang])').forEach((link) => {
@@ -376,6 +403,37 @@ const toolbar = {
       label('[data-lens-panel], .lens-switch', aria.lens);
       const panel = document.querySelector<HTMLElement>('[data-lens-panel]');
       if (panel) panel.dataset.i18n = JSON.stringify(toolbar.panel);
+
+      // El lienzo: cada frame lleva a su página en inglés, con su nombre, su miniatura y su altura en
+      // inglés, y la barra de abajo también pasa al inglés
+      const map = toolbar.canvasMap;
+      const overlay = document.querySelector<HTMLElement>('[data-canvas]');
+      if (overlay) {
+        overlay.setAttribute('aria-label', map.label);
+        overlay.querySelectorAll<HTMLAnchorElement>('[data-canvas-frame]').forEach((frame) => {
+          const route = frame.dataset.canvasFrame ?? '';
+          frame.setAttribute('href', route === '/' ? '/en/' : `/en${route}/`);
+          frame.querySelectorAll('img').forEach((img) => img.setAttribute('src', (img.getAttribute('src') ?? '').replace('/canvas/es-', '/canvas/en-')));
+          // Las páginas del menú tienen su nombre en la barra; los casos son "Proyectos / Título"
+          const name = frame.querySelector('.cmap-name b');
+          if (name) name.textContent = toolbar.links[route]?.[1] ?? (name.textContent ?? '').replace(/^[^/]+\//, `${map.projects} /`);
+          const size = frame.querySelector('.cmap-name span');
+          const height = map.sizes[frame.dataset.canvasKey ?? ''];
+          if (size && height) size.textContent = `1440 × ${height}`;
+          const here = frame.querySelector('.cmap-here');
+          if (here) here.textContent = map.here;
+        });
+        const text = (selector: string, value: string) => {
+          const el = overlay.querySelector(selector);
+          // El texto es el primer nodo de texto con contenido: "Cerrar lienzo" lleva la tecla aparte
+          const node = el && [...el.childNodes].find((n) => n.nodeType === 3 && n.textContent?.trim());
+          if (node) node.textContent = value;
+        };
+        text('.cmap-hint--mouse', map.hint);
+        text('.cmap-hint--touch', map.hintTouch);
+        text('[data-canvas-fit]', map.fit);
+        text('[data-canvas-close]', map.close);
+      }
     }
     // El nombre del frame es la ruta: encima del frame y en la barra de estado de las lentes
     document.querySelectorAll('.frame-label, .lens-bar-frame').forEach((label) => {
