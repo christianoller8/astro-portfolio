@@ -6,6 +6,7 @@
 // El estado vive en html[data-lens] y en sessionStorage (dura lo que la pestaña); el script inline
 // del <head> lo restaura antes de pintar. Los estilos están en src/styles/lenses.css.
 
+import { coveredFrom } from './project-stack';
 import { shortcutsOn } from './shortcuts';
 
 type Lens = 'design' | 'code' | 'qa';
@@ -170,7 +171,8 @@ function markOn(el: Element, className: string, html: string, pad = 0) {
       const left = Math.max(box.left - pad, art.left);
       const top = Math.max(box.top - pad, art.top);
       const right = Math.min(box.right + pad, art.right);
-      const bottom = Math.min(box.bottom + pad, art.bottom);
+      // En las tarjetas apiladas del inicio, solo hasta donde la tapa la siguiente: lo de debajo no se marca
+      const bottom = Math.min(box.bottom + pad, art.bottom, coveredFrom(el));
       const key = `${left - base.left}|${top - base.top}|${right - left}|${bottom - top}`;
       if (key === last) return;
       last = key;
@@ -226,6 +228,8 @@ function declutter() {
     box.top < art.top - 1 ||
     box.left < art.left - 1 ||
     box.right > art.right + 1 ||
+    // La etiqueta de una pieza de una tarjeta apilada no puede caer encima de la tarjeta que la tapa
+    (!!el && box.bottom > coveredFrom(el) + 1) ||
     taken.some((t) => meets(box, t, 4)) ||
     content.some(
       (c) =>
@@ -240,9 +244,12 @@ function declutter() {
     if (!tag || mark.node.hidden) continue;
     mark.node.classList.remove('is-flip', 'is-in', 'is-end', 'is-side');
     tag.hidden = false;
-    // La etiqueta de un bloque (Código) y la medida de una selección (Diseño) tienen su sitio fijo
+    // La etiqueta de un bloque (Código) y la medida de una selección (Diseño) tienen su sitio fijo,
+    // salvo que caiga encima de la tarjeta apilada que tapa su pieza: entonces se queda sin etiqueta
     if (mark.node.matches('.lm--block, .lm--sel')) {
-      taken.push(tag.getBoundingClientRect());
+      const box = tag.getBoundingClientRect();
+      if (mark.el && box.bottom > coveredFrom(mark.el) + 1) tag.hidden = true;
+      else taken.push(box);
       continue;
     }
     const roomy = mark.node.offsetHeight >= 72 && mark.node.offsetWidth >= tag.offsetWidth + 16;
@@ -852,10 +859,16 @@ document.addEventListener(
 document.addEventListener('pointerleave', hideHover);
 
 let scrollFrame = 0;
+let tidyTimer = 0;
 window.addEventListener(
   'scroll',
   () => {
-    if (!layer || scrollFrame) return;
+    if (!layer) return;
+    // Al parar, las etiquetas se vuelven a colocar: en las tarjetas apiladas del inicio (y en las
+    // piezas fijas) lo que tapa a cada pieza cambia al bajar
+    window.clearTimeout(tidyTimer);
+    tidyTimer = window.setTimeout(() => layer && declutter(), 140);
+    if (scrollFrame) return;
     scrollFrame = requestAnimationFrame(() => {
       scrollFrame = 0;
       hideHover();

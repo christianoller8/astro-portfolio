@@ -178,9 +178,11 @@ const hints: Record<string, string> = {
       align-items: start;
       gap: 2.5rem;
     }
+    /* Mínimo de 27rem: lo que pide la interfaz más alta (Tempora, 432 px). Con 21rem, en portátiles
+       bajos (1366 × 768, unos 650 px de ventana) se cortaban botones de las demos (revisión, 21 nov) */
     .stack-visual :global(.pv-clip) {
       aspect-ratio: auto;
-      height: clamp(21rem, 56vh, 33rem);
+      height: clamp(27rem, 56vh, 33rem);
     }
   }
   /* Cada tarjeta crece un poco al entrar en pantalla, ligada al scroll (sin JavaScript) */
@@ -203,6 +205,64 @@ const hints: Record<string, string> = {
       opacity: 1;
     }
   }
+  /* Apilado al hacer scroll (decisión de Christian, 21 nov; la referencia es la sección de servicios
+     de kigo.studio). En escritorio cada tarjeta se queda fija bajo la barra y la siguiente sube y la
+     tapa: Tempora, luego Vibora, Learnish y Vístalo. Para que cada una tape entera a la anterior las
+     cuatro miden lo mismo: la altura sale de la pantalla y el marco de la interfaz se queda con lo
+     que sobra. La inclinación con la que sube cada tarjeta la pone src/scripts/project-stack.ts.
+     En móvil y tablet, con "reducir movimiento" y en ventanas de menos de 700 px de alto la lista va
+     seguida, como antes (la referencia tampoco apila en móvil). Por debajo de 700 px una tarjeta que
+     quepa en la pantalla deja la interfaz demasiado baja y recorta botones de las demos (medido en
+     la revisión del 21 nov: Vibora pierde "Confirmar" y Learnish "Repasar" y "Lo sabía"). */
+  @media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+    .projects {
+      /* La tarjeta inclinada asoma un poco por los lados: que no cree scroll horizontal. Con clip
+         (y no hidden) la sección no pasa a ser un contenedor de scroll, que rompería sticky */
+      overflow-x: clip;
+    }
+    .stack {
+      --stack-top: calc(var(--toolbar-h) + 1rem);
+      --stack-h: min(calc(100svh - var(--stack-top) - clamp(1rem, 6vh, 5rem)), 44rem);
+      /* En columna flexible y no en rejilla: una celda de rejilla es el límite de su elemento fijo, y
+         con una fila por tarjeta ninguna podría quedarse quieta mientras sube la siguiente.
+         El hueco es lo que cada tarjeta se queda sola en pantalla antes de que asome la siguiente; va
+         como gap y no como margen porque el margen inferior cuenta para el límite del elemento fijo
+         y las tarjetas de debajo empezarían a irse antes de que la última llegara a su sitio */
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2rem, 16vh, 10rem);
+    }
+    .stack-item {
+      position: sticky;
+      top: var(--stack-top);
+      flex: none;
+      height: var(--stack-h);
+    }
+    .stack-card {
+      grid-template-rows: auto minmax(0, 1fr);
+      height: 100%;
+      /* El canto de la hoja: sin él, una tarjeta encima de otra del mismo color no se distingue */
+      outline: 1px solid var(--line);
+      outline-offset: -1px;
+      /* Fuera la entrada con escala y transparencia: dejaría ver la tarjeta de debajo */
+      animation: none;
+    }
+    .stack-visual,
+    .stack-visual > [data-morph-visual] {
+      display: grid;
+      min-height: 0;
+    }
+    .stack-visual :global(.pv) {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .stack-visual :global(.pv-clip) {
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 0;
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     .stack-cta span {
       transition: none;
@@ -212,4 +272,5 @@ const hints: Record<string, string> = {
 
 <script>
   import '@/scripts/project-demos';
+  import '@/scripts/project-stack';
 </script>
