@@ -37,14 +37,7 @@ const t = useTranslations(getLangFromUrl(Astro.url));
     }
   };
 
-  document.addEventListener('click', (event) => {
-    const btn = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-theme-set]') : null;
-    if (!btn) return;
-    const dark = btn.dataset.themeSet === 'dark';
-    if (dark === root.classList.contains('dark')) return;
-    // El cambio de color va escalonado (estilos en global.css)
-    root.classList.add('theme-switching');
-    window.setTimeout(() => root.classList.remove('theme-switching'), 340);
+  const apply = (dark: boolean) => {
     root.classList.toggle('dark', dark);
     // La barra del navegador sigue a la hoja del tema que se ve (la lee del token, no se repite aquí)
     const sheet = getComputedStyle(root).getPropertyValue('--sheet').trim();
@@ -54,6 +47,47 @@ const t = useTranslations(getLangFromUrl(Astro.url));
     try {
       localStorage.setItem('theme', dark ? 'dark' : 'light');
     } catch {}
+  };
+
+  // iPhone y iPad (también el iPad que se presenta como Mac): sin la onda, como en la referencia
+  const isIOS = () =>
+    /iPad|iPhone|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+
+  document.addEventListener('click', (event) => {
+    const btn = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-theme-set]') : null;
+    if (!btn) return;
+    const dark = btn.dataset.themeSet === 'dark';
+    if (dark === root.classList.contains('dark')) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof document.startViewTransition !== 'function' || reduce || isIOS()) {
+      // Sin la onda: el cambio escalonado de antes (estilos en global.css; con "reducir movimiento",
+      // instantáneo)
+      root.classList.add('theme-switching');
+      window.setTimeout(() => root.classList.remove('theme-switching'), 340);
+      apply(dark);
+      return;
+    }
+
+    // La onda (decisión de Christian, 21 nov; la referencia es ky.fyi): un círculo con centro en el
+    // botón pulsado y radio hasta la esquina más lejana de la pantalla. Al claro se abre (out); al
+    // oscuro, el claro se cierra hacia la luna (in). Los estilos, en global.css (html.theme-ripple)
+    const { left, top, width, height } = btn.getBoundingClientRect();
+    const x = left + width / 2;
+    const y = top + height / 2;
+    const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    root.style.setProperty('--theme-ripple-x', `${x}px`);
+    root.style.setProperty('--theme-ripple-y', `${y}px`);
+    root.style.setProperty('--theme-ripple-r', `${radius}px`);
+    root.dataset.themeRipple = dark ? 'in' : 'out';
+    root.classList.add('theme-ripple');
+    document
+      .startViewTransition(() => apply(dark))
+      .finished.finally(() => {
+        root.classList.remove('theme-ripple');
+        delete root.dataset.themeRipple;
+        for (const name of ['--theme-ripple-x', '--theme-ripple-y', '--theme-ripple-r']) root.style.removeProperty(name);
+      });
   });
 
   document.addEventListener('astro:page-load', sync);

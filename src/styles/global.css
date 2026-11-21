@@ -688,6 +688,53 @@ html.is-instant::view-transition-old(root),
 html.is-instant::view-transition-group(pusher) {
   display: none;
 }
+
+/* --- Cambio de modo claro / oscuro (decisión de Christian, 21 nov; la referencia es ky.fyi): un
+   círculo con centro en el botón pulsado. Al pasar a claro, el claro se abre desde el sol hasta
+   cubrir la pantalla; al pasar a oscuro, a la inversa: el claro se cierra hacia la luna, como al
+   apagar una luz. Lo lanza ThemeToggle.astro con la API de transiciones de vista. Mientras dura, la
+   página se fotografía entera (se apagan los nombres de las transiciones entre páginas: barra,
+   personaje, caricatura) y nada se anima por dentro: los colores ya son los nuevos. Va detrás de
+   las reglas del paneo para ganarles con la misma especificidad (frame-back se queda puesto tras
+   volver atrás) */
+html.theme-ripple * {
+  view-transition-name: none !important;
+}
+html.theme-ripple *,
+html.theme-ripple *::before,
+html.theme-ripple *::after {
+  transition: none !important;
+}
+html.theme-ripple::view-transition-old(root),
+html.theme-ripple::view-transition-new(root) {
+  animation: none;
+  box-shadow: none;
+}
+/* Al claro: el modo nuevo se abre de dentro afuera */
+html[data-theme-ripple='out']::view-transition-new(root) {
+  animation: theme-ripple-out 500ms ease-in-out;
+}
+/* Al oscuro: el modo que se va se cierra de fuera adentro, encima del nuevo, que ya espera debajo */
+html[data-theme-ripple='in']::view-transition-old(root) {
+  z-index: 1;
+  animation: theme-ripple-in 500ms ease-in-out both;
+}
+@keyframes theme-ripple-out {
+  from {
+    clip-path: circle(0 at var(--theme-ripple-x) var(--theme-ripple-y));
+  }
+  to {
+    clip-path: circle(var(--theme-ripple-r) at var(--theme-ripple-x) var(--theme-ripple-y));
+  }
+}
+@keyframes theme-ripple-in {
+  from {
+    clip-path: circle(var(--theme-ripple-r) at var(--theme-ripple-x) var(--theme-ripple-y));
+  }
+  to {
+    clip-path: circle(0 at var(--theme-ripple-x) var(--theme-ripple-y));
+  }
+}
 /* Con el lienzo abierto la página de detrás no se desplaza */
 html.canvas-open {
   overflow: hidden;
