@@ -56,7 +56,7 @@ eligió y aprobó así el mismo día.
 |---|---|---|---|
 | Alta | Sin cliente de correo, al pulsar "Enviar mensaje" no pasa nada visible: sigue "Listo para enviar" | `ContactPage.astro` ~752 solo hace `location.href = mailto:` | Servicio de envío; mientras, aviso con el correo y "Copiar" |
 | Alta | Con datos inválidos solo se mueve el foco: 0 `aria-invalid`, 0 `role="alert"`, sin marca de obligatorio; la lista de comprobaciones cambia una clase y no su texto (WCAG 3.3.1, 3.3.3, 4.1.3) | `ContactPage.astro:742` | Mensaje por campo con `aria-describedby` y resumen en `role="alert"` |
-| Media | No hay aviso de privacidad ni legal (no es asesoría legal) | 0 menciones en `/`, `/about/`, `/contact/` | Añadirlo al conectar el formulario |
+| Media | No hay aviso de privacidad ni legal (no es asesoría legal) | 0 menciones en `/`, `/about/`, `/contact/` | Añadirlo al conectar el formulario. Hecho el 21 nov: página de privacidad; el aviso legal solo si cobra proyectos a través de la web |
 | Baja | El correo va en claro en 18 enlaces `mailto:` (spam) | Pie y Contacto | Gmail filtra bien; revisar si molesta |
 
 ### SEO y metadatos

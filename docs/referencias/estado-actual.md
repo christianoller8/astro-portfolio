@@ -60,6 +60,10 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   más al final de la fila de arriba, sin hilo (ningún enlace lleva a ella), y en la 404 es el frame
   "Estás aquí". En la 404 en inglés, el lienzo y el selector de idioma ya salen en inglés (antes
   salían en español: la 404 es un solo archivo que se genera en español).
+  Privacidad (21 nov): analítica sin cookies con Vercel Web Analytics y página `/privacy/` en los dos
+  idiomas, enlazada en el pie, bajo el formulario y en la 404. Sin banner: la web no usa cookies y
+  solo guarda en el navegador las preferencias que elige el visitante. La página tiene un botón para
+  no contar las visitas de ese navegador (también respeta Global Privacy Control).
 - **Él mira la web en su servidor de desarrollo** (`localhost:4321`), no en la versión construida:
   si dice que algo no va, reproducirlo ahí primero.
 - **Después: la fase técnica**, que aún no ha empezado.
@@ -98,7 +102,9 @@ Por orden de urgencia (lista completa en el roadmap):
    y three.js son 173 KB (solo se descarga al acercarse a su sección).
 5. **Seguridad**: las cabeceras están en `vercel.json`; falta una CSP completa. El marco de Vístalo
    carga su web desde otro dominio (solo al pulsarlo).
-6. **Analítica** sin cookies.
+6. **Analítica** sin cookies: hecha el 21 nov con Vercel Web Analytics (sin banner), junto con la
+   página de privacidad. Falta que Christian la active en el panel de Vercel y publicar. Al conectar
+   el formulario, hay que reescribir el apartado "Si me escribes" de la privacidad.
 7. **Tests de Playwright**: lentes, navegación, formulario y accesibilidad.
 8. **Otros**: la 404 responde 404 en Vercel (comprobado el 20 nov) y el manifest ya está. Renovar
    `public/.well-known/security.txt` antes del 19 nov de 2027, cuando caduca.
@@ -108,7 +114,12 @@ enviar a Awwwards la URL en inglés.
 
 ## Lo que falta de Christian
 
-- **Formulario y analítica**: elegir servicio y crear las cuentas.
+- **Formulario**: elegir servicio y crear la cuenta.
+- **Analítica**: activar Web Analytics en el panel de Vercel (su proyecto → Analytics → Enable).
+  Para que no cuenten sus propias visitas: "No contar mis visitas" en `/privacy/`, una vez en cada
+  navegador que use.
+- **Aviso legal**: solo hace falta si cobra proyectos a través de la web (LSSI); pendiente de que lo
+  diga.
 - **Contenido real de los casos**: sus frases de "Lo que más disfruté", decisiones, un fragmento de
   código real de cada proyecto, año, stack y enlaces. Lo que hay ahora lo escribió Claude.
 - **Imágenes reales** de Tempora, Vibora y Learnish, y la sesión de fotos nueva en blanco y negro.

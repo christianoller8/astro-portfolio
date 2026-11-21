@@ -1006,7 +1006,8 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 - [ ] **Accesibilidad**: versión quieta de cada momento (reduced motion), teclado, foco y contraste.
 - [ ] **Rendimiento**: presupuesto de JS, fuentes e imágenes.
 - [ ] **Seguridad**: CSP y cabeceras.
-- [ ] **Analítica** sin cookies (sin banner).
+- [ ] **Analítica** sin cookies (sin banner). Hecha el 21 nov con Vercel Web Analytics y la página
+  de privacidad; falta activarla en el panel de Vercel.
 - [ ] **Tests de Playwright**: lentes, navegación, formulario y accesibilidad.
 - [ ] **Otros**: la 404 real en Vercel y el manifest.
 
