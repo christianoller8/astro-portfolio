@@ -12,8 +12,10 @@ for (const lang of ['es', 'en']) {
     for (const [key, path] of Object.entries(PAGES)) {
       const p = await browser.newPage({ width: 1440, height: 900, dsf: 1 });
       await p.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: theme }] });
-      await p.send('Page.addScriptToEvaluateOnNewDocument', { source: `try { localStorage.removeItem('lens'); localStorage.removeItem('theme'); localStorage.setItem('intro-seen', '1'); } catch (e) {}` });
-      await p.goto(origin + (lang === 'en' ? '/en' : '') + path, { settleMs: 1200 });
+      await p.send('Page.addScriptToEvaluateOnNewDocument', { source: `try { localStorage.removeItem('lens'); localStorage.removeItem('theme'); } catch (e) {}` });
+      // La intro sale en cada carga de la home (desde el 21 nov): con un ancla en la URL no sale. El
+      // ancla no existe en la página, así que no la desplaza
+      await p.goto(origin + (lang === 'en' ? '/en' : '') + path + '#miniatura', { settleMs: 1200 });
       // Todo a la vista: sin entradas escalonadas pendientes y con las imágenes cargadas
       await p.eval(() => {
         const s = document.createElement('style');

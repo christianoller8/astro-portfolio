@@ -192,33 +192,22 @@ const imageURL = new URL(image, Astro.site);
         applyShortcuts();
         markReveal();
         try {
-          // La intro sale solo en la primera visita a la web en este navegador (decisión de Christian,
-          // 20 nov: antes salía en cada carga de la home, 3 a 5 s cada vez). Lo recuerda la bandera
-          // intro-seen en localStorage; si no se puede leer (almacenamiento bloqueado), se enseña,
-          // como antes. Tampoco sale al llegar a la home navegando desde otra página, que es un
-          // cambio de página sin recarga.
-          // ?intro la fuerza aunque haya ancla, "reducir movimiento", ahorro de datos o visita previa.
+          // La intro sale en cada carga de la home (decisión de Christian, 21 nov). El 20 nov, tras la
+          // auditoría, había pasado a salir solo en la primera visita (con una bandera en
+          // localStorage), y al recargar ya no la veía: la quiso de vuelta. La pista para saltarla se
+          // queda. No sale al llegar a la home navegando desde otra página (es un cambio de página sin
+          // recarga), ni con ancla en la URL, "reducir movimiento", ahorro de datos o un navegador
+          // automatizado (las pruebas). ?intro la fuerza igualmente.
           const replay = new URLSearchParams(location.search).has('intro');
-          let seen = false;
-          try {
-            seen = !!localStorage.getItem('intro-seen');
-          } catch (e) {}
           const skip =
             root.dataset.intro !== '1' ||
             (!replay &&
-              (seen ||
-                location.hash ||
+              (location.hash ||
                 window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
                 (navigator.connection && navigator.connection.saveData) ||
                 navigator.webdriver));
           // intro-seen: en esta carga el titular ya entra con la intro, así que no se entinta aparte
-          if (!skip) {
-            root.classList.add('intro', 'intro-seen');
-            // Se apunta al empezar, no al acabar: quien la salta o cierra la pestaña ya la ha visto
-            try {
-              localStorage.setItem('intro-seen', '1');
-            } catch (e) {}
-          }
+          if (!skip) root.classList.add('intro', 'intro-seen');
         } catch (e) {}
         document.addEventListener('astro:after-swap', () => {
           // arrived: se llega navegando desde otra página (el entintado espera a la transición)
