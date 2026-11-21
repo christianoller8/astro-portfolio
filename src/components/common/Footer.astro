@@ -195,9 +195,49 @@ const [emailLocal, emailDomain] = site.email.split('@');
   // La región existe antes de que cambie su texto: si se creara con el texto puesto, no se anunciaría
   document.addEventListener('astro:page-load', () => live());
 
-  // Volver arriba: sube con suavidad (de golpe con "reducir movimiento") y sin dejar "#" en la
-  // dirección. Con el teclado, el foco pasa al enlace de salto, lo primero de la página, para que el
-  // siguiente Tab siga desde arriba; con el ratón no se mueve el foco, solo se suelta el enlace.
+  // Volver arriba, sin dejar "#" en la dirección. El desplazamiento suave del navegador recorría la
+  // home entera (unos 9.300 px) en un segundo y medio y se veía a tirones: pasa por la pila de
+  // proyectos, la escena fija y las capas 3D, que no dan para tanto (medido el 21 nov: fotogramas de
+  // hasta 140 ms y un salto de 2.500 px en uno solo). Ahora, desde lejos, un salto instantáneo hasta
+  // un viewport y medio de arriba, y ese último tramo se desliza con su curva: sale rápido y se posa
+  // suave, como si viniera de lejos. Con "reducir movimiento", de golpe. Si la persona mueve la página
+  // mientras sube, manda ella
+  const GLIDE_MS = 700;
+  const easeOut = (t: number) => 1 - (1 - t) ** 4;
+  let glide = 0;
+  const stop = () => {
+    cancelAnimationFrame(glide);
+    glide = 0;
+  };
+  for (const type of ['wheel', 'touchstart', 'keydown'] as const) {
+    window.addEventListener(type, () => glide && stop(), { passive: true });
+  }
+
+  function toTop(done: () => void) {
+    stop();
+    const y = window.scrollY;
+    if (y === 0 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      done();
+      return;
+    }
+    const from = Math.min(y, Math.round(window.innerHeight * 1.5));
+    if (from < y) window.scrollTo({ top: from, behavior: 'instant' });
+    const start = performance.now();
+    const step = (now: number) => {
+      const t = Math.min((now - start) / GLIDE_MS, 1);
+      window.scrollTo({ top: Math.round(from * (1 - easeOut(t))), behavior: 'instant' });
+      if (t < 1) glide = requestAnimationFrame(step);
+      else {
+        glide = 0;
+        done();
+      }
+    };
+    glide = requestAnimationFrame(step);
+  }
+
+  // Con el teclado, el foco pasa al enlace de salto (lo primero de la página) al llegar arriba, para
+  // que el siguiente Tab siga desde ahí; con el ratón no se mueve el foco, solo se suelta el enlace.
   // En la fase de captura de window, antes que el router de Astro: si no, él trataría "#" como un
   // ancla de la página (la pondría en la dirección y movería el foco) y este clic llegaría tarde
   window.addEventListener(
@@ -206,19 +246,11 @@ const [emailLocal, emailDomain] = site.email.split('@');
       const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('[data-back-top]');
       if (!link) return;
       event.preventDefault();
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const smooth = !reduce && window.scrollY > 0;
-      window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'instant' });
-      if (event.detail !== 0) {
-        link.blur();
-        return;
-      }
-      // Con el teclado, el foco se mueve al llegar arriba: el enlace de salto cambia de sitio al
-      // recibirlo, y ese cambio cortaba el desplazamiento suave a mitad de camino
-      const focusTop = () => document.querySelector<HTMLElement>('a[href="#main"]')?.focus({ preventScroll: true });
-      if (!smooth) focusTop();
-      else if ('onscrollend' in window) window.addEventListener('scrollend', focusTop, { once: true });
-      else window.setTimeout(focusTop, 900);
+      const keyboard = event.detail === 0;
+      if (!keyboard) link.blur();
+      toTop(() => {
+        if (keyboard) document.querySelector<HTMLElement>('a[href="#main"]')?.focus({ preventScroll: true });
+      });
     },
     { capture: true },
   );
