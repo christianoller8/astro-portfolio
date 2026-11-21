@@ -106,8 +106,8 @@ Por orden de urgencia (lista completa en el roadmap):
 6. **Analítica** sin cookies: hecha el 21 nov con Vercel Web Analytics (sin banner), junto con la
    página de privacidad. Publicada el 21 nov y comprobada en vivo: el script carga una vez y cada
    página envía una visita (en las pruebas se cortan los envíos para no contar visitas falsas, y
-   el script de Vercel ignora los navegadores automatizados y sin interfaz). Falta confirmar en el
-   panel de Vercel que llegan. Al conectar
+   el script de Vercel ignora los navegadores automatizados y sin interfaz). Christian la activó en
+   el panel de Vercel el mismo día y vio llegar su primera visita. Al conectar
    el formulario, hay que reescribir el apartado "Si me escribes" de la privacidad.
 7. **Tests de Playwright**: lentes, navegación, formulario y accesibilidad.
 8. **Otros**: la 404 responde 404 en Vercel (comprobado el 20 nov) y el manifest ya está. Renovar
@@ -119,9 +119,8 @@ enviar a Awwwards la URL en inglés.
 ## Lo que falta de Christian
 
 - **Formulario**: elegir servicio y crear la cuenta.
-- **Analítica**: activar Web Analytics en el panel de Vercel (su proyecto → Analytics → Enable).
-  Para que no cuenten sus propias visitas: "No contar mis visitas" en `/privacy/`, una vez en cada
-  navegador que use.
+- **Analítica** (activada el 21 nov): para que no cuenten sus propias visitas, "No contar mis
+  visitas" en `/privacy/`, una vez en cada navegador que use.
 - **Aviso legal**: solo hace falta si cobra proyectos a través de la web (LSSI); pendiente de que lo
   diga.
 - **Contenido real de los casos**: sus frases de "Lo que más disfruté", decisiones, un fragmento de
