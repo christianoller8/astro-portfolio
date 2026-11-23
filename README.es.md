@@ -94,6 +94,7 @@ Los textos viven en un diccionario y los proyectos en Markdown. Astro convierte 
 | Páginas estáticas con el `ClientRouter` de Astro y la API View Transitions | Un framework de aplicación de una sola página | El HTML carga rápido y el desplazamiento entre páginas es posible; cada script tiene que volver a engancharse tras cada cambio de página |
 | Tarjetas de proyecto apiladas con CSS `position: sticky` y un guion corto para la inclinación | Una librería de animación ligada al scroll | Sin dependencias, y la pila funciona incluso sin JavaScript; todas las tarjetas deben medir lo mismo, así que en ventanas de menos de 700 px de alto se ve una lista normal |
 | Cambio de tema como una sola foto de la página recortada por un círculo que crece | Fundir cada color con transiciones CSS | Un movimiento limpio en lugar de decenas de fundidos; sin la API, con "reducir movimiento" o en iPhone y iPad, el tema cambia como antes |
+| Una política de seguridad que solo deja cargar desde la propia web, con los guiones y estilos en línea permitidos | Un hash por cada guion en línea | Sin mantenimiento y no se rompe al cambiar el contenido; en una web estática donde el visitante no escribe nada no hay por dónde colar un guion, así que los hashes darían más nota en los escáneres que protección |
 | Cada página lleva su CSS dentro del HTML (`inlineStylesheets: 'always'`) | Hojas de estilo compartidas, en caché entre páginas | En un móvil lento el primer pintado llega entre 0,3 y 1 s antes (Lighthouse); cada página pesa unos 21 KB más, y en un móvil lento el cambio de página tarda hasta una décima más en arrancar |
 
 ### Accesibilidad
@@ -172,7 +173,7 @@ Opcionales, en un archivo `.env` en la raíz:
 
 | Variable | Obligatoria | Por defecto | Descripción |
 | --- | :---: | --- | --- |
-| `PUBLIC_FORM_ENDPOINT` | No | vacía | Endpoint que recibe el formulario de contacto. Vacía: el formulario abre el programa de correo del visitante |
+| `PUBLIC_FORM_ENDPOINT` | No | vacía | Endpoint que recibe el formulario de contacto. Vacía: el formulario abre el programa de correo del visitante. Si se rellena, su origen tiene que entrar en `connect-src` de la política de seguridad de `vercel.json` |
 
 ## Pruebas y verificación
 
@@ -192,7 +193,7 @@ Para comprobar a mano los dos comportamientos clave en <http://localhost:4400>:
 
 ## Despliegue
 
-Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. El trabajo se hace en `prototipo-def`, que pasa a `main` cuando se publica una versión. `vercel.json` hace que todas las URL acaben en barra, pone las cabeceras de seguridad y da caché larga a las texturas, a las miniaturas del lienzo y a las imágenes para redes.
+Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. El trabajo se hace en `prototipo-def`, que pasa a `main` cuando se publica una versión. `vercel.json` hace que todas las URL acaben en barra, pone las cabeceras de seguridad y la política de seguridad de contenidos (CSP), y da caché larga a las texturas, a las miniaturas del lienzo y a las imágenes para redes.
 
 ## Estado y hoja de ruta
 
@@ -201,7 +202,7 @@ Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. 
 - [ ] Servicio de envío para el formulario de contacto
 - [ ] Capturas reales y vídeos cortos de Tempora, Vibora y Learnish
 - [x] Una imagen para redes por página
-- [ ] Una política de seguridad de contenidos (CSP) completa
+- [x] Una política de seguridad de contenidos (CSP)
 
 ### Dónde están las decisiones de diseño
 

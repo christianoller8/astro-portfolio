@@ -98,7 +98,8 @@ sobre la lista de abajo, que es anterior.
 Por orden de urgencia (lista completa en el roadmap):
 
 1. **Formulario**: hoy no envía; abre el correo con el mensaje escrito. Falta el servicio de envío y
-   un antispam sin captcha. El estado "enviado" ya está diseñado.
+   un antispam sin captcha. El estado "enviado" ya está diseñado. Al conectarlo, su origen tiene que
+   entrar en `connect-src` de la CSP (`vercel.json`), o la CSP bloqueará el envío.
 2. **SEO**: hecho lo de la auditoría (dominio con `www`, `hreflang`, sitemap, barras finales,
    JSON-LD y `llms.txt`). Desde el 23 nov cada página comparte su propia imagen: la parte de
    arriba de la página en oscuro, en su idioma (`public/og/`, 1200 × 630, unos 90 KB). Las genera
@@ -116,8 +117,16 @@ Por orden de urgencia (lista completa en el roadmap):
    personaje se quedan como estaban (achicarlas ahorraba 9 KB y podía emborronarlas). Sin tocar:
    three.js (177 KB comprimido, solo al acercarse a su sección), la fuente Bricolage (129 KB; una
    más ligera cambiaría el dibujo, decide él) y `profile.jpg`, que pesa 7,6 MB en origen.
-5. **Seguridad**: las cabeceras están en `vercel.json`; falta una CSP completa. El marco de Vístalo
-   carga su web desde otro dominio (solo al pulsarlo).
+5. **Seguridad**: las cabeceras están en `vercel.json`, y desde el 23 nov también la CSP. Christian
+   eligió la simple: todo desde la propia web, con los guiones y estilos en línea permitidos (con
+   hashes habría que rehacer la lista cada vez que cambia uno de los 12 guiones en línea), imágenes
+   también en `data:` (los SVG del CSS) y el iframe solo de `vistalo-sl.vercel.app`. `script-src`
+   lleva `data:` porque el router de Astro mete en cada cambio de página un guion vacío
+   `data:application/javascript,`. No se pone en `/cv/`: con `object-src 'none'` el visor de PDF de
+   Safari (y a veces el de Chrome) se queda en blanco. `tests/csp.spec.ts` la añade a cada página
+   (astro preview no envía cabeceras) y exige cero bloqueos. Pendiente: mirar la consola de la web
+   publicada tras subirla, porque la analítica de Vercel solo existe allí (carga de la propia web).
+   En los despliegues de prueba de Vercel la barra de comentarios (`vercel.live`) queda bloqueada.
 6. **Analítica** sin cookies: hecha el 21 nov con Vercel Web Analytics (sin banner), junto con la
    página de privacidad. Publicada el 21 nov y comprobada en vivo: el script carga una vez y cada
    página envía una visita (en las pruebas se cortan los envíos para no contar visitas falsas, y

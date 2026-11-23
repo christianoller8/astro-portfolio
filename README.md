@@ -94,6 +94,7 @@ The text lives in one dictionary and the projects in Markdown. Astro turns both 
 | Static pages with Astro's `ClientRouter` and the View Transitions API | A single-page app framework | Plain HTML loads fast and the pan between pages is possible; every script has to bind again after each page change |
 | Stacked project cards with CSS `position: sticky` and a short script for the tilt | A scroll animation library | No dependency, and the stack works even without JavaScript; all cards must share one height, so below 700 px of window height the site shows a plain list |
 | Theme switch as one snapshot of the page clipped by a growing circle | Fading every colour with CSS transitions | One clean movement instead of dozens of colour fades; without the API, with reduced motion or on iPhone and iPad, the theme changes the old way |
+| A Content Security Policy that locks every source to the site but allows inline scripts and styles | A hash for every inline script | No maintenance and nothing breaks when content changes; on a static site with no user input there is no way to inject a script, so hashes would add a scanner score more than protection |
 | Every page carries its CSS inline (`inlineStylesheets: 'always'`) | Shared stylesheets, cached across pages | On a slow phone the first paint arrives 0.3–1 s sooner (Lighthouse); each page weighs about 21 KB more, and on a slow phone a page change takes up to 0.1 s longer to start |
 
 ### Accessibility
@@ -172,7 +173,7 @@ Optional, in a `.env` file at the root:
 
 | Variable | Required | Default | Description |
 | --- | :---: | --- | --- |
-| `PUBLIC_FORM_ENDPOINT` | No | empty | Endpoint that receives the contact form. Empty: the form opens the visitor's email app |
+| `PUBLIC_FORM_ENDPOINT` | No | empty | Endpoint that receives the contact form. Empty: the form opens the visitor's email app. When set, add its origin to `connect-src` in the Content Security Policy in `vercel.json` |
 
 ## Testing and verification
 
@@ -192,7 +193,7 @@ To check the two key behaviours by hand on <http://localhost:4400>:
 
 ## Deployment
 
-Vercel builds the `main` branch and serves it at <https://www.christianoller.dev>. Work happens on `prototipo-def`, which moves into `main` when a version is published. `vercel.json` makes every URL end in a slash, sets security headers and gives long cache times to the textures, the canvas thumbnails and the social images.
+Vercel builds the `main` branch and serves it at <https://www.christianoller.dev>. Work happens on `prototipo-def`, which moves into `main` when a version is published. `vercel.json` makes every URL end in a slash, sets security headers and the Content Security Policy, and gives long cache times to the textures, the canvas thumbnails and the social images.
 
 ## Status and roadmap
 
@@ -201,7 +202,7 @@ Vercel builds the `main` branch and serves it at <https://www.christianoller.dev
 - [ ] Sending service for the contact form
 - [ ] Real screenshots and short videos of Tempora, Vibora and Learnish
 - [x] A social image per page
-- [ ] A full Content Security Policy
+- [x] A Content Security Policy
 
 ### Where the design decisions live
 

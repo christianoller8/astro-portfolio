@@ -25,6 +25,9 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
   usar `git -c http.postBuffer=157286400 push`.
 - **Primero diseño, después técnica**: SEO, accesibilidad, formularios, cookies y rendimiento van en
   la fase técnica, cuando el diseño esté cerrado.
+- **CSP**: vive en `vercel.json` (la simple, elegida el 23 nov: todo desde la propia web, guiones en
+  línea permitidos, iframe solo de Vístalo). Cualquier cosa nueva de otro origen (el servicio del
+  formulario, un vídeo o una fuente de fuera) hay que añadirla ahí; `tests/csp.spec.ts` lo detecta.
 - **Credenciales**: Claude nunca escribe contraseñas, tokens ni códigos de un solo uso; las cuentas y
   los inicios de sesión los hace él.
 - **Fotos**: integradas en la página (luz, sombra, fundidos). Nunca como rectángulos ni recortes
