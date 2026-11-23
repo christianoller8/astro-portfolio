@@ -1005,7 +1005,9 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
   - JSON-LD, imagen OG por página y `llms.txt`. La imagen por página (una captura de su parte de
     arriba, en cada idioma) la aprobó el 23 nov; lo demás salió con la auditoría.
 - [ ] **Accesibilidad**: versión quieta de cada momento (reduced motion), teclado, foco y contraste.
-- [ ] **Rendimiento**: presupuesto de JS, fuentes e imágenes.
+- [x] **Rendimiento**: presupuesto de JS, fuentes e imágenes. Aprobado el 23 nov: foto del hero
+  precargada, imágenes a su tamaño y CSS dentro de cada página (móvil de 88–91 a 91–94 en
+  Lighthouse; detalle y coste en estado-actual).
 - [ ] **Seguridad**: CSP y cabeceras.
 - [x] **Analítica** sin cookies (sin banner). Hecha el 21 nov con Vercel Web Analytics y la página
   de privacidad, publicada y activada ese día: Christian vio llegar su primera visita.
