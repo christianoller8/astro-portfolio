@@ -4,8 +4,9 @@ import { LANGS, PAGES, PROJECTS, expectTheme, goThroughMenu, open, pageUrl, them
 
 // La CSP vive en vercel.json (la pone Vercel) y astro preview no envía cabeceras: aquí se añade a cada
 // documento de la web, como hará Vercel, y se exige que ni las páginas ni lo que se hace en ellas
-// provoquen un solo bloqueo. Si algo nuevo carga de otro sitio (un servicio para el formulario, un
-// vídeo de fuera…), este test lo dice antes de publicar: hay que añadir su origen a la cabecera.
+// provoquen un solo bloqueo. Si algo nuevo carga de otro sitio al abrir o recorrer una página (un vídeo
+// o una fuente de fuera…), este test lo dice antes de publicar: hay que añadir su origen a la cabecera.
+// No envía el formulario: el día que tenga servicio de envío, su origen va en connect-src a mano.
 // El data: de script-src lo pide el router de Astro: en cada cambio de página mete un guion vacío
 // (data:application/javascript,) para esperar a que acaben los módulos en línea de la página nueva.
 type HeaderRule = { source: string; headers: { key: string; value: string }[] };
