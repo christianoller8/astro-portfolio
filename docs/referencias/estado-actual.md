@@ -32,7 +32,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   idioma y tema. Los proyectos van en cajas en la página de Proyectos, aprobado. Las capas 3D de
   la home funcionan y van numeradas, y al acabar esa escena la caricatura dice que toda la web se
   puede ver así (aprobado). **Solo quedan sus vídeos** cortos de cada app, para la caja grande de
-  cada proyecto: cuando llegue el primero se añade el campo `video` al esquema de proyectos.
+  cada proyecto: cuando llegue el primero se añade el campo `video` al esquema de proyectos. Cómo
+  grabarlos, exportarlos e integrarlos (estudio de poulo.site, 23 nov): `guia-videos-proyectos.md`.
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la
