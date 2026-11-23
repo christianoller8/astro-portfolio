@@ -589,8 +589,10 @@ const contrast = (a: Rgba, b: Rgba) => {
 function runChecks(): Check[] {
   const L = NOTES[lang()];
   const checks: Check[] = [];
-  // La web de ejemplo de "Cómo lo veo yo" es una ilustración inerte: no cuenta
-  const real = (el: Element) => !el.closest('[inert]');
+  // La web de ejemplo de "Cómo lo veo yo" es una ilustración inerte: no cuenta. Tampoco lo oculto con
+  // [hidden]: la 404 lleva su titular en los dos idiomas y esconde el que no toca, y antes la lente
+  // contaba los dos <h1> (lo encontraron los tests de Playwright el 23 nov)
+  const real = (el: Element) => !el.closest('[inert], [hidden]');
 
   checks.push({ ok: !!root.getAttribute('lang'), group: 'structure', label: L.lang });
   checks.push({ ok: document.title.trim().length > 0, group: 'structure', label: L.title });
