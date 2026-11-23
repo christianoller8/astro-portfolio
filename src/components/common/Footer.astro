@@ -53,6 +53,7 @@ const [emailLocal, emailDomain] = site.email.split('@');
       <a class="link" href={translatePath('/privacy')}>{t('footer.privacy')}</a>
       {/* Volver arriba (decisión de Christian, 21 nov). Sin JavaScript, "#" ya sube al principio y
           no deja ancla en la dirección (la intro se salta si la hay); con él, sube con suavidad */}
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- "#" es a propósito: el respaldo sin JavaScript */}
       <a class="link back-top" href="#" data-back-top>
         {t('footer.top')}
         <span class="back-top-arrow" aria-hidden="true">↑</span>

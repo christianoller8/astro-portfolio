@@ -179,10 +179,11 @@ Optional, in a `.env` file at the root:
 
 ```bash
 pnpm astro check
+pnpm lint
 pnpm test
 ```
 
-`pnpm astro check` type-checks the scripts and the Astro templates and must report 0 errors.
+`pnpm astro check` type-checks the scripts and the Astro templates and must report 0 errors. `pnpm lint` runs ESLint on the source and the tests (not on the build or the review tools) and must report no problems.
 
 `pnpm test` runs the Playwright suite against a production build on port 4400 (it builds and serves one, or reuses a preview already running there). About 300 tests cover navigation, theme, the intro, lenses, canvas, demos, the contact form, privacy, SEO basics and accessibility on every page, on a desktop and a mobile viewport and in both languages. For accessibility, the site's own QA lens is the judge: every check it runs has to pass. The suite uses Playwright's Chromium when it is installed (`pnpm exec playwright install chromium`) and Microsoft Edge otherwise. GitHub Actions runs it on every push.
 

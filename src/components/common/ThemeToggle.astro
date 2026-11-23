@@ -46,7 +46,9 @@ const t = useTranslations(getLangFromUrl(Astro.url));
     // El almacenamiento puede estar bloqueado: el tema cambia igual, solo no se recuerda
     try {
       localStorage.setItem('theme', dark ? 'dark' : 'light');
-    } catch {}
+    } catch {
+      // Sin almacenamiento: el tema no se recuerda
+    }
   };
 
   // iPhone y iPad (también el iPad que se presenta como Mac): sin la onda, como en la referencia

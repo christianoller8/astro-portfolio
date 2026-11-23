@@ -144,7 +144,10 @@ Por orden de urgencia (lista completa en el roadmap):
    saltan de verdad. Quedan sin prueba Vístalo en vivo (con los vídeos, porque esa caja va a
    cambiar) y arrastrar o hacer zoom en el lienzo (solo si se toca `canvas.ts`).
 8. **Otros**: la 404 responde 404 en Vercel (comprobado el 20 nov) y el manifest ya está. Renovar
-   `public/.well-known/security.txt` antes del 19 nov de 2027, cuando caduca.
+   `public/.well-known/security.txt` antes del 19 nov de 2027, cuando caduca. `pnpm lint` da 0
+   problemas desde el 23 nov: antes revisaba también lo compilado y `.taste-skill/` (8.862 errores);
+   en el código había 18, arreglados. En los dos `href="#"` hechos a propósito (la web de ejemplo
+   inerte de "Cómo lo veo yo" y "Volver arriba") la regla se desactiva con su motivo escrito.
 
 Después, el **lanzamiento**: publicar en christianoller.dev, grabar el vídeo de los momentos firma y
 enviar a Awwwards la URL en inglés.

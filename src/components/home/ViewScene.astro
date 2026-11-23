@@ -70,6 +70,7 @@ const lenses = [
 
       <div class="vs-frame" data-view-frame>
         <!-- La web de ejemplo: HTML real. [data-sketch] dice cómo se boceta cada pieza; [data-tag], cuáles se etiquetan -->
+        {/* eslint-disable jsx-a11y/anchor-is-valid -- la web de ejemplo es inerte y se enseña tal cual: sus enlaces "#" no reciben foco ni clics */}
         <div class="demo" data-view-demo inert>
           <header class="demo-top" data-tag data-ui>
             <a class="demo-brand" href="#" tabindex="-1" data-sketch="box">Norte</a>
@@ -91,6 +92,7 @@ const lenses = [
                     >{t('view.demo.cta')}</button
                   >
                   <a class="demo-link" href="#" tabindex="-1" data-sketch="text">{t('view.demo.link')}</a>
+                  {/* eslint-enable jsx-a11y/anchor-is-valid */}
                 </div>
               </div>
               <figure class="demo-art" data-sketch="image" data-tag data-view-art>

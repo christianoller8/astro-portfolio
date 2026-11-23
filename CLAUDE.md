@@ -51,7 +51,8 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
 
 - Node 22 y **pnpm** (`pnpm-lock.yaml`; con npm falla).
 - `pnpm install` · `pnpm dev` (desarrollo) · `pnpm build` y `pnpm preview --port 4400` (lo construido).
-- `pnpm astro check` antes de dar algo por bueno: tiene que dar 0 errores.
+- `pnpm astro check` antes de dar algo por bueno: tiene que dar 0 errores. También `pnpm lint`, sin
+  ningún problema (revisa `src/` y `tests/`; lo compilado y `.taste-skill/` quedan fuera).
 - `astro preview` sirve `dist/`: tras cambiar código hay que volver a construir para verlo.
 
 ## Mapa rápido

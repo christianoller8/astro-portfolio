@@ -198,7 +198,9 @@ if (!window.__analyticsKeep) {
             theme =
               localStorage.getItem('theme') ||
               (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-          } catch (e) {}
+          } catch {
+            // Almacenamiento bloqueado: se queda en claro
+          }
           root.classList.toggle('dark', theme === 'dark');
           // --sheet de cada tema (global.css): el color de la barra del navegador
           const bar = document.querySelector('meta[name="theme-color"]');
@@ -211,11 +213,15 @@ if (!window.__analyticsKeep) {
           // quede basura (y nadie vuelva a verlo puesto sin haberlo elegido).
           try {
             localStorage.removeItem('lens');
-          } catch (e) {}
+          } catch {
+            // Almacenamiento bloqueado: no hay nada que borrar
+          }
           try {
             const lens = sessionStorage.getItem('lens');
             if (lens) root.dataset.lens = lens;
-          } catch (e) {}
+          } catch {
+            // Sin sessionStorage la web se ve sin lente
+          }
         };
         // Atajos de una tecla (1, 2, 3 y M) apagados por quien los ajustó en el panel de la caricatura
         // (src/scripts/shortcuts.ts). Astro cambia los atributos de html al navegar: se repone.
@@ -223,7 +229,9 @@ if (!window.__analyticsKeep) {
           try {
             if (localStorage.getItem('shortcuts') === 'off') root.dataset.shortcuts = 'off';
             else delete root.dataset.shortcuts;
-          } catch (e) {}
+          } catch {
+            // Almacenamiento bloqueado: los atajos siguen encendidos
+          }
         };
         const markReveal = () => {
           if (!('IntersectionObserver' in window)) return;
@@ -253,7 +261,9 @@ if (!window.__analyticsKeep) {
                 navigator.webdriver));
           // intro-seen: en esta carga el titular ya entra con la intro, así que no se entinta aparte
           if (!skip) root.classList.add('intro', 'intro-seen');
-        } catch (e) {}
+        } catch {
+          // Si algo falla aquí, sin intro: la página se ve directamente
+        }
         document.addEventListener('astro:after-swap', () => {
           // arrived: se llega navegando desde otra página (el entintado espera a la transición)
           root.classList.add('arrived', 'js');

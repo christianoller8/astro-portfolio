@@ -179,10 +179,11 @@ Opcionales, en un archivo `.env` en la raíz:
 
 ```bash
 pnpm astro check
+pnpm lint
 pnpm test
 ```
 
-`pnpm astro check` comprueba los tipos de los scripts y de las plantillas de Astro y debe dar 0 errores.
+`pnpm astro check` comprueba los tipos de los scripts y de las plantillas de Astro y debe dar 0 errores. `pnpm lint` pasa ESLint por el código y las pruebas (no por lo compilado ni por las herramientas de revisión) y no debe dar ningún problema.
 
 `pnpm test` lanza la batería de Playwright contra una versión de producción en el puerto 4400 (la construye y la sirve, o aprovecha una vista previa que ya esté abierta ahí). Unas 300 pruebas cubren la navegación, el tema, la intro, las lentes, el lienzo, las demos, el formulario de contacto, la privacidad, lo básico de SEO y la accesibilidad de cada página, en escritorio y en móvil y en los dos idiomas. Para la accesibilidad, el juez es la propia lente de QA de la web: todas sus comprobaciones tienen que pasar. La batería usa el Chromium de Playwright si está instalado (`pnpm exec playwright install chromium`) y, si no, Microsoft Edge. GitHub Actions la lanza en cada push.
 
