@@ -141,12 +141,14 @@ test.describe('Content Security Policy', () => {
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
     });
     await open(page, '/contact/');
-    const endpoint = 'https://api.web3forms.com/submit/test-access-key';
+    // Lo que pinta producción: /submit y la clave (aquí, falsa) en un campo oculto
     await page.evaluate((url) => {
       const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
-      form?.setAttribute('data-endpoint', url);
-      form?.setAttribute('action', url);
-    }, endpoint);
+      if (!form) return;
+      form.setAttribute('data-endpoint', url);
+      form.setAttribute('action', url);
+      form.prepend(Object.assign(document.createElement('input'), { type: 'hidden', name: 'access_key', value: '00000000-0000-4000-8000-000000000000' }));
+    }, 'https://api.web3forms.com/submit');
     await page.locator('[data-contact-form] input[name="name"]').fill('Laura Vidal');
     await page.locator('[data-contact-form] input[name="email"]').fill('laura@estudio.example');
     await page.locator('[data-contact-form] textarea[name="message"]').fill('Buscamos a alguien que diseñe y programe la nueva web.');

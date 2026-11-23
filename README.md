@@ -173,7 +173,7 @@ Optional, in a `.env` file at the root:
 
 | Variable | Required | Default | Description |
 | --- | :---: | --- | --- |
-| `PUBLIC_FORM_ENDPOINT` | No | empty | Web3Forms endpoint that receives the contact form: `https://api.web3forms.com/submit/<access key>` (the key is public by design: it ends up in the page). Empty: the form opens the visitor's email app. Its origin is already allowed in the Content Security Policy in `vercel.json` |
+| `PUBLIC_FORM_ENDPOINT` | No | empty | Web3Forms endpoint that receives the contact form: `https://api.web3forms.com/submit/<access key>` (the key is public by design: it ends up in the page). The site splits it at build time and posts to `/submit` with the key as `access_key`, the method Web3Forms documents for JavaScript. Empty: the form opens the visitor's email app. Its origin is already allowed in the Content Security Policy in `vercel.json` |
 
 ## Testing and verification
 

@@ -87,6 +87,7 @@ const topics = [
       >
         {/* Sin JavaScript, con servicio de envío: el asunto del correo (con JS se sustituye por uno con el tema) */}
         {site.formEndpoint && <input type="hidden" name="subject" value={t('contact.mailto.subject')} />}
+        {site.formAccessKey && <input type="hidden" name="access_key" value={site.formAccessKey} />}
         <div class="form-fields" data-form-fields>
         {/* Cebo para bots (Web3Forms descarta el mensaje si llega marcado): oculto, fuera del árbol de accesibilidad y del foco; el aria-label es solo para que la lente QA no lo cuente como campo sin etiqueta */}
         <input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off" />

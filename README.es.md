@@ -173,7 +173,7 @@ Opcionales, en un archivo `.env` en la raíz:
 
 | Variable | Obligatoria | Por defecto | Descripción |
 | --- | :---: | --- | --- |
-| `PUBLIC_FORM_ENDPOINT` | No | vacía | Endpoint de Web3Forms que recibe el formulario de contacto: `https://api.web3forms.com/submit/<clave de acceso>` (la clave es pública por diseño: acaba en la página). Vacía: el formulario abre el programa de correo del visitante. Su origen ya está permitido en la política de seguridad de `vercel.json` |
+| `PUBLIC_FORM_ENDPOINT` | No | vacía | Endpoint de Web3Forms que recibe el formulario de contacto: `https://api.web3forms.com/submit/<clave de acceso>` (la clave es pública por diseño: acaba en la página). La web lo separa al compilar y envía a `/submit` con la clave como `access_key`, el método que Web3Forms documenta para JavaScript. Vacía: el formulario abre el programa de correo del visitante. Su origen ya está permitido en la política de seguridad de `vercel.json` |
 
 ## Pruebas y verificación
 

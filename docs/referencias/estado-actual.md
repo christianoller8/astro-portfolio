@@ -101,7 +101,13 @@ Por orden de urgencia (lista completa en el roadmap):
    campo cebo `botcheck`, asunto igual que el del mailto, y `api.web3forms.com` ya permitido en la
    CSP (`connect-src` y `form-action`). Funciona en cuanto Christian define `PUBLIC_FORM_ENDPOINT`
    (`https://api.web3forms.com/submit/<clave>`) en Vercel; sin la variable, abre el correo. La
-   privacidad y la nota bajo el botón cambian solas según la variable. Falta una prueba en vivo.
+   privacidad y la nota bajo el botón cambian solas según la variable. Christian creó su cuenta de
+   Web3Forms con su Gmail (aparte de la de Vístalo) y la variable ya está en Vercel (Config,
+   Production y Preview). La primera prueba en vivo falló: el navegador lo vio como error de CORS y,
+   al diagnosticarlo, la API respondió 429 (límite por IP durante una hora, sin cabeceras CORS). Desde
+   entonces la web separa la clave de la variable (`src/data/form-endpoint.ts`) y envía a `/submit`
+   con `access_key` en un campo oculto, el método que Web3Forms documenta para JavaScript. Falta
+   repetir la prueba en vivo.
 2. **SEO**: hecho lo de la auditoría (dominio con `www`, `hreflang`, sitemap, barras finales,
    JSON-LD y `llms.txt`). Desde el 23 nov cada página comparte su propia imagen: la parte de
    arriba de la página en oscuro, en su idioma (`public/og/`, 1200 × 630, unos 90 KB). Las genera

@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { resolveFormEndpoint } from './form-endpoint';
 
 // Datos de contacto y enlaces. Solo se importa desde el frontmatter de Astro (lee el disco al compilar).
 const cvPath = '/cv/christian-oller-cv.pdf';
+const contactForm = resolveFormEndpoint(import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined);
 
 export const site = {
   name: 'Christian Oller',
@@ -13,8 +15,10 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/christian-oller',
   github: 'https://github.com/christianoller8',
   cv: cvPath,
-  // Endpoint del formulario (Formspree, Web3Forms…): PUBLIC_FORM_ENDPOINT en .env
-  formEndpoint: (import.meta.env.PUBLIC_FORM_ENDPOINT as string | undefined) ?? '',
+  // Envío del formulario, a partir de PUBLIC_FORM_ENDPOINT: adónde va y, con Web3Forms, su clave
+  // (va en un campo oculto; ver form-endpoint.ts). Sin variable, el formulario abre el correo
+  formEndpoint: contactForm.endpoint,
+  formAccessKey: contactForm.accessKey,
 };
 
 /**

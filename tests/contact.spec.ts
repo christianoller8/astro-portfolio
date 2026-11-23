@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { resolveFormEndpoint } from '../src/data/form-endpoint';
 import { LANGS, open, pageUrl, t, tf, type Lang } from './helpers';
 
 const EMAIL = 'christianoller.dev@gmail.com';
@@ -136,19 +137,42 @@ test.describe('Contact page', () => {
   });
 });
 
-// El build local no tiene PUBLIC_FORM_ENDPOINT: se simula el de producción apuntando el formulario a
-// Web3Forms (con una clave falsa) y se intercepta la red, sin enviar nada de verdad
-const ENDPOINT = 'https://api.web3forms.com/submit/test-access-key';
+// Una clave falsa con la forma de las de Web3Forms
+const FAKE_KEY = '00000000-0000-4000-8000-000000000000';
+
+test.describe('Form endpoint', () => {
+  test.skip(({ isMobile }) => isMobile, 'Es lógica pura: basta con comprobarla una vez');
+
+  test('a Web3Forms URL with the key in the path posts to /submit with the key as access_key', () => {
+    const expected = { endpoint: 'https://api.web3forms.com/submit', accessKey: FAKE_KEY };
+    expect(resolveFormEndpoint(`https://api.web3forms.com/submit/${FAKE_KEY}`)).toEqual(expected);
+    // Con espacios o barra final, al copiarla en Vercel, sale lo mismo
+    expect(resolveFormEndpoint(` https://api.web3forms.com/submit/${FAKE_KEY}/ `)).toEqual(expected);
+  });
+
+  test('any other endpoint is used as is, and without one the form opens the email app', () => {
+    expect(resolveFormEndpoint('https://formspree.io/f/abcd')).toEqual({ endpoint: 'https://formspree.io/f/abcd', accessKey: '' });
+    expect(resolveFormEndpoint(undefined)).toEqual({ endpoint: '', accessKey: '' });
+    expect(resolveFormEndpoint('')).toEqual({ endpoint: '', accessKey: '' });
+  });
+});
+
+// El build local no tiene PUBLIC_FORM_ENDPOINT: se simula lo que pinta el de producción (el formulario
+// apunta a /submit y lleva la clave en un campo oculto) y se intercepta la red, sin enviar nada de verdad
+const SERVICE = resolveFormEndpoint(`https://api.web3forms.com/submit/${FAKE_KEY}`);
 
 for (const lang of LANGS) {
   test.describe(`Contact form with a sending service (${lang})`, () => {
     test.beforeEach(async ({ page }) => {
       await open(page, pageUrl(lang, '/contact/'));
-      await page.evaluate((endpoint) => {
+      await page.evaluate(({ endpoint, accessKey }) => {
         const target = document.querySelector<HTMLFormElement>('[data-contact-form]');
-        target?.setAttribute('data-endpoint', endpoint);
-        target?.setAttribute('action', endpoint);
-      }, ENDPOINT);
+        if (!target) return;
+        target.setAttribute('data-endpoint', endpoint);
+        target.setAttribute('action', endpoint);
+        const key = Object.assign(document.createElement('input'), { type: 'hidden', name: 'access_key', value: accessKey });
+        target.prepend(key);
+      }, SERVICE);
     });
 
     const fill = async (page: Page) => {
@@ -160,9 +184,9 @@ for (const lang of LANGS) {
     };
 
     test('a valid submit posts the message to Web3Forms and shows the sent state', async ({ page }) => {
-      let post: { method: string; body: string } | undefined;
+      let post: { method: string; url: string; body: string } | undefined;
       await page.route('https://api.web3forms.com/**', (route) => {
-        post = { method: route.request().method(), body: route.request().postData() ?? '' };
+        post = { method: route.request().method(), url: route.request().url(), body: route.request().postData() ?? '' };
         return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
       });
       await fill(page);
@@ -170,7 +194,11 @@ for (const lang of LANGS) {
 
       await expect(form(page).locator('[data-form-sent-title]')).toHaveText(t(lang, 'contact.sent.title'));
       expect(post?.method).toBe('POST');
+      // El método que Web3Forms documenta para JavaScript: /submit, con la clave en access_key
+      expect(post?.url).toBe('https://api.web3forms.com/submit');
       const body = post?.body ?? '';
+      expect(body).toContain('name="access_key"');
+      expect(body).toContain(FAKE_KEY);
       expect(body).toContain('name="name"');
       expect(body).toContain('Laura Vidal');
       expect(body).toContain('laura@estudio.example');
