@@ -1,0 +1,223 @@
+import { expect, test, type Page } from '@playwright/test';
+import { LANGS, open, pageUrl, t, tf, type Lang } from './helpers';
+
+/** La frase con la que arranca un anuncio con huecos, hasta el primero: "Turno añadido: " */
+const startOf = (lang: Lang, key: Parameters<typeof t>[1]): RegExp => {
+  const [head] = t(lang, key).split('{');
+  return new RegExp(`^${head.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`);
+};
+
+/** Las tarjetas de proyecto del inicio, con su posición y hasta dónde llegan */
+const cards = (page: Page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>('.stack-item')].map((li) => {
+      const box = li.getBoundingClientRect();
+      return { position: getComputedStyle(li).position, top: Math.round(box.top), bottom: Math.round(box.bottom) };
+    }),
+  );
+
+/** Baja hasta el punto en el que la tarjeta `index` acaba de llegar a su sitio */
+const scrollToCard = (page: Page, index: number, extra = 0) =>
+  page.evaluate(
+    ([i, plus]) => {
+      const list = document.querySelector<HTMLElement>('.stack')!;
+      const first = list.querySelector<HTMLElement>('.stack-item')!;
+      const step = first.offsetHeight + (parseFloat(getComputedStyle(list).rowGap) || 0);
+      const stick = parseFloat(getComputedStyle(first).top) || 0;
+      window.scrollTo(0, list.getBoundingClientRect().top + window.scrollY + i * step - stick + plus);
+    },
+    [index, extra] as const,
+  );
+
+test.describe('Home: stacked project cards', () => {
+  test('stick one over another on desktop', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'El apilado solo existe en escritorio con altura suficiente');
+    await open(page, '/');
+    await scrollToCard(page, 2, 30);
+    // Con la tercera en su sitio, las tres primeras están fijadas en el mismo lugar
+    await expect
+      .poll(async () => {
+        const [a, b, c, d] = await cards(page);
+        return a.position === 'sticky' && a.top === b.top && b.top === c.top && c.bottom <= 900 && d.top >= c.bottom;
+      })
+      .toBe(true);
+    expect((await cards(page)).length).toBe(4);
+  });
+
+  test('are a plain list on mobile', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'En móvil no hay apilado');
+    await open(page, '/');
+    await page.locator('.stack-item').nth(2).scrollIntoViewIfNeeded();
+    const [a, b, c] = await cards(page);
+    expect([a, b, c].every((card) => card.position !== 'sticky')).toBe(true);
+    expect(b.top).toBeGreaterThan(a.bottom);
+    expect(c.top).toBeGreaterThan(b.bottom);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+
+  test('are a plain list with reduced motion', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'Ya es una lista en móvil');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await open(page, '/');
+    const list = await cards(page);
+    expect(list.every((card) => card.position !== 'sticky')).toBe(true);
+  });
+});
+
+for (const lang of LANGS) {
+  test.describe(`Home: project demos (${lang})`, () => {
+    test.beforeEach(async ({ page }) => {
+      await open(page, pageUrl(lang, '/'));
+    });
+
+    test('Tempora adds a shift and clocks someone in, and announces both', async ({ page }) => {
+      const demo = page.locator('.stack [data-demo="tempora"]');
+      await demo.scrollIntoViewIfNeeded();
+      const live = demo.locator('[data-demo-live-region]');
+      const stats = demo.locator('[data-demo-stat]');
+      const shifts = Number(await stats.nth(0).textContent());
+      const pending = Number(await stats.nth(2).textContent());
+
+      await demo.locator('[data-demo-add]').click();
+      await expect(stats.nth(0)).toHaveText(String(shifts + 1));
+      await expect(stats.nth(2)).toHaveText(String(pending + 1));
+      await expect(demo.getByText('Christian Oller', { exact: true })).toBeVisible();
+      await expect(live).toHaveText(startOf(lang, 'demo.say.added'));
+      await expect(live).toContainText('Christian Oller');
+
+      const clock = demo.locator('[data-demo-clock]').first();
+      await clock.click();
+      await expect(stats.nth(2)).toHaveText(String(pending));
+      await expect(live).toHaveText(/(: clocked in\.|: fichado\.)$/);
+    });
+
+    test('Vibora books a court and confirms it, and announces both', async ({ page }) => {
+      const demo = page.locator('.stack [data-demo="vibora"]');
+      await demo.scrollIntoViewIfNeeded();
+      const live = demo.locator('[data-demo-live-region]');
+      const slot = (await demo.locator('[data-demo-slot][aria-pressed="false"]').first().getAttribute('data-demo-slot')) ?? '';
+      expect(slot).not.toBe('');
+      // Un localizador fijo a esa pista: el primero "libre" cambia en cuanto se elige
+      const free = demo.locator(`[data-demo-slot="${slot}"]`);
+      const confirm = demo.locator('[data-demo-confirm]');
+      const summary = demo.locator('[data-demo-summary]');
+
+      await free.click();
+      await expect(free).toHaveAttribute('aria-pressed', 'true');
+      await expect(confirm).toBeEnabled();
+      await expect(summary).toContainText(slot);
+      await expect(live).toHaveText(tf(lang, 'demo.say.picked', { slot }));
+
+      await confirm.click();
+      await expect(summary).toContainText(slot);
+      await expect(live).toHaveText(tf(lang, 'demo.say.confirmed', { slot }));
+      // El foco no se pierde: vuelve a la pista reservada
+      await expect(free).toBeFocused();
+
+      // Quitar la selección también se anuncia
+      await free.click();
+      await expect(free).toHaveAttribute('aria-pressed', 'false');
+      await expect(live).toHaveText(t(lang, 'demo.say.unpicked'));
+      await expect(confirm).toBeDisabled();
+    });
+
+    test('Learnish shows the answer and moves to the next card, and announces both', async ({ page }) => {
+      const demo = page.locator('.stack [data-demo="learnish"]');
+      await demo.scrollIntoViewIfNeeded();
+      const live = demo.locator('[data-demo-live-region]');
+      const word = demo.locator('[data-demo-word]');
+      const answer = demo.locator('[data-demo-answer]');
+      const firstWord = await word.textContent();
+      // "7 de 10": el número que sube al pasar de tarjeta se lee de la página, no se copia aquí
+      const step = Number(((await demo.locator('[data-demo-progress]').textContent()) ?? '').match(/\d+/)?.[0]);
+      expect(step).toBeGreaterThan(0);
+
+      await expect(answer).toBeHidden();
+      await demo.locator('[data-demo-reveal]').click();
+      await expect(answer).toBeVisible();
+      const text = ((await answer.textContent()) ?? '').trim();
+      await expect(live).toHaveText(tf(lang, 'demo.say.answer', { answer: text }));
+
+      await demo.locator('[data-demo-next="good"]').click();
+      await expect(word).not.toHaveText(firstWord ?? '');
+      const next = ((await word.textContent()) ?? '').trim();
+      await expect(live).toHaveText(tf(lang, 'demo.say.card', { word: next }));
+      await expect(demo.locator('[data-demo-progress]')).toHaveText(new RegExp(`^${step + 1}\\D`));
+      await expect(answer).toBeHidden();
+    });
+  });
+}
+
+test.describe('Home: 3D layers', () => {
+  for (const lang of LANGS) {
+    test(`the stage is a keyboard slider whose value text changes (${lang})`, async ({ page }) => {
+      await open(page, pageUrl(lang, '/'));
+      const section = page.locator('[data-layers]');
+      await section.scrollIntoViewIfNeeded();
+      // O hay escena 3D (is-ready) o, sin WebGL, las capas planas (is-flat)
+      await expect.poll(() => section.getAttribute('class'), { timeout: 20_000 }).toMatch(/is-ready|is-flat/);
+      const flat = ((await section.getAttribute('class')) ?? '').includes('is-flat');
+      // En CI (con SwiftShader) la escena 3D es obligatoria: caer a las capas planas es un fallo, no un salto
+      if (process.env.CI) expect(flat, 'WebGL no está disponible: la escena cayó a las capas planas').toBe(false);
+      if (flat) {
+        test.info().annotations.push({ type: 'sin-webgl', description: 'Sin WebGL en este navegador: la escena 3D no se ha probado (solo se comprueba que caen las capas planas)' });
+        test.skip(true, 'Sin WebGL: la escena se sustituye por las capas planas');
+      }
+
+      const stage = page.getByRole('slider', { name: t(lang, 'layers.label') });
+      await expect(stage).toHaveAttribute('aria-valuemin', '-60');
+      await expect(stage).toHaveAttribute('aria-valuemax', '60');
+      const start = await stage.getAttribute('aria-valuetext');
+      const startNow = Number(await stage.getAttribute('aria-valuenow'));
+
+      await stage.focus();
+      await page.keyboard.press('ArrowRight');
+      await expect(stage).not.toHaveAttribute('aria-valuetext', start ?? '');
+      expect(Number(await stage.getAttribute('aria-valuenow'))).toBeGreaterThan(startNow);
+
+      await page.keyboard.press('Home');
+      await expect(stage).toHaveAttribute('aria-valuenow', '-60');
+      await expect(stage).toHaveAttribute('aria-valuetext', tf(lang, 'layers.rotate.left', { n: '60' }));
+      await page.keyboard.press('End');
+      await expect(stage).toHaveAttribute('aria-valuenow', '60');
+      await expect(stage).toHaveAttribute('aria-valuetext', tf(lang, 'layers.rotate.right', { n: '60' }));
+    });
+  }
+
+  test('the gap control is labelled and reachable', async ({ page }) => {
+    await open(page, '/');
+    const range = page.getByRole('slider', { name: t('es', 'layers.gap') });
+    await range.scrollIntoViewIfNeeded();
+    await range.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(range).toBeFocused();
+  });
+});
+
+test.describe('Home: hero', () => {
+  for (const lang of LANGS) {
+    test(`its calls to action lead to the right places (${lang})`, async ({ page }) => {
+      await open(page, pageUrl(lang, '/'));
+      await expect(page.getByRole('link', { name: t(lang, 'hero.cta.projects') })).toHaveAttribute('href', pageUrl(lang, '/projects/'));
+      // El primero es el del hero; el pie lleva otro igual
+      const cv = page.getByRole('link', { name: t(lang, 'hero.cta.cv') }).first();
+      await expect(cv).toHaveAttribute('download', '');
+      await expect(cv).toHaveAttribute('href', /\/cv\/.+\.pdf$/);
+    });
+
+    test(`each role button turns on its lens (${lang})`, async ({ page }) => {
+      await open(page, pageUrl(lang, '/'));
+      // En móvil, la barra de estado de las lentes lleva otro selector con los mismos nombres
+      const roles = page.getByRole('list', { name: t(lang, 'hero.roles.label') });
+      for (const lens of ['design', 'code', 'qa'] as const) {
+        const role = roles.getByRole('button', { name: t(lang, `hero.roles.${lens}`), exact: true });
+        await role.click();
+        await expect(page.locator('html')).toHaveAttribute('data-lens', lens);
+        await expect(role).toHaveAttribute('aria-pressed', 'true');
+      }
+      // Pulsar el que está puesto lo quita
+      await roles.getByRole('button', { name: t(lang, 'hero.roles.qa'), exact: true }).click();
+      await expect(page.locator('html')).not.toHaveAttribute('data-lens', /.*/);
+    });
+  }
+});
