@@ -1000,16 +1000,18 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 [auditoria-2026-11-20.md](auditoria-2026-11-20.md); las casillas se marcan cuando Christian lo apruebe.
 
 - [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.
-- [ ] **SEO**:
+- [x] **SEO**:
   - Dominio canónico con www, `hreflang` y sitemap correctos.
-  - JSON-LD, imagen OG por página y `llms.txt`.
+  - JSON-LD, imagen OG por página y `llms.txt`. La imagen por página (una captura de su parte de
+    arriba, en cada idioma) la aprobó el 23 nov; lo demás salió con la auditoría.
 - [ ] **Accesibilidad**: versión quieta de cada momento (reduced motion), teclado, foco y contraste.
 - [ ] **Rendimiento**: presupuesto de JS, fuentes e imágenes.
 - [ ] **Seguridad**: CSP y cabeceras.
 - [x] **Analítica** sin cookies (sin banner). Hecha el 21 nov con Vercel Web Analytics y la página
   de privacidad, publicada y activada ese día: Christian vio llegar su primera visita.
-- [ ] **Tests de Playwright**: lentes, navegación, formulario y accesibilidad. Reescritos el 23 nov
-  (unas 300 pruebas, en CI en cada push); falta su visto bueno.
+- [x] **Tests de Playwright**: lentes, navegación, formulario y accesibilidad. Reescritos el 23 nov
+  (unas 300 pruebas, más la intro y el fallo del portapapeles el mismo día); Christian dio el tema
+  por cerrado ese día. Quedan sin prueba Vístalo en vivo y el arrastre del lienzo (ver estado-actual).
 - [ ] **Otros**: la 404 real en Vercel y el manifest.
 
 ## Lanzamiento
