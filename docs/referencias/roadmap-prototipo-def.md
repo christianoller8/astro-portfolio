@@ -1008,7 +1008,9 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 - [x] **Rendimiento**: presupuesto de JS, fuentes e imágenes. Aprobado el 23 nov: foto del hero
   precargada, imágenes a su tamaño y CSS dentro de cada página (móvil de 88–91 a 91–94 en
   Lighthouse; detalle y coste en estado-actual).
-- [ ] **Seguridad**: CSP y cabeceras.
+- [x] **Seguridad**: CSP y cabeceras. Aprobada el 23 nov la CSP simple (todo desde la propia web,
+  guiones en línea permitidos, sin CSP en `/cv/`), con `tests/csp.spec.ts`. Falta mirar la consola
+  de la web publicada cuando se suba.
 - [x] **Analítica** sin cookies (sin banner). Hecha el 21 nov con Vercel Web Analytics y la página
   de privacidad, publicada y activada ese día: Christian vio llegar su primera visita.
 - [x] **Tests de Playwright**: lentes, navegación, formulario y accesibilidad. Reescritos el 23 nov
