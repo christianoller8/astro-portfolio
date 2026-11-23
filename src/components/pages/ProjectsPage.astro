@@ -121,7 +121,7 @@ const items = projects.map((project, i) => {
                     data-morph-visual={project.slug}
                     data-thread-hover={`#pt-${project.slug}`}
                   >
-                    <ProjectVisual project={project} lang={lang} eager={i === 0} />
+                    <ProjectVisual project={project} lang={lang} fit="list" eager={i === 0} />
                   </a>
                 </div>
                 <div class="board-note" id={`pn-${project.slug}`}>

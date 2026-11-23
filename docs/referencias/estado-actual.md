@@ -106,8 +106,16 @@ Por orden de urgencia (lista completa en el roadmap):
    En la de la home se ocultan los botones del hero, que caían cortados en el borde.
 3. **Accesibilidad**: los fallos de la auditoría están arreglados (ver su tabla). Falta una revisión
    con un lector de pantalla real.
-4. **Rendimiento**: precargar la foto del hero del tema activo, `profile.jpg` pesa 7,6 MB en origen
-   y three.js son 173 KB (solo se descarga al acercarse a su sección).
+4. **Rendimiento** (23 nov, medido con Lighthouse en local): escritorio ya daba 99–100. Para móvil,
+   tres arreglos: la foto del hero del tema activo se precarga desde el `<head>` (sigue bajando una
+   sola), la del hero y las de proyecto piden el tamaño en que se ven (`src/data/hero-photo.ts` y
+   `project-image.ts`) y el CSS va dentro de cada página (`inlineStylesheets: 'always'`). Móvil pasó
+   de 88–91 a 91–94 (FCP entre 0,3 y 1 s antes, LCP entre 0,15 y 0,3 s). Lo que cuesta el CSS
+   dentro, medido: unos 21 KB más por página y, con la CPU frenada, entre 40 y 100 ms más antes de
+   que arranque el cambio de página; si algún día pesa, se vuelve a `'auto'`. Las piezas del
+   personaje se quedan como estaban (achicarlas ahorraba 9 KB y podía emborronarlas). Sin tocar:
+   three.js (177 KB comprimido, solo al acercarse a su sección), la fuente Bricolage (129 KB; una
+   más ligera cambiaría el dibujo, decide él) y `profile.jpg`, que pesa 7,6 MB en origen.
 5. **Seguridad**: las cabeceras están en `vercel.json`; falta una CSP completa. El marco de Vístalo
    carga su web desde otro dominio (solo al pulsarlo).
 6. **Analítica** sin cookies: hecha el 21 nov con Vercel Web Analytics (sin banner), junto con la

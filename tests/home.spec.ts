@@ -195,6 +195,51 @@ test.describe('Home: 3D layers', () => {
 });
 
 test.describe('Home: hero', () => {
+  // La foto del hero es el LCP y va en lazy: Layout.astro precarga la del tema activo con el mismo
+  // srcset que su <img>. Si no coincidieran, el navegador la descargaría dos veces; y la del otro tema
+  // no debe pedirse nunca. El tema activo es el guardado (localStorage 'theme') y, sin él, el del sistema:
+  // el preload tiene que seguir esa elección, no el esquema del sistema.
+  const themeCases = [
+    { stored: null, system: 'light' },
+    { stored: null, system: 'dark' },
+    { stored: 'light', system: 'dark' },
+    { stored: 'dark', system: 'light' },
+  ] as const;
+  for (const { stored, system } of themeCases) {
+    const theme = stored ?? system;
+    test(`downloads a single hero photo, the preloaded one (${stored ? `stored ${stored}, system ${system}` : `system ${system}`})`, async ({ page }) => {
+      const requests: string[] = [];
+      page.on('request', (request) => {
+        if (request.resourceType() === 'image' && new URL(request.url()).pathname.startsWith('/_astro/card-')) requests.push(request.url());
+      });
+      await page.emulateMedia({ colorScheme: system });
+      if (stored) await page.addInitScript((value) => localStorage.setItem('theme', value), stored);
+      await page.goto('/');
+      expect(await page.evaluate(() => document.documentElement.classList.contains('dark'))).toBe(theme === 'dark');
+      const photo = page.locator(`.hero-photo-img--${theme}`);
+      await expect(photo).toBeVisible();
+      await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+
+      // El preload existe, va con prioridad alta y su srcset y sizes son los del <img> visible
+      const preload = page.locator('head link[rel="preload"][as="image"]');
+      await expect(preload).toHaveCount(1);
+      await expect(preload).toHaveAttribute('fetchpriority', 'high');
+      await expect(preload).toHaveAttribute('imagesrcset', (await photo.getAttribute('srcset')) ?? '');
+      await expect(preload).toHaveAttribute('imagesizes', (await photo.getAttribute('sizes')) ?? '');
+
+      // Una sola petición (la del otro tema, oculto y en lazy, no se pide), la que eligió el preload (su
+      // initiator es el <link>, no el <img>) y la misma que acabó pintando el <img>
+      const shown = await photo.evaluate((img: HTMLImageElement) => img.currentSrc);
+      expect(shown).not.toBe('');
+      expect(requests).toEqual([shown]);
+      const initiators = await page.evaluate(
+        (url) => performance.getEntriesByType('resource').filter((entry) => entry.name === url).map((entry) => (entry as PerformanceResourceTiming).initiatorType),
+        shown,
+      );
+      expect(initiators).toEqual(['link']);
+    });
+  }
+
   for (const lang of LANGS) {
     test(`its calls to action lead to the right places (${lang})`, async ({ page }) => {
       await open(page, pageUrl(lang, '/'));

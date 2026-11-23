@@ -94,6 +94,7 @@ The text lives in one dictionary and the projects in Markdown. Astro turns both 
 | Static pages with Astro's `ClientRouter` and the View Transitions API | A single-page app framework | Plain HTML loads fast and the pan between pages is possible; every script has to bind again after each page change |
 | Stacked project cards with CSS `position: sticky` and a short script for the tilt | A scroll animation library | No dependency, and the stack works even without JavaScript; all cards must share one height, so below 700 px of window height the site shows a plain list |
 | Theme switch as one snapshot of the page clipped by a growing circle | Fading every colour with CSS transitions | One clean movement instead of dozens of colour fades; without the API, with reduced motion or on iPhone and iPad, the theme changes the old way |
+| Every page carries its CSS inline (`inlineStylesheets: 'always'`) | Shared stylesheets, cached across pages | On a slow phone the first paint arrives 0.3–1 s sooner (Lighthouse); each page weighs about 21 KB more, and on a slow phone a page change takes up to 0.1 s longer to start |
 
 ### Accessibility
 

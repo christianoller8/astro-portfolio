@@ -25,6 +25,9 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+  build: {
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss()],
     // three.js se carga a demanda (las capas 3D de la home). Si el servidor de desarrollo lo

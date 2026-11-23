@@ -5,12 +5,15 @@ import TemporaUI from './TemporaUI.astro';
 import ViboraUI from './ViboraUI.astro';
 import LearnishUI from './LearnishUI.astro';
 import { useTranslations } from '@/i18n/utils';
+import { projectImageSizes, projectImageWidths, type ProjectImageFit } from '@/data/project-image';
 
 interface Props {
   project: CollectionEntry<'projects'>;
   lang: 'es' | 'en';
-  /** Prioridad de carga cuando la imagen está en la primera pantalla */
+  /** Prioridad de carga cuando la imagen está en la primera pantalla (también pide prioridad alta) */
   eager?: boolean;
+  /** Dónde se pinta, para que la captura se pida al ancho al que se ve (src/data/project-image.ts) */
+  fit?: ProjectImageFit;
   /**
    * Se puede tocar (inicio): cada app lleva su mini interacción y la web publicada se abre dentro
    * de su marco. El comportamiento está en src/scripts/project-demos.ts.
@@ -18,7 +21,7 @@ interface Props {
   interactive?: boolean;
 }
 
-const { project, lang, eager = false, interactive = false } = Astro.props;
+const { project, lang, eager = false, fit = 'case', interactive = false } = Astro.props;
 const { image, imageAlt, ui, title, link } = project.data;
 const t = useTranslations(lang);
 // Una web publicada con captura: en el inicio se puede abrir la web real en el propio marco
@@ -58,9 +61,10 @@ const host = link ? new URL(link).host : '';
         <Image
           src={image}
           alt={imageAlt ?? title}
-          widths={[640, 960, 1440]}
-          sizes="(min-width: 1024px) 60vw, 100vw"
+          widths={projectImageWidths}
+          sizes={projectImageSizes[fit]}
           loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
           class="pv-img"
         />
       ) : ui === 'tempora' ? (

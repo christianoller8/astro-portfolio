@@ -15,6 +15,7 @@ import CanvasMap from '../components/site/CanvasMap.astro';
 import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath, useTranslations, withTrailingSlash } from '@/i18n/utils';
 import { site } from '@/data/site';
+import { heroPhotoPreload } from '@/data/hero-photo';
 import Analytics from '@vercel/analytics/astro';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -104,6 +105,8 @@ const imageURL = new URL(ogImage, Astro.site);
 // En local (pnpm dev, pnpm build, preview) no se carga nada ni se registra ninguna visita, y las
 // pruebas y capturas no ensucian las cifras.
 const onVercel = Boolean(process.env.VERCEL);
+// Solo la portada lleva la foto del hero: su srcset sale del mismo módulo que el <img> de Hero.astro
+const heroPreload = intro ? await heroPhotoPreload() : null;
 // Además del gancho: el script de la analítica lo añade inject() al <head> mientras la página corre,
 // así que el cambio de página sin recarga lo quitaría (no viene en el HTML de la página nueva) y la
 // página nueva lo volvería a cargar y a ejecutar. Se marca para que el router de Astro lo conserve
@@ -261,6 +264,28 @@ if (!window.__analyticsKeep) {
         });
       })();
     </script>
+
+    {
+      heroPreload && (
+        <script is:inline define:vars={{ heroPreload }}>
+          // La foto del hero es el LCP de la portada y va en lazy (solo se descarga la del tema activo), así
+          // que el navegador no la pide hasta tener la maquetación. Aquí el tema ya está resuelto (el
+          // guion de arriba) y los estilos aún no han llegado: se precarga la del tema activo, con el
+          // mismo srcset y sizes que su <img>, para que sea una sola descarga. Solo en la carga completa
+          // del documento: al llegar navegando desde otra página, la foto ya se pide a su ritmo.
+          if (document.readyState === 'loading') {
+            const photo = heroPreload[document.documentElement.classList.contains('dark') ? 'dark' : 'light'];
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.setAttribute('imagesrcset', photo.srcset);
+            link.setAttribute('imagesizes', photo.sizes);
+            link.setAttribute('fetchpriority', 'high');
+            document.head.appendChild(link);
+          }
+        </script>
+      )
+    }
 
     {
       onVercel && (

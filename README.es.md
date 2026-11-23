@@ -94,6 +94,7 @@ Los textos viven en un diccionario y los proyectos en Markdown. Astro convierte 
 | Páginas estáticas con el `ClientRouter` de Astro y la API View Transitions | Un framework de aplicación de una sola página | El HTML carga rápido y el desplazamiento entre páginas es posible; cada script tiene que volver a engancharse tras cada cambio de página |
 | Tarjetas de proyecto apiladas con CSS `position: sticky` y un guion corto para la inclinación | Una librería de animación ligada al scroll | Sin dependencias, y la pila funciona incluso sin JavaScript; todas las tarjetas deben medir lo mismo, así que en ventanas de menos de 700 px de alto se ve una lista normal |
 | Cambio de tema como una sola foto de la página recortada por un círculo que crece | Fundir cada color con transiciones CSS | Un movimiento limpio en lugar de decenas de fundidos; sin la API, con "reducir movimiento" o en iPhone y iPad, el tema cambia como antes |
+| Cada página lleva su CSS dentro del HTML (`inlineStylesheets: 'always'`) | Hojas de estilo compartidas, en caché entre páginas | En un móvil lento el primer pintado llega entre 0,3 y 1 s antes (Lighthouse); cada página pesa unos 21 KB más, y en un móvil lento el cambio de página tarda hasta una décima más en arrancar |
 
 ### Accesibilidad
 

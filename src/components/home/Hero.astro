@@ -1,8 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-import portraitDark from '@/assets/images/card-dark.jpg';
-// Prueba (20 nov): en claro, la misma foto con su pared gris que en oscuro. Antes: card-light.webp
-import portraitLight from '@/assets/images/card-dark.jpg';
+// Las fotos (con su widths y sizes) viven en un módulo aparte: Layout.astro precarga la misma foto
+import { heroPhotoOptions, heroPhotoSources } from '@/data/hero-photo';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 import { site, hasCV } from '@/data/site';
 
@@ -48,20 +47,21 @@ const roles = [
       data-ink
       style="--ink-i: 2"
     >
-      <!-- Solo se pinta (y solo se descarga) la del modo activo -->
+      <!-- Solo se pinta (y solo se descarga) la del modo activo. Siguen en lazy a propósito: la del modo
+           contrario no se pide nunca. La del modo activo la adelanta el preload de Layout.astro -->
       <Image
-        src={portraitLight}
+        src={heroPhotoSources.light}
         alt={t('hero.portrait.alt')}
-        widths={[640, 960, 1342]}
-        sizes="(min-width: 700px) 46vw, 100vw"
+        widths={[...heroPhotoOptions.widths]}
+        sizes={heroPhotoOptions.sizes}
         loading="lazy"
         class="hero-photo-img hero-photo-img--light"
       />
       <Image
-        src={portraitDark}
+        src={heroPhotoSources.dark}
         alt={t('hero.portrait.alt')}
-        widths={[640, 960, 1342]}
-        sizes="(min-width: 700px) 46vw, 100vw"
+        widths={[...heroPhotoOptions.widths]}
+        sizes={heroPhotoOptions.sizes}
         loading="lazy"
         class="hero-photo-img hero-photo-img--dark"
       />
