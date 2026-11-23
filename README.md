@@ -191,7 +191,7 @@ To check the two key behaviours by hand on <http://localhost:4400>:
 
 ## Deployment
 
-Vercel builds the `main` branch and serves it at <https://www.christianoller.dev>. Work happens on `prototipo-def`, which moves into `main` when a version is published. `vercel.json` makes every URL end in a slash, sets security headers and gives long cache times to the textures, the canvas thumbnails and the social image.
+Vercel builds the `main` branch and serves it at <https://www.christianoller.dev>. Work happens on `prototipo-def`, which moves into `main` when a version is published. `vercel.json` makes every URL end in a slash, sets security headers and gives long cache times to the textures, the canvas thumbnails and the social images.
 
 ## Status and roadmap
 
@@ -199,7 +199,7 @@ Vercel builds the `main` branch and serves it at <https://www.christianoller.dev
 
 - [ ] Sending service for the contact form
 - [ ] Real screenshots and short videos of Tempora, Vibora and Learnish
-- [ ] A social image per page
+- [x] A social image per page
 - [ ] A full Content Security Policy
 
 ### Where the design decisions live

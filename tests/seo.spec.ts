@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { LANGS, PAGES, pageUrl, type Lang } from './helpers';
+import { LANGS, PAGES, PROJECTS, pageUrl, t, type Lang } from './helpers';
 
 // Aquí no hace falta que la página se pinte entera: basta con el HTML
 const load = (page: Page, url: string) => page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -8,6 +8,8 @@ const attr = (page: Page, selector: string, name: string) => page.locator(select
 const pathOf = (href: string | null) => new URL(href ?? '', 'http://x').pathname;
 
 const HREFLANG = { es: 'es-ES', en: 'en-US' } as const;
+
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 test.describe('SEO basics', () => {
   test.skip(({ isMobile }) => isMobile, 'El HTML es el mismo en móvil: se comprueba una sola vez, en escritorio');
@@ -55,6 +57,41 @@ test.describe('SEO basics', () => {
     }
   }
 
+  // Cada página comparte una captura de sí misma, en su idioma (public/og/, generadas con og-images.mjs),
+  // y el archivo existe y mide lo que dicen sus etiquetas
+  const SHOTS = [
+    ...PAGES.filter(({ id }) => id !== 'case').map(({ id, path }) => ({ key: id as string, path: path as string })),
+    ...PROJECTS.map(({ slug }) => ({ key: slug as string, path: `/projects/${slug}/` })),
+  ];
+  for (const lang of LANGS) {
+    for (const { key, path } of SHOTS) {
+      test(`${lang} ${key}: shares a screenshot of itself`, async ({ page, request }) => {
+        await load(page, pageUrl(lang, path));
+        const image = await attr(page, 'meta[property="og:image"]', 'content');
+        expect(pathOf(image)).toBe(`/og/${lang}-${key}.jpg`);
+        expect(await attr(page, 'meta[name="twitter:image"]', 'content')).toBe(image);
+        // El texto alternativo describe la captura: el retrato en la home y, en el resto, la página por
+        // su nombre (un solo tramo: "Tempora", no "Proyectos / Tempora")
+        const alt = await attr(page, 'meta[property="og:image:alt"]', 'content');
+        if (key === 'home') expect(alt).toBe(t(lang, 'meta.og.alt'));
+        else expect(alt).toMatch(new RegExp(`^${escapeRegExp(t(lang, 'meta.og.page')).replace('\\{page\\}', '[^/]+')}$`));
+        expect(await attr(page, 'meta[name="twitter:image:alt"]', 'content')).toBe(alt);
+        // La etiqueta apunta a la web publicada: el archivo se pide a esta, por su ruta
+        const response = await request.get(pathOf(image));
+        expect(response.status()).toBe(200);
+        expect(response.headers()['content-type']).toContain('image/jpeg');
+        const size = await page.evaluate(async (src) => {
+          const img = new Image();
+          img.src = src;
+          await img.decode();
+          return [img.naturalWidth, img.naturalHeight];
+        }, pathOf(image));
+        const declared = await Promise.all(['width', 'height'].map((side) => attr(page, `meta[property="og:image:${side}"]`, 'content')));
+        expect(size).toEqual(declared.map(Number));
+      });
+    }
+  }
+
   for (const lang of LANGS) {
     test(`${lang}: title and description are written in the page language`, async ({ page }) => {
       await load(page, pageUrl(lang, '/'));
@@ -73,6 +110,8 @@ test.describe('SEO basics', () => {
       await load(page, url);
       await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
       await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+      // Sin captura propia, comparte la imagen general
+      expect(pathOf(await attr(page, 'meta[property="og:image"]', 'content'))).toBe('/og-image.jpg');
       expect(JSON.parse((await page.locator('script[type="application/ld+json"]').first().textContent()) ?? '{}')).toHaveProperty('@graph');
     });
   }

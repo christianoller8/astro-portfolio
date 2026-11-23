@@ -100,7 +100,10 @@ Por orden de urgencia (lista completa en el roadmap):
 1. **Formulario**: hoy no envía; abre el correo con el mensaje escrito. Falta el servicio de envío y
    un antispam sin captcha. El estado "enviado" ya está diseñado.
 2. **SEO**: hecho lo de la auditoría (dominio con `www`, `hreflang`, sitemap, barras finales,
-   JSON-LD y `llms.txt`). Falta una imagen para compartir por página: hoy hay una para todas.
+   JSON-LD y `llms.txt`). Desde el 23 nov cada página comparte su propia imagen: la parte de
+   arriba de la página en oscuro, en su idioma (`public/og/`, 1200 × 630, unos 90 KB). Las genera
+   `og-images.mjs` y `Layout.astro` elige la de cada ruta; la 404 y las internas usan la general.
+   En la de la home se ocultan los botones del hero, que caían cortados en el borde.
 3. **Accesibilidad**: los fallos de la auditoría están arreglados (ver su tabla). Falta una revisión
    con un lector de pantalla real.
 4. **Rendimiento**: precargar la foto del hero del tema activo, `profile.jpg` pesa 7,6 MB en origen

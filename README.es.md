@@ -191,7 +191,7 @@ Para comprobar a mano los dos comportamientos clave en <http://localhost:4400>:
 
 ## Despliegue
 
-Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. El trabajo se hace en `prototipo-def`, que pasa a `main` cuando se publica una versión. `vercel.json` hace que todas las URL acaben en barra, pone las cabeceras de seguridad y da caché larga a las texturas, a las miniaturas del lienzo y a la imagen para redes.
+Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. El trabajo se hace en `prototipo-def`, que pasa a `main` cuando se publica una versión. `vercel.json` hace que todas las URL acaben en barra, pone las cabeceras de seguridad y da caché larga a las texturas, a las miniaturas del lienzo y a las imágenes para redes.
 
 ## Estado y hoja de ruta
 
@@ -199,7 +199,7 @@ Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. 
 
 - [ ] Servicio de envío para el formulario de contacto
 - [ ] Capturas reales y vídeos cortos de Tempora, Vibora y Learnish
-- [ ] Una imagen para redes por página
+- [x] Una imagen para redes por página
 - [ ] Una política de seguridad de contenidos (CSP) completa
 
 ### Dónde están las decisiones de diseño

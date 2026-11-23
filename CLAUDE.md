@@ -75,6 +75,9 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
 - Las miniaturas del lienzo (`public/canvas/`) se regeneran con `canvas-thumbs.mjs` y
   `canvas-thumbs-resize.cjs` cada vez que cambia el diseño de una página. En Windows, la ruta de
   `cdp.mjs` se pasa como URL de archivo (`file:///C:/…`); el recorte usa sharp.
+- Las imágenes para compartir (`public/og/`, una por página e idioma) se regeneran con
+  `og-images.mjs` cuando cambia la parte de arriba de una página. Usa Playwright (Edge si no hay
+  Chromium) contra la web construida en el puerto 4400; no necesita `cdp.mjs`.
 - **Solo en macOS**: `.taste-skill/recorte/person.swift` (máscara de persona con Vision) y los
   comandos `sips`. En Windows no existen; si hace falta recortar otra foto, buscar alternativa.
   La foto clara del hero ya no depende de ellos: `.taste-skill/recorte/luz-gris.cjs` la monta con

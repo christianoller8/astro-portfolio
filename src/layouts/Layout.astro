@@ -16,6 +16,8 @@ import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, useTranslatedPath, useTranslations, withTrailingSlash } from '@/i18n/utils';
 import { site } from '@/data/site';
 import Analytics from '@vercel/analytics/astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 interface Props {
   title: string;
@@ -34,7 +36,7 @@ interface Props {
 const {
   title,
   description = 'Christian Oller, software developer. Diseño, programo y pruebo webs y apps.',
-  image = '/og-image.jpg',
+  image,
   frame,
   intro = false,
   missing = false,
@@ -84,9 +86,20 @@ const jsonLd = {
       : []),
   ],
 };
-// La imagen para redes es siempre absoluta y en el host canónico (los rastreadores no resuelven rutas
-// relativas a un host que redirige). 1200 x 630 es el formato que piden Open Graph y las tarjetas grandes.
-const imageURL = new URL(image, Astro.site);
+// La imagen para redes es una captura de la parte de arriba de la propia página, en su idioma
+// (public/og/<idioma>-<página>.jpg, generadas con .taste-skill/eloi-1118/tools/og-images.mjs). La
+// página es el último tramo de la ruta, o "home" en la portada. Las que no tienen la suya (la 404, las
+// internas) usan la general, y una página puede pasar otra con la prop image.
+const routeSegments = withTrailingSlash(Astro.url.pathname).replace(/^\/en\//, '/').split('/').filter(Boolean);
+const pageShot = `/og/${lang}-${routeSegments.at(-1) ?? 'home'}.jpg`;
+const hasShot = !image && existsSync(join(process.cwd(), 'public', pageShot));
+const ogImage = image ?? (hasShot ? pageShot : '/og-image.jpg');
+// El texto alternativo dice qué se ve: en la home (y en la general), el retrato con el nombre; en el
+// resto, la página por su nombre (el último tramo del frame: "Proyectos / Tempora" -> "Tempora")
+const ogAlt = hasShot && !isHome ? t('meta.og.page').replace('{page}', frame.split(' / ').at(-1) ?? frame) : t('meta.og.alt');
+// Siempre absoluta y en el host canónico (los rastreadores no resuelven rutas relativas a un host que
+// redirige). 1200 x 630 es el formato que piden Open Graph y las tarjetas grandes.
+const imageURL = new URL(ogImage, Astro.site);
 // La analítica solo existe en la web publicada: Vercel pone VERCEL en el entorno de la compilación.
 // En local (pnpm dev, pnpm build, preview) no se carga nada ni se registra ninguna visita, y las
 // pruebas y capturas no ensucian las cifras.
@@ -158,14 +171,14 @@ if (!window.__analyticsKeep) {
     <meta property="og:image" content={imageURL} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={t('meta.og.alt')} />
+    <meta property="og:image:alt" content={ogAlt} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalURL} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL} />
-    <meta name="twitter:image:alt" content={t('meta.og.alt')} />
+    <meta name="twitter:image:alt" content={ogAlt} />
 
     <ClientRouter fallback="swap" />
 

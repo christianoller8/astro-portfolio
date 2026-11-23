@@ -29,7 +29,7 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const L = caseLabels[lang];
 const { Content } = await project.render();
-const { title, description, kind, status, role, stack, features, link, image, ui, year, format } = project.data;
+const { title, description, kind, status, role, stack, features, link, ui, year, format } = project.data;
 const content = cases[project.slug];
 const mobile = format === 'mobile';
 
@@ -84,7 +84,7 @@ const facts = [
 const tag = (key: string) => L[key as 'problem'];
 ---
 
-<Layout title={`${title} · Christian Oller`} description={description} image={image?.src} frame={`${t('nav.projects')} / ${title}`}>
+<Layout title={`${title} · Christian Oller`} description={description} frame={`${t('nav.projects')} / ${title}`}>
   <article class="case" data-cs="<article> ProjectPage.astro">
     <!-- 01 · Cabecera -->
     <header class="wrap case-head">

@@ -271,5 +271,5 @@ y usable). `pnpm lint` falla con 5070 errores que ya estaban (sin investigar).
 ## Siguiente paso
 
 Quedan de Christian: el servicio del formulario, el material interno del repositorio y los textos. Pendiente técnico:
-una imagen para compartir por página, la CSP completa, una revisión con un lector de pantalla real y los errores de
-`pnpm lint`.
+la CSP completa, una revisión con un lector de pantalla real y los errores de `pnpm lint`. La imagen para compartir
+por página se hizo el 23 nov (ver `estado-actual.md`).
