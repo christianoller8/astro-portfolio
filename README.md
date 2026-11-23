@@ -182,7 +182,7 @@ pnpm test
 
 `pnpm astro check` type-checks the scripts and the Astro templates and must report 0 errors.
 
-`pnpm test` runs the Playwright suite against a production build on port 4400 (it builds and serves one, or reuses a preview already running there). About 300 tests cover navigation, theme, lenses, canvas, demos, the contact form, privacy, SEO basics and accessibility on every page, on a desktop and a mobile viewport and in both languages. For accessibility, the site's own QA lens is the judge: every check it runs has to pass. The suite uses Playwright's Chromium when it is installed (`pnpm exec playwright install chromium`) and Microsoft Edge otherwise. GitHub Actions runs it on every push.
+`pnpm test` runs the Playwright suite against a production build on port 4400 (it builds and serves one, or reuses a preview already running there). About 300 tests cover navigation, theme, the intro, lenses, canvas, demos, the contact form, privacy, SEO basics and accessibility on every page, on a desktop and a mobile viewport and in both languages. For accessibility, the site's own QA lens is the judge: every check it runs has to pass. The suite uses Playwright's Chromium when it is installed (`pnpm exec playwright install chromium`) and Microsoft Edge otherwise. GitHub Actions runs it on every push.
 
 To check the two key behaviours by hand on <http://localhost:4400>:
 

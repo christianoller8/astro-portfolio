@@ -10,7 +10,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   es lo que Vercel despliega en christianoller.dev. Fue un avance directo (`main` no tenía nada
   propio), sin forzar. La web publicada es el diseño tal como iba ese día, **con cosas sin
   terminar a sabiendas**: el formulario no envía (abre el correo), los textos de los casos son
-  provisionales y las pruebas automáticas de GitHub fallan porque son de la web vieja.
+  provisionales y las pruebas automáticas de GitHub fallan porque son de la web vieja (se
+  reescribieron el 23 nov: punto 7 de la fase técnica).
   **Se sigue trabajando en `prototipo-def`**; lo que se quiera publicar se pasa a `main` cuando
   él lo pida.
 - **El CV va en la web, tal cual**: la primera publicación salió sin él porque el PDF lleva su
@@ -114,10 +115,14 @@ Por orden de urgencia (lista completa en el roadmap):
    el formulario, hay que reescribir el apartado "Si me escribes" de la privacidad.
 7. **Tests de Playwright**: reescritos el 23 nov para esta versión (`pnpm test`, carpeta `tests/`):
    unas 300 pruebas en escritorio y móvil, en los dos idiomas (navegación, tema, lentes, lienzo,
-   demos, contacto, privacidad, SEO y accesibilidad de cada página con la lente QA como juez). El
-   workflow de GitHub vuelve a lanzarse en cada push a `main` y `prototipo-def`. Destaparon que la
-   lente QA contaba el titular escondido de la 404 (arreglado). En este equipo usan Edge (no hay
-   navegadores de Playwright instalados); en CI, el Chromium de Playwright.
+   demos, contacto, privacidad, SEO, la intro y accesibilidad de cada página con la lente QA como
+   juez). El workflow de GitHub vuelve a lanzarse en cada push a `main` y `prototipo-def`.
+   Destaparon que la lente QA contaba el titular escondido de la 404 (arreglado). En este equipo
+   usan Edge (no hay navegadores de Playwright instalados); en CI, el Chromium de Playwright. El
+   mismo día se añadieron la intro (`?intro`) y el fallo del portapapeles; las pruebas de saltar la
+   intro paran el reloj de la página (`page.clock`), así que solo pasan si la tecla o el toque la
+   saltan de verdad. Quedan sin prueba Vístalo en vivo (con los vídeos, porque esa caja va a
+   cambiar) y arrastrar o hacer zoom en el lienzo (solo si se toca `canvas.ts`).
 8. **Otros**: la 404 responde 404 en Vercel (comprobado el 20 nov) y el manifest ya está. Renovar
    `public/.well-known/security.txt` antes del 19 nov de 2027, cuando caduca.
 

@@ -115,4 +115,23 @@ test.describe('Contact page', () => {
     await expect(copy).toHaveText(t('en', 'footer.copied'));
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(EMAIL);
   });
+
+  test('when the clipboard fails, the copy button says so instead of doing nothing', async ({ page }) => {
+    // El portapapeles rechaza la escritura, como pasa sin permiso o fuera de HTTPS
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText: () => Promise.reject(new DOMException('Write permission denied.', 'NotAllowedError')) },
+      });
+    });
+    await open(page, '/contact/');
+    const copy = page.locator('footer [data-copy]');
+    await copy.scrollIntoViewIfNeeded();
+    await copy.click();
+    await expect(copy).toHaveText(t('es', 'footer.copyFailed'));
+    // El fallo se anuncia en la misma región educada que el acierto
+    await expect(page.locator('[data-copy-live]')).toHaveText(t('es', 'footer.copyFailed'));
+    // Y el botón vuelve a su texto, para poder intentarlo otra vez
+    await expect(copy).toHaveText(t('es', 'footer.copy'));
+  });
 });
