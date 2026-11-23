@@ -25,6 +25,9 @@ const t = useTranslations(lang);
 const mail: Part = { href: `mailto:${site.email}`, text: site.email };
 const vercelPolicy = 'https://vercel.com/legal/privacy-policy';
 const aepd = 'https://www.aepd.es';
+const web3formsPolicy = 'https://web3forms.com/privacy';
+// Con PUBLIC_FORM_ENDPOINT el formulario envía por Web3Forms; sin él (builds locales) abre el correo
+const hasService = Boolean(site.formEndpoint);
 
 const copy: Record<
   keyof typeof ui,
@@ -32,7 +35,7 @@ const copy: Record<
 > = {
   es: {
     lead: 'Esta web no usa cookies ni te sigue por internet. Aquí está todo lo que pasa con tus datos cuando la visitas o me escribes.',
-    updated: 'Última actualización: 21 de noviembre de 2026',
+    updated: 'Última actualización: 23 de noviembre de 2026',
     sections: [
       {
         id: 'responsable',
@@ -60,15 +63,21 @@ const copy: Record<
         ],
       },
       {
-        // Cierto mientras el formulario abra el correo. Si se define PUBLIC_FORM_ENDPOINT (un servicio
-        // de envío), este apartado, su versión inglesa y contact.note (ui.ts) hay que reescribirlos
-        // nombrando el servicio que recibe los mensajes
+        // Dos versiones, según site.formEndpoint (PUBLIC_FORM_ENDPOINT): con servicio de envío (producción)
+        // cuenta lo de Web3Forms; sin él (builds locales) el formulario abre el correo y se dice eso. La
+        // versión inglesa y contact.note / contact.note.service (ui.ts) siguen la misma regla
         id: 'escribes',
         title: 'Si me escribes',
         paragraphs: [
-          [
-            'El formulario de contacto abre tu programa de correo: la web no recibe ni guarda nada. El mensaje llega a mi cuenta de Gmail (Google) y solo uso tus datos para responderte y seguir la conversación. Los borro cuando ya no hacen falta, o antes si me lo pides.',
-          ],
+          hasService
+            ? [
+                'El formulario envía tu mensaje a través de Web3Forms (Web3Creative, India), que me lo reenvía por correo. Web3Forms lo guarda cifrado en servidores de Amazon Web Services durante tres años como mucho, y las transferencias fuera de la Unión Europea se hacen con cláusulas contractuales tipo (',
+                { href: web3formsPolicy, text: 'su política de privacidad' },
+                '). Como cualquier servidor, Web3Forms registra además datos técnicos del envío, como la dirección IP, y los borra con regularidad. El mensaje llega a mi cuenta de Gmail (Google) y solo uso tus datos (nombre, email, empresa si la pones, tema y mensaje) para responderte y seguir la conversación, porque tú me lo pides al escribirme. Los borro cuando ya no hacen falta, o antes si me lo pides, y entonces pido también a Web3Forms que los borre.',
+              ]
+            : [
+                'El formulario de contacto abre tu programa de correo: la web no recibe ni guarda nada. El mensaje llega a mi cuenta de Gmail (Google) y solo uso tus datos para responderte y seguir la conversación. Los borro cuando ya no hacen falta, o antes si me lo pides.',
+              ],
         ],
       },
       {
@@ -97,7 +106,7 @@ const copy: Record<
   },
   en: {
     lead: "This site uses no cookies and doesn't follow you around the web. Here is everything that happens to your data when you visit it or write to me.",
-    updated: 'Last updated: 21 November 2026',
+    updated: 'Last updated: 23 November 2026',
     sections: [
       {
         id: 'responsable',
@@ -128,9 +137,15 @@ const copy: Record<
         id: 'escribes',
         title: 'If you write to me',
         paragraphs: [
-          [
-            "The contact form opens your email app: the site receives and stores nothing. The message reaches my Gmail account (Google) and I only use your data to reply and keep the conversation going. I delete it when it's no longer needed, or sooner if you ask.",
-          ],
+          hasService
+            ? [
+                'The form sends your message through Web3Forms (Web3Creative, India), which forwards it to me by email. Web3Forms stores it encrypted on Amazon Web Services servers for at most three years, and transfers outside the European Union rely on standard contractual clauses (',
+                { href: web3formsPolicy, text: 'its privacy policy' },
+                '). Like any server, Web3Forms also logs technical data about the submission, such as the IP address, and deletes it regularly. The message reaches my Gmail account (Google) and I only use your data (name, email, company if you give it, topic and message) to reply and keep the conversation going, because you ask me to by writing. I delete it when it is no longer needed, or sooner if you ask, and then I also ask Web3Forms to delete it.',
+              ]
+            : [
+                "The contact form opens your email app: the site receives and stores nothing. The message reaches my Gmail account (Google) and I only use your data to reply and keep the conversation going. I delete it when it's no longer needed, or sooner if you ask.",
+              ],
         ],
       },
       {

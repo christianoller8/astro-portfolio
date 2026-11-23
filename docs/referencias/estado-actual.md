@@ -97,9 +97,11 @@ sobre la lista de abajo, que es anterior.
 
 Por orden de urgencia (lista completa en el roadmap):
 
-1. **Formulario**: hoy no envía; abre el correo con el mensaje escrito. Falta el servicio de envío y
-   un antispam sin captcha. El estado "enviado" ya está diseñado. Al conectarlo, su origen tiene que
-   entrar en `connect-src` de la CSP (`vercel.json`), o la CSP bloqueará el envío.
+1. **Formulario**: Web3Forms está cableado (23 nov): `method="post"`, antispam sin captcha con el
+   campo cebo `botcheck`, asunto igual que el del mailto, y `api.web3forms.com` ya permitido en la
+   CSP (`connect-src` y `form-action`). Funciona en cuanto Christian define `PUBLIC_FORM_ENDPOINT`
+   (`https://api.web3forms.com/submit/<clave>`) en Vercel; sin la variable, abre el correo. La
+   privacidad y la nota bajo el botón cambian solas según la variable. Falta una prueba en vivo.
 2. **SEO**: hecho lo de la auditoría (dominio con `www`, `hreflang`, sitemap, barras finales,
    JSON-LD y `llms.txt`). Desde el 23 nov cada página comparte su propia imagen: la parte de
    arriba de la página en oscuro, en su idioma (`public/og/`, 1200 × 630, unos 90 KB). Las genera

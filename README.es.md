@@ -58,7 +58,7 @@ Un portfolio suele contar lo que sabe hacer su autor. Este deja que un reclutado
 | --- | --- | --- |
 | Hecho | Web estática en español e inglés | Generada por Astro; sin servidor |
 | Hecho | Analítica sin cookies | Vercel Web Analytics; quien visita puede desactivarla en la página de privacidad |
-| Hecho | Formulario de contacto sin backend | Abre el programa de correo del visitante; envía a `PUBLIC_FORM_ENDPOINT` cuando está definido |
+| Hecho | Formulario de contacto sin backend | Envía por Web3Forms cuando `PUBLIC_FORM_ENDPOINT` está definido; si no, abre el programa de correo del visitante |
 | Hecho | Pruebas de extremo a extremo | Playwright en escritorio y en móvil, en español e inglés, en cada push |
 | Pendiente | Capturas reales de Tempora, Vibora y Learnish | Sus interfaces son fragmentos HTML hechos para la web, con datos ficticios |
 | Fuera de alcance | CMS, cuentas, cookies | El contenido vive en Markdown y en un diccionario |
@@ -173,7 +173,7 @@ Opcionales, en un archivo `.env` en la raíz:
 
 | Variable | Obligatoria | Por defecto | Descripción |
 | --- | :---: | --- | --- |
-| `PUBLIC_FORM_ENDPOINT` | No | vacía | Endpoint que recibe el formulario de contacto. Vacía: el formulario abre el programa de correo del visitante. Si se rellena, su origen tiene que entrar en `connect-src` de la política de seguridad de `vercel.json` |
+| `PUBLIC_FORM_ENDPOINT` | No | vacía | Endpoint de Web3Forms que recibe el formulario de contacto: `https://api.web3forms.com/submit/<clave de acceso>` (la clave es pública por diseño: acaba en la página). Vacía: el formulario abre el programa de correo del visitante. Su origen ya está permitido en la política de seguridad de `vercel.json` |
 
 ## Pruebas y verificación
 

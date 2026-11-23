@@ -6,7 +6,7 @@ import { LANGS, PAGES, PROJECTS, expectTheme, goThroughMenu, open, pageUrl, them
 // documento de la web, como hará Vercel, y se exige que ni las páginas ni lo que se hace en ellas
 // provoquen un solo bloqueo. Si algo nuevo carga de otro sitio al abrir o recorrer una página (un vídeo
 // o una fuente de fuera…), este test lo dice antes de publicar: hay que añadir su origen a la cabecera.
-// No envía el formulario: el día que tenga servicio de envío, su origen va en connect-src a mano.
+// El formulario también se envía, contra Web3Forms simulado: su origen tiene que estar en connect-src.
 // El data: de script-src lo pide el router de Astro: en cada cambio de página mete un guion vacío
 // (data:application/javascript,) para esperar a que acaben los módulos en línea de la página nueva.
 type HeaderRule = { source: string; headers: { key: string; value: string }[] };
@@ -127,6 +127,32 @@ test.describe('Content Security Policy', () => {
     await expect(page.locator('[data-demo-stage] iframe').first()).toBeAttached();
     await page.waitForTimeout(600);
 
+    expect(blocked).toEqual([]);
+  });
+
+  // El build local no tiene endpoint: se apunta el formulario a Web3Forms (clave falsa) y se intercepta la red.
+  // La CSP decide antes que Playwright: si connect-src no admitiera el origen, el fetch se bloquearía
+  // y saldría la violación (y el estado "enviado" no aparecería)
+  test('sending the contact form to Web3Forms stays within the policy', async ({ page, baseURL }) => {
+    const { blocked } = await guard(page, new URL(baseURL ?? '').origin);
+    let posted = 0;
+    await page.route('https://api.web3forms.com/**', (route) => {
+      posted += 1;
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+    });
+    await open(page, '/contact/');
+    const endpoint = 'https://api.web3forms.com/submit/test-access-key';
+    await page.evaluate((url) => {
+      const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+      form?.setAttribute('data-endpoint', url);
+      form?.setAttribute('action', url);
+    }, endpoint);
+    await page.locator('[data-contact-form] input[name="name"]').fill('Laura Vidal');
+    await page.locator('[data-contact-form] input[name="email"]').fill('laura@estudio.example');
+    await page.locator('[data-contact-form] textarea[name="message"]').fill('Buscamos a alguien que diseñe y programe la nueva web.');
+    await page.locator('[data-contact-form] button[type="submit"]').click();
+    await expect(page.locator('[data-form-sent]')).toBeVisible();
+    expect(posted).toBe(1);
     expect(blocked).toEqual([]);
   });
 });

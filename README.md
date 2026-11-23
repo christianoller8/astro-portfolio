@@ -58,7 +58,7 @@ A portfolio usually tells what its author can do. This one lets a recruiter or a
 | --- | --- | --- |
 | Done | Static site in Spanish and English | Pre-rendered by Astro; no server runtime |
 | Done | Cookieless analytics | Vercel Web Analytics; visitors can opt out on the privacy page |
-| Done | Contact form without a backend | Opens the visitor's email app; posts to `PUBLIC_FORM_ENDPOINT` when it is set |
+| Done | Contact form without a backend | Sends through Web3Forms when `PUBLIC_FORM_ENDPOINT` is set; otherwise opens the visitor's email app |
 | Done | End-to-end tests | Playwright on a desktop and a mobile viewport, in Spanish and English, on every push |
 | Not done | Real screenshots of Tempora, Vibora and Learnish | Their interfaces are HTML fragments built for the site, with fictional data |
 | Out of scope | CMS, accounts, cookies | Content lives in Markdown and in one dictionary |
@@ -173,7 +173,7 @@ Optional, in a `.env` file at the root:
 
 | Variable | Required | Default | Description |
 | --- | :---: | --- | --- |
-| `PUBLIC_FORM_ENDPOINT` | No | empty | Endpoint that receives the contact form. Empty: the form opens the visitor's email app. When set, add its origin to `connect-src` in the Content Security Policy in `vercel.json` |
+| `PUBLIC_FORM_ENDPOINT` | No | empty | Web3Forms endpoint that receives the contact form: `https://api.web3forms.com/submit/<access key>` (the key is public by design: it ends up in the page). Empty: the form opens the visitor's email app. Its origin is already allowed in the Content Security Policy in `vercel.json` |
 
 ## Testing and verification
 

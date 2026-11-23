@@ -135,3 +135,111 @@ test.describe('Contact page', () => {
     await expect(copy).toHaveText(t('es', 'footer.copy'));
   });
 });
+
+// El build local no tiene PUBLIC_FORM_ENDPOINT: se simula el de producción apuntando el formulario a
+// Web3Forms (con una clave falsa) y se intercepta la red, sin enviar nada de verdad
+const ENDPOINT = 'https://api.web3forms.com/submit/test-access-key';
+
+for (const lang of LANGS) {
+  test.describe(`Contact form with a sending service (${lang})`, () => {
+    test.beforeEach(async ({ page }) => {
+      await open(page, pageUrl(lang, '/contact/'));
+      await page.evaluate((endpoint) => {
+        const target = document.querySelector<HTMLFormElement>('[data-contact-form]');
+        target?.setAttribute('data-endpoint', endpoint);
+        target?.setAttribute('action', endpoint);
+      }, ENDPOINT);
+    });
+
+    const fill = async (page: Page) => {
+      const { name, email, message } = fields(page, lang);
+      await name.fill('Laura Vidal');
+      await email.fill('laura@estudio.example');
+      await message.fill('Buscamos a alguien que diseñe y programe la nueva web.');
+      return { name, email, message };
+    };
+
+    test('a valid submit posts the message to Web3Forms and shows the sent state', async ({ page }) => {
+      let post: { method: string; body: string } | undefined;
+      await page.route('https://api.web3forms.com/**', (route) => {
+        post = { method: route.request().method(), body: route.request().postData() ?? '' };
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+      });
+      await fill(page);
+      await send(page, lang).click();
+
+      await expect(form(page).locator('[data-form-sent-title]')).toHaveText(t(lang, 'contact.sent.title'));
+      expect(post?.method).toBe('POST');
+      const body = post?.body ?? '';
+      expect(body).toContain('name="name"');
+      expect(body).toContain('Laura Vidal');
+      expect(body).toContain('laura@estudio.example');
+      expect(body).toContain('Buscamos a alguien que diseñe y programe la nueva web.');
+      // El asunto es el mismo que el del mailto: el texto fijo y el tema elegido
+      const topic = await form(page).locator('input[name="topic"]:checked').inputValue();
+      expect(body).toContain(`${t(lang, 'contact.mailto.subject')} · ${topic}`);
+      // El cebo no se marca: un bot lo marcaría, y entonces Web3Forms descarta el mensaje
+      expect(body).not.toContain('name="botcheck"');
+    });
+
+    test('when the service answers with an error, the page says so and keeps what was typed', async ({ page }) => {
+      await page.route('https://api.web3forms.com/**', (route) =>
+        route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ success: false }) }),
+      );
+      const { name, email, message } = await fill(page);
+      await send(page, lang).click();
+
+      await expect(form(page).getByRole('status')).toContainText(t(lang, 'contact.error'));
+      await expect(form(page).getByRole('status')).toContainText(EMAIL);
+      await expect(form(page).locator('[data-form-sent]')).toBeHidden();
+      await expect(name).toHaveValue('Laura Vidal');
+      await expect(email).toHaveValue('laura@estudio.example');
+      await expect(message).toHaveValue('Buscamos a alguien que diseñe y programe la nueva web.');
+      // Y se puede volver a intentar
+      await expect(send(page, lang)).toBeEnabled();
+    });
+
+    test('a 200 answer with success false still counts as an error', async ({ page }) => {
+      await page.route('https://api.web3forms.com/**', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: false }) }),
+      );
+      const { name } = await fill(page);
+      await send(page, lang).click();
+
+      await expect(form(page).getByRole('status')).toContainText(t(lang, 'contact.error'));
+      await expect(form(page).getByRole('status')).toContainText(EMAIL);
+      await expect(form(page).locator('[data-form-sent]')).toBeHidden();
+      await expect(name).toHaveValue('Laura Vidal');
+    });
+
+    test('a 200 answer that is not JSON still counts as sent', async ({ page }) => {
+      await page.route('https://api.web3forms.com/**', (route) => route.fulfill({ status: 200, contentType: 'text/plain', body: 'ok' }));
+      await fill(page);
+      await send(page, lang).click();
+      await expect(form(page).locator('[data-form-sent-title]')).toHaveText(t(lang, 'contact.sent.title'));
+    });
+
+    test('the script takes over validation while the markup leaves it to the browser', async ({ page, request, baseURL }) => {
+      expect(await form(page).evaluate((element) => (element as HTMLFormElement).noValidate)).toBe(true);
+      // Sin JavaScript no hay nadie que ponga noValidate: el navegador valida los campos required
+      const html = await (await request.get(new URL(pageUrl(lang, '/contact/'), baseURL).href)).text();
+      const tag = html.match(/<form[^>]*data-contact-form[^>]*>/)?.[0] ?? '';
+      expect(tag).not.toBe('');
+      expect(tag).not.toMatch(/novalidate/i);
+    });
+
+    test('the honeypot lives inside the form, hidden and out of the tab order', async ({ page }) => {
+      const trap = form(page).locator('input[name="botcheck"]');
+      await expect(trap).toHaveCount(1);
+      await expect(trap).toBeHidden();
+      await expect(trap).toHaveAttribute('tabindex', '-1');
+      // Un campo oculto no recibe el foco, ni con el teclado ni con el código
+      await trap.evaluate((input) => (input as HTMLInputElement).focus());
+      expect(await page.evaluate(() => document.activeElement?.getAttribute('name'))).not.toBe('botcheck');
+    });
+
+    test('the form always posts, so a failed script never turns the message into a GET with it in the URL', async ({ page }) => {
+      await expect(form(page)).toHaveAttribute('method', 'post');
+    });
+  });
+}

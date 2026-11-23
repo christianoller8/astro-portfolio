@@ -78,13 +78,18 @@ const topics = [
       <form
         class="form"
         data-contact-form
+        method="post"
+        action={site.formEndpoint || undefined}
         data-endpoint={site.formEndpoint}
         data-email={site.email}
         data-subject={t('contact.mailto.subject')}
         data-ds={lang === 'es' ? 'Formulario' : 'Form'}
-        novalidate
       >
+        {/* Sin JavaScript, con servicio de envío: el asunto del correo (con JS se sustituye por uno con el tema) */}
+        {site.formEndpoint && <input type="hidden" name="subject" value={t('contact.mailto.subject')} />}
         <div class="form-fields" data-form-fields>
+        {/* Cebo para bots (Web3Forms descarta el mensaje si llega marcado): oculto, fuera del árbol de accesibilidad y del foco; el aria-label es solo para que la lente QA no lo cuente como campo sin etiqueta */}
+        <input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off" />
         <p class="req-note t-small"><span aria-hidden="true">*</span> {t('contact.required')}</p>
         <fieldset class="topics">
           <legend class="field-label">{t('contact.topic')}</legend>
@@ -160,7 +165,7 @@ const topics = [
         </div>
         {/* Qué pasa con los datos al enviar: una línea tenue, pegada al botón */}
         <p class="t-small send-note">
-          {t('contact.note')}
+          {site.formEndpoint ? t('contact.note.service') : t('contact.note')}
           <a class="link" href={translatePath('/privacy')}>{t('footer.privacy')}</a>
         </p>
         </div>
@@ -767,6 +772,8 @@ const topics = [
     const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
     const band = form?.closest<HTMLElement>('[data-form-band]');
     if (!form || !band) return;
+    // Sin JavaScript valida el navegador (los campos son required); con él, las comprobaciones propias
+    form.noValidate = true;
     const messages = JSON.parse(form.querySelector<HTMLElement>('[data-messages]')?.dataset.messages ?? '{}') as Record<string, string>;
     const state = form.querySelector<HTMLElement>('[data-state]');
     const send = form.querySelector<HTMLButtonElement>('[data-send]');
@@ -892,15 +899,26 @@ const topics = [
         showFallback(true);
         return;
       }
+      // Web3Forms usa "subject" como asunto del correo que me reenvía: el mismo que el del mailto
+      data.set('subject', `${form.dataset.subject} · ${data.get('topic')}`);
       if (state) state.textContent = messages.sending;
       send?.setAttribute('disabled', '');
+      // Si el servicio no contesta en 15 s se corta y se da el mismo aviso de error, con el correo
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), 15_000);
       try {
-        const response = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const response = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' }, signal: controller.signal });
         if (!response.ok) throw new Error(String(response.status));
+        // Web3Forms contesta { success: false } con error; un 200 que no sea JSON cuenta como enviado
+        const result: unknown = await response.json().catch(() => null);
+        if (typeof result === 'object' && result !== null && (result as { success?: unknown }).success === false) {
+          throw new Error('success: false');
+        }
         showSent(true);
       } catch {
         withEmail(messages.error, form.dataset.email);
       } finally {
+        window.clearTimeout(timer);
         send?.removeAttribute('disabled');
       }
     });
