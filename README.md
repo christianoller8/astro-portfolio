@@ -8,6 +8,7 @@
 
 Bilingual portfolio of a designer, developer and QA: read any page as a design, as code or as a test report.
 
+[![Tests](https://img.shields.io/github/actions/workflow/status/christianoller8/astro-portfolio/playwright.yml?branch=main&style=flat-square&label=tests)](https://github.com/christianoller8/astro-portfolio/actions/workflows/playwright.yml)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fwww.christianoller.dev&style=flat-square&label=christianoller.dev)](https://www.christianoller.dev)
 [![Last commit](https://img.shields.io/github/last-commit/christianoller8/astro-portfolio?style=flat-square)](https://github.com/christianoller8/astro-portfolio/commits/main)
 
@@ -58,8 +59,8 @@ A portfolio usually tells what its author can do. This one lets a recruiter or a
 | Done | Static site in Spanish and English | Pre-rendered by Astro; no server runtime |
 | Done | Cookieless analytics | Vercel Web Analytics; visitors can opt out on the privacy page |
 | Done | Contact form without a backend | Opens the visitor's email app; posts to `PUBLIC_FORM_ENDPOINT` when it is set |
+| Done | End-to-end tests | Playwright on a desktop and a mobile viewport, in Spanish and English, on every push |
 | Not done | Real screenshots of Tempora, Vibora and Learnish | Their interfaces are HTML fragments built for the site, with fictional data |
-| Not done | Automated end-to-end tests in CI | The Playwright suite targets an earlier version, so its workflow only runs by hand |
 | Out of scope | CMS, accounts, cookies | Content lives in Markdown and in one dictionary |
 
 ## Architecture
@@ -176,16 +177,17 @@ Optional, in a `.env` file at the root:
 
 ```bash
 pnpm astro check
-pnpm build
-pnpm preview --port 4400
+pnpm test
 ```
 
-`pnpm astro check` type-checks the scripts and the Astro templates and must report 0 errors. Then, on <http://localhost:4400>:
+`pnpm astro check` type-checks the scripts and the Astro templates and must report 0 errors.
+
+`pnpm test` runs the Playwright suite against a production build on port 4400 (it builds and serves one, or reuses a preview already running there). About 300 tests cover navigation, theme, lenses, canvas, demos, the contact form, privacy, SEO basics and accessibility on every page, on a desktop and a mobile viewport and in both languages. For accessibility, the site's own QA lens is the judge: every check it runs has to pass. The suite uses Playwright's Chromium when it is installed (`pnpm exec playwright install chromium`) and Microsoft Edge otherwise. GitHub Actions runs it on every push.
+
+To check the two key behaviours by hand on <http://localhost:4400>:
 
 1. **Main case**: press 3 on the home. The QA lens marks each check on the page, and the bar at the bottom counts how many pass.
 2. **Edge case**: in Chrome DevTools, open Rendering and emulate `prefers-reduced-motion: reduce`, then reload. The intro does not play, and switching the theme or the page happens at once, without the circle or the pan.
-
-The Playwright suite in `tests/` still targets an earlier version of the site; its workflow runs only by hand until it is rewritten.
 
 ## Deployment
 
@@ -198,7 +200,7 @@ Vercel builds the `main` branch and serves it at <https://www.christianoller.dev
 - [ ] Sending service for the contact form
 - [ ] Real screenshots and short videos of Tempora, Vibora and Learnish
 - [ ] A social image per page
-- [ ] Rewrite the Playwright suite for this version
+- [ ] A full Content Security Policy
 
 ### Where the design decisions live
 

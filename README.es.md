@@ -8,6 +8,7 @@
 
 Portfolio bilingüe de un diseñador, desarrollador y QA: cada página se puede leer como diseño, como código o como informe de pruebas.
 
+[![Tests](https://img.shields.io/github/actions/workflow/status/christianoller8/astro-portfolio/playwright.yml?branch=main&style=flat-square&label=tests)](https://github.com/christianoller8/astro-portfolio/actions/workflows/playwright.yml)
 [![Web](https://img.shields.io/website?url=https%3A%2F%2Fwww.christianoller.dev&style=flat-square&label=christianoller.dev)](https://www.christianoller.dev)
 [![Último commit](https://img.shields.io/github/last-commit/christianoller8/astro-portfolio?style=flat-square&label=%C3%BAltimo%20commit)](https://github.com/christianoller8/astro-portfolio/commits/main)
 
@@ -58,8 +59,8 @@ Un portfolio suele contar lo que sabe hacer su autor. Este deja que un reclutado
 | Hecho | Web estática en español e inglés | Generada por Astro; sin servidor |
 | Hecho | Analítica sin cookies | Vercel Web Analytics; quien visita puede desactivarla en la página de privacidad |
 | Hecho | Formulario de contacto sin backend | Abre el programa de correo del visitante; envía a `PUBLIC_FORM_ENDPOINT` cuando está definido |
+| Hecho | Pruebas de extremo a extremo | Playwright en escritorio y en móvil, en español e inglés, en cada push |
 | Pendiente | Capturas reales de Tempora, Vibora y Learnish | Sus interfaces son fragmentos HTML hechos para la web, con datos ficticios |
-| Pendiente | Pruebas de extremo a extremo automáticas en CI | La batería de Playwright es de una versión anterior, así que su workflow solo se lanza a mano |
 | Fuera de alcance | CMS, cuentas, cookies | El contenido vive en Markdown y en un diccionario |
 
 ## Arquitectura
@@ -176,16 +177,17 @@ Opcionales, en un archivo `.env` en la raíz:
 
 ```bash
 pnpm astro check
-pnpm build
-pnpm preview --port 4400
+pnpm test
 ```
 
-`pnpm astro check` comprueba los tipos de los scripts y de las plantillas de Astro y debe dar 0 errores. Después, en <http://localhost:4400>:
+`pnpm astro check` comprueba los tipos de los scripts y de las plantillas de Astro y debe dar 0 errores.
+
+`pnpm test` lanza la batería de Playwright contra una versión de producción en el puerto 4400 (la construye y la sirve, o aprovecha una vista previa que ya esté abierta ahí). Unas 300 pruebas cubren la navegación, el tema, las lentes, el lienzo, las demos, el formulario de contacto, la privacidad, lo básico de SEO y la accesibilidad de cada página, en escritorio y en móvil y en los dos idiomas. Para la accesibilidad, el juez es la propia lente de QA de la web: todas sus comprobaciones tienen que pasar. La batería usa el Chromium de Playwright si está instalado (`pnpm exec playwright install chromium`) y, si no, Microsoft Edge. GitHub Actions la lanza en cada push.
+
+Para comprobar a mano los dos comportamientos clave en <http://localhost:4400>:
 
 1. **Caso principal**: pulsa 3 en el inicio. La lente de QA marca cada comprobación de la página y la barra de abajo cuenta cuántas pasan.
 2. **Caso límite**: en las DevTools de Chrome, abre Rendering y emula `prefers-reduced-motion: reduce`; después recarga. La intro no sale, y el cambio de tema o de página es instantáneo, sin el círculo ni el desplazamiento.
-
-La batería de Playwright de `tests/` sigue apuntando a una versión anterior de la web; su workflow solo se lanza a mano hasta que se reescriba.
 
 ## Despliegue
 
@@ -198,7 +200,7 @@ Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. 
 - [ ] Servicio de envío para el formulario de contacto
 - [ ] Capturas reales y vídeos cortos de Tempora, Vibora y Learnish
 - [ ] Una imagen para redes por página
-- [ ] Reescribir la batería de Playwright para esta versión
+- [ ] Una política de seguridad de contenidos (CSP) completa
 
 ### Dónde están las decisiones de diseño
 

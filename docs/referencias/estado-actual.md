@@ -111,7 +111,12 @@ Por orden de urgencia (lista completa en el roadmap):
    el script de Vercel ignora los navegadores automatizados y sin interfaz). Christian la activó en
    el panel de Vercel el mismo día y vio llegar su primera visita. Al conectar
    el formulario, hay que reescribir el apartado "Si me escribes" de la privacidad.
-7. **Tests de Playwright**: lentes, navegación, formulario y accesibilidad.
+7. **Tests de Playwright**: reescritos el 23 nov para esta versión (`pnpm test`, carpeta `tests/`):
+   unas 300 pruebas en escritorio y móvil, en los dos idiomas (navegación, tema, lentes, lienzo,
+   demos, contacto, privacidad, SEO y accesibilidad de cada página con la lente QA como juez). El
+   workflow de GitHub vuelve a lanzarse en cada push a `main` y `prototipo-def`. Destaparon que la
+   lente QA contaba el titular escondido de la 404 (arreglado). En este equipo usan Edge (no hay
+   navegadores de Playwright instalados); en CI, el Chromium de Playwright.
 8. **Otros**: la 404 responde 404 en Vercel (comprobado el 20 nov) y el manifest ya está. Renovar
    `public/.well-known/security.txt` antes del 19 nov de 2027, cuando caduca.
 
