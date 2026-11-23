@@ -650,6 +650,8 @@ function runChecks(): Check[] {
   });
 
   document.querySelectorAll('main input:not([type="hidden"]), main textarea, main select').forEach((field) => {
+    // Un campo escondido (como la casilla trampa del formulario) no lo ve nadie: no necesita etiqueta
+    if (!real(field)) return;
     const input = field as HTMLInputElement;
     const ok = (input.labels?.length ?? 0) > 0 || input.hasAttribute('aria-label') || input.hasAttribute('aria-labelledby');
     checks.push({
