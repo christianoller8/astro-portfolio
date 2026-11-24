@@ -53,6 +53,14 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   lienzo). Se cambia al aplicar la revisión de textos (página de revisión publicada el 24 nov:
   https://claude.ai/artifact/8atwYEHRiiJVS2LrtCrr5M, decisiones en su colección `decisions`), y
   luego se regeneran las imágenes una sola vez. La ruta `/projects/vibora/` se queda sin tilde.
+- **Textos, listos para aplicar (24 nov)**: ronda 1 con 50 propuestas aceptadas y 1 que se queda
+  (artefacto de arriba) y ronda 2, cotejada con el código de cada repo, con 27 aceptadas y «2025»
+  confirmado en Sobre mí (https://claude.ai/artifact/BEcEz6zBp1Tw4XMyCkKfm1, colección
+  `decisions`). Donde las dos rondas tocan el mismo texto, manda la ronda 2. Tres de la ronda 2 son
+  de diseño y también están aceptadas: rehacer las maquetas de Tempora (un trozo del cuadrante
+  mensual; la demo pasa a poner un turno pulsando una casilla), Víbora (una pista y sus horas,
+  «Seleccionada») y Learnish (phrasal verbs y cuatro botones), enseñándoselas antes de cerrarlas.
+  Va junto con el formato `desktop` de Víbora y Learnish.
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la
