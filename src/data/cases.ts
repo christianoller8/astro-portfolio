@@ -77,28 +77,28 @@ export const cases: Record<string, CaseContent> = {
   tempora: {
     decisions: [
       {
-        title: { es: 'Todo el día en una pantalla', en: 'The whole day on one screen' },
+        title: { es: 'El mes entero, de un vistazo', en: 'The whole month at a glance' },
         body: {
-          es: 'Turnos, fichajes y pendientes se leen sin cambiar de vista: tres cifras arriba y la tabla debajo.',
-          en: 'Shifts, clock-ins and pending ones read without changing view: three figures on top, the table below.',
+          es: 'El cuadrante pone a cada persona en una fila y cada día en una columna, con el turno en su casilla.',
+          en: 'The rota puts each person on a row and each day in a column, with the shift in its cell.',
         },
-        note: { es: '3 cifras + 1 tabla', en: '3 figures + 1 table' },
+        note: { es: 'personas × días', en: 'people × days' },
       },
       {
-        title: { es: 'El estado se lee dos veces', en: 'Status reads twice' },
+        title: { es: 'El turno se lee dos veces', en: 'Each shift reads twice' },
         body: {
-          es: 'Cada fichaje lleva color y texto, «Fichado» o «Pendiente». No depende solo del color.',
-          en: 'Each clock-in has colour and text, “Clocked in” or “Pending”. It never relies on colour alone.',
+          es: 'Cada casilla lleva el color del turno y su letra: M, T, N… No depende solo del color.',
+          en: 'Every cell carries the shift’s colour and its letter: M, T, N… It never relies on colour alone.',
         },
-        note: { es: 'color + texto', en: 'colour + text' },
+        note: { es: 'color + letra', en: 'colour + letter' },
       },
       {
-        title: { es: 'La acción principal, a mano', en: 'The main action, within reach' },
+        title: { es: 'El turno se pone en su casilla', en: 'The shift goes in its cell' },
         body: {
-          es: '«Nuevo turno» va arriba a la derecha y es el único botón con el color de la marca.',
-          en: '“New shift” sits top right and is the only button in the brand colour.',
+          es: 'No hay que buscar un botón: pulsas la casilla del día, o le das a Intro, y eliges el turno.',
+          en: 'No button to look for: click the day’s cell, or press Enter, and choose the shift.',
         },
-        note: { es: '1 acción primaria', en: '1 primary action' },
+        note: { es: 'clic o teclado', en: 'click or keyboard' },
       },
     ],
     enjoyed: {
@@ -111,24 +111,24 @@ export const cases: Record<string, CaseContent> = {
       {
         title: { es: 'Primero, qué está libre', en: 'First, what is free' },
         body: {
-          es: 'La parrilla enseña pistas y horas a la vez: lo ocupado se apaga y lo libre destaca.',
-          en: 'The grid shows courts and times at once: taken slots fade and free ones stand out.',
+          es: 'La agenda enseña las horas de una pista en el día: lo ocupado lleva trama y lo libre, contorno y precio.',
+          en: 'The schedule shows one court’s hours for the day: taken slots get a hatch pattern and free ones an outline and their price.',
         },
-        note: { es: 'pistas × horas', en: 'courts × times' },
+        note: { es: 'trama + precio', en: 'hatch + price' },
       },
       {
         title: { es: 'Reservar en dos pasos', en: 'Booking in two steps' },
         body: {
-          es: 'Eliges hueco y confirmas. El resumen de abajo repite pista, hora y duración antes de confirmar.',
-          en: 'Pick a slot and confirm. The summary below repeats court, time and duration before you confirm.',
+          es: 'Eliges hueco y confirmas. Antes de reservar, un diálogo repite club, pista, fecha, hora y precio.',
+          en: 'Pick a slot and confirm. Before booking, a dialog repeats club, court, date, time and price.',
         },
         note: { es: '2 pasos', en: '2 steps' },
       },
       {
         title: { es: 'Tu reserva no se pierde de vista', en: 'Your booking stays in sight' },
         body: {
-          es: 'El hueco elegido cambia de color y de texto: «Tu reserva».',
-          en: 'The chosen slot changes colour and text: “Your booking”.',
+          es: 'El hueco elegido cambia de aspecto y dice «Seleccionada» mientras confirmas; después, la reserva aparece en «Mis reservas».',
+          en: 'The chosen slot changes look and reads “Selected” while you confirm; then the booking shows up under “My bookings”.',
         },
         note: { es: 'color + texto', en: 'colour + text' },
       },
@@ -149,18 +149,18 @@ export const cases: Record<string, CaseContent> = {
         note: { es: '1 frase por tarjeta', en: '1 phrase per card' },
       },
       {
-        title: { es: 'Tú decides si lo sabías', en: 'You decide whether you knew it' },
+        title: { es: 'Tú decides cuánto te costó', en: 'You decide how hard it was' },
         body: {
-          es: '«Repasar» o «Lo sabía»: dos botones grandes, al alcance del pulgar.',
-          en: '“Review” or “Got it”: two large buttons within reach of the thumb.',
+          es: '«Otra vez», «Difícil», «Bien» o «Fácil»: cuatro botones, también con las teclas 1 a 4.',
+          en: '“Again”, “Hard”, “Good” or “Easy”: four buttons, also on keys 1 to 4.',
         },
-        note: { es: '2 respuestas', en: '2 answers' },
+        note: { es: '4 respuestas', en: '4 answers' },
       },
       {
         title: { es: 'El avance, a la vista', en: 'Progress, always visible' },
         body: {
-          es: 'La barra y el «7 de 10» dicen cuánto queda de lección; la racha, cuántos días llevas.',
-          en: 'The bar and “7 of 10” say how much of the lesson is left; the streak, how many days in a row.',
+          es: 'La barra y el «7 de 10» dicen cuánto queda de la sesión de tarjetas; la racha, cuántos días llevas.',
+          en: 'The bar and “7 of 10” say how much of the card session is left; the streak, how many days in a row.',
         },
         note: { es: 'progreso + racha', en: 'progress + streak' },
       },
@@ -186,7 +186,7 @@ export const cases: Record<string, CaseContent> = {
           es: 'Cada efecto está hecho con CSS y JavaScript propio, y respeta la preferencia de reducir el movimiento.',
           en: 'Every effect is hand-written CSS and JavaScript, and respects the reduced-motion preference.',
         },
-        note: { es: '0 librerías', en: '0 libraries' },
+        note: { es: '0 librerías de animación', en: '0 animation libraries' },
       },
       {
         title: { es: 'El contacto es una carta', en: 'Contact is a letter' },
@@ -198,9 +198,8 @@ export const cases: Record<string, CaseContent> = {
       },
     ],
     tests: [
-      { es: 'Móvil · 390 px', en: 'Phone · 390 px' },
-      { es: 'Tablet · 768 px', en: 'Tablet · 768 px' },
-      { es: 'Escritorio · 1280 px', en: 'Desktop · 1280 px' },
+      { es: 'Escritorio · de 1280 a 1920 px', en: 'Desktop · 1280 to 1920 px' },
+      { es: 'Contraste AA con axe-core', en: 'AA contrast with axe-core' },
       { es: 'Se usa con teclado', en: 'Works with the keyboard' },
       { es: 'Respeta reducir movimiento', en: 'Respects reduced motion' },
     ],

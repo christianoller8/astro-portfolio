@@ -7,9 +7,9 @@ role: 'Design, development and QA'
 ui: 'tempora'
 order: 1
 features:
-  - 'Shift rota by day, week and month'
+  - 'Monthly shift rota that warns when a shift breaks the minimum rest'
   - 'Clock-in and clock-out for every person'
-  - 'Staff tables with each person’s unit and status'
+  - 'Staff records with each person’s category, contract and status'
 video:
   src: /videos/tempora.mp4
   poster: /videos/posters/tempora.jpg

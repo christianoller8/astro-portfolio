@@ -10,6 +10,7 @@ link: 'https://vistalo-sl.vercel.app/'
 order: 4
 stack:
   - 'Astro'
+  - 'Tailwind CSS'
   - 'Hand-written CSS and JavaScript'
   - 'View Transitions'
 features:

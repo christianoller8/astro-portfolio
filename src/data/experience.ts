@@ -31,7 +31,7 @@ export const experience: Job[] = [
       es: ['Diseño cada pantalla y escribo el código, de la idea a la web publicada.'],
       en: ['I design every screen and write the code, from the idea to the published website.'],
     },
-    stack: ['Astro', 'CSS', 'JavaScript'],
+    stack: ['Astro', 'Tailwind CSS', 'CSS', 'JavaScript'],
   },
   {
     company: 'Accenture',

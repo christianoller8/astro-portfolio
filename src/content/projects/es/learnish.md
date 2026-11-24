@@ -3,12 +3,12 @@ title: 'Learnish'
 description: 'Aplicación web de escritorio para preparar el Cambridge B2 First: práctica de las cuatro pruebas, simulacros con nota estimada y repaso de errores.'
 kind: 'app'
 format: 'mobile'
-status: 'En desarrollo'
+status: 'Versión 2.1, de uso personal'
 role: 'Diseño, desarrollo y QA'
 ui: 'learnish'
 order: 3
 features:
-  - 'Lecciones cortas por temas'
+  - 'Práctica de las cuatro pruebas del B2 First y dos simulacros con nota estimada'
   - 'Tarjetas para repasar vocabulario'
   - 'Seguimiento del progreso'
 video:

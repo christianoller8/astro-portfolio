@@ -7,9 +7,9 @@ role: 'Diseño, desarrollo y QA'
 ui: 'tempora'
 order: 1
 features:
-  - 'Cuadrante de turnos por día, semana y mes'
+  - 'Cuadrante mensual de turnos que avisa si alguno no respeta el descanso mínimo'
   - 'Registro de entrada y salida de cada persona'
-  - 'Tablas de trabajadores con su servicio y su estado'
+  - 'Fichas de empleados con su categoría, su contrato y su estado'
 video:
   src: /videos/tempora.mp4
   poster: /videos/posters/tempora.jpg

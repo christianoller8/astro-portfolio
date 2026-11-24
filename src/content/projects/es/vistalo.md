@@ -10,7 +10,8 @@ link: 'https://vistalo-sl.vercel.app/'
 order: 4
 stack:
   - 'Astro'
-  - 'CSS y JavaScript propio'
+  - 'Tailwind CSS'
+  - 'CSS y JavaScript propios'
   - 'View Transitions'
 features:
   - 'Explorador de servicios que se queda fijo mientras bajas por la página'
