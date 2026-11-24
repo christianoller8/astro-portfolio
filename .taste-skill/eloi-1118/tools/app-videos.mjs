@@ -18,9 +18,9 @@
 // Learnish se graba sobre una copia de sus datos, para no tocar el progreso real. En LEARNISH/server:
 //   LEARNISH_PORT=5318 LEARNISH_DATA_DIR=<carpeta con una copia de data/learnish.db> LEARNISH_NO_BROWSER=1 node src/main.js
 // Calificar una tarjeta cambia esa copia: para repetir la toma, vuelve a copiar la base y reinicia.
-import { mkdirSync, rmSync, writeFileSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, writeFileSync, statSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
@@ -60,7 +60,94 @@ const APPS = {
       await wait(1700);
     },
   },
+  tempora: {
+    url: process.env.TEMPORA_URL ?? 'http://localhost:4200',
+    loginPath: '/auth/login',
+    fade: 'white',
+    // Cuadrante de junio de 2026 (el del seed) → dos turnos nuevos pulsando su casilla.
+    // cleanup los quita después, así que el cuadrante queda como estaba y la toma se puede repetir.
+    takes: [['Laura García', 3, 'Mañana'], ['Ana López', 3, 'Tarde']],
+    cell(page, name, day) {
+      return page.getByRole('row').filter({ hasText: name }).getByRole('gridcell').nth(day - 1);
+    },
+    async script({ page, cursor, record }) {
+      if (!page.url().includes('/shifts')) await page.getByRole('link', { name: 'Turnos' }).click();
+      await page.locator('select').nth(0).selectOption('2026');
+      await page.locator('select').nth(1).selectOption({ label: 'Junio' });
+      await page.getByRole('button', { name: 'Buscar' }).click();
+      await this.cleanup({ page });
+      await cursor.place(1040, 250);
+      await wait(500);
+      await record();
+      await wait(1300);
+      const dialog = page.getByRole('dialog');
+      for (const [name, day, shift] of this.takes) {
+        await cursor.moveTo(this.cell(page, name, day));
+        await wait(220);
+        await cursor.click();
+        await dialog.waitFor();
+        await wait(500);
+        await cursor.moveTo(dialog.getByText(shift, { exact: true }));
+        await wait(200);
+        await cursor.click();
+        await wait(350);
+        await cursor.moveTo(dialog.getByRole('button', { name: 'Confirmar' }));
+        await wait(200);
+        await cursor.click();
+        await dialog.waitFor({ state: 'hidden' });
+        await wait(900);
+      }
+      await wait(900);
+    },
+    async cleanup({ page }) {
+      for (const [name, day] of this.takes) {
+        const cell = this.cell(page, name, day);
+        await cell.waitFor();
+        if ((await cell.textContent()).trim() === '+') continue;
+        await cell.click();
+        await page.getByRole('button', { name: 'Quitar turno' }).click();
+        await page.getByRole('button', { name: 'Sí, quitar' }).click();
+        await page.getByRole('dialog').waitFor({ state: 'hidden' });
+        await wait(400);
+      }
+    },
+  },
+  vistalo: {
+    url: process.env.VISTALO_URL ?? 'https://vistalo-sl.vercel.app',
+    fade: 'black',
+    cursor: false, // estilo A de la guía: scroll limpio, sin cursor
+    // Portada → servicios → packs → «Hablemos» con la transición entre páginas → la carta
+    async script({ url, page, record, scroll }) {
+      await page.goto(`${url}/`, { waitUntil: 'networkidle' });
+      await record();
+      await wait(2600);
+      await scroll('#territorios', 1400);
+      await wait(1200);
+      await scroll('#packs', 2200);
+      await wait(1600);
+      await page.locator('header a[href="/contacto"]').first().click();
+      await page.waitForURL(/\/contacto/);
+      await wait(3000);
+    },
+  },
 };
+
+// Scroll suave hasta un elemento o una altura, con aceleración de entrada y salida
+function makeScroll(page) {
+  return (target, ms) => page.evaluate(({ target, ms }) => new Promise((resolve) => {
+    const to = typeof target === 'number' ? target : document.querySelector(target).getBoundingClientRect().top + scrollY;
+    const from = scrollY;
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / ms);
+      const e = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
+      scrollTo({ top: from + (to - from) * e, behavior: 'instant' });
+      if (t < 1) requestAnimationFrame(step);
+      else resolve();
+    };
+    requestAnimationFrame(step);
+  }), { target, ms });
+}
 
 // Cursor dibujado en la página: una flecha blanca con borde y un aro en cada clic.
 // Va por CSSOM y atributos SVG, así que no lo bloquea una CSP sin 'unsafe-inline'.
@@ -236,12 +323,32 @@ function exportWeb(name) {
   console.log(`${name}: ${duration(out).toFixed(1)} s · ${kb(out)} → public/videos/${name}.mp4 · póster ${kb(poster)}`);
 }
 
-async function record(name) {
+// Apps con sesión (Tempora la guarda solo en memoria: recargar = volver al login). --login abre un
+// Edge aparte con puerto de depuración y perfil en videos-raw/.profiles/<app> (fuera de git);
+// Christian entra una vez y la grabación se engancha a esa misma ventana, sin recargarla. Por eso
+// sus guiones navegan con clics y nunca con page.goto. La ventana la cierra él al terminar.
+const DEBUG_PORT = 9333;
+const EDGE = ['C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe']
+  .find((path) => existsSync(path));
+
+async function openContext(name, headed) {
   const app = APPS[name];
-  const frameDir = join(RAW, name, 'frames');
-  rmSync(join(RAW, name), { recursive: true, force: true });
-  mkdirSync(frameDir, { recursive: true });
-  const browser = await chromium.launch({ channel: 'msedge', headless: !process.argv.includes('--headed') });
+  if (app.loginPath) {
+    const browser = await chromium.connectOverCDP(`http://127.0.0.1:${DEBUG_PORT}`).catch(() => {
+      throw new Error(`No hay ventana abierta: antes, node .taste-skill/eloi-1118/tools/app-videos.mjs ${name} --login`);
+    });
+    const context = browser.contexts()[0];
+    const page = context.pages().find((candidate) => candidate.url().startsWith(app.url));
+    if (!page) throw new Error(`La ventana de depuración no está en ${app.url}`);
+    const cdp = await context.newCDPSession(page);
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width: VIEWPORT.width, height: VIEWPORT.height, deviceScaleFactor: SCALE, mobile: false });
+    const close = async () => {
+      await cdp.send('Emulation.clearDeviceMetricsOverride').catch(() => {});
+      await cdp.detach().catch(() => {});
+    };
+    return { context, page, close };
+  }
+  const browser = await chromium.launch({ channel: 'msedge', headless: !headed });
   const context = await browser.newContext({
     viewport: VIEWPORT,
     deviceScaleFactor: SCALE,
@@ -249,15 +356,57 @@ async function record(name) {
     timezoneId: 'Europe/Madrid',
     ...(app.colorScheme ? { colorScheme: app.colorScheme } : {}),
   });
-  await context.addInitScript(drawCursor);
-  const page = await context.newPage();
+  return { context, page: await context.newPage(), close: () => browser.close() };
+}
+
+async function login(name) {
+  const app = APPS[name];
+  if (!EDGE) throw new Error('No encuentro msedge.exe');
+  spawn(EDGE, [
+    `--remote-debugging-port=${DEBUG_PORT}`,
+    `--user-data-dir=${join(RAW, '.profiles', name)}`,
+    '--no-first-run',
+    '--no-default-browser-check',
+    '--window-size=1340,920',
+    // que siga pintando aunque la tapen otras ventanas
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
+    '--disable-background-timer-throttling',
+    '--disable-features=CalculateNativeWinOcclusion',
+    `${app.url}${app.loginPath}`,
+  ], { detached: true, stdio: 'ignore' }).unref();
+  let browser = null;
+  for (let i = 0; i < 40 && !browser; i++) {
+    browser = await chromium.connectOverCDP(`http://127.0.0.1:${DEBUG_PORT}`).catch(() => null);
+    if (!browser) await wait(500);
+  }
+  if (!browser) throw new Error('Edge no ha abierto el puerto de depuración');
+  const pages = browser.contexts()[0].pages();
+  const page = pages.find((candidate) => candidate.url().startsWith(app.url)) ?? pages[0];
+  console.log(`${name}: inicia sesión en la ventana de Edge y déjala abierta (espero hasta 10 minutos)…`);
+  await page.waitForURL((url) => !url.pathname.startsWith(app.loginPath), { timeout: 600_000 });
+  console.log(`${name}: sesión iniciada; la ventana se queda abierta para grabar`);
+  process.exit(0);
+}
+
+async function record(name) {
+  const app = APPS[name];
+  const frameDir = join(RAW, name, 'frames');
+  rmSync(join(RAW, name), { recursive: true, force: true });
+  mkdirSync(frameDir, { recursive: true });
+  const { context, page, close } = await openContext(name, process.argv.includes('--headed'));
+  if (app.cursor !== false) {
+    await context.addInitScript(drawCursor);
+    await page.evaluate(drawCursor); // la ventana de --login ya está cargada: el script de inicio no le llega
+  }
   const cursor = makeCursor(page);
   let stop = null;
   try {
-    await app.script({
+    await app.script.call(app, {
       url: app.url,
       page,
       cursor,
+      scroll: makeScroll(page),
       record: async () => {
         stop = await startScreencast(page, frameDir);
         await cursor.nudge(); // el navegador solo manda fotograma cuando algo cambia: así llega el primero
@@ -265,7 +414,8 @@ async function record(name) {
     });
   } finally {
     const result = stop ? await stop() : null;
-    await browser.close();
+    if (app.cleanup) await app.cleanup({ page }).catch((error) => console.warn(`${name}: no he podido deshacer la toma: ${error.message}`));
+    await close();
     if (result) {
       writeMaster(name, result.frames, result.end);
       console.log(`${name}: ${result.frames.length} fotogramas → videos-raw/${name}.mp4`);
@@ -278,5 +428,10 @@ if (!APPS[name]) {
   console.error(`Uso: node .taste-skill/eloi-1118/tools/app-videos.mjs <${Object.keys(APPS).join('|')}> [--export] [--headed]`);
   process.exit(1);
 }
-if (!process.argv.includes('--export')) await record(name);
-exportWeb(name);
+if (process.argv.includes('--login')) await login(name);
+else {
+  if (!process.argv.includes('--export')) await record(name);
+  exportWeb(name);
+}
+// La conexión con la ventana de --login mantiene vivo el proceso: se sale a mano, sin cerrar Edge
+process.exit(0);
