@@ -91,34 +91,40 @@ for (const lang of LANGS) {
       await expect(empty.first()).toBeFocused();
     });
 
-    test('Vibora books a court and confirms it, and announces both', async ({ page }) => {
+    test('Víbora picks a free hour, confirms it in the dialog and books it, and announces each step', async ({ page }) => {
       const demo = page.locator('.stack [data-demo="vibora"]');
       await demo.scrollIntoViewIfNeeded();
       const live = demo.locator('[data-demo-live-region]');
-      const slot = (await demo.locator('[data-demo-slot][aria-pressed="false"]').first().getAttribute('data-demo-slot')) ?? '';
-      expect(slot).not.toBe('');
-      // Un localizador fijo a esa pista: el primero "libre" cambia en cuanto se elige
+      const dialog = demo.locator('[data-demo-dialog]');
+      const slots = demo.locator('[data-demo-slot]');
+      const before = await slots.count();
+      // Un localizador fijo a esa hora: el primer hueco libre cambia en cuanto se elige
+      const slot = (await slots.first().getAttribute('data-demo-slot')) ?? '';
       const free = demo.locator(`[data-demo-slot="${slot}"]`);
-      const confirm = demo.locator('[data-demo-confirm]');
-      const summary = demo.locator('[data-demo-summary]');
 
       await free.click();
       await expect(free).toHaveAttribute('aria-pressed', 'true');
-      await expect(confirm).toBeEnabled();
-      await expect(summary).toContainText(slot);
+      await expect(dialog).toBeVisible();
+      await expect(dialog.locator('[data-demo-time]')).toHaveText((await free.getAttribute('data-time')) ?? '');
       await expect(live).toHaveText(tf(lang, 'demo.say.picked', { slot }));
+      // El diálogo recibe el foco en su botón principal
+      await expect(dialog.locator('[data-demo-confirm]')).toBeFocused();
 
-      await confirm.click();
-      await expect(summary).toContainText(slot);
-      await expect(live).toHaveText(tf(lang, 'demo.say.confirmed', { slot }));
-      // El foco no se pierde: vuelve a la pista reservada
-      await expect(free).toBeFocused();
-
-      // Quitar la selección también se anuncia
-      await free.click();
+      // «Volver» quita la selección y devuelve el foco a la hora
+      await dialog.locator('[data-demo-back]').click();
+      await expect(dialog).toBeHidden();
       await expect(free).toHaveAttribute('aria-pressed', 'false');
       await expect(live).toHaveText(t(lang, 'demo.say.unpicked'));
-      await expect(confirm).toBeDisabled();
+
+      // Reservar: la hora deja de estar libre y el foco no se pierde
+      await free.click();
+      await dialog.locator('[data-demo-confirm]').click();
+      await expect(dialog).toBeHidden();
+      await expect(slots).toHaveCount(before - 1);
+      await expect(demo.locator('.vb-slot.is-just')).toHaveCount(1);
+      await expect(demo.locator('[data-demo-toast]')).toBeVisible();
+      await expect(live).toHaveText(tf(lang, 'demo.say.confirmed', { slot }));
+      await expect(slots.first()).toBeFocused();
     });
 
     test('Learnish shows the answer and moves to the next card, and announces both', async ({ page }) => {

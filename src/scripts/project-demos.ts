@@ -68,44 +68,69 @@ function tempora(root: HTMLElement, target: Element) {
 
 /* ---------- Víbora ---------- */
 
+// Como en la agenda real: la hora libre pasa a «Seleccionada», el diálogo repite los datos y, al
+// reservar, la hora queda «Ocupada» (con su trama) y sale el aviso de abajo
+type SlotState = 'free' | 'taken' | 'picked';
+
 function vibora(root: HTMLElement, target: Element) {
-  const info = data<{
-    free: string;
-    mine: string;
-    confirmed: string;
-    pick: string;
-    say: { picked: string; unpicked: string; confirmed: string };
-  }>(root);
-  const bar = root.querySelector('.vb-bar');
-  const summary = root.querySelector('[data-demo-summary]');
-  const confirm = root.querySelector<HTMLButtonElement>('[data-demo-confirm]');
-  const slots = [...root.querySelectorAll<HTMLButtonElement>('[data-demo-slot]')];
+  const info = data<{ states: Record<SlotState, string>; done: string; say: { picked: string; unpicked: string; confirmed: string } }>(root);
+  const dialog = root.querySelector<HTMLElement>('[data-demo-dialog]');
+  const toast = root.querySelector<HTMLElement>('[data-demo-toast]');
+  if (!dialog) return;
+  const picked = () => root.querySelector<HTMLButtonElement>('[data-demo-slot][aria-pressed="true"]');
+  const mark = (slot: HTMLElement, state: SlotState) => {
+    slot.setAttribute('aria-pressed', String(state === 'picked'));
+    slot.classList.toggle('is-picked', state === 'picked');
+    const label = slot.querySelector('em');
+    if (label) label.textContent = info.states[state];
+  };
 
   const slot = target.closest<HTMLButtonElement>('[data-demo-slot]');
   if (slot) {
+    const current = picked();
+    if (current && current !== slot) mark(current, 'free');
     const on = slot.getAttribute('aria-pressed') !== 'true';
-    for (const other of slots) {
-      const mine = other === slot && on;
-      other.setAttribute('aria-pressed', String(mine));
-      other.classList.toggle('is-mine', mine);
-      other.textContent = mine ? info.mine : info.free;
+    mark(slot, on ? 'picked' : 'free');
+    dialog.hidden = !on;
+    if (toast) toast.hidden = true;
+    if (on) {
+      dialog.querySelector('[data-demo-time]')!.textContent = slot.dataset.time ?? '';
+      dialog.querySelector('[data-demo-price]')!.textContent = slot.dataset.price ?? '';
+      dialog.querySelector<HTMLElement>('[data-demo-confirm]')?.focus({ preventScroll: true });
     }
-    bar?.classList.remove('is-done');
-    if (summary) summary.textContent = on ? `${slot.dataset.demoSlot} · 90 min` : info.pick;
-    if (confirm) confirm.disabled = !on;
     say(root, on ? info.say.picked : info.say.unpicked, { slot: slot.dataset.demoSlot ?? '' });
     return;
   }
 
-  if (target.closest('[data-demo-confirm]') && bar && summary) {
-    const picked = slots.find((s) => s.getAttribute('aria-pressed') === 'true');
-    if (!picked) return;
-    summary.textContent = `${info.confirmed} · ${picked.dataset.demoSlot}`;
-    bar.classList.add('is-done');
-    // Con la reserva hecha "Confirmar" se esconde (visibility:hidden) y el foco se perdía en body
-    // (WCAG 2.4.3): vuelve a la pista reservada, que sigue en la tabla
-    picked.focus({ preventScroll: true });
-    say(root, info.say.confirmed, { slot: picked.dataset.demoSlot ?? '' });
+  if (target.closest('[data-demo-back]')) {
+    const current = picked();
+    dialog.hidden = true;
+    if (current) {
+      mark(current, 'free');
+      current.focus({ preventScroll: true });
+    }
+    say(root, info.say.unpicked, {});
+    return;
+  }
+
+  if (target.closest('[data-demo-confirm]')) {
+    const current = picked();
+    if (!current) return;
+    dialog.hidden = true;
+    // Reservada, deja de ser un botón; el foco pasa a la siguiente hora libre o, si no queda, al aviso
+    const taken = document.createElement('span');
+    taken.className = 'vb-slot is-taken is-just';
+    taken.append(...[...current.childNodes].map((node) => node.cloneNode(true)));
+    const label = taken.querySelector('em');
+    if (label) label.textContent = info.states.taken;
+    const following = [...root.querySelectorAll<HTMLElement>('[data-demo-slot]')].find((el) => el !== current);
+    current.replaceWith(taken);
+    if (toast) {
+      toast.textContent = info.done.replace('{time}', current.dataset.time ?? '');
+      toast.hidden = false;
+    }
+    (following ?? toast)?.focus({ preventScroll: true });
+    say(root, info.say.confirmed, { slot: current.dataset.demoSlot ?? '' });
   }
 }
 

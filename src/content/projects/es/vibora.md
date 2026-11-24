@@ -2,7 +2,6 @@
 title: 'Víbora'
 description: 'Aplicación web de escritorio para reservar pistas de pádel: ves qué horas hay libres, reservas y confirmas.'
 kind: 'app'
-format: 'mobile'
 status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
 ui: 'vibora'
