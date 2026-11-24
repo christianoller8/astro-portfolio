@@ -47,6 +47,11 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   reales delante, se rehacen las demos de Víbora y Learnish como interfaces de escritorio y se pasa
   su formato a `desktop`, todo de una vez (cambiar solo el formato estiraría unas demos dibujadas
   para móvil).
+- **El nombre es Víbora, con tilde** (confirmado por él el 24 nov). La web lo escribe "Vibora" en
+  todas partes (título del proyecto, demo, rótulos, tests, imágenes para compartir y miniaturas del
+  lienzo). Se cambia al aplicar la revisión de textos (página de revisión publicada el 24 nov:
+  https://claude.ai/artifact/8atwYEHRiiJVS2LrtCrr5M, decisiones en su colección `decisions`), y
+  luego se regeneran las imágenes una sola vez. La ruta `/projects/vibora/` se queda sin tilde.
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la
