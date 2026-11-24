@@ -17,6 +17,10 @@ features:
   - 'A project gallery that moves sideways as you scroll'
   - 'A contact page shaped like a letter, with a pen signature and a live receipt'
   - 'Native page transitions'
+video:
+  src: /videos/vistalo.mp4
+  poster: /videos/posters/vistalo.jpg
+  label: 'Vístalo: the home page, the five services and the three packs shown as clothing tags; at the end, “Hablemos” opens the contact letter.'
 ---
 
 Vístalo is a two-person agency and its website had to prove what it sells. The whole page comes from

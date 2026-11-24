@@ -39,8 +39,10 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 - **Imágenes**: los originales que él da van en `docs/imgs/`; las piezas del personaje que se generen,
   también en `docs/imgs/avatar/`.
 - **Notas**: lo que se aprende o se decide se apunta en `docs/referencias/`.
-- **Recordatorio pendiente**: faltan las imágenes reales de Tempora, Vibora y Learnish (hoy son
-  fragmentos de interfaz hechos en HTML). Recordárselo al tocar proyectos o cuando pregunte qué falta.
+- **Recordatorio pendiente**: falta el vídeo de Víbora (Tempora, Learnish y Vístalo ya tienen el
+  suyo en la caja de Proyectos). En la home, los casos y el lienzo siguen las demos HTML, que no
+  coinciden del todo con las apps: se ajustan con la ronda 2 de textos. Recordárselo al tocar
+  proyectos o cuando pregunte qué falta.
 
 ## Quién es
 
@@ -88,6 +90,9 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
 - Las imágenes para compartir (`public/og/`, una por página e idioma) se regeneran con
   `og-images.mjs` cuando cambia la parte de arriba de una página. Usa Playwright (Edge si no hay
   Chromium) contra la web construida en el puerto 4400; no necesita `cdp.mjs`.
+- Los vídeos de las cajas de Proyectos (`public/videos/`) se graban con `app-videos.mjs`
+  (Playwright + ffmpeg, guion por app). Cómo arrancar cada app y el login de Tempora y Víbora:
+  arriba del propio archivo y en `docs/referencias/guia-videos-proyectos.md`, sección 10.
 - **Solo en macOS**: `.taste-skill/recorte/person.swift` (máscara de persona con Vision) y los
   comandos `sips`. En Windows no existen; si hace falta recortar otra foto, buscar alternativa.
   La foto clara del hero ya no depende de ellos: `.taste-skill/recorte/luz-gris.cjs` la monta con

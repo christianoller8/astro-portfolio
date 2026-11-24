@@ -123,6 +123,13 @@ test.describe('Content Security Policy', () => {
     await layers.scrollIntoViewIfNeeded();
     await expect.poll(() => layers.getAttribute('class'), { timeout: 20_000 }).toMatch(/is-ready|is-flat/);
 
+    // La web de Vístalo en vivo: desde que su caja de Proyectos lleva vídeo, el marco está en la pila de la home
+    const live = page.locator('.stack [data-demo-live]:visible').first();
+    await live.scrollIntoViewIfNeeded();
+    await live.click();
+    await expect(page.locator('.stack [data-demo-stage] iframe').first()).toBeAttached();
+    await page.waitForTimeout(600);
+
     // El cambio de tema (el círculo)
     await (await themeButton(page, 'es', 'dark')).click();
     await expectTheme(page, 'dark');
@@ -133,12 +140,11 @@ test.describe('Content Security Policy', () => {
     await page.locator('[data-canvas-frame="/about"]').click();
     await expect(page).toHaveURL(/\/about\/$/);
 
-    // Por el menú a Proyectos, y el marco con la web de Vístalo en vivo
+    // Por el menú a Proyectos: cada caja con vídeo lo pide al acercarse
     await goThroughMenu(page, 'es', 'nav.projects', '/projects/');
-    const live = page.locator('[data-demo-live]:visible').first();
-    await live.scrollIntoViewIfNeeded();
-    await live.click();
-    await expect(page.locator('[data-demo-stage] iframe').first()).toBeAttached();
+    const video = page.locator('.pboxes video').first();
+    await video.scrollIntoViewIfNeeded();
+    await expect(video).toHaveAttribute('src', /^\/videos\//);
     await page.waitForTimeout(600);
 
     expect(blocked).toEqual([]);

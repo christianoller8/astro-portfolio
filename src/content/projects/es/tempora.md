@@ -10,6 +10,10 @@ features:
   - 'Cuadrante de turnos por día, semana y mes'
   - 'Registro de entrada y salida de cada persona'
   - 'Tablas de trabajadores con su servicio y su estado'
+video:
+  src: /videos/tempora.mp4
+  poster: /videos/posters/tempora.jpg
+  label: 'Tempora: en el cuadrante de junio se pulsa una casilla vacía, se elige Mañana y se confirma; después, Tarde para otra persona.'
 ---
 
 <!-- Pendiente de Christian: stack, año, capturas reales y enlace (si lo hay). -->

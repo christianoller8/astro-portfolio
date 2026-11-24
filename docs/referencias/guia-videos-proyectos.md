@@ -318,10 +318,27 @@ página del proyecto. Van en la caja grande de cada proyecto de la página de Pr
 
 | App | Slug | Formato de grabación | Estilo | Duración | Estado |
 |---|---|---|---|---|---|
-| Tempora | `tempora` | Escritorio, 1600 × 1000 | B | 12 s | Guion |
+| Tempora | `tempora` | Escritorio, 1600 × 1000 | B | 12,9 s | Integrado (24 nov) |
 | Víbora | `vibora` | Escritorio, 1600 × 1000 | B | 12 s | Guion |
-| Learnish | `learnish` | Escritorio, 1600 × 1000 | B | 10 s | Guion |
-| Vístalo | `vistalo` | Escritorio, 1600 × 1000 | A | 15 s | Guion |
+| Learnish | `learnish` | Escritorio, 1600 × 1000 | B | 8,2 s | Integrado (24 nov) |
+| Vístalo | `vistalo` | Escritorio, 1600 × 1000 | A | 13,8 s | Integrado (24 nov) |
+
+**Cómo se grabaron.** Sin OBS ni Cap: `.taste-skill/eloi-1118/tools/app-videos.mjs` recorre cada
+app con Playwright (Edge) siguiendo su guion, con un cursor dibujado que se mueve con arco y
+aceleración suaves y un aro en cada clic. Los fotogramas salen del propio navegador con su hora y
+ffmpeg los junta a 60 fps; la exportación es la de la sección 8, con fundido de entrada y salida.
+La interfaz va al 125 % (ventana de 1280 × 800 con escala 1,25). Cada guion está en el propio
+archivo y se repite idéntico con una orden. Detalles por app:
+
+- **Learnish** se graba sobre una copia de `data/learnish.db` en otro puerto (lo explica el
+  archivo), para no tocar el progreso real: calificar una tarjeta cambia la copia.
+- **Tempora** guarda la sesión solo en memoria (recargar = volver al login). `--login` abre un Edge
+  aparte con puerto de depuración; Christian entra y la toma se graba sobre esa misma ventana,
+  navegando con clics. Los turnos que pone la toma se quitan al acabar.
+- **Víbora** irá igual que Tempora cuando arranque.
+
+Los guiones de abajo se reescribieron tras cotejar el código de cada app (los primeros describían
+las demos HTML del portfolio, que no coinciden con las apps).
 
 Estilo B con OBS (gratis) vale: son vídeos de una sola acción, así que basta con mover el ratón
 despacio y con intención. Cap añade el zoom automático en los clics, pero para un portfolio con el
@@ -336,29 +353,29 @@ modo dispositivo de DevTools) para la página del caso, cuando estén los de esc
 - **Estilo:** B (un clic, un resultado)
 - **Proporción y resolución:** 16:10 · 1600×1000, interfaz al 125 %
 - **Duración objetivo:** 12 s
-- **Datos de demo:** un día de un servicio (por ejemplo Urgencias, un jueves): 6–8 personas con
-  nombres realistas, turnos de mañana, tarde y noche, alguien fichado ahora mismo y un hueco sin cubrir.
+- **Datos de demo:** el cuadrante de junio de 2026 que crea el seed (9 personas, borrador).
 - **Guion:**
-  1. 0–2 s · "Turnos de hoy": el día entero en una pantalla, y quién está trabajando ahora (el estado
-     con color y con texto).
-  2. 2–6 s · El ratón va a **"+ Nuevo turno"**, espera medio segundo y lo pulsa; se elige persona y
-     hora para el hueco.
-  3. 6–10 s · El turno nuevo aparece en el día con su estado ("Pendiente") y el hueco queda cubierto.
-  4. 10–12 s · Pausa sobre el resultado y fundido al estado inicial para el bucle.
-- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+  1. 0–1,5 s · El cuadrante del mes: una fila por persona, una columna por día, turnos con color y letra.
+  2. 1,5–6 s · Clic en la casilla vacía de Laura García el día 3 → diálogo "Asignar turno" →
+     **Mañana** → **Confirmar**: la casilla pasa a "M".
+  3. 6–11 s · Lo mismo con Ana López: **Tarde** → "T".
+  4. 11–13 s · Pausa sobre el resultado y fundido para el bucle.
+- **Estado:** [x] guion · [x] grabado · [x] editado · [x] exportado · [x] integrado
 
 ### Víbora
 - **Slug:** `vibora`
 - **Estilo:** B
 - **Proporción y resolución:** 16:10 · 1600×1000, interfaz al 125 %
 - **Duración objetivo:** 12 s
-- **Datos de demo:** un club con 3–4 pistas, un jueves por la tarde, más o menos la mitad de las horas
-  ocupadas.
-- **Guion:**
-  1. 0–3 s · Los horarios del día, con lo libre destacado ("Primero, qué está libre").
-  2. 3–7 s · Clic en una hora libre y en **"Confirmar"**: la reserva en dos pasos.
-  3. 7–10 s · La reserva queda marcada como "Tu reserva" y a la vista ("Tu reserva no se pierde de vista").
-  4. 10–12 s · Pausa sobre el resultado y fundido al inicio para el bucle.
+- **Datos de demo:** los del seed de desarrollo (`node scripts/seed-dev.mjs`), un día con más o menos
+  la mitad de las horas ocupadas.
+- **Guion:** (la agenda real es de una pista y un día, no una parrilla de pistas)
+  1. 0–3 s · La agenda de una pista: lo ocupado con trama, lo libre con contorno y precio.
+  2. 3–7 s · Clic en una hora libre (pasa a "Seleccionada") → diálogo "Confirmar reserva" con club,
+     pista, fecha, hora y precio → **Confirmar**: la reserva en dos toques.
+  3. 7–10 s · La hora queda ocupada y la reserva aparece en "Mis reservas".
+  4. 10–12 s · Pausa sobre el resultado y fundido para el bucle. Después, cancelar la reserva para
+     que la toma se pueda repetir.
 - **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
 
 ### Learnish
@@ -366,29 +383,30 @@ modo dispositivo de DevTools) para la página del caso, cuando estén los de esc
 - **Estilo:** B
 - **Proporción y resolución:** 16:10 · 1600×1000, interfaz al 125 %
 - **Duración objetivo:** 10 s
-- **Datos de demo:** Lección 12 · Viajes, racha de 9 días, tarjeta 7 de 10.
+- **Datos de demo:** una copia del progreso real (Learnish no tiene lecciones: es para el
+  Cambridge B2 First).
 - **Guion:**
-  1. 0–2 s · Una tarjeta con una sola frase ("Una tarjeta, una frase").
-  2. 2–5 s · **"Ver respuesta"**: aparece la traducción.
-  3. 5–8 s · **"Lo sabía"** ("Tú decides si lo sabías"): el avance pasa a 8 de 10 y se ve la racha
-     ("El avance, a la vista").
-  4. 8–10 s · Entra la siguiente tarjeta, que sirve de vuelta al bucle.
-- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+  1. 0–2 s · Vocabulario: los tres mazos (colocaciones, phrasal verbs, formación de palabras).
+  2. 2–4 s · **"Estudiar 10 tarjetas"** en phrasal verbs: la tarjeta «put off», «1 de 10».
+  3. 4–6 s · **"Ver la respuesta"**: la tarjeta gira (postpone; delay · aplazar, posponer) y salen
+     los cuatro botones, Otra vez, Difícil, Bien y Fácil.
+  4. 6–8 s · **"Bien"**: entra «give up», «2 de 10», y el aviso de la racha.
+- **Estado:** [x] guion · [x] grabado · [x] editado · [x] exportado · [x] integrado
 
 ### Vístalo
 - **Slug:** `vistalo`
-- **Estilo:** A (scroll limpio con OBS y el script de scroll de la sección 6)
+- **Estilo:** A (scroll limpio, sin cursor)
 - **Proporción y resolución:** 16:10 · 1600×1000
 - **Duración objetivo:** 15 s
 - **Datos de demo:** la web publicada de la agencia, <https://vistalo-sl.vercel.app/> (aún en
   construcción con Eloi: grabar la versión más reciente).
 - **Guion:**
-  1. 0–3 s · La portada, con la animación que sale del nombre ("Todo sale del nombre").
-  2. 3–11 s · Scroll suave por lo que hace la agencia (webs, fotos, vídeo y Google), con sus
-     animaciones hechas a mano ("Sin librerías de animación").
-  3. 11–14 s · Llega al contacto en forma de carta ("El contacto es una carta").
-  4. 14–15 s · Fundido al principio para el bucle.
-- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+  1. 0–2,6 s · La portada, con el titular que se escribe solo y la cinta métrica.
+  2. 2,6–5 s · Scroll suave a los cinco servicios.
+  3. 5–9 s · Scroll a los tres packs, colgados como etiquetas de ropa.
+  4. 9–13,8 s · **"Hablemos"** con la transición entre páginas: la carta de contacto, con su
+     resguardo.
+- **Estado:** [x] guion · [x] grabado · [x] editado · [x] exportado · [x] integrado
 
 ---
 

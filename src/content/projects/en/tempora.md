@@ -10,6 +10,10 @@ features:
   - 'Shift rota by day, week and month'
   - 'Clock-in and clock-out for every person'
   - 'Staff tables with each person’s unit and status'
+video:
+  src: /videos/tempora.mp4
+  poster: /videos/posters/tempora.jpg
+  label: 'Tempora: in the June rota, an empty cell is clicked, Morning is chosen and confirmed; then Afternoon for another person.'
 ---
 
 <!-- Pending from Christian: stack, year, real screenshots and link (if any). -->

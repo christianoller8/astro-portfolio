@@ -11,6 +11,10 @@ features:
   - 'Lecciones cortas por temas'
   - 'Tarjetas para repasar vocabulario'
   - 'Seguimiento del progreso'
+video:
+  src: /videos/learnish.mp4
+  poster: /videos/posters/learnish.jpg
+  label: 'Learnish: desde Vocabulario se abre el mazo de phrasal verbs, se gira la tarjeta «put off», se califica «Bien» y entra la siguiente.'
 ---
 
 <!-- Pendiente de Christian: confirmar funciones, stack, año, capturas reales y enlace. -->

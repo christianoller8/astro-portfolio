@@ -85,13 +85,15 @@ test.describe('Project cases', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   });
 
-  test('the boxes demo reacts to a click (Tempora adds a shift)', async ({ page }) => {
+  // Con vídeo, la caja enseña la grabación en lugar de la demo (la demo que se toca sigue en la home,
+  // home.spec.ts la prueba)
+  test('the boxes show the recorded video, with its poster and what it shows', async ({ page }) => {
     await open(page, '/projects/');
-    const demo = page.locator('.pboxes [data-demo="tempora"]');
-    await demo.scrollIntoViewIfNeeded();
-    const shifts = demo.locator('[data-demo-stat]').first();
-    const before = Number(await shifts.textContent());
-    await demo.locator('[data-demo-add]').click();
-    await expect(shifts).toHaveText(String(before + 1));
+    for (const slug of ['tempora', 'learnish', 'vistalo']) {
+      const video = page.locator(`.pboxes video[poster="/videos/posters/${slug}.jpg"]`);
+      await expect(video).toHaveCount(1);
+      await expect(video).toHaveAttribute('aria-label', /.{20,}/);
+    }
+    await expect(page.locator('.pboxes [data-demo="tempora"]')).toHaveCount(0);
   });
 });

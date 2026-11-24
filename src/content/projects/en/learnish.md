@@ -11,6 +11,10 @@ features:
   - 'Short lessons by topic'
   - 'Cards to review vocabulary'
   - 'Progress tracking'
+video:
+  src: /videos/learnish.mp4
+  poster: /videos/posters/learnish.jpg
+  label: 'Learnish: from Vocabulary, the phrasal verbs deck opens, the “put off” card is flipped, rated “Good” and the next one comes in.'
 ---
 
 <!-- Pending from Christian: confirm features, stack, year, real screenshots and link. -->

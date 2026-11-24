@@ -17,6 +17,10 @@ features:
   - 'Galería de proyectos que avanza en horizontal con el scroll'
   - 'Contacto en forma de carta, con firma a pluma y resguardo en vivo'
   - 'Transiciones nativas entre páginas'
+video:
+  src: /videos/vistalo.mp4
+  poster: /videos/posters/vistalo.jpg
+  label: 'Vístalo: la portada, los cinco servicios y los tres packs como etiquetas de ropa; al final, «Hablemos» abre la carta de contacto.'
 ---
 
 Vístalo es una agencia de dos personas y su web tenía que demostrar lo que vende. Toda la página sale
