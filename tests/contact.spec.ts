@@ -42,11 +42,19 @@ for (const lang of LANGS) {
       await send(page, lang).click();
       await expect(name).toHaveAttribute('aria-invalid', 'true');
 
+      const alert = form(page).getByRole('alert');
+      const summary = (...labels: string[]) => tf(lang, 'contact.err.summary', { list: labels.join(', ') });
+      const L = { name: t(lang, 'contact.name'), email: t(lang, 'contact.email'), message: t(lang, 'contact.message') };
+      await expect(alert).toHaveText(summary(L.name, L.email, L.message));
+
       await name.fill('Laura Vidal');
       await expect(name).not.toHaveAttribute('aria-invalid', 'true');
+      // El resumen deja de nombrar el campo corregido
+      await expect(alert).toHaveText(summary(L.email, L.message));
       await expect(email).toHaveAttribute('aria-invalid', 'true');
       await email.fill('laura@estudio.example');
       await expect(email).not.toHaveAttribute('aria-invalid', 'true');
+      await expect(alert).toHaveText(summary(L.message));
       await expect(message).toHaveAttribute('aria-invalid', 'true');
       await message.fill('Buscamos a alguien que diseñe y programe la nueva web.');
       await expect(message).not.toHaveAttribute('aria-invalid', 'true');
@@ -63,6 +71,26 @@ for (const lang of LANGS) {
       await message.fill('Buscamos a alguien que diseñe y programe.');
       await expect(form(page).locator('li.is-ok')).toHaveCount(3);
       await expect(status).toHaveText(t(lang, 'contact.ready'));
+    });
+
+    test('each checklist item exposes its state in its text and the message field describes it', async ({ page }) => {
+      const { name, email, message } = fields(page, lang);
+      const item = (id: string) => form(page).locator(`[data-check="${id}"]`);
+      const state = (id: string, key: 'contact.check.todo' | 'contact.check.done') =>
+        new RegExp(`${t(lang, `contact.check.${id}` as 'contact.check.name')}\\s*:\\s*${t(lang, key)}`);
+      // Sin escribir nada, todo está pendiente (antes el campo vacío se describía como si estuviera hecho)
+      for (const id of ['name', 'email', 'message']) await expect(item(id)).toHaveText(state(id, 'contact.check.todo'));
+      await expect(message).toHaveAccessibleDescription(state('name', 'contact.check.todo'));
+      // No es una región viva: no habla en cada pulsación
+      await expect(form(page).locator('#c-checks')).not.toHaveAttribute('aria-live', /.*/);
+
+      await name.fill('Laura Vidal');
+      await expect(item('name')).toHaveText(state('name', 'contact.check.done'));
+      await expect(item('email')).toHaveText(state('email', 'contact.check.todo'));
+      await email.fill('laura@estudio.example');
+      await message.fill('Buscamos a alguien que diseñe y programe.');
+      for (const id of ['name', 'email', 'message']) await expect(item(id)).toHaveText(state(id, 'contact.check.done'));
+      await expect(message).toHaveAccessibleDescription(state('message', 'contact.check.done'));
     });
 
     test('a valid submit shows the fallback message with a working copy button', async ({ page, context, browserName }) => {

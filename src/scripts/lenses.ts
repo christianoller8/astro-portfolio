@@ -99,6 +99,25 @@ export function setLens(next: Lens | null) {
     /* sin almacenamiento: la lente vive solo en esta página */
   }
   render(true);
+  announceLens(next);
+}
+
+/** Resultado de la última medida de QA, para decirlo al ponerse la lente */
+let lastQa: { passed: number; total: number } | null = null;
+
+/**
+ * Una frase por cambio de lente, en una única región de estado (LensPanel.astro). Antes solo se oía
+ * "pulsado" y, como mucho, el título suelto de la barra, que ya no es una región viva (no se dice dos veces).
+ */
+function announceLens(lens: Lens | null) {
+  const out = document.querySelector<HTMLElement>('[data-lens-announce]');
+  const i18n = JSON.parse(document.querySelector<HTMLElement>('[data-lens-panel]')?.dataset.i18n ?? '{}') as Record<string, string>;
+  if (!out) return;
+  let text = i18n.announceOff ?? '';
+  if (lens === 'qa' && lastQa && i18n.announceQaScore) {
+    text = i18n.announceQaScore.replace('{passed}', String(lastQa.passed)).replace('{total}', String(lastQa.total));
+  } else if (lens) text = i18n[`announce_${lens}`] ?? '';
+  out.textContent = text;
 }
 
 function syncButtons() {
@@ -772,6 +791,7 @@ function render(animate = false) {
   } else {
     const checks = runChecks();
     buildQa(checks);
+    lastQa = { passed: checks.filter((c) => c.ok).length, total: checks.length };
     if (stats) stats.innerHTML = qaBar(checks, i18n);
     settleQa(signature(checks));
   }

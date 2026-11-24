@@ -16,6 +16,10 @@ const { lang, frame } = Astro.props;
 const t = useTranslations(lang);
 ---
 
+{/* Una sola región de estado, siempre en la página (la barra se oculta al quitar la lente y ahí no se anunciaría).
+    Es la única que habla: el título de la barra ya no es una región viva, para no decirlo dos veces */}
+<p class="lens-announce" role="status" data-lens-announce></p>
+
 <aside
   class="lens-bar"
   aria-label={t('lens.label')}
@@ -29,11 +33,16 @@ const t = useTranslations(lang);
     css: t('lens.stat.css'),
     load: t('lens.stat.load'),
     passed: t('lens.stat.passed'),
+    announce_design: t('lens.announce.design'),
+    announce_code: t('lens.announce.code'),
+    announce_qa: t('lens.announce.qa'),
+    announceQaScore: t('lens.announce.qaScore'),
+    announceOff: t('lens.announce.off'),
   })}
 >
   <div class="lens-bar-switch"><LensSwitch variant="dock" lang={lang} /></div>
   <p class="lens-bar-frame" aria-hidden="true">{frame} <span data-frame-size></span></p>
-  <p class="lens-bar-title" data-lens-title aria-live="polite"></p>
+  <p class="lens-bar-title" data-lens-title></p>
   <ul class="lens-bar-stats" data-lens-stats></ul>
   <button type="button" class="lens-bar-close" data-lens-clear>
     <span>{t('lens.clear')}</span>
@@ -45,6 +54,14 @@ const t = useTranslations(lang);
 </aside>
 
 <style>
+  .lens-announce {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .lens-bar {
     position: fixed;
     right: 0;

@@ -414,8 +414,17 @@ async function start(section: HTMLElement, signal: AbortSignal) {
       // Flechas (las de arriba y abajo también, como cualquier slider), Inicio y Fin para los extremos
       const limit = 1.05;
       let next = target.yaw;
-      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') next -= 0.12;
-      else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') next += 0.12;
+      // Pasos de 7° en grados enteros, y al cruzar el 0 se para en él: así "De frente" se alcanza y se
+      // anuncia desde el teclado (con pasos de 0,12 rad el valor pasaba de 2 a -5 sin pisar el 0)
+      const STEP = 7;
+      const here = Math.round((target.yaw * 180) / Math.PI);
+      const move = (delta: number) => {
+        const to = here + delta;
+        const crossed = here !== 0 && Math.sign(to) !== Math.sign(here);
+        return ((crossed ? 0 : to) * Math.PI) / 180;
+      };
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') next = move(-STEP);
+      else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') next = move(STEP);
       else if (event.key === 'Home') next = -limit;
       else if (event.key === 'End') next = limit;
       else return;

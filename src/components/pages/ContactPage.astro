@@ -129,21 +129,23 @@ const topics = [
           <p class="field-error t-small" id="c-message-err" hidden><span class="err-mark" aria-hidden="true">!</span>{t('contact.err.message')}</p>
         </div>
 
-        <ul id="c-checks" class="checks" aria-live="polite">
+        {/* Sin aria-live: avisar en cada pulsación sería ruido. El estado de cada regla va en el texto (pendiente/hecho,
+            lo que lee el campo del mensaje por aria-describedby) y al cumplirlas todas lo dice la región de estado (contact.ready) */}
+        <ul id="c-checks" class="checks">
           <li data-check="name">
             <svg class="chk" viewBox="0 0 16 16" aria-hidden="true"
               ><path d="m4 8.5 2.6 2.6L12 5.5"></path></svg
-            >{t('contact.check.name')}
+            >{t('contact.check.name')}<span class="check-state" data-check-state>: {t('contact.check.todo')}</span>
           </li>
           <li data-check="email">
             <svg class="chk" viewBox="0 0 16 16" aria-hidden="true"
               ><path d="m4 8.5 2.6 2.6L12 5.5"></path></svg
-            >{t('contact.check.email')}
+            >{t('contact.check.email')}<span class="check-state" data-check-state>: {t('contact.check.todo')}</span>
           </li>
           <li data-check="message">
             <svg class="chk" viewBox="0 0 16 16" aria-hidden="true"
               ><path d="m4 8.5 2.6 2.6L12 5.5"></path></svg
-            >{t('contact.check.message')}
+            >{t('contact.check.message')}<span class="check-state" data-check-state>: {t('contact.check.todo')}</span>
           </li>
         </ul>
 
@@ -187,6 +189,8 @@ const topics = [
             error: t('contact.error'),
             fallback: t('contact.fallback'),
             summary: t('contact.err.summary'),
+            todo: t('contact.check.todo'),
+            done: t('contact.check.done'),
             labels: { name: t('contact.name'), email: t('contact.email'), message: t('contact.message') },
           })}
         >
@@ -509,6 +513,15 @@ const topics = [
       background-color var(--dur-micro) var(--ease-out),
       stroke var(--dur-micro) var(--ease-out);
   }
+  /* Solo para lectores de pantalla: el estado visible ya lo da el tick */
+  .check-state {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .checks li.is-ok {
     color: var(--ink);
   }
@@ -810,7 +823,11 @@ const topics = [
       for (const [name, rule] of Object.entries(rules)) {
         const ok = rule();
         all &&= ok;
-        form.querySelector(`[data-check="${name}"]`)?.classList.toggle('is-ok', ok);
+        const item = form.querySelector(`[data-check="${name}"]`);
+        item?.classList.toggle('is-ok', ok);
+        // El estado también en el texto (no solo en el tick): lo lee el campo del mensaje al describirse
+        const stateText = item?.querySelector('[data-check-state]');
+        if (stateText) stateText.textContent = `: ${ok ? messages.done : messages.todo}`;
       }
       field('message').classList.toggle('is-ok', rules.message());
       send?.classList.toggle('is-ready', all);
@@ -844,10 +861,18 @@ const topics = [
       for (const name of Object.keys(rules)) {
         if (field(name).getAttribute('aria-invalid') === 'true' && rules[name]()) setInvalid(name, false);
       }
-      if (alertBox && !Object.keys(rules).some((name) => field(name).getAttribute('aria-invalid') === 'true')) {
-        alertBox.textContent = '';
+      // El resumen solo se toca cuando cambia la lista de campos inválidos, no en cada pulsación
+      const pending = pendingNames();
+      if (alertBox && pending.join() !== shown.join()) {
+        shown = pending;
+        alertBox.textContent = summaryFor(pending);
       }
     };
+    const pendingNames = () => Object.keys(rules).filter((name) => field(name).getAttribute('aria-invalid') === 'true');
+    const summaryFor = (names: string[]) =>
+      names.length ? (messages.summary ?? '').replace('{list}', names.map((name) => labels[name] ?? name).join(', ')) : '';
+    // Los campos que nombra el resumen ahora mismo
+    let shown: string[] = [];
     // El aviso de después del mailto: el mensaje con el correo en la región de estado y, justo detrás
     // pero fuera de ella, el botón Copiar (se muestra y se oculta con el mensaje)
     // Mensaje + correo con un salto posible justo tras la "@" (a 320 px no debe partirse a mitad de
@@ -882,9 +907,9 @@ const topics = [
         if (alertBox) {
           // Vaciar y poner el texto en el cuadro siguiente: con el mismo texto de antes, el lector no
           // lo volvería a anunciar en un segundo envío inválido
-          const summary = (messages.summary ?? '').replace('{list}', bad.map((name) => labels[name] ?? name).join(', '));
+          shown = bad;
           alertBox.textContent = '';
-          requestAnimationFrame(() => (alertBox.textContent = summary));
+          requestAnimationFrame(() => (alertBox.textContent = summaryFor(shown)));
         }
         field(bad[0]).focus();
         return;

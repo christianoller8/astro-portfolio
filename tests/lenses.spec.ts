@@ -40,6 +40,32 @@ for (const lang of LANGS) {
       }
     });
 
+    test('turning a lens on or off is announced once with a full sentence', async ({ page }) => {
+      const live = page.locator('[data-lens-announce]');
+      await expect(live).toHaveAttribute('role', 'status');
+      // El título suelto de la barra ya no es una región viva: solo habla la frase
+      await expect(page.locator('[data-lens-title]')).not.toHaveAttribute('aria-live', /.*/);
+
+      await page.keyboard.press('1');
+      await expect(live).toHaveText(t(lang, 'lens.announce.design'));
+      await page.keyboard.press('2');
+      await expect(live).toHaveText(t(lang, 'lens.announce.code'));
+      await page.keyboard.press('3');
+      const [head, mid, tail] = t(lang, 'lens.announce.qaScore').split(/\{passed\}|\{total\}/);
+      const esc = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const score = `${esc(head)}\\d+${esc(mid)}\\d+${esc(tail)}`;
+      await expect(live).toHaveText(new RegExp(`^${score}$`));
+      await page.keyboard.press('3');
+      await expect(live).toHaveText(t(lang, 'lens.announce.off'));
+    });
+
+    test('the sentence also comes out when the lens is set from a button', async ({ page }) => {
+      const live = page.locator('[data-lens-announce]');
+      await openPanel(page, lang);
+      await row(page, 'code').click();
+      await expect(live).toHaveText(t(lang, 'lens.announce.code'));
+    });
+
     test('pressing another key switches lens without going through the normal view', async ({ page }) => {
       await page.keyboard.press('1');
       await expect(page.locator('html')).toHaveAttribute('data-lens', 'design');

@@ -175,6 +175,21 @@ test.describe('Home: 3D layers', () => {
       await expect(stage).not.toHaveAttribute('aria-valuetext', start ?? '');
       expect(Number(await stage.getAttribute('aria-valuenow'))).toBeGreaterThan(startNow);
 
+      // Bajando con la flecha izquierda se llega a 0 y se anuncia "De frente" (los pasos no se lo saltan)
+      await page.keyboard.press('Home');
+      await page.keyboard.press('End');
+      await expect(stage).toHaveAttribute('aria-valuenow', '60');
+      const seen = new Set<string>();
+      for (let i = 0; i < 20; i++) {
+        await page.keyboard.press('ArrowLeft');
+        seen.add((await stage.getAttribute('aria-valuenow')) ?? '');
+      }
+      expect(seen.has('0'), `valores vistos: ${[...seen].join(', ')}`).toBe(true);
+      await page.keyboard.press('Home');
+      await page.keyboard.press('ArrowRight');
+      for (let i = 0; i < 20 && (await stage.getAttribute('aria-valuenow')) !== '0'; i++) await page.keyboard.press('ArrowRight');
+      await expect(stage).toHaveAttribute('aria-valuenow', '0');
+      await expect(stage).toHaveAttribute('aria-valuetext', t(lang, 'layers.rotate.zero'));
       await page.keyboard.press('Home');
       await expect(stage).toHaveAttribute('aria-valuenow', '-60');
       await expect(stage).toHaveAttribute('aria-valuetext', tf(lang, 'layers.rotate.left', { n: '60' }));
