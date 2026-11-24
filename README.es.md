@@ -200,7 +200,7 @@ Vercel construye la rama `main` y la sirve en <https://www.christianoller.dev>. 
 
 **Estado:** activo, publicado y en evolución.
 
-- [ ] Servicio de envío para el formulario de contacto
+- [x] Servicio de envío para el formulario de contacto
 - [ ] Capturas reales y vídeos cortos de Tempora, Vibora y Learnish
 - [x] Una imagen para redes por página
 - [x] Una política de seguridad de contenidos (CSP)

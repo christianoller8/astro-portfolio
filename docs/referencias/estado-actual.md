@@ -106,8 +106,10 @@ Por orden de urgencia (lista completa en el roadmap):
    Production y Preview). La primera prueba en vivo falló: el navegador lo vio como error de CORS y,
    al diagnosticarlo, la API respondió 429 (límite por IP durante una hora, sin cabeceras CORS). Desde
    entonces la web separa la clave de la variable (`src/data/form-endpoint.ts`) y envía a `/submit`
-   con `access_key` en un campo oculto, el método que Web3Forms documenta para JavaScript. Falta
-   repetir la prueba en vivo.
+   con `access_key` en un campo oculto, el método que Web3Forms documenta para JavaScript. Funciona
+   en vivo desde el 24 nov: los mensajes llegan a su Gmail. Para probarlo, **nunca con
+   `test@test.com`**: el filtro antispam de Web3Forms lo descarta en silencio y aun así responde
+   "enviado" (la web enseña "Mensaje enviado" y no llega nada). Con un email real, llega.
 2. **SEO**: hecho lo de la auditoría (dominio con `www`, `hreflang`, sitemap, barras finales,
    JSON-LD y `llms.txt`). Desde el 23 nov cada página comparte su propia imagen: la parte de
    arriba de la página en oscuro, en su idioma (`public/og/`, 1200 × 630, unos 90 KB). Las genera

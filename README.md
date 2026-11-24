@@ -200,7 +200,7 @@ Vercel builds the `main` branch and serves it at <https://www.christianoller.dev
 
 **Status:** active, published and still changing.
 
-- [ ] Sending service for the contact form
+- [x] Sending service for the contact form
 - [ ] Real screenshots and short videos of Tempora, Vibora and Learnish
 - [x] A social image per page
 - [x] A Content Security Policy

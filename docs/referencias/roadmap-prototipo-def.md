@@ -999,7 +999,8 @@ Avance del 20 nov: la auditoría de la web publicada y sus dos lotes de arreglos
 esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 [auditoria-2026-11-20.md](auditoria-2026-11-20.md); las casillas se marcan cuando Christian lo apruebe.
 
-- [ ] **Formulario**: que funcione (servicio de envío) y antispam sin fricción.
+- [x] **Formulario**: que funcione (servicio de envío) y antispam sin fricción. Web3Forms con casilla
+  trampa, probado en vivo por Christian el 24 nov: los mensajes llegan a su Gmail.
 - [x] **SEO**:
   - Dominio canónico con www, `hreflang` y sitemap correctos.
   - JSON-LD, imagen OG por página y `llms.txt`. La imagen por página (una captura de su parte de
