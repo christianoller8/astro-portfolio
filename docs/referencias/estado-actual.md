@@ -34,7 +34,15 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   la home funcionan y van numeradas, y al acabar esa escena la caricatura dice que toda la web se
   puede ver así (aprobado). **Solo quedan sus vídeos** cortos de cada app, para la caja grande de
   cada proyecto: cuando llegue el primero se añade el campo `video` al esquema de proyectos. Cómo
-  grabarlos, exportarlos e integrarlos (estudio de poulo.site, 23 nov): `guia-videos-proyectos.md`.
+  grabarlos, exportarlos e integrarlos (estudio de poulo.site, 23 nov): `guia-videos-proyectos.md`;
+  los guiones de los cuatro están en su sección 10 (24 nov). Los cuatro se graban en escritorio.
+- **Corrección del 24 nov, pendiente en la web**: Víbora y Learnish **no son apps de móvil**; las
+  tres apps son de escritorio con versión responsive. La web aún las presenta como de móvil
+  (`format: 'mobile'` en `src/content/projects/*/vibora.md` y `learnish.md`): estrechas y centradas
+  sobre su color en las cajas (`ProjectVisual.astro`), con marco de móvil en la página del caso, en
+  el lienzo de Proyectos y en "Siguiente proyecto", y con demos HTML dibujadas como pantallas de
+  móvil. Para la revisión de textos: en sus casos (`src/data/cases.ts`) se habla de "dos toques",
+  "al alcance del pulgar" y "Móvil · 390 px", que solo valen para su versión responsive.
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la

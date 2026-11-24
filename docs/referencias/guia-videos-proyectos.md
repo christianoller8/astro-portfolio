@@ -309,21 +309,27 @@ Copiar este bloque una vez por app:
 
 ### Proyectos
 
-Escrito el 24 nov. Cada vídeo enseña lo que su caso cuenta: las tres decisiones de diseño de la
-página del proyecto. Van en la caja grande de cada proyecto de la página de Proyectos, que mide 16:10
-(693 × 433 px en escritorio). Tempora y Vístalo la llenan; Víbora y Learnish son de móvil y van
-centradas sobre su color, como la interfaz de ahora.
+Escrito el 24 nov y corregido el mismo día. **Tempora, Víbora y Learnish son aplicaciones de
+escritorio con versión responsive para móvil** (ninguna es una app de móvil); **Vístalo es la web de
+la agencia creativa que Christian ha fundado con Eloi Cotonat** (webs, fotos, vídeo y Google para
+negocios pequeños). Cada vídeo enseña lo que su caso cuenta: las tres decisiones de diseño de la
+página del proyecto. Van en la caja grande de cada proyecto de la página de Proyectos, que mide
+16:10 (693 × 433 px en escritorio), y la llenan entera: los cuatro se graban en escritorio a 16:10.
 
 | App | Slug | Formato de grabación | Estilo | Duración | Estado |
 |---|---|---|---|---|---|
 | Tempora | `tempora` | Escritorio, 1600 × 1000 | B | 12 s | Guion |
-| Víbora | `vibora` | Móvil vertical, 390 × 844 a DPR 2 | B | 10 s | Guion |
-| Learnish | `learnish` | Móvil vertical, 390 × 844 a DPR 2 | B | 10 s | Guion |
+| Víbora | `vibora` | Escritorio, 1600 × 1000 | B | 12 s | Guion |
+| Learnish | `learnish` | Escritorio, 1600 × 1000 | B | 10 s | Guion |
 | Vístalo | `vistalo` | Escritorio, 1600 × 1000 | A | 15 s | Guion |
 
 Estilo B con OBS (gratis) vale: son vídeos de una sola acción, así que basta con mover el ratón
 despacio y con intención. Cap añade el zoom automático en los clics, pero para un portfolio con el
 que buscas trabajo probablemente cuenta como uso comercial (29 $/año).
+
+**El responsive, aparte.** El vídeo de la caja es el de escritorio. Si se quiere enseñar cómo se
+adapta cada app al móvil, mejor un clip corto aparte (5–8 s, la misma acción a 390 px de ancho con el
+modo dispositivo de DevTools) para la página del caso, cuando estén los de escritorio.
 
 ### Tempora
 - **Slug:** `tempora`
@@ -344,20 +350,21 @@ que buscas trabajo probablemente cuenta como uso comercial (29 $/año).
 ### Víbora
 - **Slug:** `vibora`
 - **Estilo:** B
-- **Proporción y resolución:** móvil vertical (DevTools, 390 × 844, DPR 2)
-- **Duración objetivo:** 10 s
-- **Datos de demo:** un jueves por la tarde, 3–4 pistas, más o menos la mitad de las horas ocupadas.
+- **Proporción y resolución:** 16:10 · 1600×1000, interfaz al 125 %
+- **Duración objetivo:** 12 s
+- **Datos de demo:** un club con 3–4 pistas, un jueves por la tarde, más o menos la mitad de las horas
+  ocupadas.
 - **Guion:**
-  1. 0–2 s · Los horarios del día, con lo libre destacado ("Primero, qué está libre").
-  2. 2–6 s · Toque en una hora libre y en **"Confirmar"**: la reserva en dos toques.
-  3. 6–9 s · La reserva queda marcada como "Tu reserva" y a la vista ("Tu reserva no se pierde de vista").
-  4. 9–10 s · Vuelta al inicio para el bucle.
+  1. 0–3 s · Los horarios del día, con lo libre destacado ("Primero, qué está libre").
+  2. 3–7 s · Clic en una hora libre y en **"Confirmar"**: la reserva en dos pasos.
+  3. 7–10 s · La reserva queda marcada como "Tu reserva" y a la vista ("Tu reserva no se pierde de vista").
+  4. 10–12 s · Pausa sobre el resultado y fundido al inicio para el bucle.
 - **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
 
 ### Learnish
 - **Slug:** `learnish`
 - **Estilo:** B
-- **Proporción y resolución:** móvil vertical (DevTools, 390 × 844, DPR 2)
+- **Proporción y resolución:** 16:10 · 1600×1000, interfaz al 125 %
 - **Duración objetivo:** 10 s
 - **Datos de demo:** Lección 12 · Viajes, racha de 9 días, tarjeta 7 de 10.
 - **Guion:**
@@ -373,11 +380,12 @@ que buscas trabajo probablemente cuenta como uso comercial (29 $/año).
 - **Estilo:** A (scroll limpio con OBS y el script de scroll de la sección 6)
 - **Proporción y resolución:** 16:10 · 1600×1000
 - **Duración objetivo:** 15 s
-- **Datos de demo:** la web publicada, <https://vistalo-sl.vercel.app/>.
+- **Datos de demo:** la web publicada de la agencia, <https://vistalo-sl.vercel.app/> (aún en
+  construcción con Eloi: grabar la versión más reciente).
 - **Guion:**
   1. 0–3 s · La portada, con la animación que sale del nombre ("Todo sale del nombre").
-  2. 3–11 s · Scroll suave por las secciones, con sus animaciones hechas a mano ("Sin librerías de
-     animación").
+  2. 3–11 s · Scroll suave por lo que hace la agencia (webs, fotos, vídeo y Google), con sus
+     animaciones hechas a mano ("Sin librerías de animación").
   3. 11–14 s · Llega al contacto en forma de carta ("El contacto es una carta").
   4. 14–15 s · Fundido al principio para el bucle.
 - **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado

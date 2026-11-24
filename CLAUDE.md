@@ -45,7 +45,10 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 ## Quién es
 
 Christian Oller, software developer (Diseñador × Desarrollador × QA) y cofundador de Vístalo con Eloi
-Cotonat. Cuida mucho el detalle visual e itera el diseño a ojo; le gusta lo mínimo pero sorprendente.
+Cotonat. Sus proyectos: **Tempora, Víbora y Learnish son aplicaciones de escritorio con versión
+responsive para móvil** (ninguna es una app de móvil, aunque el contenido aún marque dos con
+`format: 'mobile'`, ver estado-actual); **Vístalo es la web de su agencia creativa** con Eloi
+(webs, fotos, vídeo y Google para negocios pequeños), aún en construcción. Cuida mucho el detalle visual e itera el diseño a ojo; le gusta lo mínimo pero sorprendente.
 La web de Eloi (eloicotonat.com) es referencia de oficio, pero **no se copia su firma**: ver la
 sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
 
