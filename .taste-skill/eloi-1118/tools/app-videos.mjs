@@ -112,6 +112,58 @@ const APPS = {
       }
     },
   },
+  vibora: {
+    url: process.env.VIBORA_URL ?? 'http://localhost:8088',
+    loginPath: '/login',
+    fade: 'black',
+    // Agenda de mañana, pista 1 → hueco de las 18:00 → diálogo «Confirmar reserva» → «Reservar» →
+    // la hora queda ocupada → «Mis reservas». cleanup cancela la reserva de la toma desde Mi club.
+    async script({ page, cursor, record }) {
+      await this.cleanup({ page });
+      await page.locator('a', { hasText: 'Agenda' }).first().click();
+      await page.locator('button[aria-label="Día siguiente"]').waitFor();
+      await page.locator('button[aria-label="Día siguiente"]').click();
+      const slot = page.locator('button', { hasText: '18:00 – 19:30' });
+      await slot.filter({ hasText: 'Libre' }).waitFor();
+      await cursor.place(900, 560);
+      await wait(500);
+      await record();
+      await wait(1200);
+      await cursor.moveTo(slot);
+      await wait(220);
+      await cursor.click();
+      const book = page.getByRole('button', { name: 'Reservar', exact: true });
+      await book.waitFor();
+      await wait(1300);
+      await cursor.moveTo(book);
+      await wait(220);
+      await cursor.click();
+      await slot.filter({ hasText: 'Ocupada' }).waitFor();
+      await wait(1600);
+      await cursor.moveTo(page.locator('a', { hasText: 'Mis reservas' }).first());
+      await wait(220);
+      await cursor.click();
+      await page.waitForURL(/\/mis-reservas/);
+      await page.getByText('Confirmada').first().waitFor();
+      await wait(1800);
+    },
+    // Como jugador ya no se puede cancelar (el plazo se cierra 24 h antes): se cancela como admin del club
+    async cleanup({ page }) {
+      const tomorrow = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Madrid' }).format(new Date(Date.now() + 86_400_000));
+      await page.locator('a', { hasText: 'Mi club' }).first().click();
+      await page.getByRole('tab', { name: 'Reservas' }).click();
+      const day = page.getByLabel('Fecha').first();
+      await day.fill(tomorrow);
+      await day.press('Enter');
+      await wait(1200);
+      const row = page.getByRole('row').filter({ hasText: '18:00 – 19:30' }).filter({ hasText: 'Confirmada' });
+      if (!(await row.count())) return;
+      await row.getByRole('button', { name: /^Cancelar la reserva/ }).click();
+      const dialog = page.getByRole('dialog');
+      await dialog.getByRole('button', { name: 'Cancelar reserva', exact: true }).click();
+      await dialog.waitFor({ state: 'hidden' });
+    },
+  },
   vistalo: {
     url: process.env.VISTALO_URL ?? 'https://vistalo-sl.vercel.app',
     fade: 'black',

@@ -319,7 +319,7 @@ página del proyecto. Van en la caja grande de cada proyecto de la página de Pr
 | App | Slug | Formato de grabación | Estilo | Duración | Estado |
 |---|---|---|---|---|---|
 | Tempora | `tempora` | Escritorio, 1600 × 1000 | B | 12,9 s | Integrado (24 nov) |
-| Víbora | `vibora` | Escritorio, 1600 × 1000 | B | 12 s | Guion |
+| Víbora | `vibora` | Escritorio, 1600 × 1000 | B | 9,8 s | Integrado (24 nov) |
 | Learnish | `learnish` | Escritorio, 1600 × 1000 | B | 8,2 s | Integrado (24 nov) |
 | Vístalo | `vistalo` | Escritorio, 1600 × 1000 | A | 13,8 s | Integrado (24 nov) |
 
@@ -335,7 +335,9 @@ archivo y se repite idéntico con una orden. Detalles por app:
 - **Tempora** guarda la sesión solo en memoria (recargar = volver al login). `--login` abre un Edge
   aparte con puerto de depuración; Christian entra y la toma se graba sobre esa misma ventana,
   navegando con clics. Los turnos que pone la toma se quitan al acabar.
-- **Víbora** irá igual que Tempora cuando arranque.
+- **Víbora** va igual que Tempora; para arrancar necesita `VIBORA_JWT_SECRET` en su `.env`. Como
+  jugador, una reserva solo se cancela hasta 24 h antes, así que la toma la cancela después como
+  admin del club (Mi club → Reservas); en su base queda como «Cancelada».
 
 Los guiones de abajo se reescribieron tras cotejar el código de cada app (los primeros describían
 las demos HTML del portfolio, que no coinciden con las apps).
@@ -376,7 +378,7 @@ modo dispositivo de DevTools) para la página del caso, cuando estén los de esc
   3. 7–10 s · La hora queda ocupada y la reserva aparece en "Mis reservas".
   4. 10–12 s · Pausa sobre el resultado y fundido para el bucle. Después, cancelar la reserva para
      que la toma se pueda repetir.
-- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+- **Estado:** [x] guion · [x] grabado · [x] editado · [x] exportado · [x] integrado
 
 ### Learnish
 - **Slug:** `learnish`

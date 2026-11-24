@@ -39,8 +39,7 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 - **Imágenes**: los originales que él da van en `docs/imgs/`; las piezas del personaje que se generen,
   también en `docs/imgs/avatar/`.
 - **Notas**: lo que se aprende o se decide se apunta en `docs/referencias/`.
-- **Recordatorio pendiente**: falta el vídeo de Víbora (Tempora, Learnish y Vístalo ya tienen el
-  suyo en la caja de Proyectos). En la home, los casos y el lienzo siguen las demos HTML, que no
+- **Recordatorio pendiente**: los cuatro proyectos ya tienen vídeo en su caja de Proyectos. En la home, los casos y el lienzo siguen las demos HTML, que no
   coinciden del todo con las apps: se ajustan con la ronda 2 de textos. Recordárselo al tocar
   proyectos o cuando pregunte qué falta.
 

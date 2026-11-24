@@ -32,10 +32,9 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   con todos sus detalles (habla, guiña, sale 5 s al cargar la web). La barra queda en marca, menú,
   idioma y tema. Los proyectos van en cajas en la página de Proyectos, aprobado. Las capas 3D de
   la home funcionan y van numeradas, y al acabar esa escena la caricatura dice que toda la web se
-  puede ver así (aprobado). **Vídeos (24 nov)**: Tempora, Learnish y Vístalo ya tienen el suyo en
-  la caja grande de Proyectos (aprobados por él), grabados con
-  `.taste-skill/eloi-1118/tools/app-videos.mjs`; falta Víbora, que no arranca hasta que él ponga
-  `VIBORA_JWT_SECRET` en su `.env`. Cómo se graban y los guiones: `guia-videos-proyectos.md`,
+  puede ver así (aprobado). **Vídeos (24 nov)**: los cuatro proyectos ya tienen el suyo en la caja
+  grande de Proyectos (aprobados por él), grabados con
+  `.taste-skill/eloi-1118/tools/app-videos.mjs`. Cómo se graban y los guiones: `guia-videos-proyectos.md`,
   sección 10. Debajo de cada vídeo, las decisiones aún describen las demos HTML y no la app real:
   se corrigen con la ronda 2 de textos, cotejada con los repos (artefacto "Revisión con los repos").
 - **Corrección del 24 nov, pendiente en la web**: Víbora y Learnish **no son apps de móvil**; las

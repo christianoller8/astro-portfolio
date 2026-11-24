@@ -89,7 +89,7 @@ test.describe('Project cases', () => {
   // home.spec.ts la prueba)
   test('the boxes show the recorded video, with its poster and what it shows', async ({ page }) => {
     await open(page, '/projects/');
-    for (const slug of ['tempora', 'learnish', 'vistalo']) {
+    for (const slug of ['tempora', 'vibora', 'learnish', 'vistalo']) {
       const video = page.locator(`.pboxes video[poster="/videos/posters/${slug}.jpg"]`);
       await expect(video).toHaveCount(1);
       await expect(video).toHaveAttribute('aria-label', /.{20,}/);
