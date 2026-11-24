@@ -309,11 +309,78 @@ Copiar este bloque una vez por app:
 
 ### Proyectos
 
-| App | Slug | Estilo | Duración | Estado |
-|---|---|---|---|---|
-| | | | | |
-| | | | | |
-| | | | | |
+Escrito el 24 nov. Cada vídeo enseña lo que su caso cuenta: las tres decisiones de diseño de la
+página del proyecto. Van en la caja grande de cada proyecto de la página de Proyectos, que mide 16:10
+(693 × 433 px en escritorio). Tempora y Vístalo la llenan; Víbora y Learnish son de móvil y van
+centradas sobre su color, como la interfaz de ahora.
+
+| App | Slug | Formato de grabación | Estilo | Duración | Estado |
+|---|---|---|---|---|---|
+| Tempora | `tempora` | Escritorio, 1600 × 1000 | B | 12 s | Guion |
+| Víbora | `vibora` | Móvil vertical, 390 × 844 a DPR 2 | B | 10 s | Guion |
+| Learnish | `learnish` | Móvil vertical, 390 × 844 a DPR 2 | B | 10 s | Guion |
+| Vístalo | `vistalo` | Escritorio, 1600 × 1000 | A | 15 s | Guion |
+
+Estilo B con OBS (gratis) vale: son vídeos de una sola acción, así que basta con mover el ratón
+despacio y con intención. Cap añade el zoom automático en los clics, pero para un portfolio con el
+que buscas trabajo probablemente cuenta como uso comercial (29 $/año).
+
+### Tempora
+- **Slug:** `tempora`
+- **Estilo:** B (un clic, un resultado)
+- **Proporción y resolución:** 16:10 · 1600×1000, interfaz al 125 %
+- **Duración objetivo:** 12 s
+- **Datos de demo:** un día de un servicio (por ejemplo Urgencias, un jueves): 6–8 personas con
+  nombres realistas, turnos de mañana, tarde y noche, alguien fichado ahora mismo y un hueco sin cubrir.
+- **Guion:**
+  1. 0–2 s · "Turnos de hoy": el día entero en una pantalla, y quién está trabajando ahora (el estado
+     con color y con texto).
+  2. 2–6 s · El ratón va a **"+ Nuevo turno"**, espera medio segundo y lo pulsa; se elige persona y
+     hora para el hueco.
+  3. 6–10 s · El turno nuevo aparece en el día con su estado ("Pendiente") y el hueco queda cubierto.
+  4. 10–12 s · Pausa sobre el resultado y fundido al estado inicial para el bucle.
+- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+
+### Víbora
+- **Slug:** `vibora`
+- **Estilo:** B
+- **Proporción y resolución:** móvil vertical (DevTools, 390 × 844, DPR 2)
+- **Duración objetivo:** 10 s
+- **Datos de demo:** un jueves por la tarde, 3–4 pistas, más o menos la mitad de las horas ocupadas.
+- **Guion:**
+  1. 0–2 s · Los horarios del día, con lo libre destacado ("Primero, qué está libre").
+  2. 2–6 s · Toque en una hora libre y en **"Confirmar"**: la reserva en dos toques.
+  3. 6–9 s · La reserva queda marcada como "Tu reserva" y a la vista ("Tu reserva no se pierde de vista").
+  4. 9–10 s · Vuelta al inicio para el bucle.
+- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+
+### Learnish
+- **Slug:** `learnish`
+- **Estilo:** B
+- **Proporción y resolución:** móvil vertical (DevTools, 390 × 844, DPR 2)
+- **Duración objetivo:** 10 s
+- **Datos de demo:** Lección 12 · Viajes, racha de 9 días, tarjeta 7 de 10.
+- **Guion:**
+  1. 0–2 s · Una tarjeta con una sola frase ("Una tarjeta, una frase").
+  2. 2–5 s · **"Ver respuesta"**: aparece la traducción.
+  3. 5–8 s · **"Lo sabía"** ("Tú decides si lo sabías"): el avance pasa a 8 de 10 y se ve la racha
+     ("El avance, a la vista").
+  4. 8–10 s · Entra la siguiente tarjeta, que sirve de vuelta al bucle.
+- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
+
+### Vístalo
+- **Slug:** `vistalo`
+- **Estilo:** A (scroll limpio con OBS y el script de scroll de la sección 6)
+- **Proporción y resolución:** 16:10 · 1600×1000
+- **Duración objetivo:** 15 s
+- **Datos de demo:** la web publicada, <https://vistalo-sl.vercel.app/>.
+- **Guion:**
+  1. 0–3 s · La portada, con la animación que sale del nombre ("Todo sale del nombre").
+  2. 3–11 s · Scroll suave por las secciones, con sus animaciones hechas a mano ("Sin librerías de
+     animación").
+  3. 11–14 s · Llega al contacto en forma de carta ("El contacto es una carta").
+  4. 14–15 s · Fundido al principio para el bucle.
+- **Estado:** [x] guion · [ ] grabado · [ ] editado · [ ] exportado · [ ] integrado
 
 ---
 

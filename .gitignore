@@ -54,3 +54,6 @@ pnpm-debug.log*
 docs/videos/
 docs/imgs/idea-logo-*.png
 docs/imgs/letras.jpeg
+
+# Grabaciones originales de los vídeos de proyectos (las finales van en public/videos/)
+videos-raw/
