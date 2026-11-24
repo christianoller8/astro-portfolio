@@ -63,6 +63,7 @@ const toolbar = {
     menuOpen: t('aria.menu'),
     menuClose: t('aria.close'),
     lens: t('lens.label'),
+    tools: t('bubble.tools'),
   },
   panel: {
     design: t('lens.design'),
@@ -113,9 +114,9 @@ const toolbar = {
                   →
                 </span>
               </a>
-              <button type="button" class="btn btn-quiet" data-canvas-open>
+              <button type="button" class="btn btn-quiet" data-canvas-open aria-keyshortcuts="M">
                 {copy[lang].canvas}
-                <kbd data-key-hint>M</kbd>
+                <kbd data-key-hint aria-hidden="true">M</kbd>
               </button>
             </div>
             {/* La 404 no lleva pie: el enlace de privacidad va aquí, con el texto y la ruta de su idioma */}
@@ -432,6 +433,7 @@ const toolbar = {
         menuBtn.setAttribute('aria-label', menuBtn.getAttribute('aria-expanded') === 'true' ? aria.menuClose : aria.menuOpen);
       }
       label('[data-lens-panel], .lens-switch', aria.lens);
+      label('[data-vb-tools]', aria.tools);
       const panel = document.querySelector<HTMLElement>('[data-lens-panel]');
       if (panel) panel.dataset.i18n = JSON.stringify(toolbar.panel);
 

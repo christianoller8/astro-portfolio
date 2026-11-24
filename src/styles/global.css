@@ -292,6 +292,11 @@
   outline: 1.5px dashed var(--graphite);
   outline-offset: -1.5px;
 }
+/* El <main> hace de celda de la rejilla (la sección de la 404 llenaba el artboard antes de que <main>
+   se metiera dentro) y la reparte igual */
+.artboard--missing > main {
+  display: grid;
+}
 .wrap {
   width: 100%;
   max-width: 82rem;

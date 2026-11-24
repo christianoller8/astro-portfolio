@@ -54,7 +54,7 @@ const lenses = [
           {lens.id === 'qa' && <path d="m2.5 8.5 3.5 3.5 7.5-8" />}
         </svg>
         <span>{lens.label}</span>
-        {variant === 'tray' && <kbd data-key-hint>{lens.key}</kbd>}
+        {variant === 'tray' && <kbd data-key-hint aria-hidden="true">{lens.key}</kbd>}
       </button>
     ))
   }

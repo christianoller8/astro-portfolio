@@ -82,11 +82,40 @@ function initCanvas() {
     return { k, x: side - +frame.dataset.x! * k, y: -bar - +frame.dataset.y! * k };
   };
 
+  /** Lo que este lienzo dejó inerte al abrirse: al cerrar se devuelve solo eso (lo que ya era inerte por otra razón no se toca) */
+  let inerted: HTMLElement[] = [];
+
+  /**
+   * Todo lo que queda fuera del diálogo: los hermanos de él y de cada uno de sus ancestros hasta el
+   * body. Se salta lo que no es contenido (guiones, estilos), las regiones vivas (el aviso de ruta de
+   * Astro, el estado de las lentes), que tienen que seguir anunciando, y la barra de arriba.
+   */
+  const outside = (): HTMLElement[] => {
+    const found: HTMLElement[] = [];
+    for (let node: HTMLElement = overlay; node !== document.body && node.parentElement; node = node.parentElement) {
+      for (const sibling of node.parentElement.children) {
+        if (sibling === node || !(sibling instanceof HTMLElement)) continue;
+        if (sibling.matches('script, style, link, template, [aria-live], [role="status"], [role="alert"]')) continue;
+        if (sibling.matches('header.toolbar')) continue;
+        found.push(sibling);
+      }
+    }
+    return found;
+  };
+
   const lock = (on: boolean) => {
     root.classList.toggle('canvas-open', on);
-    // La página de detrás queda inerte; la barra no, porque el lienzo empieza debajo de ella y sigue
-    // a la vista: sus enlaces y selectores (tema, idioma) tienen que seguir funcionando.
-    for (const el of document.querySelectorAll<HTMLElement>('main, footer')) el.inert = on;
+    // Mientras el lienzo está abierto, todo lo de fuera queda inerte (el enlace de salto, la página, el
+    // pie y la caricatura) menos la barra: el lienzo empieza debajo de ella y sigue a la vista, así que
+    // su menú y sus selectores (tema, idioma) siguen funcionando (decisión de Christian, 24 nov). Por
+    // eso el diálogo no es aria-modal: fuera de él solo se llega a la barra, con tabulador o con lector
+    if (on) {
+      inerted = outside().filter((el) => !el.inert);
+      for (const el of inerted) el.inert = true;
+    } else {
+      for (const el of inerted) el.inert = false;
+      inerted = [];
+    }
     for (const btn of document.querySelectorAll<HTMLElement>('[data-canvas-open]')) btn.setAttribute('aria-pressed', String(on));
   };
 

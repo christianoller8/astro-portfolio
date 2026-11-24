@@ -85,8 +85,10 @@ const fmt = (value: number, digits = 0) =>
     useGrouping: false,
   }).format(value);
 const esc = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const frame = () => document.querySelector<HTMLElement>('main.frame');
-const artboard = () => document.querySelector<HTMLElement>('main.frame > .artboard');
+const frame = () => document.querySelector<HTMLElement>('body > .frame');
+const artboard = () => document.querySelector<HTMLElement>('body > .frame > .artboard');
+/** El contenido de la página: <main> y el pie (que está fuera de <main>, como landmark contentinfo) */
+const PAGE = ':is(main, footer)';
 
 export function setLens(next: Lens | null) {
   if (next) root.dataset.lens = next;
@@ -620,7 +622,7 @@ function runChecks(): Check[] {
   let previous = 0;
   let ordered = true;
   let jump: Element | undefined;
-  [...document.querySelectorAll('main h1, main h2, main h3, main h4')].filter(real).forEach((heading) => {
+  [...document.querySelectorAll(`${PAGE} :is(h1, h2, h3, h4)`)].filter(real).forEach((heading) => {
     const level = Number(heading.tagName[1]);
     if (previous && level > previous + 1) {
       ordered = false;
@@ -630,7 +632,7 @@ function runChecks(): Check[] {
   });
   checks.push({ ok: ordered, group: 'structure', label: L.order, el: jump });
 
-  document.querySelectorAll('main img').forEach((img) => {
+  document.querySelectorAll(`${PAGE} img`).forEach((img) => {
     if (!real(img) || !visible(img)) return;
     const alt = img.getAttribute('alt');
     const host = img.closest('[data-qa-host]') ?? img.parentElement ?? undefined;
@@ -663,12 +665,12 @@ function runChecks(): Check[] {
         el,
         note: `${Math.round(box.width)}×${Math.round(box.height)}`,
         // La insignia, solo en botones y enlaces de tamaño de botón (no en una tarjeta entera)
-        badge: box.height <= 96 && (el.matches('.btn, button') || !!el.closest('main')),
+        badge: box.height <= 96 && (el.matches('.btn, button') || !!el.closest(PAGE)),
       });
     }
   });
 
-  document.querySelectorAll('main input:not([type="hidden"]), main textarea, main select').forEach((field) => {
+  document.querySelectorAll(`${PAGE} :is(input:not([type="hidden"]), textarea, select)`).forEach((field) => {
     // Un campo escondido (como la casilla trampa del formulario) no lo ve nadie: no necesita etiqueta
     if (!real(field)) return;
     const input = field as HTMLInputElement;
@@ -684,7 +686,7 @@ function runChecks(): Check[] {
 
   const decimal = lang() === 'es' ? ',' : '.';
   document
-    .querySelectorAll<HTMLElement>('main h1, main h2, main h3, main p, main li, main label, main .btn, footer p, footer a')
+    .querySelectorAll<HTMLElement>(`${PAGE} :is(h1, h2, h3, p, li, label, .btn), footer a`)
     .forEach((el) => {
       if (!el.textContent?.trim() || !visible(el)) return;
       const cs = getComputedStyle(el);

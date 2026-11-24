@@ -92,7 +92,8 @@ const bounds = { x: -20, y: -44, w: right + 40, h: 550 + H + 64 };
         >
           <span class="cmap-name">
             <b>{frame.name}</b>
-            <span>1440 × {frame.height}</span>
+            {/* La medida es decoración visual: fuera del nombre del enlace ("Estás aquí" y aria-current sí quedan) */}
+            <span aria-hidden="true">1440 × {frame.height}</span>
           </span>
           <span class="cmap-shot">
             <img class="cmap-img cmap-img--light" src={`/canvas/${lang}-${frame.key}-light.jpg`} width="685" height="854" loading="lazy" alt="" />
@@ -110,9 +111,9 @@ const bounds = { x: -20, y: -44, w: right + 40, h: 550 + H + 64 };
     <div class="cmap-tools">
       <output class="cmap-zoom" data-canvas-zoom>100 %</output>
       <button type="button" class="cmap-btn" data-canvas-fit>{t('canvas.fit')}</button>
-      <button type="button" class="cmap-btn cmap-btn--close" data-canvas-close>
+      <button type="button" class="cmap-btn cmap-btn--close" data-canvas-close aria-keyshortcuts="Escape">
         {t('canvas.close')}
-        <kbd>Esc</kbd>
+        <kbd aria-hidden="true">Esc</kbd>
       </button>
     </div>
   </div>

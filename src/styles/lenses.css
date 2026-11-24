@@ -13,7 +13,7 @@
 }
 
 /* Con una lente activa el frame aloja la capa y deja sitio a la barra de estado */
-html[data-lens] main.frame {
+html[data-lens] .frame {
   position: relative;
   padding-bottom: calc(var(--gutter) + var(--lens-bar-h));
 }

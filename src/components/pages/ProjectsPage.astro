@@ -219,7 +219,7 @@ const items = projects.map((project, i) => {
     background-size: 20px 20px;
   }
   /* En la vista de lienzo el pie (tinta) va pegado a la franja, sin papel entre medias */
-  :global(main:has(.pp[data-mode='canvas']) .artboard-back) {
+  :global(.artboard:has(.pp[data-mode='canvas']) .artboard-back) {
     margin-top: 0;
   }
   .board-list {

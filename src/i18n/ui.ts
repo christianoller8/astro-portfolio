@@ -41,6 +41,7 @@ export const ui = {
     // Lentes
     'bubble.title': '¿Quieres verlo como yo?',
     'bubble.hint': 'Hazme clic',
+    'bubble.tools': 'Herramientas de la web',
     'lens.label': 'Ver la web como',
     'lens.design': 'Diseño',
     'lens.code': 'Código',
@@ -359,6 +360,7 @@ export const ui = {
 
     'bubble.title': 'Want to see it my way?',
     'bubble.hint': 'Click me',
+    'bubble.tools': 'Site tools',
     'lens.label': 'View this site as',
     'lens.design': 'Design',
     'lens.code': 'Code',

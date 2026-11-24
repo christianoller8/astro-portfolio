@@ -38,12 +38,12 @@ for (const lang of LANGS) {
       const hrefs = await frames(page).evaluateAll((els) => els.map((el) => el.getAttribute('href')));
       expect(hrefs).toEqual(FRAME_PATHS.map((path) => pageUrl(lang, path === '/' ? '/' : `${path}/`)));
       // La página de detrás queda inerte mientras el lienzo está abierto
-      await expect(page.locator('#main')).toHaveJSProperty('inert', true);
+      expect(await isInert(page, '#main')).toBe(true);
 
       await page.keyboard.press('m');
       await expect(html(page)).not.toHaveClass(/canvas-open/);
       await expect(canvas(page)).toBeHidden();
-      await expect(page.locator('#main')).toHaveJSProperty('inert', false);
+      expect(await isInert(page, '#main')).toBe(false);
     });
 
     test('"you are here" is the current page', async ({ page }) => {
@@ -107,16 +107,108 @@ test.describe('Canvas map: opening from the caricature', () => {
     await expect(html(page)).not.toHaveClass(/canvas-open/);
   });
 
+  // La barra de arriba queda viva: el lienzo empieza debajo de ella y sigue a la vista, así que el
+  // tema y el idioma se pueden cambiar con el lienzo abierto (decisión de Christian, 24 nov)
   test('keeps the top bar usable while open', async ({ page, isMobile }) => {
     await open(page, '/en/');
     await openWithKey(page);
-    // La barra de arriba no queda inerte: el lienzo empieza debajo de ella
-    await expect(page.locator('header.toolbar')).toHaveJSProperty('inert', false);
-    await expect(page.locator('#main')).toHaveJSProperty('inert', true);
+    expect(await isInert(page, 'header.toolbar')).toBe(false);
+    expect(await isInert(page, '#main')).toBe(true);
     if (isMobile) return;
     await page.getByRole('button', { name: t('en', 'aria.theme.dark'), exact: true }).click();
     await expect(html(page)).toHaveClass(/(^|\s)dark(\s|$)/);
     await expect(canvas(page)).toBeVisible();
+  });
+});
+
+/** ¿Está el elemento, o alguno de sus ancestros, inerte? */
+async function isInert(page: Page, selector: string): Promise<boolean> {
+  return page.locator(selector).first().evaluate((el) => !!el.closest('[inert]'));
+}
+
+/** Lo que queda fuera del diálogo y que un lector de pantalla o el tabulador no deben alcanzar (la barra, sí) */
+const OUTSIDE = ['a[href="#main"]', '#main', 'footer', '[data-vb-tools]'];
+
+test.describe('Canvas map keeps focus on itself and the top bar', () => {
+  test('everything outside it but the top bar is inert while open', async ({ page }) => {
+    await open(page, '/about/');
+    // No es aria-modal: la barra sigue viva fuera del diálogo, y aria-modal diría que no hay nada más
+    expect(await canvas(page).getAttribute('aria-modal')).toBeNull();
+    for (const selector of OUTSIDE) expect(await isInert(page, selector), `${selector} antes de abrir`).toBe(false);
+
+    await openWithKey(page);
+    for (const selector of OUTSIDE) expect(await isInert(page, selector), `${selector} con el lienzo abierto`).toBe(true);
+    expect(await isInert(page, 'header.toolbar'), 'la barra con el lienzo abierto').toBe(false);
+    // Ni el diálogo ni las regiones vivas (el estado de las lentes) se apagan: tienen que seguir anunciando
+    expect(await isInert(page, '[data-canvas]')).toBe(false);
+    expect(await isInert(page, '[data-lens-announce]')).toBe(false);
+
+    await page.keyboard.press('Escape');
+    await expect(canvas(page)).toBeHidden();
+    for (const selector of OUTSIDE) expect(await isInert(page, selector), `${selector} tras cerrar`).toBe(false);
+  });
+
+  test('gives back only what it made inert: what was inert before stays that way', async ({ page }) => {
+    await open(page, '/about/');
+    await page.locator('footer').evaluate((el) => ((el as HTMLElement).inert = true));
+    await openWithKey(page);
+    await page.keyboard.press('Escape');
+    await expect(canvas(page)).toBeHidden();
+    expect(await isInert(page, 'footer')).toBe(true);
+    expect(await isInert(page, '#main')).toBe(false);
+    expect(await isInert(page, 'header.toolbar')).toBe(false);
+  });
+
+  test('Tab only reaches the dialog and the top bar', async ({ page }) => {
+    await open(page, '/about/');
+    await openWithKey(page);
+    // Al abrir, el foco entra en el diálogo: en el frame en el que se está
+    await expect(here(page)).toBeFocused();
+    // Dónde está el foco: en el lienzo, en la barra o fuera de la página (el cuerpo, al dar la vuelta)
+    const where = () =>
+      page.evaluate(() => {
+        const active = document.activeElement;
+        if (!active || active === document.body) return 'none';
+        if (active.closest('[data-canvas]')) return 'canvas';
+        if (active.closest('header.toolbar')) return 'toolbar';
+        return active.outerHTML.slice(0, 80);
+      });
+
+    // Más pulsaciones que elementos (nueve frames, los botones y la barra): da la vuelta entera
+    const seen = new Set<string>();
+    for (const key of ['Tab', 'Shift+Tab']) {
+      for (let i = 0; i < 40; i++) {
+        await page.keyboard.press(key);
+        const at = await where();
+        expect(['canvas', 'toolbar', 'none'], `${key} ${i + 1}: ${at}`).toContain(at);
+        seen.add(at);
+      }
+    }
+    // Y la barra se alcanza de verdad
+    expect(seen).toContain('toolbar');
+    expect(seen).toContain('canvas');
+  });
+
+  test('focus returns to the button that opened it', async ({ page }) => {
+    // El botón "Ver el lienzo" de la 404 vive dentro de <main>, que queda inerte mientras está abierto
+    await open(page, '/no-existe/');
+    const opener = page.locator('[data-nf-lang="es"]').getByRole('button', { name: 'Ver el lienzo', exact: true });
+    await opener.click();
+    await expect(canvas(page)).toBeVisible();
+    await expect(here(page)).toBeFocused();
+    await canvas(page).locator('[data-canvas-close]').click();
+    await expect(canvas(page)).toBeHidden();
+    await expect(opener).toBeFocused();
+  });
+
+  test('focus returns to the caricature when opened with M from it', async ({ page }) => {
+    await open(page, '/about/');
+    const toggle = page.getByRole('button', { name: t('es', 'bubble.title'), exact: true });
+    await toggle.focus();
+    await openWithKey(page);
+    await page.keyboard.press('Escape');
+    await expect(canvas(page)).toBeHidden();
+    await expect(toggle).toBeFocused();
   });
 });
 

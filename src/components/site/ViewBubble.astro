@@ -32,6 +32,10 @@ const lenses = [
 ] as const;
 ---
 
+{/* La caricatura y su panel van en una región con nombre (aside) para que no queden fuera de todo
+    landmark. El aside no pinta nada y no es bloque contenedor del .vb (que es fixed): sin transform,
+    filter, position, contain ni overflow, para no mover el posicionamiento */}
+<aside data-vb-tools aria-label={t('bubble.tools')}>
 <div class="vb" data-vb data-face="normal">
   <button
     type="button"
@@ -95,7 +99,7 @@ const lenses = [
             {lens.id === 'qa' && <path d="m2.5 8.5 3.5 3.5 7.5-8" />}
           </svg>
           <span>{lens.label}</span>
-          <kbd data-key-hint>{lens.key}</kbd>
+          <kbd data-key-hint aria-hidden="true">{lens.key}</kbd>
         </button>
       ))
     }
@@ -107,7 +111,7 @@ const lenses = [
         <rect x="1.5" y="12" width="5.5" height="2"></rect>
       </svg>
       <span>{t('nav.canvas')}</span>
-      <kbd data-key-hint>M</kbd>
+      <kbd data-key-hint aria-hidden="true">M</kbd>
     </button>
     {/* Solo con una lente puesta: la salida */}
     <button type="button" class="vb-row vb-row--clear" data-lens-clear aria-keyshortcuts="Escape">
@@ -115,7 +119,7 @@ const lenses = [
         <path d="m3.5 3.5 9 9M12.5 3.5l-9 9"></path>
       </svg>
       <span>{t('lens.clear')}</span>
-      <kbd>Esc</kbd>
+      <kbd aria-hidden="true">Esc</kbd>
     </button>
     {/* Atajos de teclado (WCAG 2.1.4, decisión de Christian del 20 nov): encendido por defecto; apagado,
         1, 2, 3 y M no hacen nada y el panel esconde sus teclas. Lo lleva src/scripts/shortcuts.ts */}
@@ -133,6 +137,7 @@ const lenses = [
     </svg>
   </div>
 </div>
+</aside>
 
 <style>
   .vb {

@@ -321,7 +321,9 @@ if (!window.__analyticsKeep) {
       >{t('aria.skip')}</a
     >
     <Header langHome={!indexable} />
-    <main id="main" class="frame">
+    {/* El frame y el artboard son cajas sin semántica: el contenido va en <main> y el pie, dentro del
+        mismo artboard (mismo aspecto), queda fuera de <main> para ser el landmark contentinfo */}
+    <div class="frame">
       {
         /* El nombre del frame encima del artboard solo queda en la 404, donde el frame es lo que
            falta. En el resto va en la barra de estado de las lentes y en el lienzo (D23) */
@@ -333,10 +335,12 @@ if (!window.__analyticsKeep) {
         )
       }
       <div class:list={['artboard', missing && 'artboard--missing']}>
-        <slot />
+        <main id="main">
+          <slot />
+        </main>
         {!missing && <Footer />}
       </div>
-    </main>
+    </div>
     <ViewBubble lang={lang} />
     <LensPanel lang={lang} frame={frame} />
     {intro && <IntroScreen lang={lang} />}

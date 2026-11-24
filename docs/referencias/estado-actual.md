@@ -130,12 +130,14 @@ Por orden de urgencia (lista completa en el roadmap):
 3. **Accesibilidad**: los fallos de la auditoría están arreglados (ver su tabla). Revisión con lector
    de pantalla hecha el 24 nov: una pasada automática de toda la lista de `prueba-nvda.md` sobre el
    árbol de accesibilidad de Chromium (casi todo bien) y Christian con NVDA en Edge los puntos que
-   solo NVDA puede decir ("funciona correctamente"). Quedan de la pasada automática: la lista de
-   requisitos del formulario (`#c-checks`) solo cambia de color al cumplirse; el giro de las capas 3D
-   avanza de 0,12 rad y nunca dice "De frente"; el resumen "Faltan datos…" no se actualiza al
-   corregir un campo; al poner una lente no se anuncia cuál. Y cuatro detalles de estructura: el pie
-   está dentro de `<main>` (no hay `contentinfo`), el bocadillo queda fuera de los puntos de
-   referencia, algunos nombres llevan la tecla del atajo ("Diseño 1") y el lienzo no es modal.
+   solo NVDA puede decir ("funciona correctamente"). Lo que encontró la pasada automática, arreglado
+   el mismo día: los requisitos del formulario dicen "pendiente"/"hecho"; el giro de las capas 3D va
+   de 7° en 7° y se para en "De frente"; el resumen "Faltan datos…" solo lista lo que sigue mal; al
+   poner una lente se anuncia cuál ("Lente QA puesta: 57 de 57…"). Y la estructura: el pie es el
+   `contentinfo` (fuera de `<main>`, dentro del mismo artboard: `div.frame > div.artboard > main +
+   footer`), el bocadillo va en un `<aside>` "Herramientas de la web", los nombres ya no llevan la
+   tecla (va en `aria-keyshortcuts`) y, con el lienzo abierto, todo lo de fuera queda inerte menos la
+   barra, que sigue usable a propósito (por eso el diálogo no es `aria-modal`; decisión de Christian).
 4. **Rendimiento** (23 nov, medido con Lighthouse en local): escritorio ya daba 99–100. Para móvil,
    tres arreglos: la foto del hero del tema activo se precarga desde el `<head>` (sigue bajando una
    sola), la del hero y las de proyecto piden el tamaño en que se ven (`src/data/hero-photo.ts` y

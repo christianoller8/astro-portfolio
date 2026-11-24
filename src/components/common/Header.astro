@@ -559,6 +559,8 @@ const isActive = (path: string) => {
 
 <script>
   // La barra se vuelve a pintar en cada navegación: el botón se enlaza en cada carga, Escape una sola vez
+  // La página de detrás: <main> y el pie, que va fuera de <main> (es el landmark contentinfo)
+  const page = () => document.querySelectorAll<HTMLElement>('#main, #main ~ footer');
   const setOpen = (open: boolean) => {
     const btn = document.getElementById('menu-btn');
     const menu = document.getElementById('mobile-menu');
@@ -569,8 +571,7 @@ const isActive = (path: string) => {
     document.documentElement.classList.toggle('menu-open', open);
     // Con el menú abierto la página de detrás no se puede alcanzar con Tab (WCAG 2.4.3): inert la
     // saca del orden de foco y del árbol de accesibilidad hasta que se cierra
-    const main = document.getElementById('main');
-    if (main) main.inert = open;
+    for (const el of page()) el.inert = open;
   };
 
   // La barra funde su borde con lo que pasa por debajo solo cuando la página se ha movido
@@ -581,14 +582,13 @@ const isActive = (path: string) => {
     markScrolled();
     // Al llegar a otra página el menú vuelve cerrado
     document.documentElement.classList.remove('menu-open');
-    const main = document.getElementById('main');
-    if (main) main.inert = false;
+    for (const el of page()) el.inert = false;
     const btn = document.getElementById('menu-btn');
     btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
   });
 
   // Desde 1024 px el menú de móvil no se ve (display:none): si se ensancha la ventana con él abierto,
-  // se cierra, para que main no se quede inerte y el botón no siga con aria-expanded="true"
+  // se cierra, para que la página no se quede inerte y el botón no siga con aria-expanded="true"
   window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
     if (event.matches) setOpen(false);
   });
