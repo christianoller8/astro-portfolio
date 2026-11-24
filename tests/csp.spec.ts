@@ -89,6 +89,20 @@ test.describe('Content Security Policy', () => {
     }
   }
 
+  // El vídeo de muestra de /sistema/ es del mismo origen: default-src 'self' lo admite sin media-src.
+  // Se espera a que se reproduzca de verdad (el Chromium de Playwright sin H.264 solo prueba la petición)
+  test('the sample video on /sistema/ loads and plays within the policy', async ({ page, baseURL }) => {
+    const { blocked, served } = await guard(page, new URL(baseURL ?? '').origin);
+    await open(page, '/sistema/');
+    expect(served(), 'la página tiene que llegar con la CSP puesta').toBeGreaterThan(0);
+    await page.locator('[data-video]').scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-video] video')).toHaveAttribute('src', /muestra\.mp4$/);
+    const playable = await page.locator('[data-video] video').evaluate((el: HTMLVideoElement) => el.canPlayType('video/mp4; codecs="avc1.42E01E"') !== '');
+    if (playable) await expect.poll(() => page.locator('[data-video] video').evaluate((el: HTMLVideoElement) => el.currentTime), { timeout: 8000 }).toBeGreaterThan(0.3);
+    await page.waitForTimeout(400);
+    expect(blocked).toEqual([]);
+  });
+
   test('lenses, 3D layers, canvas, theme switch, page changes and the live Vístalo frame stay within the policy', async ({ page, baseURL }) => {
     const { blocked } = await guard(page, new URL(baseURL ?? '').origin);
     const header = page.waitForResponse((response) => response.request().resourceType() === 'document');

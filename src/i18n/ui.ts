@@ -205,6 +205,9 @@ export const ui = {
     'projects.try.vistalo': 'Pruébalo: abre la web aquí',
     'projects.live.open': 'Abrir la web aquí',
     'projects.live.close': 'Volver a la captura',
+    // El vídeo del proyecto: el botón que lo pausa y lo reanuda (WCAG 2.2.2)
+    'video.pause': 'Pausar vídeo',
+    'video.play': 'Reproducir vídeo',
     'path.title': 'Trayectoria',
     'path.lead': 'Las últimas versiones. De la más reciente a la más antigua.',
     'path.all': 'Ver la trayectoria completa',
@@ -513,6 +516,8 @@ export const ui = {
     'projects.try.vistalo': 'Try it: open the site here',
     'projects.live.open': 'Open the site here',
     'projects.live.close': 'Back to the screenshot',
+    'video.pause': 'Pause video',
+    'video.play': 'Play video',
     'path.title': 'Experience',
     'path.lead': 'The latest versions. From the most recent to the oldest.',
     'path.all': 'See the full timeline',

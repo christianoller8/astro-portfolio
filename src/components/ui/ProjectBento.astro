@@ -8,6 +8,7 @@
 // data-morph-title y data-morph-visual son los que usa frames.ts para el paso de la tarjeta al caso.
 import type { CollectionEntry } from 'astro:content';
 import ProjectVisual from './ProjectVisual.astro';
+import ProjectVideo from './ProjectVideo.astro';
 import { cases } from '@/data/cases';
 import { useTranslations, useTranslatedPath } from '@/i18n/utils';
 
@@ -21,7 +22,7 @@ interface Props {
 const { project, lang, interactive = false } = Astro.props;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
-const { title, description, kind, status, role, year, stack } = project.data;
+const { title, description, kind, status, role, year, stack, video } = project.data;
 const href = translatePath(`/projects/${project.slug}`);
 const facts = [t(kind === 'app' ? 'project.kind.app' : 'project.kind.web'), status, year].filter(Boolean).join(' · ');
 const decisions = cases[project.slug]?.decisions ?? [];
@@ -38,7 +39,13 @@ const decisions = cases[project.slug]?.decisions ?? [];
 
   <div class="bento-grid">
     <div class="bento-visual" data-morph-visual={project.slug} data-sel>
-      <ProjectVisual project={project} lang={lang} fit="list" interactive={interactive} />
+      {
+        video ? (
+          <ProjectVideo video={video} lang={lang} />
+        ) : (
+          <ProjectVisual project={project} lang={lang} fit="list" interactive={interactive} />
+        )
+      }
     </div>
 
     <div class="bento-box bento-about">

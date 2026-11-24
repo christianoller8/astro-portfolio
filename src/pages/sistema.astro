@@ -3,6 +3,7 @@
 // Va creciendo con cada punto de la etapa E1 del roadmap: color, tipografía, movimiento, kit gráfico…
 import Layout from '@/layouts/Layout.astro';
 import Caricature from '@/components/site/Caricature.astro';
+import ProjectVideo from '@/components/ui/ProjectVideo.astro';
 
 const colors = [
   { token: '--canvas', role: 'Lienzo', light: '#c6c6c6', dark: '#2c2c2e' },
@@ -24,6 +25,7 @@ const sections = [
   { id: 'sys-type', name: 'Tipografía' },
   { id: 'sys-motion', name: 'Movimiento' },
   { id: 'sys-kit', name: 'Kit gráfico' },
+  { id: 'sys-video', name: 'Vídeo' },
 ];
 
 const scale = [
@@ -306,6 +308,27 @@ const widths = [75, 85, 100];
         ))
       }
     </div>
+  </section>
+
+  <section class="wrap sys-section" aria-labelledby="sys-video">
+    <h2 class="t-head" id="sys-video">Vídeo</h2>
+    <p class="t-lead sys-lead">
+      El vídeo de un proyecto en su caja 16:10. Se pide al acercarse, se mueve mientras se ve y se para al salir.
+    </p>
+    <div class="sys-video">
+      <ProjectVideo
+        video={{
+          src: '/videos/sistema/muestra.mp4',
+          poster: '/videos/sistema/muestra.jpg',
+          label: 'Muestra: un cuadrado claro se mueve despacio sobre un degradado gris',
+        }}
+        lang="es"
+      />
+    </div>
+    <p class="sys-note">
+      Clip de muestra generado con ffmpeg (4 s, 800 × 500, sin audio). El botón de la esquina lo pausa y, con
+      «reducir movimiento», el vídeo no arranca solo.
+    </p>
   </section>
 </Layout>
 
@@ -681,6 +704,10 @@ const widths = [75, 85, 100];
     color: var(--muted);
     background: var(--tint);
     overflow: hidden;
+  }
+  .sys-video {
+    max-width: 40rem;
+    margin-top: 1.5rem;
   }
   .kit-badges {
     display: flex;

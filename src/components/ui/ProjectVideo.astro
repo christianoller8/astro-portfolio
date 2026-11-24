@@ -1,0 +1,107 @@
+---
+// El vídeo de un proyecto, en la misma caja 16:10 que ProjectVisual (misma recortada, esquinas rectas).
+// El archivo no se pide hasta que la caja se acerca a la pantalla; suena nunca (sin audio) y se mueve
+// solo mientras se ve. El botón es para quien no quiere movimiento (WCAG 2.2.2). El comportamiento
+// está en src/scripts/project-video.ts. Cómo exportar el vídeo: docs/referencias/guia-videos-proyectos.md
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  video: { src: string; poster: string; label: string };
+  lang: 'es' | 'en';
+}
+
+const { video, lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="pvid" data-video data-qa-host data-ds={video.label}>
+  <!-- Sin src: lo pone el guion al acercarse. preload="none" por si el navegador lo pidiera antes -->
+  <video
+    class="pvid-media"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster={video.poster}
+    aria-label={video.label}
+    data-video-src={video.src}></video>
+  <!-- Nace como "Reproducir": sin JS no hay nada que pausar y el botón ni se muestra -->
+  <button
+    type="button"
+    class="pvid-btn"
+    data-video-toggle
+    data-pause={t('video.pause')}
+    data-play={t('video.play')}
+    aria-label={t('video.play')}
+  >
+    <svg class="pvid-icon pvid-icon-pause" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path d="M4 2h3v12H4zM9 2h3v12H9z" fill="currentColor"></path>
+    </svg>
+    <svg class="pvid-icon pvid-icon-play" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path d="M4 2l10 6-10 6z" fill="currentColor"></path>
+    </svg>
+  </button>
+</div>
+
+<script>
+  import '@/scripts/project-video';
+</script>
+
+<style>
+  .pvid {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--tint);
+  }
+  .pvid-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Discreto: una casilla en la esquina, del color del papel, con la misma pulsación que los botones */
+  .pvid-btn {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--ink);
+    background: var(--paper);
+    transition:
+      transform var(--dur-micro) var(--ease-out),
+      background-color var(--dur-micro) var(--ease-out);
+  }
+  :global(html.js) .pvid-btn {
+    display: grid;
+  }
+  .pvid-btn:hover {
+    background: color-mix(in srgb, var(--graphite) 34%, var(--tint));
+  }
+  .pvid-btn:active {
+    transform: scale(0.96);
+  }
+  .pvid-icon {
+    grid-area: 1 / 1;
+    width: 1rem;
+    height: 1rem;
+  }
+  /* El icono es la acción que ofrece el botón: pausa mientras se mueve, play mientras está parado */
+  .pvid-icon-play,
+  .pvid[data-state='playing'] .pvid-icon-pause {
+    display: block;
+  }
+  .pvid-icon-pause,
+  .pvid[data-state='playing'] .pvid-icon-play {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pvid-btn {
+      transition: none;
+    }
+  }
+</style>
