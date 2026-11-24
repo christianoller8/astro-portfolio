@@ -1,6 +1,6 @@
 ---
 title: 'Learnish'
-description: 'App para aprender inglés con lecciones cortas y repaso de vocabulario.'
+description: 'Aplicación web de escritorio para preparar el Cambridge B2 First: práctica de las cuatro pruebas, simulacros con nota estimada y repaso de errores.'
 kind: 'app'
 format: 'mobile'
 status: 'En desarrollo'
@@ -19,5 +19,4 @@ video:
 
 <!-- Pendiente de Christian: confirmar funciones, stack, año, capturas reales y enlace. -->
 
-Learnish propone practicar inglés en ratos cortos: una lección por tema, tarjetas para repasar lo
-que cuesta y una idea clara de cuánto se ha avanzado.
+Learnish sirve para preparar el Cambridge B2 First en tu propio PC: tareas de las cuatro pruebas, tarjetas y repaso de errores para lo que cuesta, y una estimación de cómo vas.

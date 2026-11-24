@@ -1,6 +1,6 @@
 ---
 title: 'Learnish'
-description: 'An app to learn English with short lessons and vocabulary review.'
+description: 'Desktop web application to prepare for the Cambridge B2 First: practice for the four papers, mock exams with an estimated score and error review.'
 kind: 'app'
 format: 'mobile'
 status: 'In development'
@@ -19,5 +19,4 @@ video:
 
 <!-- Pending from Christian: confirm features, stack, year, real screenshots and link. -->
 
-Learnish is about practising English in short bursts: one lesson per topic, cards to review what is
-hard and a clear sense of how far you have come.
+Learnish is for preparing the Cambridge B2 First on your own PC: tasks for the four papers, cards and error review for what is hard, and an estimate of how you are doing.

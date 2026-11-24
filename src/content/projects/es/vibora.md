@@ -1,6 +1,6 @@
 ---
 title: 'Vibora'
-description: 'App que gestiona las reservas de pistas de pádel: horarios libres, reservas y confirmaciones.'
+description: 'Aplicación web de escritorio para reservar pistas de pádel: ves qué horas hay libres, reservas y confirmas.'
 kind: 'app'
 format: 'mobile'
 status: 'En desarrollo'
@@ -19,5 +19,4 @@ video:
 
 <!-- Pendiente de Christian: confirmar funciones, stack, año, capturas reales y enlace. -->
 
-Reservar pista suele acabar en llamadas y mensajes de ida y vuelta. Vibora enseña qué pistas están
-libres en cada franja y deja reservar y confirmar sin salir de la app.
+Reservar pista suele acabar en llamadas y mensajes de ida y vuelta. Víbora enseña qué horas quedan libres en cada pista y deja reservar y confirmar sin salir de la aplicación.

@@ -1,6 +1,6 @@
 ---
 title: 'Tempora'
-description: 'An app that helps healthcare teams organise their shifts, clock their hours and see at a glance who is on duty.'
+description: 'A desktop web application that helps healthcare teams organise their shifts, clock their hours and see at a glance who is on duty.'
 kind: 'app'
 status: 'In development'
 role: 'Design, development and QA'
@@ -21,5 +21,4 @@ video:
 In a hospital unit, knowing who is working today, who has clocked in and how many hours each person
 has done usually depends on spreadsheets and scattered messages.
 
-Tempora brings the day's shifts, the status of every clock-in and the team tables into one screen,
-designed to be checked quickly between one task and the next.
+Tempora brings the shift rota, each person's clock-ins and a live view of who is working into one application. It is designed to be checked quickly between one task and the next.

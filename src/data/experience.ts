@@ -24,8 +24,8 @@ export const experience: Job[] = [
     period: { es: '2025 – Actualidad', en: '2025 – Present' },
     place: { es: 'Remoto', en: 'Remote' },
     summary: {
-      es: 'Agencia que hace webs, fotos y presencia en Google para negocios pequeños.',
-      en: 'An agency that builds websites, photography and Google presence for small businesses.',
+      es: 'Agencia creativa que hace webs, fotos, vídeo y presencia en Google para negocios pequeños.',
+      en: 'A creative agency that builds websites, photography, video and Google presence for small businesses.',
     },
     highlights: {
       es: ['Diseño cada pantalla y escribo el código, de la idea a la web publicada.'],
@@ -185,7 +185,7 @@ export const education: { title: Text; place: string; period: Text }[] = [
   {
     title: { es: 'Autoformación: UX/UI, Angular, React y testing', en: 'Self-study: UX/UI, Angular, React and testing' },
     place: 'Udemy',
-    period: { es: 'En curso', en: 'Ongoing' },
+    period: { es: 'En curso', en: 'In progress' },
   },
   {
     title: { es: 'Grado Superior en Desarrollo de Aplicaciones Web (DAW)', en: 'Higher Diploma in Web Application Development (DAW)' },

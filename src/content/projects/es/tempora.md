@@ -1,6 +1,6 @@
 ---
 title: 'Tempora'
-description: 'App para que los equipos sanitarios organicen sus turnos, fichen sus horas y sepan de un vistazo quién está trabajando.'
+description: 'Aplicación web de escritorio para que los equipos sanitarios organicen sus turnos, fichen sus horas y vean de un vistazo quién está trabajando.'
 kind: 'app'
 status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
@@ -21,5 +21,4 @@ video:
 En un servicio hospitalario, saber quién trabaja hoy, quién ha fichado y cuántas horas lleva cada
 persona suele depender de hojas de cálculo y mensajes sueltos.
 
-Tempora reúne en una pantalla los turnos del día, el estado de cada fichaje y las tablas del equipo,
-pensada para consultarse deprisa entre una tarea y otra.
+Tempora junta en una sola aplicación el cuadrante de turnos, el fichaje de cada persona y el control en vivo de quién está trabajando. Está pensada para consultarla deprisa entre una tarea y otra.

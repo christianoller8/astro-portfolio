@@ -1,5 +1,5 @@
 ---
-// 404 (plan §5.7): "Frame no encontrado". El artboard es un frame vacío de borde discontinuo con la
+// 404 (plan §5.7): "Página no encontrada". El artboard es un frame vacío de borde discontinuo con la
 // ruta pedida como nombre; salen hilos de prototipo hacia las páginas que sí existen y el personaje
 // lo busca, mirando a un lado y a otro. Un solo archivo sirve a los dos idiomas: el servidor no sabe
 // cuál toca, así que van los dos textos y se enseña el que corresponde a la ruta (/en/…).
@@ -10,11 +10,11 @@ import sizes from '@/data/canvas-sizes.json';
 
 const copy = {
   es: {
-    title: 'Frame no encontrado',
-    lead: ['La ruta', 'no está en este archivo. Puede que se haya movido o que nunca existiera.'],
+    title: 'Página no encontrada',
+    lead: ['La ruta', 'no existe en esta web. Puede que se haya movido o que nunca haya existido.'],
     home: 'Volver al inicio',
-    canvas: 'Ver el lienzo',
-    exist: 'Los frames que sí existen',
+    canvas: 'Ver lienzo',
+    exist: 'Las páginas que sí existen',
     privacy: { path: '/privacy/', name: 'Privacidad' },
     pages: [
       { key: 'home', path: '/', name: 'Inicio' },
@@ -25,9 +25,9 @@ const copy = {
   },
   en: {
     title: 'Frame not found',
-    lead: ['The path', 'is not in this file. It may have moved, or it never existed.'],
+    lead: ['The path', 'does not exist on this site. It may have moved, or it never existed.'],
     home: 'Back to home',
-    canvas: 'View the canvas',
+    canvas: 'View canvas',
     exist: 'The frames that do exist',
     privacy: { path: '/en/privacy/', name: 'Privacy' },
     pages: [
@@ -94,7 +94,7 @@ const toolbar = {
 };
 ---
 
-<Layout title="404 · Christian Oller" description="Frame no encontrado" frame="404" missing>
+<Layout title="404 · Christian Oller" description="Página no encontrada" frame="404" missing>
   <section class="wrap nf" data-nf data-toolbar={JSON.stringify(toolbar)}>
     {
       langs.map((lang) => (
@@ -238,7 +238,7 @@ const toolbar = {
     background: var(--paper);
   }
 
-  /* Los frames que sí existen */
+  /* Las páginas que sí existen */
   .nf-frames-title {
     font: 600 var(--step-small)/1.3 var(--font-sans);
     color: var(--muted);

@@ -1,9 +1,9 @@
 ---
 title: 'Vístalo'
-description: 'The website of Vístalo, the creative agency I co-founded: websites, photos and Google presence for small businesses.'
+description: 'The website of Vístalo, the creative agency I co-founded with Eloi Cotonat: websites, photos, video and Google presence for small businesses. Still being built.'
 kind: 'web'
-status: 'Live'
-role: 'Design and development · Eloi Cotonat: testing, photo and video'
+status: 'Under construction'
+role: 'Design and development with Eloi Cotonat (who also handled testing, photo and video)'
 image: '../../../assets/images/projects/vistalo.jpg'
 imageAlt: 'Vístalo homepage: the headline “Que se vea como es.” next to a laptop and a phone showing a sample website'
 link: 'https://vistalo-sl.vercel.app/'
@@ -23,9 +23,7 @@ video:
   label: 'Vístalo: the home page, the five services and the three packs shown as clothing tags; at the end, “Hablemos” opens the contact letter.'
 ---
 
-Vístalo is a two-person agency and its website had to prove what it sells. The whole page comes from
-the name, which in Spanish means "dress it up": the packages are clothing tags on a rail, a tape
-measure is the marquee and the contact form is a letter.
+Vístalo is the creative agency Eloi Cotonat and I co-founded. We do a bit of everything: websites, photos, video and Google presence for small businesses. Its website has to prove what we sell, and we are still building it. The whole page comes from the name, which in Spanish means “dress it up”: the packages are clothing tags on a rail, a tape measure is the marquee and the contact form is a letter.
 
 It is built with Astro and no animation libraries: every effect respects the reduced-motion
 preference and works with the keyboard.

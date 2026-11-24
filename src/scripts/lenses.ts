@@ -28,7 +28,7 @@ const NOTES = {
     name: 'nombre accesible',
     noName: 'sin nombre',
     target: 'táctil',
-    small: 'objetivo pequeño',
+    small: 'zona táctil pequeña',
     label: 'etiqueta',
     noLabel: 'sin etiqueta',
     contrast: 'contraste',

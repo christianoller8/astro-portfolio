@@ -1,6 +1,6 @@
 ---
 title: 'Vibora'
-description: 'An app that manages padel court bookings: free slots, reservations and confirmations.'
+description: 'A desktop web application for booking padel courts: see which slots are free, book and confirm.'
 kind: 'app'
 format: 'mobile'
 status: 'In development'
@@ -19,5 +19,4 @@ video:
 
 <!-- Pending from Christian: confirm features, stack, year, real screenshots and link. -->
 
-Booking a court usually ends in back-and-forth calls and messages. Vibora shows which courts are free
-in each slot and lets people book and confirm without leaving the app.
+Booking a court usually ends in back-and-forth calls and messages. Víbora shows which hours are still free on each court and lets you book and confirm without leaving the application.

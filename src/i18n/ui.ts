@@ -48,11 +48,11 @@ export const ui = {
     'lens.qa': 'QA',
     'lens.clear': 'Vista normal',
     'lens.hint': 'Atajos: 1, 2, 3 y Esc',
-    'lens.announce.design': 'Lente de diseño puesta',
-    'lens.announce.code': 'Lente de código puesta',
-    'lens.announce.qa': 'Lente QA puesta',
-    'lens.announce.qaScore': 'Lente QA puesta: {passed} de {total} comprobaciones pasan',
-    'lens.announce.off': 'Lente quitada',
+    'lens.announce.design': 'Lente de diseño activada',
+    'lens.announce.code': 'Lente de código activada',
+    'lens.announce.qa': 'Lente QA activada',
+    'lens.announce.qaScore': 'Lente QA activada: pasan {passed} de {total} comprobaciones',
+    'lens.announce.off': 'Lente desactivada',
     'lens.panel.design': 'Cajas, medidas y tipografía reales de cada bloque.',
     'lens.panel.code': 'La etiqueta y el componente de cada bloque, y lo que pesa esta página.',
     'lens.panel.qa': 'Comprobaciones de accesibilidad hechas ahora en tu navegador.',
@@ -67,7 +67,7 @@ export const ui = {
     // Inicio
     'home.meta.title': 'Christian Oller · Software developer',
     'home.meta.description':
-      'Christian Oller, software developer: diseño, programo y pruebo webs y apps. Diseñador, desarrollador y QA. Disponible en remoto desde España.',
+      'Christian Oller, software developer. Diseño, programo y pruebo webs y aplicaciones. Disponible en remoto desde España.',
     'hero.role': 'Software developer',
     'hero.phrase.1': 'Disfruto haciendo webs y apps.',
     'hero.phrase.2': 'Se nota en el resultado.',
@@ -90,7 +90,7 @@ export const ui = {
     // Del boceto al producto
     'view.title': 'Tú ves una web. Yo la veo así.',
     'layers.title': 'Y todo a la vez, en capas.',
-    'layers.lead': 'Cada pantalla que entrego lleva estas cuatro, una encima de otra. Arrastra para girarlas.',
+    'layers.lead': 'Cada pantalla que entrego lleva estas cuatro capas, una encima de otra. Arrastra para girarlas.',
     'layers.gap': 'Separación',
     'layers.hint': 'Arrastra para girar · flechas ← →',
     // Interruptor del panel de la caricatura (WCAG 2.1.4)
@@ -129,7 +129,7 @@ export const ui = {
     'view.step.3.title': 'Como QA',
     'view.step.3.body': 'Veo lo que puede fallar, y lo mido antes de que le pase a alguien.',
     'view.step.3.tools': 'Cypress · Playwright · Karma y Jasmine · Postman',
-    'view.step.0.more': 'Detrás hay tres trabajos distintos. Yo hago los tres, y por eso cada uno sale mejor: diseño sabiendo cómo se programa y programo sabiendo cómo se va a probar.',
+    'view.step.0.more': 'Detrás hay tres oficios distintos. Yo hago los tres y por eso cada uno sale mejor: diseño sabiendo cómo se programa y programo sabiendo cómo se va a probar.',
     'view.step.1.more': 'Antes de abrir el editor decido qué tiene que entenderse en cinco segundos y qué puede esperar. Dibujo la pantalla, la mido y la pruebo con contenido real, no con texto de relleno.',
     'view.step.1.point.1': 'Un solo protagonista por pantalla.',
     'view.step.1.point.2': 'Retícula y espaciado con una escala fija.',
@@ -193,7 +193,7 @@ export const ui = {
     // Proyectos
     'projects.title': 'Proyectos',
     'projects.lead': 'Te presento mis últimos proyectos.',
-    'projects.page.lead': 'Apps propias y webs publicadas. Entra en cada una y mira cómo está hecha por dentro.',
+    'projects.page.lead': 'Aplicaciones web propias y la web de mi agencia. Entra en cada una y mira cómo está hecha por dentro.',
     'projects.mode.label': 'Ver los proyectos como',
     'projects.mode.boxes': 'Cajas',
     'projects.mode.canvas': 'Lienzo',
@@ -219,8 +219,8 @@ export const ui = {
     'projects.all': 'Todos los proyectos',
     'projects.meta.title': 'Proyectos · Christian Oller',
     'projects.meta.description':
-      'Tempora, Vibora, Learnish y Vístalo: apps y webs diseñadas, programadas y probadas por Christian Oller.',
-    'project.kind.app': 'App',
+      'Proyectos de Christian Oller: Tempora, Víbora y Learnish, aplicaciones web de escritorio, y la web de Vístalo, la agencia que cofundó.',
+    'project.kind.app': 'Aplicación web',
     'project.kind.web': 'Web',
     'project.role': 'Mi papel',
     'project.status': 'Estado',
@@ -231,8 +231,8 @@ export const ui = {
     'project.back': 'Todos los proyectos',
 
     // Herramientas por lente
-    'stack.title': 'Lo que uso, por lentes',
-    'stack.lead': 'Las mismas tres fases de cada pantalla, con sus herramientas.',
+    'stack.title': 'Lo que uso, por oficio',
+    'stack.lead': 'Los tres oficios de cada pantalla, con sus herramientas.',
 
     // Pie: el reverso del artboard
     'footer.title': '¿Hablamos?',
@@ -260,11 +260,11 @@ export const ui = {
     'about.meta.description':
       'Christian Oller, software developer que diseña, programa y prueba: Angular, Astro, React, Figma, Cypress y Playwright. En remoto desde España.',
     'about.title': 'Hola, soy Christian.',
-    'about.p1': 'Llevo años haciendo webs, aplicaciones y software, y también logotipos y diseños.',
+    'about.p1': 'Llevo años haciendo webs y aplicaciones, y también logotipos y otros diseños.',
     'about.p2':
       'Antes de programar, diseño: Figma para las interfaces y Procreate cuando toca dibujar. Después pruebo lo que hago con Jasmine, Cypress y Playwright, porque una interfaz bonita que falla no sirve.',
     'about.p3':
-      'En 2025 cofundé Vístalo, una agencia que hace webs, fotos y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
+      'En 2025 cofundé Vístalo con Eloi Cotonat. Es una agencia creativa: hacemos un poco de todo, webs, fotos, vídeo y presencia en Google para negocios pequeños. Trabajo en remoto desde España.',
     'about.experience.title': 'Trayectoria',
     'about.thread': 'Angular: el hilo de casi todo',
     'about.education.title': 'Formación',
@@ -295,7 +295,7 @@ export const ui = {
     'contact.company': 'Empresa (opcional)',
     'contact.topic': 'Sobre qué',
     'contact.topic.job': 'Oferta de empleo',
-    'contact.topic.freelance': 'Proyecto freelance',
+    'contact.topic.freelance': 'Un proyecto',
     'contact.topic.other': 'Otra cosa',
     'contact.message': 'Mensaje',
     'contact.send': 'Enviar mensaje',
@@ -321,7 +321,7 @@ export const ui = {
     'contact.state.now': 'ahora',
     'contact.sent.title': 'Mensaje enviado',
     'contact.sent.body': 'Te respondo por email.',
-    'contact.again': 'Escribir otro',
+    'contact.again': 'Escribir otro mensaje',
     'contact.mailto.subject': 'Contacto desde christianoller.dev',
     'contact.required': 'Campo obligatorio',
     'contact.err.name': 'Escribe tu nombre.',
@@ -385,7 +385,7 @@ export const ui = {
 
     'home.meta.title': 'Christian Oller · Software developer',
     'home.meta.description':
-      'Christian Oller, software developer: I design, build and test websites and apps. Designer, developer and QA. Available remotely from Spain.',
+      'Christian Oller, software developer. I design, build and test websites and applications. Available remotely from Spain.',
     'hero.role': 'Software developer',
     'hero.phrase.1': 'I love building websites and apps.',
     'hero.phrase.2': 'It shows in the result.',
@@ -407,7 +407,7 @@ export const ui = {
 
     'view.title': 'You see a website. This is how I see it.',
     'layers.title': 'All at once, in layers.',
-    'layers.lead': 'Every screen I ship carries these four, one on top of another. Drag to turn them.',
+    'layers.lead': 'Every screen I ship carries these four layers, one on top of another. Drag to turn them.',
     'layers.gap': 'Spacing',
     'layers.hint': 'Drag to turn · arrow keys ← →',
     'bubble.shortcuts': 'Keyboard shortcuts',
@@ -442,7 +442,7 @@ export const ui = {
     'view.step.3.title': 'As QA',
     'view.step.3.body': 'I see what can break, and I measure it before it happens to anyone.',
     'view.step.3.tools': 'Cypress · Playwright · Karma and Jasmine · Postman',
-    'view.step.0.more': 'Behind it there are three different jobs. I do all three, and each one comes out better for it: I design knowing how it gets built, and I build knowing how it will be tested.',
+    'view.step.0.more': 'Behind it there are three different trades. I do all three, and each one comes out better for it: I design knowing how it gets built, and I build knowing how it will be tested.',
     'view.step.1.more': 'Before opening the editor I decide what has to be understood in five seconds and what can wait. I draw the screen, measure it and try it with real content, not filler text.',
     'view.step.1.point.1': 'One protagonist per screen.',
     'view.step.1.point.2': 'Grid and spacing on a fixed scale.',
@@ -505,7 +505,7 @@ export const ui = {
 
     'projects.title': 'Projects',
     'projects.lead': 'Meet my latest projects.',
-    'projects.page.lead': 'My own apps and published websites. Open any of them and see how it is built inside.',
+    'projects.page.lead': 'My own web applications and my agency’s website. Open any of them and see how it is built inside.',
     'projects.mode.label': 'View the projects as',
     'projects.mode.boxes': 'Boxes',
     'projects.mode.canvas': 'Canvas',
@@ -530,8 +530,8 @@ export const ui = {
     'projects.all': 'All projects',
     'projects.meta.title': 'Projects · Christian Oller',
     'projects.meta.description':
-      'Tempora, Vibora, Learnish and Vístalo: apps and websites designed, built and tested by Christian Oller.',
-    'project.kind.app': 'App',
+      'Projects by Christian Oller: Tempora, Víbora and Learnish, desktop web applications, and the website of Vístalo, the agency he co-founded.',
+    'project.kind.app': 'Web app',
     'project.kind.web': 'Website',
     'project.role': 'My role',
     'project.status': 'Status',
@@ -541,8 +541,8 @@ export const ui = {
     'project.next': 'Next project',
     'project.back': 'All projects',
 
-    'stack.title': 'What I use, lens by lens',
-    'stack.lead': 'The same three stages of every screen, with their tools.',
+    'stack.title': 'What I use, by trade',
+    'stack.lead': 'The three trades behind every screen, with their tools.',
 
     'footer.title': 'Shall we talk?',
     'footer.lead':
@@ -568,11 +568,11 @@ export const ui = {
     'about.meta.description':
       'Christian Oller, a software developer who designs, builds and tests: Angular, Astro, React, Figma, Cypress and Playwright. Remote from Spain.',
     'about.title': "Hi, I'm Christian.",
-    'about.p1': "I've spent years making websites, apps and software, as well as logos and designs.",
+    'about.p1': "I've spent years making websites and applications, as well as logos and other designs.",
     'about.p2':
       "Before coding, I design: Figma for interfaces and Procreate when it's time to draw. Then I test what I build with Jasmine, Cypress and Playwright, because a beautiful interface that breaks is no use.",
     'about.p3':
-      'In 2025 I co-founded Vístalo, an agency that makes websites, photos and Google presence for small businesses. I work remotely from Spain.',
+      'In 2025 I co-founded Vístalo with Eloi Cotonat. It is a creative agency: we do a bit of everything, websites, photos, video and Google presence for small businesses. I work remotely from Spain.',
     'about.experience.title': 'Experience',
     'about.thread': 'Angular: the thread through most of it',
     'about.education.title': 'Education',
@@ -601,7 +601,7 @@ export const ui = {
     'contact.company': 'Company (optional)',
     'contact.topic': 'About',
     'contact.topic.job': 'Job offer',
-    'contact.topic.freelance': 'Freelance project',
+    'contact.topic.freelance': 'A project',
     'contact.topic.other': 'Something else',
     'contact.message': 'Message',
     'contact.send': 'Send message',
@@ -627,7 +627,7 @@ export const ui = {
     'contact.state.now': 'now',
     'contact.sent.title': 'Message sent',
     'contact.sent.body': "I'll reply by email.",
-    'contact.again': 'Write another',
+    'contact.again': 'Write another message',
     'contact.mailto.subject': 'Contact from christianoller.dev',
     'contact.required': 'Required field',
     'contact.err.name': 'Enter your name.',

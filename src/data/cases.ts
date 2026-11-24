@@ -29,10 +29,10 @@ export const caseLabels = {
     ink: 'tinta',
     decisions: 'Decisiones',
     code: 'Código',
-    codeLead: 'La pieza de al lado es real: tócala. Este es el código que la mueve en esta página.',
+    codeLead: 'La pieza de al lado funciona: pruébala. Este es el código que la mueve en esta página.',
     tests: 'Pruebas',
     testsLive: 'Comprobado ahora, en tu navegador, sobre la pieza de arriba.',
-    testsStatic: 'Lo que se revisó antes de publicarla.',
+    testsStatic: 'Lo que se ha revisado hasta ahora.',
     result: 'Resultado',
     features: 'Qué hace',
     enjoyed: 'Lo que más disfruté',
@@ -54,10 +54,10 @@ export const caseLabels = {
     ink: 'ink',
     decisions: 'Decisions',
     code: 'Code',
-    codeLead: 'The piece next to this is real: touch it. This is the code that drives it on this page.',
+    codeLead: 'The piece next to this one works: try it. This is the code that drives it on this page.',
     tests: 'Tests',
     testsLive: 'Checked right now, in your browser, on the piece above.',
-    testsStatic: 'What was reviewed before publishing it.',
+    testsStatic: 'What has been checked so far.',
     result: 'Result',
     features: 'What it does',
     enjoyed: 'What I enjoyed most',
@@ -117,12 +117,12 @@ export const cases: Record<string, CaseContent> = {
         note: { es: 'pistas × horas', en: 'courts × times' },
       },
       {
-        title: { es: 'Reservar en dos toques', en: 'Booking in two taps' },
+        title: { es: 'Reservar en dos pasos', en: 'Booking in two steps' },
         body: {
           es: 'Eliges hueco y confirmas. El resumen de abajo repite pista, hora y duración antes de confirmar.',
           en: 'Pick a slot and confirm. The summary below repeats court, time and duration before you confirm.',
         },
-        note: { es: '2 toques', en: '2 taps' },
+        note: { es: '2 pasos', en: '2 steps' },
       },
       {
         title: { es: 'Tu reserva no se pierde de vista', en: 'Your booking stays in sight' },
@@ -135,7 +135,7 @@ export const cases: Record<string, CaseContent> = {
     ],
     enjoyed: {
       title: { es: 'Quitar pasos cuesta más que añadirlos.', en: 'Removing steps is harder than adding them.' },
-      body: { es: 'dejar la reserva en dos toques.', en: 'getting a booking down to two taps.' },
+      body: { es: 'dejar la reserva en dos pasos.', en: 'getting a booking down to two steps.' },
     },
   },
   learnish: {
@@ -166,7 +166,7 @@ export const cases: Record<string, CaseContent> = {
       },
     ],
     enjoyed: {
-      title: { es: 'Una lección por trayecto de metro.', en: 'One lesson per metro ride.' },
+      title: { es: 'Tareas que caben en un descanso.', en: 'Tasks that fit into a break.' },
       body: { es: 'pensar en ratos cortos, que es cuando de verdad se aprende.', en: 'designing for short moments, which is when people actually learn.' },
     },
   },
@@ -175,8 +175,8 @@ export const cases: Record<string, CaseContent> = {
       {
         title: { es: 'Todo sale del nombre', en: 'Everything comes from the name' },
         body: {
-          es: '«Vístelo»: ponle su mejor traje. Los packs son etiquetas de ropa colgadas de una barra y la cinta métrica hace de marquesina.',
-          en: '“Vístelo”: dress it in its best suit. The packs are clothing tags hanging from a rail and the tape measure is the marquee.',
+          es: 'Vístalo es ponerle a un negocio su mejor traje. Los packs son etiquetas de ropa colgadas de una barra y la cinta métrica hace de marquesina.',
+          en: '“Vístalo” means dress it up: a business in its best suit. The packs are clothing tags hanging from a rail and the tape measure is the marquee.',
         },
         note: { es: 'concepto: sastrería', en: 'concept: tailoring' },
       },
@@ -191,8 +191,8 @@ export const cases: Record<string, CaseContent> = {
       {
         title: { es: 'El contacto es una carta', en: 'Contact is a letter' },
         body: {
-          es: 'Con firma a pluma y resguardo en vivo, en lugar de un formulario al uso.',
-          en: 'With a pen signature and a live receipt, instead of a standard form.',
+          es: 'Es un formulario con forma de carta: firma a pluma y un resguardo en vivo.',
+          en: 'It is a form shaped like a letter: a pen signature and a live receipt.',
         },
         note: { es: 'formulario → carta', en: 'form → letter' },
       },
