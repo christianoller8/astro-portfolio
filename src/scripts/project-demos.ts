@@ -1,14 +1,11 @@
 // Los proyectos se pueden tocar (plan §5.2): una mini interacción en cada fragmento de interfaz.
-// - Tempora: añadir un turno y fichar a quien está pendiente.
+// - Tempora: pulsar una casilla vacía del cuadrante pone su turno.
 // - Víbora: elegir una pista libre y confirmar la reserva.
 // - Learnish: ver la respuesta y pasar de tarjeta.
 // - Vístalo: abrir la web real dentro de su marco (solo se carga al pedirla).
 // Todo va por delegación sobre [data-demo]; los datos de cada demo vienen en data-demo-data.
 
 const data = <T>(root: HTMLElement) => JSON.parse(root.dataset.demoData ?? '{}') as T;
-const bump = (el: Element | null, by: number) => {
-  if (el) el.textContent = String(Math.max(0, Number(el.textContent) + by));
-};
 const replay = (el: Element, className: string) => {
   el.classList.remove(className);
   void (el as HTMLElement).offsetWidth;
@@ -45,55 +42,28 @@ document.addEventListener('astro:page-load', () => {
 
 /* ---------- Tempora ---------- */
 
-type Person = { name: string; initials: string; unit: string; shift: string };
-
+// Como en el cuadrante real: la casilla vacía se pulsa y entra su turno, con su color y su letra
 function tempora(root: HTMLElement, target: Element) {
-  const [shifts, done, pending] = root.querySelectorAll('[data-demo-stat]');
-  const info = data<{ next: Person[]; done: string; say: { added: string; clocked: string } }>(root);
-
-  if (target.closest('[data-demo-add]')) {
-    const template = root.querySelector<HTMLTemplateElement>('template[data-demo-row]');
-    const head = root.querySelector('.tp-row--head');
-    const row = template?.content.firstElementChild?.cloneNode(true) as HTMLElement | undefined;
-    if (!row || !head) return;
-    const turn = Number(root.dataset.demoTurn ?? 0);
-    const person = info.next[turn % info.next.length];
-    root.dataset.demoTurn = String(turn + 1);
-    const [who, unit, shift] = row.children;
-    who.querySelector('i')!.textContent = person.initials;
-    who.querySelector('b')!.textContent = person.name;
-    unit.textContent = person.unit;
-    shift.textContent = person.shift;
-    head.after(row);
-    bump(shifts, 1);
-    bump(pending, 1);
-    // La tabla no crece sin fin: se quedan las seis filas más recientes
-    const rows = root.querySelectorAll('.tp-row:not(.tp-row--head)');
-    if (rows.length > 6) rows[rows.length - 1].remove();
-    say(root, info.say.added, { name: person.name, shift: person.shift });
-    return;
-  }
-
-  const chip = target.closest<HTMLElement>('[data-demo-clock]');
-  if (chip) {
-    const row = chip.closest('.tp-row');
-    // El nombre sin las iniciales del avatar (el <i>, que va aria-hidden)
-    const person = row?.querySelector('.tp-person')?.cloneNode(true) as HTMLElement | undefined;
-    person?.querySelector('i')?.remove();
-    const name = person?.textContent?.trim() ?? '';
-    // El chip pasa a estar desactivado y el foco se perdería en body (WCAG 2.4.3): va al siguiente
-    // "Pendiente" de la tabla y, si no queda ninguno, al botón de añadir turno
-    const following = [...root.querySelectorAll<HTMLElement>('[data-demo-clock]')].find((el) => el !== chip);
-    chip.textContent = info.done;
-    chip.classList.remove('is-pending');
-    chip.removeAttribute('data-demo-clock');
-    chip.setAttribute('disabled', '');
-    replay(chip, 'is-just');
-    bump(done, 1);
-    bump(pending, -1);
-    (following ?? root.querySelector<HTMLElement>('[data-demo-add]'))?.focus({ preventScroll: true });
-    say(root, info.say.clocked, { name });
-  }
+  const cell = target.closest<HTMLElement>('[data-demo-cell]');
+  if (!cell) return;
+  const info = data<{ say: { added: string }; shifts: Record<string, string> }>(root);
+  const code = cell.dataset.shift ?? 'M';
+  const label = info.shifts[code] ?? code;
+  const chip = document.createElement('span');
+  chip.className = `tp-shift s-${code} is-just`;
+  const letter = document.createElement('span');
+  letter.setAttribute('aria-hidden', 'true');
+  letter.textContent = code;
+  const name = document.createElement('span');
+  name.className = 'sr-only';
+  name.textContent = label;
+  chip.append(letter, name);
+  // El botón desaparece y el foco se perdería en body (WCAG 2.4.3): pasa a la siguiente casilla vacía
+  const hadFocus = document.activeElement === cell;
+  const following = [...root.querySelectorAll<HTMLElement>('[data-demo-cell]')].find((el) => el !== cell);
+  cell.replaceWith(chip);
+  if (hadFocus) following?.focus({ preventScroll: true });
+  say(root, info.say.added, { name: cell.dataset.name ?? '', shift: `${label}, ${cell.dataset.day ?? ''}` });
 }
 
 /* ---------- Víbora ---------- */

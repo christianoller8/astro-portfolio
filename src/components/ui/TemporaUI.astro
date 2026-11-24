@@ -1,73 +1,66 @@
 ---
-// Fragmento de interfaz de Tempora (turnos de sanitarios), dibujado en HTML hasta tener capturas reales.
-// Los datos son de ejemplo. [data-sketch] marca lo que se dibuja en el boceto.
+// Fragmento del cuadrante de Tempora (turnos de sanitarios), dibujado en HTML a partir de la app real:
+// cuadrante mensual, una fila por persona y una columna por día, el turno con su color y su letra, y
+// el turno se pone pulsando la casilla. Los datos son de ejemplo y respetan el descanso mínimo de
+// 12 h entre turnos. [data-sketch] marca lo que se dibuja en el boceto.
 interface Props {
   lang: 'es' | 'en';
   /** Muestra las notas a mano del boceto (solo en la escena del inicio) */
   notes?: { filters: string; table: string; cta: string };
-  /** Se puede tocar: añadir un turno y fichar a quien está pendiente (src/scripts/project-demos.ts) */
+  /** Se puede tocar: pulsar una casilla vacía pone su turno (src/scripts/project-demos.ts) */
   interactive?: boolean;
 }
 
 import { useTranslations } from '@/i18n/utils';
 
+type Shift = 'M' | 'T' | 'N' | 'G' | 'L';
+
 const { lang, notes, interactive = false } = Astro.props;
 const Action = interactive ? 'button' : 'span';
 // Lo que anuncia la región educada de la demo (project-demos.ts rellena {name} y {shift})
 const t = useTranslations(lang);
-const say = { added: t('demo.say.added'), clocked: t('demo.say.clocked') };
 
 const copy = {
   es: {
-    date: 'Jue 5 nov',
-    nav: ['Turnos', 'Fichajes', 'Equipo', 'Informes'],
-    title: 'Turnos de hoy',
-    tabs: ['Hoy', 'Semana', 'Mes'],
-    cta: 'Nuevo turno',
-    stats: [
-      ['18', 'turnos'],
-      ['15', 'fichados'],
-      ['3', 'pendientes'],
-    ],
-    cols: ['Persona', 'Servicio', 'Turno', 'Estado'],
-    done: 'Fichado',
-    pending: 'Pendiente',
-    shifts: { m: 'Mañana · 8–15 h', t: 'Tarde · 15–22 h', n: 'Noche · 22–8 h' },
-    units: ['Urgencias', 'UCI', 'Planta 3', 'Urgencias'],
+    nav: ['Panel de control', 'Turnos', 'Control horario', 'Ausencias', 'Empleados', 'Informes'],
+    title: 'Turnos — Cuadrante',
+    month: 'Junio 2026',
+    status: 'Borrador',
+    hint: 'Haz clic en una celda para asignar un turno',
+    person: 'Empleado',
+    days: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
+    dayNames: ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'],
+    shifts: { M: 'Mañana', T: 'Tarde', N: 'Noche', G: 'Guardia', L: 'Libranza' },
+    roles: ['Enfermería', 'TCAE', 'Medicina', 'Fisioterapia', 'Celador'],
+    empty: 'sin turno',
   },
   en: {
-    date: 'Thu 5 Nov',
-    nav: ['Shifts', 'Clock-ins', 'Team', 'Reports'],
-    title: "Today's shifts",
-    tabs: ['Today', 'Week', 'Month'],
-    cta: 'New shift',
-    stats: [
-      ['18', 'shifts'],
-      ['15', 'clocked in'],
-      ['3', 'pending'],
-    ],
-    cols: ['Person', 'Unit', 'Shift', 'Status'],
-    done: 'Clocked in',
-    pending: 'Pending',
-    shifts: { m: 'Morning · 8–15', t: 'Evening · 15–22', n: 'Night · 22–8' },
-    units: ['A&E', 'ICU', 'Ward 3', 'A&E'],
+    nav: ['Dashboard', 'Shifts', 'Time tracking', 'Absences', 'Employees', 'Reports'],
+    title: 'Shifts — Rota',
+    month: 'June 2026',
+    status: 'Draft',
+    hint: 'Click a cell to assign a shift',
+    person: 'Employee',
+    days: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+    dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    shifts: { M: 'Morning', T: 'Afternoon', N: 'Night', G: 'On call', L: 'Day off' },
+    roles: ['Nursing', 'Care assistant', 'Medicine', 'Physiotherapy', 'Porter'],
+    empty: 'no shift',
   },
 }[lang];
 
-// Quien entra al pulsar "Nuevo turno" (en ese orden)
-const next = [
-  { name: 'Christian Oller', initials: 'CO', unit: copy.units[1], shift: copy.shifts.t },
-  { name: 'Nuria Vidal', initials: 'NV', unit: copy.units[0], shift: copy.shifts.n },
-  { name: 'Pablo Marín', initials: 'PM', unit: copy.units[2], shift: copy.shifts.m },
-  { name: 'Irene Campos', initials: 'IC', unit: copy.units[1], shift: copy.shifts.t },
+// La primera semana de junio de 2026 (el 1 es lunes). null es la casilla vacía y `fill`, el turno
+// que entra al pulsarla: siempre uno que deja 12 h de descanso con el día de antes y el de después
+const people: { name: string; role: string; week: (Shift | null)[]; fill: Shift }[] = [
+  { name: 'Laura García', role: copy.roles[0], week: ['M', 'M', null, 'T', 'T', 'L', 'L'], fill: 'M' },
+  { name: 'Sofía Fernández', role: copy.roles[0], week: ['T', 'T', null, 'N', 'N', 'L', 'L'], fill: 'T' },
+  { name: 'Ana López', role: copy.roles[1], week: ['L', 'M', 'M', null, 'G', 'L', 'L'], fill: 'M' },
+  { name: 'Carlos Martínez', role: copy.roles[2], week: ['G', 'M', null, 'M', 'T', 'L', 'L'], fill: 'G' },
+  { name: 'Miguel Rodríguez', role: copy.roles[3], week: ['M', 'M', 'M', 'M', null, 'L', 'L'], fill: 'M' },
+  { name: 'Elena Torres', role: copy.roles[2], week: ['M', 'G', 'M', 'T', 'N', 'L', 'L'], fill: 'M' },
+  { name: 'David Sánchez', role: copy.roles[4], week: ['N', 'N', 'L', 'L', 'M', 'M', 'L'], fill: 'M' },
 ];
-
-const rows = [
-  { name: 'Lucía Prieto', initials: 'LP', unit: copy.units[0], shift: copy.shifts.m, ok: true },
-  { name: 'Javier Ortega', initials: 'JO', unit: copy.units[1], shift: copy.shifts.t, ok: true },
-  { name: 'Marta Ruiz', initials: 'MR', unit: copy.units[2], shift: copy.shifts.n, ok: false },
-  { name: 'Daniel Soto', initials: 'DS', unit: copy.units[3], shift: copy.shifts.m, ok: true },
-];
+const firstEmpty = people.findIndex((person) => person.week.includes(null));
 ---
 
 <div
@@ -76,17 +69,17 @@ const rows = [
   role={interactive ? 'group' : 'img'}
   aria-label={`Tempora — ${copy.title}`}
   data-demo={interactive ? 'tempora' : undefined}
-  data-demo-data={interactive ? JSON.stringify({ next, done: copy.done, say }) : undefined}
+  data-demo-data={interactive ? JSON.stringify({ say: { added: t('demo.say.added') }, shifts: copy.shifts }) : undefined}
 >
   <div class="tp-top" data-sketch="box">
-    <span class="tp-logo" data-sketch="text">Tempora</span>
-    <span class="tp-date" data-sketch="text">{copy.date}</span>
+    <span class="tp-logo" data-sketch="text"><i aria-hidden="true"></i>Tempora</span>
+    <span class="tp-org" data-sketch="text">Tempora Demo</span>
   </div>
   <div class="tp-body">
     <div class="tp-side" data-sketch="box">
       {
         copy.nav.map((item, i) => (
-          <span class:list={['tp-nav', { 'is-on': i === 0 }]} data-sketch="text">
+          <span class:list={['tp-nav', { 'is-on': i === 1 }]} data-sketch="text">
             {item}
           </span>
         ))
@@ -95,82 +88,63 @@ const rows = [
     <div class="tp-main">
       <div class="tp-head">
         <span class="tp-title" data-sketch="text">{copy.title}</span>
-        <Action
-          class="tp-cta"
-          type={interactive ? 'button' : undefined}
-          data-demo-add={interactive ? '' : undefined}
-          data-sketch="box"
-          data-sketch-note={notes?.cta}>+ {copy.cta}</Action
-        >
+        <span class="tp-tools">
+          <span class="tp-month" data-sketch="box" data-sketch-note={notes?.filters}>{copy.month}</span>
+          <span class="tp-status" data-sketch="text">{copy.status}</span>
+        </span>
       </div>
-      <div class="tp-tabs">
+      <div class="tp-legend">
         {
-          copy.tabs.map((tab, i) => (
-            <span
-              class:list={['tp-tab', { 'is-on': i === 0 }]}
-              data-sketch="box"
-              data-sketch-note={i === copy.tabs.length - 1 ? notes?.filters : undefined}
-            >
-              {tab}
+          (Object.entries(copy.shifts) as [Shift, string][]).map(([code, label]) => (
+            <span class={`tp-key s-${code}`} data-sketch="box">
+              {label}
             </span>
           ))
         }
+        <span class="tp-hint" data-sketch="text">{copy.hint}</span>
       </div>
-      <div class="tp-stats">
+      <div class="tp-grid" data-sketch="box" data-sketch-note={notes?.table}>
+        <span class="tp-cell tp-corner">{copy.person}</span>
         {
-          copy.stats.map(([value, label]) => (
-            <span class="tp-stat" data-sketch="box">
-              <strong data-demo-stat>{value}</strong> {label}
+          copy.days.map((day, i) => (
+            <span class:list={['tp-cell', 'tp-day', { 'is-weekend': i > 4 }]}>
+              <b>{i + 1}</b>
+              {day}
             </span>
           ))
         }
-      </div>
-      <div class="tp-table" data-sketch="box" data-sketch-note={notes?.table}>
-        <div class="tp-row tp-row--head">
-          {copy.cols.map((col) => <span>{col}</span>)}
-        </div>
         {
-          rows.map((row) => (
-            <div class="tp-row">
-              <span class="tp-person" data-sketch="text">
-                <i aria-hidden="true">{row.initials}</i>
-                {row.name}
+          people.map((person, row) => (
+            <>
+              <span class="tp-cell tp-person" data-sketch="text">
+                <b>{person.name}</b>
+                <small>{person.role}</small>
               </span>
-              <span data-sketch="text">{row.unit}</span>
-              <span data-sketch="text">{row.shift}</span>
-              {row.ok ? (
-                <span class="tp-chip" data-sketch="box">
-                  {copy.done}
+              {person.week.map((code, i) => (
+                <span class:list={['tp-cell', { 'is-weekend': i > 4 }]}>
+                  {code ? (
+                    <span class={`tp-shift s-${code}`}>
+                      <span aria-hidden="true">{code}</span>
+                      <span class="sr-only">{copy.shifts[code]}</span>
+                    </span>
+                  ) : (
+                    <Action
+                      class="tp-add"
+                      type={interactive ? 'button' : undefined}
+                      aria-label={interactive ? `${person.name}, ${copy.dayNames[i]} ${i + 1}: ${copy.empty}` : undefined}
+                      data-demo-cell={interactive ? '' : undefined}
+                      data-shift={interactive ? person.fill : undefined}
+                      data-name={interactive ? person.name : undefined}
+                      data-day={interactive ? `${copy.dayNames[i]} ${i + 1}` : undefined}
+                      data-sketch-note={row === firstEmpty ? notes?.cta : undefined}
+                    >
+                      +
+                    </Action>
+                  )}
                 </span>
-              ) : (
-                <Action
-                  class="tp-chip is-pending"
-                  type={interactive ? 'button' : undefined}
-                  data-demo-clock={interactive ? '' : undefined}
-                  data-sketch="box"
-                >
-                  {copy.pending}
-                </Action>
-              )}
-            </div>
+              ))}
+            </>
           ))
-        }
-        {
-          interactive && (
-            <template data-demo-row>
-              <div class="tp-row is-new">
-                <span class="tp-person">
-                  <i aria-hidden="true" />
-                  <b />
-                </span>
-                <span />
-                <span />
-                <button type="button" class="tp-chip is-pending" data-demo-clock>
-                  {copy.pending}
-                </button>
-              </div>
-            </template>
-          )
         }
       </div>
     </div>
@@ -179,11 +153,12 @@ const rows = [
 
 <style>
   .tp {
-    --tp-ink: #0f1d1b;
-    --tp-muted: #4b5b58;
-    --tp-line: #dfe7e5;
-    --tp-soft: #f2f7f6;
-    --tp-brand: #0f766e;
+    --tp-ink: #1c1633;
+    --tp-muted: #5d5874;
+    --tp-line: #e6e2f3;
+    --tp-soft: #f5f3fc;
+    --tp-brand: #4b21c9;
+    --tp-brand-soft: #ebe6fb;
     position: relative;
     display: grid;
     grid-template-rows: auto 1fr;
@@ -201,187 +176,241 @@ const rows = [
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.862em 1.231em;
+    padding: 0.8em 1.231em;
     border-bottom: 1px solid var(--tp-line);
   }
   .tp-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
     font-weight: 700;
     letter-spacing: -0.01em;
-    color: var(--tp-brand);
   }
-  .tp-date {
+  .tp-logo i {
+    width: 1.55em;
+    height: 1.55em;
+    background: var(--tp-brand);
+    border-radius: 0.4em;
+  }
+  .tp-org {
     color: var(--tp-muted);
   }
   .tp-body {
     display: grid;
-    grid-template-columns: 10.462em minmax(0, 1fr);
+    grid-template-columns: 9.6em minmax(0, 1fr);
     min-height: 0;
   }
   .tp-side {
     display: grid;
     align-content: start;
-    gap: 0.431em;
-    padding: 1.108em 0.923em;
-    background: var(--tp-soft);
+    gap: 0.25em;
+    padding: 1em 0.7em;
+    border-right: 1px solid var(--tp-line);
   }
   .tp-nav {
-    padding: 0.431em 0.615em;
+    padding: 0.45em 0.6em;
     color: var(--tp-muted);
+    border-radius: 0.45em;
+    white-space: nowrap;
   }
   .tp-nav.is-on {
-    color: #fff;
-    background: var(--tp-brand);
+    font-weight: 600;
+    color: var(--tp-brand);
+    background: var(--tp-brand-soft);
   }
   .tp-main {
     display: grid;
     align-content: start;
-    gap: 0.985em;
-    padding: 1.108em 1.231em 1.231em;
+    gap: 0.8em;
+    padding: 1em 1.231em 1.231em;
     min-width: 0;
+    background: var(--tp-soft);
   }
   .tp-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.231em;
+    gap: 1em;
   }
   .tp-title {
     font-size: 1.3em;
     font-weight: 700;
   }
-  .tp-cta {
-    padding: 0.554em 0.862em;
-    font-weight: 600;
-    color: #fff;
-    background: var(--tp-brand);
-  }
-  .tp-tabs {
+  .tp-tools {
     display: flex;
-    gap: 0.308em;
+    align-items: center;
+    gap: 0.5em;
   }
-  .tp-tab {
-    padding: 0.369em 0.8em;
-    color: var(--tp-muted);
-    background: var(--tp-soft);
-  }
-  .tp-tab.is-on {
-    color: var(--tp-ink);
+  .tp-month {
+    padding: 0.4em 1.9em 0.4em 0.7em;
     font-weight: 600;
-    box-shadow: inset 0 -2px 0 var(--tp-brand);
+    /* La flecha del desplegable, en V, con dos medios cuadrados */
+    background:
+      linear-gradient(45deg, transparent 50%, var(--tp-muted) 50%) right 0.85em top 50% / 0.36em 0.36em no-repeat,
+      linear-gradient(135deg, var(--tp-muted) 50%, transparent 50%) right 0.5em top 50% / 0.36em 0.36em no-repeat,
+      #fff;
+    border: 1px solid var(--tp-line);
+    border-radius: 0.45em;
   }
-  .tp-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.615em;
-  }
-  .tp-stat {
-    padding: 0.677em 0.862em;
-    color: var(--tp-muted);
-    background: var(--tp-soft);
-  }
-  .tp-stat strong {
-    display: block;
-    font-size: 1.55em;
+  .tp-status {
+    padding: 0.3em 0.6em;
+    font-size: 0.85em;
     font-weight: 700;
-    color: var(--tp-ink);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--tp-muted);
+    background: #ece9f5;
+    border-radius: 0.35em;
   }
-  .tp-table {
-    display: grid;
-  }
-  .tp-row {
-    display: grid;
-    grid-template-columns: 1.4fr 0.9fr 1.2fr 0.8fr;
+  .tp-legend {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.615em;
-    padding: 0.615em 0.308em;
-    border-bottom: 1px solid var(--tp-line);
+    gap: 0.35em;
   }
-  .tp-row--head {
+  .tp-key {
+    padding: 0.2em 0.6em;
+    font-size: 0.85em;
     font-weight: 600;
+    border: 1px solid;
+    border-radius: 0.4em;
+  }
+  .tp-hint {
+    margin-left: 0.4em;
+    font-size: 0.85em;
     color: var(--tp-muted);
   }
-  .tp-person {
-    display: flex;
-    align-items: center;
-    gap: 0.554em;
-    font-weight: 600;
-    white-space: nowrap;
+  .tp-grid {
+    display: grid;
+    grid-template-columns: minmax(7.6em, 1.7fr) repeat(7, minmax(2.1em, 1fr));
+    background: #fff;
+    border: 1px solid var(--tp-line);
+    border-radius: 0.6em;
+    overflow: hidden;
   }
-  .tp-person i {
-    display: inline-grid;
+  .tp-cell {
+    display: grid;
     place-items: center;
-    width: 2.14em;
-    height: 2.14em;
-    font-style: normal;
-    font-size: 0.92em;
-    color: var(--tp-brand);
-    background: #d9efec;
-    border-radius: 50%;
-  }
-  .tp-chip {
-    justify-self: start;
-    padding: 0.185em 0.615em;
-    font-weight: 600;
-    color: #0b5e3b;
-    background: #def5e8;
-  }
-  .tp-chip.is-pending {
-    color: #7a4a00;
-    background: #fdeccc;
-  }
-  .tp-row > * {
     min-width: 0;
+    min-height: 2.55em;
+    padding: 0.25em;
+    border-bottom: 1px solid var(--tp-line);
+    border-left: 1px solid var(--tp-line);
+  }
+  .tp-cell.is-weekend {
+    background: #f3f1f9;
+  }
+  .tp-corner,
+  .tp-person {
+    justify-items: start;
+    padding: 0.3em 0.7em;
+    border-left: 0;
+  }
+  .tp-corner {
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--tp-muted);
+  }
+  .tp-day {
+    font-size: 0.72em;
+    line-height: 1.15;
+    color: var(--tp-muted);
+  }
+  .tp-day b {
+    display: block;
+    font-size: 1.45em;
+    color: var(--tp-ink);
   }
   .tp-person b {
-    font-weight: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
-  /* Lo que se puede tocar */
-  /* 26 px: sigue por encima de los 24 de zona táctil cuando la tarjeta está a escala 0,94 */
-  button.tp-chip {
-    min-height: 2em;
+  .tp-person small {
+    font-size: 0.78em;
+    color: var(--tp-muted);
   }
-  button.tp-cta,
-  button.tp-chip {
+  .tp-shift,
+  .tp-add {
+    display: grid;
+    place-items: center;
+    width: 1.95em;
+    height: 1.95em;
+    font-weight: 700;
+    border-radius: 0.45em;
+  }
+  .tp-shift {
+    border: 1px solid;
+  }
+  /* Los colores del cuadrante real, con el texto oscurecido donde hacía falta para el contraste AA */
+  .s-M {
+    color: #1d4ed8;
+    background: rgb(59 130 246 / 0.2);
+    border-color: rgb(59 130 246 / 0.5);
+  }
+  .s-T {
+    color: #9a3412;
+    background: rgb(249 115 22 / 0.2);
+    border-color: rgb(249 115 22 / 0.5);
+  }
+  .s-N {
+    color: #6d28d9;
+    background: rgb(139 92 246 / 0.2);
+    border-color: rgb(139 92 246 / 0.5);
+  }
+  .s-G {
+    color: #b91c1c;
+    background: rgb(239 68 68 / 0.18);
+    border-color: rgb(239 68 68 / 0.5);
+  }
+  .s-L {
+    color: #166534;
+    background: rgb(34 197 94 / 0.14);
+    border-color: rgb(34 197 94 / 0.45);
+  }
+  .tp-add {
+    color: var(--tp-muted);
+    border: 1px dashed #cbc5e0;
+  }
+  /* Lo que se puede tocar: la casilla vacía, con su zona de 24 px aunque la tarjeta vaya a escala */
+  button.tp-add {
+    min-width: 24px;
+    min-height: 24px;
+    font: inherit;
+    font-weight: 700;
     cursor: pointer;
+    background: none;
     transition:
       background-color 140ms ease-out,
       transform 140ms ease-out;
   }
-  button.tp-cta:hover {
-    background: #0c5f59;
+  button.tp-add:hover {
+    color: var(--tp-brand);
+    background: var(--tp-brand-soft);
+    border-color: var(--tp-brand);
   }
-  button.tp-chip.is-pending:hover {
-    background: #fbdca0;
-  }
-  button.tp-cta:active,
-  button.tp-chip:active {
-    transform: scale(0.96);
+  button.tp-add:active {
+    transform: scale(0.94);
   }
   .tp :focus-visible {
     outline: 2px solid var(--tp-ink);
     outline-offset: 2px;
   }
-  .tp-row.is-new {
-    animation: tp-new 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .tp-chip.is-just {
-    animation: tp-pop 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  @keyframes tp-new {
-    from {
-      opacity: 0;
-      transform: translateY(-0.6rem);
-      background: #d9efec;
-    }
+  .tp-shift.is-just {
+    animation: tp-pop 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   @keyframes tp-pop {
     from {
-      transform: scale(0.8);
+      opacity: 0;
+      transform: scale(0.6);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .tp-row.is-new,
-    .tp-chip.is-just {
+    .tp-shift.is-just {
       animation: none;
     }
   }
@@ -389,23 +418,19 @@ const rows = [
     .tp-body {
       grid-template-columns: minmax(0, 1fr);
     }
+    .tp-side,
+    .tp-hint,
+    .tp-org {
+      display: none;
+    }
     .tp-head {
       flex-wrap: wrap;
-      gap: 0.615em;
+      gap: 0.5em;
     }
-    .tp-person {
-      white-space: normal;
+    .tp-grid {
+      grid-template-columns: minmax(5.6em, 1.4fr) repeat(7, minmax(1.9em, 1fr));
     }
-    .tp-person i {
-      display: none;
-    }
-    .tp-side {
-      display: none;
-    }
-    .tp-row {
-      grid-template-columns: 1.4fr 1fr 0.9fr;
-    }
-    .tp-row > :nth-child(2) {
+    .tp-person small {
       display: none;
     }
   }

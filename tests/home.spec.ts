@@ -70,25 +70,25 @@ for (const lang of LANGS) {
       await open(page, pageUrl(lang, '/'));
     });
 
-    test('Tempora adds a shift and clocks someone in, and announces both', async ({ page }) => {
+    test('Tempora puts a shift in an empty cell of the rota when it is clicked, and announces it', async ({ page }) => {
       const demo = page.locator('.stack [data-demo="tempora"]');
       await demo.scrollIntoViewIfNeeded();
       const live = demo.locator('[data-demo-live-region]');
-      const stats = demo.locator('[data-demo-stat]');
-      const shifts = Number(await stats.nth(0).textContent());
-      const pending = Number(await stats.nth(2).textContent());
+      const empty = demo.locator('[data-demo-cell]');
+      const before = await empty.count();
+      const name = (await empty.first().getAttribute('data-name')) ?? '';
 
-      await demo.locator('[data-demo-add]').click();
-      await expect(stats.nth(0)).toHaveText(String(shifts + 1));
-      await expect(stats.nth(2)).toHaveText(String(pending + 1));
-      await expect(demo.getByText('Christian Oller', { exact: true })).toBeVisible();
+      await empty.first().click();
+      await expect(empty).toHaveCount(before - 1);
+      await expect(demo.locator('.tp-shift.is-just')).toHaveCount(1);
       await expect(live).toHaveText(startOf(lang, 'demo.say.added'));
-      await expect(live).toContainText('Christian Oller');
+      await expect(live).toContainText(name);
 
-      const clock = demo.locator('[data-demo-clock]').first();
-      await clock.click();
-      await expect(stats.nth(2)).toHaveText(String(pending));
-      await expect(live).toHaveText(/(: clocked in\.|: fichado\.)$/);
+      // Con el teclado, el foco pasa a la siguiente casilla vacía en vez de perderse
+      await empty.first().focus();
+      await page.keyboard.press('Enter');
+      await expect(empty).toHaveCount(before - 2);
+      await expect(empty.first()).toBeFocused();
     });
 
     test('Vibora books a court and confirms it, and announces both', async ({ page }) => {
