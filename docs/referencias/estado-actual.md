@@ -43,6 +43,10 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   el lienzo de Proyectos y en "Siguiente proyecto", y con demos HTML dibujadas como pantallas de
   móvil. Para la revisión de textos: en sus casos (`src/data/cases.ts`) se habla de "dos toques",
   "al alcance del pulgar" y "Móvil · 390 px", que solo valen para su versión responsive.
+  Decidido por él el 24 nov: se corrige **junto con los vídeos**. Con las grabaciones de las apps
+  reales delante, se rehacen las demos de Víbora y Learnish como interfaces de escritorio y se pasa
+  su formato a `desktop`, todo de una vez (cambiar solo el formato estiraría unas demos dibujadas
+  para móvil).
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la
