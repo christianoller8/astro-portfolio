@@ -190,9 +190,9 @@ test.describe('Canvas map keeps focus on itself and the top bar', () => {
   });
 
   test('focus returns to the button that opened it', async ({ page }) => {
-    // El botón "Ver el lienzo" de la 404 vive dentro de <main>, que queda inerte mientras está abierto
+    // El botón "Ver lienzo" de la 404 vive dentro de <main>, que queda inerte mientras está abierto
     await open(page, '/no-existe/');
-    const opener = page.locator('[data-nf-lang="es"]').getByRole('button', { name: 'Ver el lienzo', exact: true });
+    const opener = page.locator('[data-nf-lang="es"]').getByRole('button', { name: 'Ver lienzo', exact: true });
     await opener.click();
     await expect(canvas(page)).toBeVisible();
     await expect(here(page)).toBeFocused();

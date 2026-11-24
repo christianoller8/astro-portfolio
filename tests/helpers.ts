@@ -25,7 +25,7 @@ export const PAGES = [
 /** Los cuatro proyectos, en el orden en que salen en la web, con el título que llevan en el contenido */
 export const PROJECTS = [
   { slug: 'tempora', title: 'Tempora' },
-  { slug: 'vibora', title: 'Vibora' },
+  { slug: 'vibora', title: 'Víbora' },
   { slug: 'learnish', title: 'Learnish' },
   { slug: 'vistalo', title: 'Vístalo' },
 ] as const;

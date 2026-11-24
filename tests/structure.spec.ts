@@ -97,8 +97,8 @@ test.describe('Shortcut keys stay out of the accessible names', () => {
 
   test('the 404 "view the canvas" button is named without M and exposes the key', async ({ page }) => {
     for (const { url, label } of [
-      { url: '/no-existe/', label: 'Ver el lienzo' },
-      { url: '/en/no-existe/', label: 'View the canvas' },
+      { url: '/no-existe/', label: 'Ver lienzo' },
+      { url: '/en/no-existe/', label: 'View canvas' },
     ]) {
       await open(page, url);
       const button = page.getByRole('button', { name: label, exact: true });

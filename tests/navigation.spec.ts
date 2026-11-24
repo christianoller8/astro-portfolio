@@ -80,10 +80,10 @@ test.describe('Internal links', () => {
 
 test.describe('404', () => {
   for (const { lang, url, title } of [
-    { lang: 'es' as Lang, url: '/no-existe/', title: 'Frame no encontrado' },
-    { lang: 'en' as Lang, url: '/en/does-not-exist/', title: 'Frame not found' },
-    { lang: 'es' as Lang, url: '/projects/no-existe/', title: 'Frame no encontrado' },
-    { lang: 'en' as Lang, url: '/en/projects/no-existe/', title: 'Frame not found' },
+    { lang: 'es' as Lang, url: '/no-existe/', title: 'Página no encontrada' },
+    { lang: 'en' as Lang, url: '/en/does-not-exist/', title: 'Page not found' },
+    { lang: 'es' as Lang, url: '/projects/no-existe/', title: 'Página no encontrada' },
+    { lang: 'en' as Lang, url: '/en/projects/no-existe/', title: 'Page not found' },
   ]) {
     test(`answers 404 in ${lang}: ${url}`, async ({ page }) => {
       const response = await page.goto(url);

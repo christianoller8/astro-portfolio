@@ -1,6 +1,6 @@
 // Los proyectos se pueden tocar (plan §5.2): una mini interacción en cada fragmento de interfaz.
 // - Tempora: añadir un turno y fichar a quien está pendiente.
-// - Vibora: elegir una pista libre y confirmar la reserva.
+// - Víbora: elegir una pista libre y confirmar la reserva.
 // - Learnish: ver la respuesta y pasar de tarjeta.
 // - Vístalo: abrir la web real dentro de su marco (solo se carga al pedirla).
 // Todo va por delegación sobre [data-demo]; los datos de cada demo vienen en data-demo-data.
@@ -96,7 +96,7 @@ function tempora(root: HTMLElement, target: Element) {
   }
 }
 
-/* ---------- Vibora ---------- */
+/* ---------- Víbora ---------- */
 
 function vibora(root: HTMLElement, target: Element) {
   const info = data<{
