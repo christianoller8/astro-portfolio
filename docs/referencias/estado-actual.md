@@ -113,8 +113,15 @@ Por orden de urgencia (lista completa en el roadmap):
    arriba de la página en oscuro, en su idioma (`public/og/`, 1200 × 630, unos 90 KB). Las genera
    `og-images.mjs` y `Layout.astro` elige la de cada ruta; la 404 y las internas usan la general.
    En la de la home se ocultan los botones del hero, que caían cortados en el borde.
-3. **Accesibilidad**: los fallos de la auditoría están arreglados (ver su tabla). Falta una revisión
-   con un lector de pantalla real.
+3. **Accesibilidad**: los fallos de la auditoría están arreglados (ver su tabla). Revisión con lector
+   de pantalla hecha el 24 nov: una pasada automática de toda la lista de `prueba-nvda.md` sobre el
+   árbol de accesibilidad de Chromium (casi todo bien) y Christian con NVDA en Edge los puntos que
+   solo NVDA puede decir ("funciona correctamente"). Quedan de la pasada automática: la lista de
+   requisitos del formulario (`#c-checks`) solo cambia de color al cumplirse; el giro de las capas 3D
+   avanza de 0,12 rad y nunca dice "De frente"; el resumen "Faltan datos…" no se actualiza al
+   corregir un campo; al poner una lente no se anuncia cuál. Y cuatro detalles de estructura: el pie
+   está dentro de `<main>` (no hay `contentinfo`), el bocadillo queda fuera de los puntos de
+   referencia, algunos nombres llevan la tecla del atajo ("Diseño 1") y el lienzo no es modal.
 4. **Rendimiento** (23 nov, medido con Lighthouse en local): escritorio ya daba 99–100. Para móvil,
    tres arreglos: la foto del hero del tema activo se precarga desde el `<head>` (sigue bajando una
    sola), la del hero y las de proyecto piden el tamaño en que se ven (`src/data/hero-photo.ts` y

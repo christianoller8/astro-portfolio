@@ -29,6 +29,18 @@ publicada ese día).
 > encabezado de nivel 1). Es lo normal: los atajos de la web no se disparan y no es un fallo. Las
 > lentes se abren desde el bocadillo (punto 5).
 
+Tropiezos de la primera vez (24 nov):
+
+- **Teclados sin `Insert`** (el Logitech MX, por ejemplo): usa `Bloq Mayús` como tecla NVDA. Icono
+  de NVDA junto al reloj → clic derecho → Preferencias → Opciones → Teclado → marcar **Bloq Mayús**.
+  En los MX, las teclas F piden `Fn` (o se fijan con `Fn+Esc`).
+- **Si NVDA solo dice "Chrome Legacy Window"**, Chrome no le está dando la página: suele seguir
+  abierto en segundo plano. Ciérralo del todo (⋮ → Salir) y ábrelo con NVDA ya encendido, o usa
+  Edge, que funcionó a la primera.
+- **El Visor de voz** (`NVDA+N` → Herramientas → Visor de voz) enseña por escrito todo lo que dice
+  NVDA: sirve para copiar lo que falle.
+- `NVDA+Ctrl+R` tres veces seguidas restablece los ajustes de fábrica (y quita lo de `Bloq Mayús`).
+
 ## 1. Inicio: estructura
 
 - [ ] Al cargar, NVDA dice el título: "Christian Oller · Software developer".
