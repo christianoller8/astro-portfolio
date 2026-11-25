@@ -39,10 +39,9 @@ Cada cosa indica qué etapa bloquea.
   marca de made_byfede). Christian quiere esa misma animación, con su caricatura: se pinta el pelo,
   etc.
 - [ ] **Fotos**: la sesión nueva en blanco y negro. Mientras tanto se usa `profile.jpg`. Bloquea E4.
-- [ ] **Imágenes reales de Tempora, Vibora y Learnish** (pendiente desde el 19 nov; pediste que
-  te lo recordara). Hoy solo Vístalo tiene capturas reales; en los otros tres la imagen es un
-  fragmento de interfaz montado en HTML para la web. Afecta a las tarjetas, a la cabecera de cada
-  caso y al morph. No bloquea nada hasta E4.
+- [x] **Imágenes reales de Tempora, Víbora y Learnish** (cerrado el 25 nov). Las cuatro apps
+  tienen su vídeo grabado en la caja de Proyectos, y las maquetas HTML de la home, los casos y el
+  lienzo se redibujaron a partir de las apps reales.
 - [x] **CV en PDF**: recibido el 18 nov (`public/cv/christian-oller-cv.pdf`). La formación y los
   idiomas salen de ahí (19 nov).
 - [ ] **Contenido real de cada proyecto** (Tempora, Vibora, Learnish y Vístalo). Bloquea E4:

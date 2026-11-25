@@ -35,32 +35,16 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   puede ver así (aprobado). **Vídeos (24 nov)**: los cuatro proyectos ya tienen el suyo en la caja
   grande de Proyectos (aprobados por él), grabados con
   `.taste-skill/eloi-1118/tools/app-videos.mjs`. Cómo se graban y los guiones: `guia-videos-proyectos.md`,
-  sección 10. Debajo de cada vídeo, las decisiones aún describen las demos HTML y no la app real:
-  se corrigen con la ronda 2 de textos, cotejada con los repos (artefacto "Revisión con los repos").
-- **Corrección del 24 nov, pendiente en la web**: Víbora y Learnish **no son apps de móvil**; las
-  tres apps son de escritorio con versión responsive. La web aún las presenta como de móvil
-  (`format: 'mobile'` en `src/content/projects/*/vibora.md` y `learnish.md`): estrechas y centradas
-  sobre su color en las cajas (`ProjectVisual.astro`), con marco de móvil en la página del caso, en
-  el lienzo de Proyectos y en "Siguiente proyecto", y con demos HTML dibujadas como pantallas de
-  móvil. Para la revisión de textos: en sus casos (`src/data/cases.ts`) se habla de "dos toques",
-  "al alcance del pulgar" y "Móvil · 390 px", que solo valen para su versión responsive.
-  Decidido por él el 24 nov: se corrige **junto con los vídeos**. Con las grabaciones de las apps
-  reales delante, se rehacen las demos de Víbora y Learnish como interfaces de escritorio y se pasa
-  su formato a `desktop`, todo de una vez (cambiar solo el formato estiraría unas demos dibujadas
-  para móvil).
-- **El nombre es Víbora, con tilde** (confirmado por él el 24 nov). La web lo escribe "Vibora" en
-  todas partes (título del proyecto, demo, rótulos, tests, imágenes para compartir y miniaturas del
-  lienzo). Se cambia al aplicar la revisión de textos (página de revisión publicada el 24 nov:
-  https://claude.ai/artifact/8atwYEHRiiJVS2LrtCrr5M, decisiones en su colección `decisions`), y
-  luego se regeneran las imágenes una sola vez. La ruta `/projects/vibora/` se queda sin tilde.
-- **Textos, listos para aplicar (24 nov)**: ronda 1 con 50 propuestas aceptadas y 1 que se queda
-  (artefacto de arriba) y ronda 2, cotejada con el código de cada repo, con 27 aceptadas y «2025»
-  confirmado en Sobre mí (https://claude.ai/artifact/BEcEz6zBp1Tw4XMyCkKfm1, colección
-  `decisions`). Donde las dos rondas tocan el mismo texto, manda la ronda 2. Tres de la ronda 2 son
-  de diseño y también están aceptadas: rehacer las maquetas de Tempora (un trozo del cuadrante
-  mensual; la demo pasa a poner un turno pulsando una casilla), Víbora (una pista y sus horas,
-  «Seleccionada») y Learnish (phrasal verbs y cuatro botones), enseñándoselas antes de cerrarlas.
-  Va junto con el formato `desktop` de Víbora y Learnish.
+  sección 10. Debajo de cada vídeo, las decisiones ya cuentan lo que hace la app real.
+- **Textos y maquetas, aplicados (25 nov, aprobados por él)**: las dos rondas de la revisión de
+  textos están en la web. Ronda 1: https://claude.ai/artifact/8atwYEHRiiJVS2LrtCrr5M. Ronda 2,
+  cotejada con el código de cada repo: https://claude.ai/artifact/BEcEz6zBp1Tw4XMyCkKfm1. Las
+  decisiones están en la colección `decisions` de cada una. Víbora va con tilde en todo (la ruta
+  `/projects/vibora/` sigue sin ella). Víbora y Learnish son de escritorio (ya sin `format:
+  'mobile'`) y las tres maquetas dibujan las apps reales: el cuadrante mensual de Tempora (la demo
+  pone un turno pulsando una casilla), la agenda de una pista de Víbora (con el diálogo «Confirmar
+  reserva») y la sesión de tarjetas de Learnish (cuatro botones). Las miniaturas del lienzo, las
+  alturas de las páginas y las imágenes para compartir están regeneradas.
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la

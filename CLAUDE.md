@@ -39,16 +39,15 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 - **Imágenes**: los originales que él da van en `docs/imgs/`; las piezas del personaje que se generen,
   también en `docs/imgs/avatar/`.
 - **Notas**: lo que se aprende o se decide se apunta en `docs/referencias/`.
-- **Recordatorio pendiente**: los cuatro proyectos ya tienen vídeo en su caja de Proyectos. En la home, los casos y el lienzo siguen las demos HTML, que no
-  coinciden del todo con las apps: se ajustan con la ronda 2 de textos. Recordárselo al tocar
-  proyectos o cuando pregunte qué falta.
+- **Proyectos**: los cuatro tienen vídeo en su caja de Proyectos. En la home, los casos y el lienzo
+  van maquetas HTML dibujadas a partir de las apps reales (25 nov): si una app cambia, la maqueta y
+  las decisiones de su caso (`src/data/cases.ts`) se cotejan con su repo.
 
 ## Quién es
 
 Christian Oller, software developer (Diseñador × Desarrollador × QA) y cofundador de Vístalo con Eloi
 Cotonat. Sus proyectos: **Tempora, Víbora y Learnish son aplicaciones de escritorio con versión
-responsive para móvil** (ninguna es una app de móvil, aunque el contenido aún marque dos con
-`format: 'mobile'`, ver estado-actual); **Vístalo es la web de su agencia creativa** con Eloi
+responsive para móvil** (ninguna es una app de móvil); **Vístalo es la web de su agencia creativa** con Eloi
 (webs, fotos, vídeo y Google para negocios pequeños), aún en construcción. Cuida mucho el detalle visual e itera el diseño a ojo; le gusta lo mínimo pero sorprendente.
 La web de Eloi (eloicotonat.com) es referencia de oficio, pero **no se copia su firma**: ver la
 sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
