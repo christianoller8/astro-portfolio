@@ -25,6 +25,8 @@ const projectsCollection = defineCollection({
         })
         .optional(),
       link: z.string().optional(),
+      // Repositorio público en GitHub (solo los que no tienen nada privado dentro): botón "Ver el código"
+      repo: z.string().url().optional(),
       year: z.number().optional(),
       order: z.number(),
       featured: z.boolean().default(true),

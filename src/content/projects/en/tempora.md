@@ -6,6 +6,7 @@ status: 'In development'
 role: 'Design, development and QA'
 ui: 'tempora'
 order: 1
+repo: 'https://github.com/christianoller8/tempora'
 year: 2026
 stack:
   - 'Angular'

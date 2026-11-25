@@ -29,7 +29,7 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const L = caseLabels[lang];
 const { Content } = await project.render();
-const { title, description, kind, status, role, stack, features, link, ui, year, format } = project.data;
+const { title, description, kind, status, role, stack, features, link, repo, ui, year, format } = project.data;
 const content = cases[project.slug];
 const mobile = format === 'mobile';
 
@@ -114,6 +114,23 @@ const tag = (key: string) => L[key as 'problem'];
         link && (
           <a class="btn btn-primary visit" href={link} target="_blank" rel="noreferrer" data-reveal style="--reveal-i: 3">
             {t('project.visit')}
+            <span class="btn-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        )
+      }
+      {
+        repo && (
+          <a
+            class:list={['btn', link ? 'btn-quiet' : 'btn-primary', 'visit']}
+            href={repo}
+            target="_blank"
+            rel="noreferrer"
+            data-reveal
+            style="--reveal-i: 3"
+          >
+            {t('project.repo')}
             <span class="btn-arrow" aria-hidden="true">
               ↗
             </span>

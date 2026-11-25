@@ -227,6 +227,7 @@ export const ui = {
     'project.stack': 'Con qué está hecho',
     'project.features': 'Qué hace',
     'project.visit': 'Visitar la web',
+    'project.repo': 'Ver el código',
     'project.next': 'Siguiente proyecto',
     'project.back': 'Todos los proyectos',
 
@@ -538,6 +539,7 @@ export const ui = {
     'project.stack': 'Built with',
     'project.features': 'What it does',
     'project.visit': 'Visit the site',
+    'project.repo': 'View the code',
     'project.next': 'Next project',
     'project.back': 'All projects',
 

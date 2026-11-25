@@ -6,6 +6,7 @@ status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
 ui: 'vibora'
 order: 2
+repo: 'https://github.com/christianoller8/vibora'
 year: 2026
 stack:
   - 'Angular'
