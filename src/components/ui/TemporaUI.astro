@@ -376,10 +376,11 @@ const firstEmpty = people.findIndex((person) => person.week.includes(null));
     color: var(--tp-muted);
     border: 1px dashed #cbc5e0;
   }
-  /* Lo que se puede tocar: la casilla vacía, con su zona de 24 px aunque la tarjeta vaya a escala */
+  /* Lo que se puede tocar: la casilla vacía. 26 px para seguir por encima de los 24 de zona táctil
+     cuando la tarjeta va a escala 0,94 en la pila de la home */
   button.tp-add {
-    min-width: 24px;
-    min-height: 24px;
+    min-width: 26px;
+    min-height: 26px;
     font: inherit;
     font-weight: 700;
     cursor: pointer;
