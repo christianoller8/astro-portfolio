@@ -516,6 +516,8 @@ const tag = (key: string) => L[key as 'problem'];
   }
   .code-file code {
     font: 500 0.8125rem/1.3 var(--font-mono);
+    /* Las rutas de las apps son largas: en móvil se parten antes de llegar al borde */
+    overflow-wrap: anywhere;
   }
   .code-panel :global(pre) {
     max-height: 30rem;

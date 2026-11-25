@@ -178,6 +178,8 @@ const shown = slots.find((slot) => slot.state === 'picked') ?? slots[6];
     --vb-lime-ink: #1a1f0a;
     position: relative;
     display: grid;
+    /* Una sola columna que no crece con el contenido: a 320 px nada empuja la caja hacia fuera */
+    grid-template-columns: minmax(0, 1fr);
     align-content: start;
     gap: 0.95em;
     width: 100%;
@@ -232,6 +234,7 @@ const shown = slots.find((slot) => slot.state === 'picked') ?? slots[6];
     font-size: 1.6em;
     font-weight: 800;
     letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
   }
   .vb-filters {
     display: grid;

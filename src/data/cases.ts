@@ -145,7 +145,7 @@ export const cases: Record<string, CaseContent> = {
     // Dos reservas confirmadas no pueden pisarse: lo impide la propia base de datos
     code: { file: 'vibora/vibora-backend/src/main/resources/db/migration/V1__init_schema.sql · 58–79', lang: 'sql' },
     enjoyed: {
-      title: { es: 'Quitar pasos cuesta más que añadirlos.', en: 'Removing steps is harder than adding them.' },
+      title: { es: 'Quitar pasos cuesta más que añadirlos.', en: 'Removing steps is the hard part.' },
       body: { es: 'dejar la reserva en dos pasos.', en: 'getting a booking down to two steps.' },
     },
   },
