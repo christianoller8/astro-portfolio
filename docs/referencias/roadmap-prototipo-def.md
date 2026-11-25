@@ -44,10 +44,9 @@ Cada cosa indica qué etapa bloquea.
   lienzo se redibujaron a partir de las apps reales.
 - [x] **CV en PDF**: recibido el 18 nov (`public/cv/christian-oller-cv.pdf`). La formación y los
   idiomas salen de ahí (19 nov).
-- [ ] **Contenido real de cada proyecto** (Tempora, Vibora, Learnish y Vístalo). Bloquea E4:
-  - Qué es, tu papel, el año, el stack y los enlaces (repo o demo).
-  - Capturas.
-  - Dos frases de "lo que más disfruté".
+- [x] **Contenido real de cada proyecto** (Tempora, Víbora, Learnish y Vístalo), cerrado el 25 nov:
+  textos revisados por ti en dos rondas y cotejados con cada repo, año y stack, enlaces (la web de
+  Vístalo y los repos públicos de Tempora y Víbora), vídeos y "lo que más disfruté".
 
 ## E0 · Arranque
 
@@ -414,8 +413,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Nuevo campo `format` (`desktop` o `mobile`) en cada proyecto.
   - Comprobado a 1440 px (claro), 1024 px (oscuro, inglés) y 390 px; la lente QA da todo superado.
     Capturas: `.taste-skill/def/e4/e4-proyectos-escritorio.jpg` y `e4-proyectos-movil.jpg`.
-- [ ] **Casos** con sus 9 apartados: Tempora, Vibora, Learnish y Vístalo (**plantilla hecha el
-  19 nov con contenido provisional; pendiente de tu visto bueno y de tu contenido real**).
+- [x] **Casos** con sus 9 apartados: Tempora, Víbora, Learnish y Vístalo (plantilla del 19 nov;
+  **cerrados el 25 nov** con tu visto bueno y el contenido real: ver la nota del final).
   - Plantilla en `ProjectPage.astro`; textos en `src/data/cases.ts`; comportamiento en
     `src/scripts/case.ts`. Cada apartado lleva su número y su composición:
     1. **Cabecera** (destino del morph): nombre, frase, rol, estado, stack y enlace si los hay.
@@ -434,13 +433,17 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     (390); la lente QA da todo superado en los cuatro. Capturas en `.taste-skill/def/e4/`
     (`e4-caso-tempora.jpg`, `e4-caso-vibora-oscuro.jpg`, `e4-caso-vistalo-en.jpg`,
     `e4-caso-learnish-movil.jpg`).
-  - **Provisional, para que lo revises** (ver también "Lo que necesito de ti"):
-    - Las frases de "Lo que más disfruté" las he escrito yo: tienen que ser tuyas.
-    - Las decisiones describen lo que se ve en cada pantalla de ejemplo, no decisiones tuyas.
-    - El código es el de la demo de esta web, no el de las apps: cuando me pases un fragmento
-      real de cada proyecto, se cambia.
-    - Las pruebas en vivo miden la pieza de esta página, no la app real.
-    - Faltan año, stack y enlaces de Tempora, Vibora y Learnish, y sus imágenes reales.
+  - **Cerrado el 25 nov**:
+    - Los textos (también "Lo que más disfruté" y las decisiones) los revisaste en dos rondas, y
+      la segunda los cotejó con el código de cada app.
+    - Las maquetas dibujan las apps reales y cada caso tiene su vídeo en la caja de Proyectos.
+    - El apartado Código enseña un fragmento real de cada app, copiado de su repo a
+      `src/data/case-code/`: la regla del descanso mínimo de Tempora, la restricción
+      `reserva_sin_solape` de Víbora y `scheduleVocab` de Learnish. Vístalo conserva el de su
+      ventana en vivo.
+    - Las pruebas en vivo miden la pieza de esta página, y así lo dice su rótulo.
+    - Año y stack en las cuatro fichas. Enlaces: la web de Vístalo y los repos públicos de
+      Tempora y Víbora ("Ver el código"); Learnish y Vístalo tienen el repo privado.
 - [x] **Sobre mí**: cabecera, cronología completa, principios, herramientas por lente, idiomas y CV
   (hecho y aprobado el 19 nov).
   - **Trayectoria real, del CV**: por fin pude leer el PDF. `src/data/experience.ts` tenía cinco
