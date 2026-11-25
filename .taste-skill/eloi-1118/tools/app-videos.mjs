@@ -166,7 +166,7 @@ const APPS = {
   },
   // El vídeo del lanzamiento (roadmap): los momentos firma del portfolio en 25–30 s, a 1920 × 1080.
   // No va a la web: sale a videos-raw/portfolio-web.mp4 (y portfolio-en-web.mp4, la versión en
-  // inglés, la del envío a Awwwards). Contra la web construida (pnpm preview).
+  // inglés). Contra la web construida (pnpm preview).
   portfolio: {
     url: process.env.PORTFOLIO_URL ?? 'http://127.0.0.1:4400',
     viewport: { width: 1536, height: 864 },

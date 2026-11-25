@@ -1,5 +1,5 @@
 // Capturas del lanzamiento (roadmap, Lanzamiento): las pantallas que se enseñan de cada página, a
-// 1440 px y en móvil, en oscuro. Por defecto en inglés, el idioma del envío a Awwwards.
+// 1440 px y en móvil, en oscuro. Por defecto en inglés (--lang es para el español).
 // Contra la web construida (pnpm build y pnpm preview --port 4400).
 //
 // Uso, desde la raíz del repo:

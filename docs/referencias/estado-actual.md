@@ -182,8 +182,8 @@ Por orden de urgencia (lista completa en el roadmap):
    inerte de "Cómo lo veo yo" y "Volver arriba") la regla se desactiva con su motivo escrito.
 
 Después, el **lanzamiento**. El vídeo de los momentos firma y las capturas a 1440 px y en móvil ya
-están (25 nov, aprobados), en `videos-raw/` y fuera de git: el vídeo en inglés es el del envío.
-Faltan publicar en christianoller.dev, cuando él lo pida, y enviar a Awwwards la URL en inglés.
+están (25 nov, aprobados), en `videos-raw/` y fuera de git. Falta publicar en christianoller.dev,
+cuando él lo pida. El envío a Awwwards lo descartó él el 25 nov: no se vuelve a proponer.
 
 ## Lo que falta de Christian
 
