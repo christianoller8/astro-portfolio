@@ -25,7 +25,7 @@
 | **E5 · Móvil y pulido** | **Hecho** (19 nov; rúbrica aprobada el 25 nov) |
 | **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara, hoja con textura de papel y selectores de tema e idioma, aprobados. A la espera de tu siguiente cambio |
 | Fase técnica | Hecha (21–25 nov). Al publicar, mirar la consola de la web en vivo |
-| Lanzamiento | En curso (25 nov): vídeo y capturas, hechos. Falta publicar |
+| Lanzamiento | Hecho (25 nov): vídeo, capturas y publicación. Desde ese día se trabaja en `main` |
 
 ## Lo que necesito de ti
 
@@ -909,8 +909,8 @@ igual: un punto por parada y la casilla se marca con su visto bueno.
   lienzo ya la llevan):
   - "Chris" en Rock Salt en lugar de la caricatura con "made by chris". Elegida por él entre doce,
     "de momento". Es una imagen usada de máscara, no una tercera familia de letra.
-  - Pendiente de él: su firma a mano (varias pruebas con rotulador grueso sobre papel blanco, en
-    foto), para sustituir a la de la fuente.
+  - Su firma a mano ya no se pide: el 25 nov decidió quedarse con esta, porque le gusta y no quiere
+    poner la real.
   - **La intro no se toca**: sigue dibujando la caricatura con "made by chris". Se llegó a cambiar
     para que escribiera la firma y él lo mandó revertir: lo había entendido mal.
   - Lo que pidió: que **la firma de la barra se escriba a máquina**, letra a letra y con un cursor
@@ -1037,8 +1037,9 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 
 ## Lanzamiento
 
-- [ ] Publicar `prototipo-def` en christianoller.dev (merge a `main`). Con eso desaparecen los
-  proyectos de ejemplo y el formulario roto de la web actual.
+- [x] Publicar `prototipo-def` en christianoller.dev (merge a `main`). Hecho el 25 nov, a petición
+  suya, avanzando `main` sin forzar. Desde ese día se trabaja directamente en `main` y
+  `prototipo-def` queda sin uso.
 - [x] Grabar un vídeo de 20–30 s con los momentos firma y hacer capturas a 1440 px y en móvil
   (hecho y aprobado el 25 nov). Todo queda en `videos-raw/`, fuera de git:
   - **Vídeo en inglés**: `portfolio-en-web.mp4`, 27,6 s a 1920 × 1080, con póster.

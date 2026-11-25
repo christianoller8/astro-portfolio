@@ -12,14 +12,14 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   terminar a sabiendas**: el formulario no envía (abre el correo), los textos de los casos son
   provisionales y las pruebas automáticas de GitHub fallan porque son de la web vieja (se
   reescribieron el 23 nov: punto 7 de la fase técnica).
-  **Se sigue trabajando en `prototipo-def`**; lo que se quiera publicar se pasa a `main` cuando
-  él lo pida.
+  El 25 nov se volvió a publicar todo y **desde entonces se trabaja en `main`** (decisión suya):
+  cada push publica la web. `prototipo-def` queda sin uso.
 - **El CV va en la web, tal cual**: la primera publicación salió sin él porque el PDF lleva su
   teléfono y su código postal; después, el mismo 20 nov, decidió subirlo así, sabiéndolo. Está en
   `public/cv/christian-oller-cv.pdf` y los botones de CV (inicio, menú de móvil y pie) salen solos
   porque el archivo existe (`hasCV` en `src/data/site.ts`). El bloque del CV de Sobre mí no vuelve:
   lo quitó él en la ronda de textos.
-- Rama `prototipo-def`, subida entera a GitHub.
+- Rama de trabajo: `main`, subida entera a GitHub (desde el 25 nov).
 - **Diseño (E0–E5): hecho.** La última parada fue la rúbrica "de 10".
 - **20 de noviembre, en la torre: ajustes de diseño.** En vez de cerrar el diseño, Christian pidió
   cambios, empezando por la home: el hero sin texto encima de la foto (D22) y la barra dentro de la
@@ -48,8 +48,8 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   decisiones contra el código (25 nov), se completaron las dos que faltaban: una frase partida en
   la privacidad y la «Racha de 9 días» en la maqueta de Learnish. La decisión 2 de Víbora se queda
   en «dos pasos» y no en «toques», como aceptó él, por ser una app de escritorio (decidido por él).
-- **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
-  momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
+- **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; en
+  Rock Salt: el 25 nov decidió quedársela y no poner su firma real), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la
   opción activa en gris; la transición entre páginas va sobre papel, con el canto de la página
   marcado; y el cuadro de selección al pasar el ratón está desactivado (comentado en `kit.css`).
@@ -182,15 +182,14 @@ Por orden de urgencia (lista completa en el roadmap):
    inerte de "Cómo lo veo yo" y "Volver arriba") la regla se desactiva con su motivo escrito.
 
 Después, el **lanzamiento**. El vídeo de los momentos firma y las capturas a 1440 px y en móvil ya
-están (25 nov, aprobados), en `videos-raw/` y fuera de git. Falta publicar en christianoller.dev,
-cuando él lo pida. El envío a Awwwards lo descartó él el 25 nov: no se vuelve a proponer.
+están (25 nov, aprobados), en `videos-raw/` y fuera de git. Publicado en christianoller.dev el
+25 nov. El envío a Awwwards lo descartó él el 25 nov: no se vuelve a proponer.
 
 ## Lo que falta de Christian
 
 - **Analítica** (activada el 21 nov): para que no cuenten sus propias visitas, "No contar mis
   visitas" en `/privacy/`, una vez en cada navegador que use.
-- **Aviso legal**: solo hace falta si cobra proyectos a través de la web (LSSI); pendiente de que lo
-  diga.
+- **Aviso legal** (resuelto el 25 nov): no hace falta, porque no va a cobrar a través de la web.
 - **Fotos**: la sesión nueva en blanco y negro. Cuando lleguen, se repiten el vídeo y las capturas
   del lanzamiento. (El contenido real de los casos y las imágenes de Tempora, Víbora y Learnish se
   cerraron el 25 nov: ver el roadmap.)

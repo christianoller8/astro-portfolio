@@ -14,10 +14,9 @@ Claude necesita saber al abrir el proyecto en cualquier equipo. El detalle vive 
 ## Cómo trabajamos (decisiones de Christian)
 
 - **Idioma**: Christian escribe en español; se le responde siempre en español.
-- **Rama**: se trabaja en `prototipo-def`. `main` es la web publicada (Vercel despliega
-  christianoller.dev desde ella) y solo se actualiza cuando él lo pide: se avanza hasta
-  `prototipo-def` con `git push origin prototipo-def:main`, sin forzar. Lo hizo por primera vez el
-  20 nov de 2026.
+- **Rama**: desde el 25 nov de 2026 se trabaja en `main` (decisión suya). `main` es la web
+  publicada: Vercel despliega christianoller.dev con cada push, así que un push es publicar.
+  `prototipo-def`, donde se trabajó del 18 al 25 nov, queda sin uso.
 - **Paso a paso**: un punto del roadmap por parada. Se hace, se enseña el resultado y se espera su
   visto bueno antes del siguiente. La casilla se marca cuando él lo aprueba.
 - **Commits**: Claude hace `git add .` y `git commit` al terminar cada paso, sin preguntar ni
