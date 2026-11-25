@@ -164,6 +164,88 @@ const APPS = {
       await dialog.waitFor({ state: 'hidden' });
     },
   },
+  // El vídeo del lanzamiento (roadmap): los momentos firma del portfolio en 25–30 s, a 1920 × 1080.
+  // No va a la web: sale a videos-raw/portfolio-web.mp4 (y portfolio-en-web.mp4, la versión en
+  // inglés, la del envío a Awwwards). Contra la web construida (pnpm preview).
+  portfolio: {
+    url: process.env.PORTFOLIO_URL ?? 'http://127.0.0.1:4400',
+    viewport: { width: 1536, height: 864 },
+    colorScheme: 'dark',
+    fade: 'black',
+    publish: false,
+    exportWidth: 1920,
+    posterAt: 3.2, // el hero, ya pasada la intro
+    // Intro → lentes desde el bocadillo → capas 3D → lienzo hasta Proyectos → morph al caso de Tempora
+    async script({ url, page, cursor, record, scroll }) {
+      await page.goto('about:blank');
+      await cursor.place(900, 520);
+      await record();
+      // La intro no sale en un navegador automatizado (navigator.webdriver): ?intro la fuerza.
+      // Se espera a que acabe y se deja ver el hero.
+      await page.goto(`${url}${this.lang === 'en' ? '/en' : ''}/?intro`, { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => !/(^|\s)intro(\s|$)/.test(document.documentElement.className), null, { timeout: 12_000 });
+      await wait(800);
+
+      // Las lentes, desde el bocadillo de la caricatura (el panel se abre si hace falta antes de cada clic)
+      const toggle = page.locator('[data-vb-toggle]:visible').first();
+      const panel = page.locator('[data-vb-panel]');
+      const press = async (target) => {
+        if (!(await panel.isVisible())) {
+          await cursor.moveTo(toggle);
+          await wait(200);
+          await cursor.click();
+          await panel.waitFor({ state: 'visible' });
+          await wait(350);
+        }
+        await cursor.moveTo(target);
+        await wait(150);
+        await cursor.click();
+      };
+      await press(panel.locator('[data-lens-set="code"]'));
+      await wait(1100);
+      await press(panel.locator('[data-lens-set="qa"]'));
+      await wait(1100);
+      // Esc quita la lente (atajo de la web) sin volver a abrir el bocadillo
+      if (await panel.isVisible()) await page.keyboard.press('Escape');
+      await page.keyboard.press('Escape');
+      await wait(250);
+
+      // Las capas 3D: se baja hasta ellas y se giran arrastrando
+      await scroll('[data-layers]', 1300);
+      await page.waitForFunction(() => /is-ready|is-flat/.test(document.querySelector('[data-layers]')?.className ?? ''), null, { timeout: 15_000 });
+      const stage = page.locator('[data-layers-stage]');
+      const box = await stage.boundingBox();
+      const cx = box.x + box.width / 2;
+      const cy = box.y + box.height / 2;
+      await cursor.moveTo({ x: cx + 120, y: cy });
+      await page.mouse.down();
+      await cursor.moveTo({ x: cx - 220, y: cy + 30 }, 1100);
+      await cursor.moveTo({ x: cx + 60, y: cy - 10 }, 800);
+      await page.mouse.up();
+      await wait(400);
+
+      // El lienzo: vuelo de cámara y entrada en Proyectos (cambio de página con la caricatura)
+      await press(panel.locator('[data-canvas-open]'));
+      await wait(1400);
+      const frame = page.locator('[data-canvas-frame="/projects"]').first();
+      await cursor.moveTo(frame);
+      await wait(250);
+      await cursor.click();
+      await page.waitForURL(/\/projects\/$/);
+      await wait(1000);
+
+      // El morph: de la caja de Tempora (con su vídeo) a la cabecera de su caso. Proyectos abre en cajas.
+      const bento = page.locator('article.bento:has([data-morph-title="tempora"])');
+      await bento.waitFor({ state: 'visible' });
+      await scroll(await bento.evaluate((el) => el.getBoundingClientRect().top + scrollY - 96), 900);
+      await wait(1200);
+      await cursor.moveTo(bento.locator('a.bento-cta'));
+      await wait(250);
+      await cursor.click();
+      await page.waitForURL(/\/projects\/tempora\/$/);
+      await wait(1800);
+    },
+  },
   vistalo: {
     url: process.env.VISTALO_URL ?? 'https://vistalo.es',
     fade: 'black',
@@ -231,6 +313,11 @@ function drawCursor() {
       filter: 'drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35))',
     });
     root.append(cursor);
+    // Con el ClientRouter de Astro el documento no se recarga al cambiar de página: si el cambio se
+    // lleva el cursor, vuelve a su sitio
+    document.addEventListener('astro:after-swap', () => {
+      if (!cursor.isConnected) document.documentElement.append(cursor);
+    });
     addEventListener('mousemove', (event) => {
       cursor.style.transform = `translate(${event.clientX - 2}px, ${event.clientY - 2}px)`;
     }, true);
@@ -309,7 +396,7 @@ function makeCursor(page) {
 }
 
 // Fotogramas del navegador con su hora; devuelve la función que para y entrega la lista
-async function startScreencast(page, dir) {
+async function startScreencast(page, dir, viewport = VIEWPORT) {
   const cdp = await page.context().newCDPSession(page);
   const frames = [];
   cdp.on('Page.screencastFrame', ({ data, metadata, sessionId }) => {
@@ -321,8 +408,8 @@ async function startScreencast(page, dir) {
   await cdp.send('Page.startScreencast', {
     format: 'jpeg',
     quality: 92,
-    maxWidth: Math.round(VIEWPORT.width * SCALE),
-    maxHeight: Math.round(VIEWPORT.height * SCALE),
+    maxWidth: Math.round(viewport.width * SCALE),
+    maxHeight: Math.round(viewport.height * SCALE),
     everyNthFrame: 1,
   });
   return async () => {
@@ -358,21 +445,23 @@ function writeMaster(name, frames, end) {
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '12', '-pix_fmt', 'yuv420p', join(RAW, `${name}.mp4`)]);
 }
 
-// Exportación de la guía (sección 8) con fundido de entrada y salida para el bucle
+// Exportación de la guía (sección 8) con fundido de entrada y salida para el bucle. Los que no van a
+// la web (publish: false) se quedan en videos-raw/<app>-web.mp4, con su póster al lado
 function exportWeb(name) {
   const app = APPS[name];
   const master = join(RAW, `${name}.mp4`);
-  const out = join(ROOT, 'public', 'videos', `${name}.mp4`);
-  const poster = join(ROOT, 'public', 'videos', 'posters', `${name}.jpg`);
+  const web = app.publish !== false;
+  const out = web ? join(ROOT, 'public', 'videos', `${name}.mp4`) : join(RAW, `${name}-web.mp4`);
+  const poster = web ? join(ROOT, 'public', 'videos', 'posters', `${name}.jpg`) : join(RAW, `${name}-poster.jpg`);
   mkdirSync(dirname(poster), { recursive: true });
   const length = duration(master);
   const color = app.fade ?? 'black';
   const fades = `fade=t=in:st=0:d=0.3:color=${color},fade=t=out:st=${Math.max(0, length - 0.4).toFixed(2)}:d=0.4:color=${color}`;
-  ffmpeg(['-y', '-i', master, '-vf', `scale=1600:-2,fps=30,${fades}`, '-c:v', 'libx264', '-preset', 'slow', '-crf', '26',
-    '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', out]);
-  ffmpeg(['-y', '-ss', '0.5', '-i', out, '-frames:v', '1', '-q:v', '3', poster]);
+  ffmpeg(['-y', '-i', master, '-vf', `scale=${app.exportWidth ?? 1600}:-2,fps=30,${fades}`, '-c:v', 'libx264', '-preset', 'slow',
+    '-crf', web ? '26' : '20', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', out]);
+  ffmpeg(['-y', '-ss', String(app.posterAt ?? 0.5), '-i', out, '-frames:v', '1', '-q:v', '3', poster]);
   const kb = (file) => `${Math.round(statSync(file).size / 1024)} KB`;
-  console.log(`${name}: ${duration(out).toFixed(1)} s · ${kb(out)} → public/videos/${name}.mp4 · póster ${kb(poster)}`);
+  console.log(`${name}: ${duration(out).toFixed(1)} s · ${kb(out)} → ${out.replace(`${ROOT}\\`, '').replaceAll('\\', '/')} · póster ${kb(poster)}`);
 }
 
 // Apps con sesión (Tempora la guarda solo en memoria: recargar = volver al login). --login abre un
@@ -402,7 +491,7 @@ async function openContext(name, headed) {
   }
   const browser = await chromium.launch({ channel: 'msedge', headless: !headed });
   const context = await browser.newContext({
-    viewport: VIEWPORT,
+    viewport: app.viewport ?? VIEWPORT,
     deviceScaleFactor: SCALE,
     locale: 'es-ES',
     timezoneId: 'Europe/Madrid',
@@ -460,7 +549,7 @@ async function record(name) {
       cursor,
       scroll: makeScroll(page),
       record: async () => {
-        stop = await startScreencast(page, frameDir);
+        stop = await startScreencast(page, frameDir, app.viewport);
         await cursor.nudge(); // el navegador solo manda fotograma cuando algo cambia: así llega el primero
       },
     });
@@ -474,6 +563,9 @@ async function record(name) {
     }
   }
 }
+
+// El vídeo del lanzamiento, en inglés: el mismo guion contra /en/
+APPS['portfolio-en'] = { ...APPS.portfolio, lang: 'en' };
 
 const [name] = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
 if (!APPS[name]) {
