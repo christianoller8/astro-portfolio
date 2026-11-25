@@ -1,0 +1,28 @@
+/**
+ * Grade of a vocabulary card. `card` is null for a card never seen.
+ * @param {{ box: number, lapses: number }|null} card
+ * @param {'again'|'hard'|'good'|'easy'} grade
+ * @returns {{ box: number, dueDay: string, lapses: number, requeue: boolean }}
+ */
+export function scheduleVocab(card, grade, { today, examDate }) {
+  const lapses = card ? card.lapses : 0;
+  const due = (days) => capDue(addDays(today, days), today, examDate);
+  const interval = (box) => VOCAB_INTERVALS[box - 1];
+
+  if (grade === 'again') return { box: 1, dueDay: today, lapses: card ? lapses + 1 : 0, requeue: true };
+  if (grade === 'hard') {
+    if (!card) return { box: 1, dueDay: due(1), lapses, requeue: false };
+    return { box: card.box, dueDay: due(Math.max(1, Math.floor(interval(card.box) / 2))), lapses, requeue: false };
+  }
+  if (grade === 'good') {
+    if (!card) return { box: 2, dueDay: due(3), lapses, requeue: false };
+    const box = Math.min(card.box + 1, 6);
+    return { box, dueDay: due(interval(box)), lapses, requeue: false };
+  }
+  if (grade === 'easy') {
+    if (!card) return { box: 3, dueDay: due(7), lapses, requeue: false };
+    const box = Math.min(card.box + 2, 6);
+    return { box, dueDay: due(interval(box)), lapses, requeue: false };
+  }
+  throw new Error(`Unknown grade "${grade}"`);
+}

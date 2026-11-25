@@ -6,6 +6,12 @@ status: 'Version 2.1, for personal use'
 role: 'Design, development and QA'
 ui: 'learnish'
 order: 3
+year: 2026
+stack:
+  - 'React'
+  - 'Vite'
+  - 'Fastify'
+  - 'SQLite'
 features:
   - 'Practice for the four B2 First papers and two mock exams with an estimated score'
   - 'Cards to review vocabulary'

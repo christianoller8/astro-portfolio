@@ -8,6 +8,7 @@ image: '../../../assets/images/projects/vistalo.jpg'
 imageAlt: 'Portada de la web de Vístalo: titular «Que se vea como es.» junto a un portátil y un móvil con una web de ejemplo'
 link: 'https://vistalo.es/'
 order: 4
+year: 2026
 stack:
   - 'Astro'
   - 'Tailwind CSS'

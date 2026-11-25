@@ -6,6 +6,13 @@ status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
 ui: 'vibora'
 order: 2
+year: 2026
+stack:
+  - 'Angular'
+  - 'Spring Boot'
+  - 'Java'
+  - 'PostgreSQL'
+  - 'WebSocket'
 features:
   - 'Disponibilidad de cada pista por franja horaria'
   - 'Reserva y confirmación en pocos pasos'

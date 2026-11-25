@@ -6,6 +6,13 @@ status: 'In development'
 role: 'Design, development and QA'
 ui: 'vibora'
 order: 2
+year: 2026
+stack:
+  - 'Angular'
+  - 'Spring Boot'
+  - 'Java'
+  - 'PostgreSQL'
+  - 'WebSocket'
 features:
   - 'Availability of every court by time slot'
   - 'Book and confirm in a few steps'

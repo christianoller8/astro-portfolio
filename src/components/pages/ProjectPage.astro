@@ -37,20 +37,27 @@ const projects = await getSortedProjects(lang);
 const index = projects.findIndex((p) => p.slug === project.slug);
 const next = projects[(index + 1) % projects.length];
 
-// El código real de la pieza que se toca en esta página: su apartado de project-demos.ts
+// El código de cada caso: el de la app, copiado de su repo (src/data/case-code/<slug>.txt), o, si
+// no lo hay, el de la pieza que se toca en esta página, su apartado de project-demos.ts
+const appCode = import.meta.glob<string>('/src/data/case-code/*.txt', { query: '?raw', import: 'default', eager: true });
+const real = content?.code ? appCode[`/src/data/case-code/${project.slug}.txt`]?.trimEnd() : undefined;
 const sections = demosSource.split(/\/\* -{10} (.+?) -{10} \*\/\n/);
 const at = sections.findIndex((part) => part.toLowerCase().startsWith(title.toLowerCase()));
 const source = at > -1 ? sections[at + 1].trim() : '';
-// Los comentarios del código están en español: en la versión en inglés se enseña sin ellos
+// Los comentarios de la demo están en español: en la versión en inglés se enseña sin ellos. El de
+// las apps se enseña tal cual, como está en su repo
 const code =
-  lang === 'es'
+  real ??
+  (lang === 'es'
     ? source
     : source
         .split('\n')
         .filter((line) => !/^\s*\/\//.test(line) && !/^\s*\/?\*/.test(line))
         .map((line) => line.replace(/\s+\/\/ .*$/, ''))
         .join('\n')
-        .replace(/\n{3,}/g, '\n\n');
+        .replace(/\n{3,}/g, '\n\n'));
+const codeFile = real && content?.code ? content.code.file : 'src/scripts/project-demos.ts';
+const codeLang = real && content?.code ? content.code.lang : 'ts';
 
 // Tema del código con la paleta de la web: tinta, grafito y el verde de las comprobaciones
 const codeTheme = {
@@ -171,20 +178,20 @@ const tag = (key: string) => L[key as 'problem'];
       )
     }
 
-    <!-- Código: el fragmento real, con la pieza que mueve al lado -->
+    <!-- Código: un fragmento real de la app (o el de la demo, si no lo hay), con la pieza al lado -->
     {
       code && (
         <section class="wrap case-code">
           <div class="code-head">
             <h2 class="case-h" data-reveal>{tag('code')}</h2>
-            <p class="code-lead" data-reveal style="--reveal-i: 1">{L.codeLead}</p>
+            <p class="code-lead" data-reveal style="--reveal-i: 1">{real ? L.codeLeadReal : L.codeLead}</p>
           </div>
           <div class="code-grid">
             <div class="code-panel" data-reveal>
               <p class="code-file">
-                <code>src/scripts/project-demos.ts</code>
+                <code>{codeFile}</code>
               </p>
-              <Code code={code} lang="ts" theme={codeTheme} />
+              <Code code={code} lang={codeLang} theme={codeTheme} />
             </div>
             <div class:list={['code-demo', mobile && 'code-demo--mobile']} data-case-demo data-reveal style="--reveal-i: 1">
               <p class="code-try">

@@ -6,6 +6,13 @@ status: 'In development'
 role: 'Design, development and QA'
 ui: 'tempora'
 order: 1
+year: 2026
+stack:
+  - 'Angular'
+  - 'Node.js'
+  - 'Express'
+  - 'PostgreSQL'
+  - 'Prisma'
 features:
   - 'Monthly shift rota that warns when a shift breaks the minimum rest'
   - 'Clock-in and clock-out for every person'

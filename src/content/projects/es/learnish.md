@@ -6,6 +6,12 @@ status: 'Versión 2.1, de uso personal'
 role: 'Diseño, desarrollo y QA'
 ui: 'learnish'
 order: 3
+year: 2026
+stack:
+  - 'React'
+  - 'Vite'
+  - 'Fastify'
+  - 'SQLite'
 features:
   - 'Práctica de las cuatro pruebas del B2 First y dos simulacros con nota estimada'
   - 'Tarjetas para repasar vocabulario'

@@ -1,6 +1,6 @@
-// Contenido de los casos (plan §5.4) que no vive en el .md de cada proyecto: decisiones, pruebas y
-// "lo que más disfruté". TEXTOS PROVISIONALES, pendientes de Christian: describen lo que se ve en
-// cada pantalla, pero las frases de "lo que más disfruté" no son suyas todavía.
+// Contenido de los casos (plan §5.4) que no vive en el .md de cada proyecto: decisiones, pruebas,
+// código y "lo que más disfruté". Revisados por Christian en dos rondas (24 nov) y cotejados con el
+// código de cada app: si una app cambia, se vuelven a cotejar con su repo.
 
 type Lang = 'es' | 'en';
 type Text = Record<Lang, string>;
@@ -18,6 +18,11 @@ export interface CaseContent {
   enjoyed: { title: Text; body: Text };
   /** Pruebas que no se pueden calcular en la página (una web publicada): se enseñan tal cual */
   tests?: Text[];
+  /**
+   * Código real de la app, copiado de su repo a src/data/case-code/<slug>.txt (líneas exactas, sin
+   * la sangría común). Sin él, el apartado Código enseña el de la demo de esta página
+   */
+  code?: { file: string; lang: 'ts' | 'sql' | 'js' };
 }
 
 export const caseLabels = {
@@ -30,6 +35,7 @@ export const caseLabels = {
     decisions: 'Decisiones',
     code: 'Código',
     codeLead: 'La pieza de al lado funciona: pruébala. Este es el código que la mueve en esta página.',
+    codeLeadReal: 'La pieza de al lado imita la app y se puede tocar. Este es el código de la app que hace ese trabajo de verdad.',
     tests: 'Pruebas',
     testsLive: 'Comprobado ahora, en tu navegador, sobre la pieza de arriba.',
     testsStatic: 'Lo que se ha revisado hasta ahora.',
@@ -55,6 +61,7 @@ export const caseLabels = {
     decisions: 'Decisions',
     code: 'Code',
     codeLead: 'The piece next to this one works: try it. This is the code that drives it on this page.',
+    codeLeadReal: 'The piece next to it mimics the app and you can try it. This is the code in the app that does that job for real.',
     tests: 'Tests',
     testsLive: 'Checked right now, in your browser, on the piece above.',
     testsStatic: 'What has been checked so far.',
@@ -101,6 +108,8 @@ export const cases: Record<string, CaseContent> = {
         note: { es: 'clic o teclado', en: 'click or keyboard' },
       },
     ],
+    // Al poner un turno, el backend lo comprueba con esta regla del descanso mínimo
+    code: { file: 'tempora/backend/src/modules/rules/rules/min-rest.ts · 56–104', lang: 'ts' },
     enjoyed: {
       title: { es: 'Una tabla también se diseña.', en: 'A table gets designed too.' },
       body: { es: 'ordenar mucha información en una sola pantalla sin que agobie.', en: 'fitting a lot of information on a single screen without it feeling heavy.' },
@@ -133,6 +142,8 @@ export const cases: Record<string, CaseContent> = {
         note: { es: 'color + texto', en: 'colour + text' },
       },
     ],
+    // Dos reservas confirmadas no pueden pisarse: lo impide la propia base de datos
+    code: { file: 'vibora/vibora-backend/src/main/resources/db/migration/V1__init_schema.sql · 58–79', lang: 'sql' },
     enjoyed: {
       title: { es: 'Quitar pasos cuesta más que añadirlos.', en: 'Removing steps is harder than adding them.' },
       body: { es: 'dejar la reserva en dos pasos.', en: 'getting a booking down to two steps.' },
@@ -165,6 +176,8 @@ export const cases: Record<string, CaseContent> = {
         note: { es: 'progreso + racha', en: 'progress + streak' },
       },
     ],
+    // Cada uno de los cuatro botones decide cuándo vuelve la tarjeta
+    code: { file: 'learnish/server/src/domain/srs.js · 39–66', lang: 'js' },
     enjoyed: {
       title: { es: 'Tareas que caben en un descanso.', en: 'Tasks that fit into a break.' },
       body: { es: 'pensar en ratos cortos, que es cuando de verdad se aprende.', en: 'designing for short moments, which is when people actually learn.' },

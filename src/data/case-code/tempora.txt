@@ -1,0 +1,49 @@
+// Smallest rest gap (minutes) between the candidate and any other shift,
+// looking BOTH backwards and forwards.
+let minGapMin = Infinity;
+let overlap = false;
+
+for (const other of ctx.recentAssignments) {
+  const otherStart = assignmentStartMs(other.date, other.startsAt);
+  const otherEnd = assignmentEndMs(other.date, other.startsAt, other.endsAt);
+
+  if (otherStart < candidateEnd && otherEnd > candidateStart) {
+    // Time ranges intersect: the employee cannot rest at all.
+    overlap = true;
+    minGapMin = 0;
+  } else if (otherEnd <= candidateStart) {
+    minGapMin = Math.min(minGapMin, candidateStart - otherEnd);
+  } else {
+    // other starts at or after the candidate ends
+    minGapMin = Math.min(minGapMin, otherStart - candidateEnd);
+  }
+}
+
+if (minGapMin === Infinity) return null; // nothing to compare against
+
+if (overlap) {
+  return {
+    type: 'block',
+    code: 'MIN_REST_12H',
+    message: 'Shift overlaps with another assignment of the same employee.',
+    meta: {
+      actualRestHours: 0,
+      requiredRestHours: cfg.minRestHours,
+      overlap: true,
+    },
+  };
+}
+
+const closestGapHours = minGapMin / 60;
+
+if (closestGapHours < cfg.minRestHours) {
+  return {
+    type: 'block',
+    code: 'MIN_REST_12H',
+    message: `Insufficient rest between shifts: ${closestGapHours.toFixed(1)}h actual, ${cfg.minRestHours}h required (Art. 34.3 ET).`,
+    meta: {
+      actualRestHours: closestGapHours,
+      requiredRestHours: cfg.minRestHours,
+    },
+  };
+}

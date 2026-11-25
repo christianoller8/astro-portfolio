@@ -1,0 +1,22 @@
+CREATE TABLE reserva (
+    id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    pista_id    bigint        NOT NULL REFERENCES pista (id),
+    usuario_id  bigint        NOT NULL REFERENCES usuario (id),
+    inicio      timestamptz   NOT NULL,
+    fin         timestamptz   NOT NULL,
+    estado      varchar(20)   NOT NULL DEFAULT 'CONFIRMADA',
+    precio_total numeric(8, 2) NOT NULL,                -- precio congelado en el momento de reservar
+    creado_en   timestamptz   NOT NULL DEFAULT now(),
+    CONSTRAINT reserva_estado_ck CHECK (estado IN ('CONFIRMADA', 'CANCELADA')),
+    CONSTRAINT reserva_precio_ck CHECK (precio_total >= 0),
+    CONSTRAINT reserva_rango_ck CHECK (fin > inicio)
+);
+CREATE INDEX reserva_usuario_id_idx ON reserva (usuario_id);
+
+-- REGLA CLAVE: una pista no puede tener dos reservas CONFIRMADAS que se solapen.
+-- tstzrange(inicio, fin) es semiabierto [), asi que una reserva puede empezar justo
+-- cuando termina la anterior. Las CANCELADAS quedan fuera (WHERE) y no bloquean nada.
+-- El indice gist que respalda la restriccion tambien cubre las busquedas por pista y rango.
+ALTER TABLE reserva ADD CONSTRAINT reserva_sin_solape
+    EXCLUDE USING gist (pista_id WITH =, tstzrange(inicio, fin) WITH &&)
+    WHERE (estado = 'CONFIRMADA');

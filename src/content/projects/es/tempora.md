@@ -6,6 +6,13 @@ status: 'En desarrollo'
 role: 'Diseño, desarrollo y QA'
 ui: 'tempora'
 order: 1
+year: 2026
+stack:
+  - 'Angular'
+  - 'Node.js'
+  - 'Express'
+  - 'PostgreSQL'
+  - 'Prisma'
 features:
   - 'Cuadrante mensual de turnos que avisa si alguno no respeta el descanso mínimo'
   - 'Registro de entrada y salida de cada persona'

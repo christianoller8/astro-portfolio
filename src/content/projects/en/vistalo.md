@@ -8,6 +8,7 @@ image: '../../../assets/images/projects/vistalo.jpg'
 imageAlt: 'Vístalo homepage: the headline “Que se vea como es.” next to a laptop and a phone showing a sample website'
 link: 'https://vistalo.es/'
 order: 4
+year: 2026
 stack:
   - 'Astro'
   - 'Tailwind CSS'
