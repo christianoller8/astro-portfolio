@@ -190,8 +190,8 @@ están (25 nov, aprobados), en `videos-raw/` y fuera de git. Publicado en christ
 ## Lo que falta de Christian
 
 - **Analítica** (activada el 21 nov): para que no cuenten sus propias visitas, "No contar mis
-  visitas" en `/privacy/`, una vez en cada navegador que use. Hecho el 25 nov en el navegador
-  integrado de la app de Claude; faltan su Chrome y su móvil.
+  visitas" en `/privacy/`, una vez en cada navegador que use. Hecho el 25 nov en su Chrome y en
+  el navegador integrado de la app de Claude; falta su móvil.
 - **Aviso legal** (resuelto el 25 nov): no hace falta, porque no va a cobrar a través de la web.
 - **Fotos**: la sesión nueva en blanco y negro. Cuando lleguen, se repiten el vídeo y las capturas
   del lanzamiento. (El contenido real de los casos y las imágenes de Tempora, Víbora y Learnish se
