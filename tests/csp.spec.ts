@@ -38,7 +38,7 @@ async function guard(page: Page, origin: string): Promise<{ blocked: string[]; s
     served += 1;
   });
   // La web de Vístalo (el marco en vivo) no se pide de verdad: la CSP decide antes de que salga la petición
-  await page.route('https://vistalo-sl.vercel.app/**', (route) =>
+  await page.route('https://vistalo.es/**', (route) =>
     route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Vístalo</title>' }),
   );
   return { blocked, served: () => served };

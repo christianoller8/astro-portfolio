@@ -6,7 +6,7 @@ status: 'Under construction'
 role: 'Design and development with Eloi Cotonat (who also handled testing, photo and video)'
 image: '../../../assets/images/projects/vistalo.jpg'
 imageAlt: 'Vístalo homepage: the headline “Que se vea como es.” next to a laptop and a phone showing a sample website'
-link: 'https://vistalo-sl.vercel.app/'
+link: 'https://vistalo.es/'
 order: 4
 stack:
   - 'Astro'

@@ -165,7 +165,7 @@ const APPS = {
     },
   },
   vistalo: {
-    url: process.env.VISTALO_URL ?? 'https://vistalo-sl.vercel.app',
+    url: process.env.VISTALO_URL ?? 'https://vistalo.es',
     fade: 'black',
     cursor: false, // estilo A de la guía: scroll limpio, sin cursor
     // Portada → servicios → packs → «Hablemos» con la transición entre páginas → la carta

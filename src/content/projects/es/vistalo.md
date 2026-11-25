@@ -6,7 +6,7 @@ status: 'En construcción'
 role: 'Diseño y desarrollo con Eloi Cotonat (él, además, pruebas, foto y vídeo)'
 image: '../../../assets/images/projects/vistalo.jpg'
 imageAlt: 'Portada de la web de Vístalo: titular «Que se vea como es.» junto a un portátil y un móvil con una web de ejemplo'
-link: 'https://vistalo-sl.vercel.app/'
+link: 'https://vistalo.es/'
 order: 4
 stack:
   - 'Astro'

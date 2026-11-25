@@ -149,7 +149,7 @@ Por orden de urgencia (lista completa en el roadmap):
 5. **Seguridad**: las cabeceras están en `vercel.json`, y desde el 23 nov también la CSP. Christian
    eligió la simple: todo desde la propia web, con los guiones y estilos en línea permitidos (con
    hashes habría que rehacer la lista cada vez que cambia uno de los 12 guiones en línea), imágenes
-   también en `data:` (los SVG del CSS) y el iframe solo de `vistalo-sl.vercel.app`. `script-src`
+   también en `data:` (los SVG del CSS) y el iframe solo de `vistalo.es`. `script-src`
    lleva `data:` porque el router de Astro mete en cada cambio de página un guion vacío
    `data:application/javascript,`. No se pone en `/cv/`: con `object-src 'none'` el visor de PDF de
    Safari (y a veces el de Chrome) se queda en blanco. `tests/csp.spec.ts` la añade a cada página

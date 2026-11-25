@@ -400,7 +400,7 @@ modo dispositivo de DevTools) para la página del caso, cuando estén los de esc
 - **Estilo:** A (scroll limpio, sin cursor)
 - **Proporción y resolución:** 16:10 · 1600×1000
 - **Duración objetivo:** 15 s
-- **Datos de demo:** la web publicada de la agencia, <https://vistalo-sl.vercel.app/> (aún en
+- **Datos de demo:** la web publicada de la agencia, <https://vistalo.es/> (aún en
   construcción con Eloi: grabar la versión más reciente).
 - **Guion:**
   1. 0–2,6 s · La portada, con el titular que se escribe solo y la cinta métrica.
