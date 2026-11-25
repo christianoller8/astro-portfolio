@@ -22,7 +22,7 @@
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
 | E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
-| **E5 · Móvil y pulido** | **Hecho** (19 nov), a falta de tu visto bueno a la rúbrica |
+| **E5 · Móvil y pulido** | **Hecho** (19 nov; rúbrica aprobada el 25 nov) |
 | **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara, hoja con textura de papel y selectores de tema e idioma, aprobados. A la espera de tu siguiente cambio |
 | Fase técnica | Pendiente |
 | Lanzamiento | Pendiente |
@@ -628,8 +628,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - Tras los cambios: 0 desbordes en 108 combinaciones y la lente QA sin fallos.
   - **Textos que he cambiado** (provisionales, como el resto): los titulares de "Lo que más
     disfruté" de los cuatro casos y el titular de la web de ejemplo.
-- [ ] Las 10 pruebas de la rúbrica (**pasadas el 19 nov y repasadas el 25 nov; pendiente de tu visto
-  bueno**). Ocho pasan, una pasa con una excepción que decidiste tú y una no pasa al pie de la letra.
+- [x] Las 10 pruebas de la rúbrica (pasadas el 19 nov, repasadas el 25 nov y **aprobadas por ti el 25
+  nov**). Ocho pasan, una pasa con una excepción que decidiste tú y una no pasa al pie de la letra.
   - **Repaso del 25 nov**, sobre la web con los textos revisados, los vídeos y las maquetas de las
     apps reales: 5 segundos, 0,27 s según la medida; cámara lenta, el morph de Víbora con la
     maqueta de escritorio va sin saltos (sigue el instante de doble título del cruce); inspector, 0
