@@ -1021,7 +1021,7 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 - [x] **Tests de Playwright**: lentes, navegación, formulario y accesibilidad. Reescritos el 23 nov
   (unas 300 pruebas, más la intro y el fallo del portapapeles el mismo día); Christian dio el tema
   por cerrado ese día. Quedan sin prueba Vístalo en vivo y el arrastre del lienzo (ver estado-actual).
-- [ ] **Otros**: la 404 real en Vercel y el manifest.
+- [x] **Otros**: la 404 real en Vercel y el manifest. Comprobado el 25 nov en christianoller.dev: las rutas que no existen responden 404 con la página propia (en los dos idiomas) y `manifest.webmanifest` se sirve con su tipo, iconos de 192 y 512 y la descripción de la portada.
 
 ## Lanzamiento
 
