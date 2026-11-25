@@ -683,7 +683,7 @@ Detalle completo en el [informe, sección B2](informe-eloi-cotonat.md#b2-dónde-
 | D5 | Hilo de prototipo | En cada navegación. |
 | D6 | Tipografía | Bricolage Grotesque con sus tres ejes. |
 | D7 | Modos | Claro y oscuro, como ahora (§3.7). |
-| D8 | Retrato | Sesión nueva en blanco y negro. Mientras tanto, `profile.jpg`, que ya es de estudio y en B/N. |
+| D8 | Retrato | Sesión nueva en blanco y negro. Mientras tanto, `profile.jpg`, que ya es de estudio y en B/N. **Descartada el 25 nov**: se quedan las fotos que él puso en la portada y en Sobre mí. |
 | D9 | Primer proyecto | Tempora. |
 | D10 | Demo de lentes | Sí: se convierte en "Cómo lo veo yo" (§4.3 E). |
 | D11 | Barra superior | Agrupada. |

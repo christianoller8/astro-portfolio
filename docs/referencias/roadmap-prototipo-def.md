@@ -38,7 +38,8 @@ Cada cosa indica qué etapa bloquea.
 - [x] **Vídeo de referencia** de la intro: `docs/videos/animacion-entrada.mov` (la animación de la
   marca de made_byfede). Christian quiere esa misma animación, con su caricatura: se pinta el pelo,
   etc.
-- [ ] **Fotos**: la sesión nueva en blanco y negro. Mientras tanto se usa `profile.jpg`. Bloquea E4.
+- ~~**Fotos**: la sesión nueva en blanco y negro.~~ Descartada el 25 nov: la portada y Sobre mí ya
+  llevan fotos suyas (la de la luz roja y la de la luz circular en blanco y negro).
 - [x] **Imágenes reales de Tempora, Víbora y Learnish** (cerrado el 25 nov). Las cuatro apps
   tienen su vídeo grabado en la caja de Proyectos, y las maquetas HTML de la home, los casos y el
   lienzo se redibujaron a partir de las apps reales.
@@ -469,7 +470,7 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     Capturas: `.taste-skill/def/e4/e4-sobre-mi-escritorio.jpg` y `e4-sobre-mi-oscuro-movil.jpg`.
   - **Por confirmar**: el CV dice Angular "v8–v18" y la web dice "de la 8 a la 21" (lo dejé en 21,
     como me dijiste). La web sigue diciendo "Remoto · España" (el CV pone Córdoba). El "80.000
-    usuarios" de Accenture sale del CV. La sesión de fotos nueva sigue pendiente.
+    usuarios" de Accenture sale del CV. La sesión de fotos nueva se descartó el 25 nov.
 - [x] **Contacto** (diseño): frase, datos y formulario con sus estados dibujados (hecho y aprobado
   el 19 nov).
   - **La frase**: "Hablemos" a tamaño de póster y, debajo, la pregunta en grande.
@@ -619,8 +620,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
   - **Excepciones declaradas** (`--allow`), con su porqué:
     - `eyebrow`: el inspector toma el nombre del frame ("Inicio", "Sobre mí"…) por una etiqueta
       encima del H1. Es la pieza central del concepto y va fuera del artboard, como en Figma.
-    - `few-pictures` (páginas interiores): pide al menos cuatro imágenes reales. Faltan las tuyas:
-      capturas de Tempora, Vibora y Learnish y la sesión de fotos. Se quita cuando lleguen.
+    - `few-pictures` (páginas interiores): pide al menos cuatro imágenes reales. Se queda como
+      excepción fija desde el 25 nov, al descartarse la sesión de fotos.
     - `covered-text` (solo Inicio, en móvil): en "Cómo lo veo yo" el texto pasa por debajo de la web
       de ejemplo, que va fija. Es como funciona la escena.
   - Avisos (WARN) que quedan y no bloquean: no hay vídeo, muchos tamaños de letra distintos (los de
@@ -637,8 +638,8 @@ trayectoria ha vuelto y no quedan ni la letra a mano ni el azul.
     igual (hasta 5 tamaños por pantalla). Excepciones declaradas del inspector: `eyebrow` (el
     nombre del frame); `headline-lines` en la portada (el titular «Christian Oller / Software /
     developer» en tres líneas es la composición de póster, decidido por ti el 25 nov);
-    `covered-text` en la portada en móvil; `few-pictures` en Sobre mí y Contacto, hasta que llegue
-    tu sesión de fotos. Arreglado en el repaso: las rutas del código, que en móvil quedaban pegadas
+    `covered-text` en la portada en móvil; `few-pictures` en Sobre mí y Contacto (fija desde que se
+    descartó la sesión de fotos). Arreglado en el repaso: las rutas del código, que en móvil quedaban pegadas
     al borde; la maqueta de Víbora a 320 px; un titular en inglés de Víbora que ocupaba tres
     líneas; y el texto del formulario de Contacto, que pasa de 14 a 16 px.
   - **Lo que se midió el 19 nov:**
@@ -1049,7 +1050,7 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
   - **Capturas**: 13 a 1440 px (a 2x) y 11 a 390 px (a 3x), en oscuro y en inglés, en
     `capturas/en/`, con una hoja de contactos de cada tamaño.
   - **Cómo se rehacen**: `app-videos.mjs portfolio-en` (y `portfolio`) y `launch-shots.mjs`, contra
-    la web construida. Hay que repetirlos cuando lleguen las fotos en blanco y negro.
+    la web construida. Hay que repetirlos cuando cambie el diseño.
   - La intro no sale en un navegador automatizado (`navigator.webdriver`): el guion la fuerza con
     `?intro`.
 - ~~Enviar a Awwwards la URL en inglés.~~ Descartado el 25 nov: Christian no quiere hacerlo. No se

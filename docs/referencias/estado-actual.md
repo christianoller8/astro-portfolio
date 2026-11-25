@@ -193,8 +193,8 @@ están (25 nov, aprobados), en `videos-raw/` y fuera de git. Publicado en christ
   visitas" en `/privacy/`, una vez en cada navegador que use. Hecho el 25 nov en su Chrome y en
   el navegador integrado de la app de Claude. En el móvil no se hará (decidido por él).
 - **Aviso legal** (resuelto el 25 nov): no hace falta, porque no va a cobrar a través de la web.
-- **Fotos**: la sesión nueva en blanco y negro. Cuando lleguen, se repiten el vídeo y las capturas
-  del lanzamiento. (El contenido real de los casos y las imágenes de Tempora, Víbora y Learnish se
+- **Fotos** (resuelto el 25 nov): no habrá sesión nueva. Se quedan la foto de la portada y la de
+  Sobre mí. (El contenido real de los casos y las imágenes de Tempora, Víbora y Learnish también se
   cerraron el 25 nov: ver el roadmap.)
 - **Angular** (resuelto el 20 nov): la web ya no cita versiones, solo "Angular". Él ha tocado
   todas y no quiere un rango. (El PDF del CV sí dice v8–v18: es suyo y no se ha tocado.)

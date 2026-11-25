@@ -92,7 +92,7 @@ sección B4 de `docs/referencias/informe-eloi-cotonat.md`.
   arriba del propio archivo y en `docs/referencias/guia-videos-proyectos.md`, sección 10.
 - El vídeo y las capturas del lanzamiento salen con
   `app-videos.mjs portfolio-en` (y `portfolio`, en español) y `launch-shots.mjs`, contra la web
-  construida. Van a `videos-raw/`, fuera de git; se repiten cuando cambie el diseño o lleguen las fotos.
+  construida. Van a `videos-raw/`, fuera de git; se repiten cuando cambie el diseño.
 - **Solo en macOS**: `.taste-skill/recorte/person.swift` (máscara de persona con Vision) y los
   comandos `sips`. En Windows no existen; si hace falta recortar otra foto, buscar alternativa.
   La foto clara del hero ya no depende de ellos: `.taste-skill/recorte/luz-gris.cjs` la monta con
