@@ -370,8 +370,17 @@ const topics = [
     display: grid;
     gap: 0.4rem;
   }
+  /* Rúbrica, 25 nov: el texto del formulario va a 16 px, como el texto corrido (las etiquetas, las
+     opciones, la lista de comprobación y las notas; antes, 14) */
+  .req-note,
+  .field-error,
+  .form-alert,
+  .send-state,
+  .send-note {
+    font-size: 1rem;
+  }
   .field-label {
-    font-size: var(--step-small);
+    font-size: 1rem;
     font-weight: 600;
   }
   .field input,
@@ -472,7 +481,7 @@ const topics = [
     align-items: center;
     min-height: 2.75rem;
     padding: 0 1rem;
-    font-size: var(--step-small);
+    font-size: 1rem;
     font-weight: 600;
     color: var(--ink);
     background: var(--paper);
@@ -492,7 +501,7 @@ const topics = [
   .checks {
     display: grid;
     gap: 0.35rem;
-    font-size: var(--step-small);
+    font-size: 1rem;
     color: var(--muted);
   }
   .checks li {
