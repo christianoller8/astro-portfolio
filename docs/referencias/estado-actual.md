@@ -187,7 +187,6 @@ Faltan publicar en christianoller.dev, cuando él lo pida, y enviar a Awwwards l
 
 ## Lo que falta de Christian
 
-- **Formulario**: elegir servicio y crear la cuenta.
 - **Analítica** (activada el 21 nov): para que no cuenten sus propias visitas, "No contar mis
   visitas" en `/privacy/`, una vez en cada navegador que use.
 - **Aviso legal**: solo hace falta si cobra proyectos a través de la web (LSSI); pendiente de que lo
@@ -197,7 +196,8 @@ Faltan publicar en christianoller.dev, cuando él lo pida, y enviar a Awwwards l
   cerraron el 25 nov: ver el roadmap.)
 - **Angular** (resuelto el 20 nov): la web ya no cita versiones, solo "Angular". Él ha tocado
   todas y no quiere un rango. (El PDF del CV sí dice v8–v18: es suyo y no se ha tocado.)
-- **Textos**: revisar todos; los nuevos son provisionales.
+- **Textos**: revisados en dos rondas (24 y 25 nov). Lo que se escriba nuevo vuelve a ser
+  provisional.
 
 ## Cambios recientes que conviene saber
 

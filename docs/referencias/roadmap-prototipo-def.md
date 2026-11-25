@@ -21,10 +21,10 @@
 | E1 · Sistema | Hecho (18 nov) |
 | E2 · Barra, lienzo y hero | Hecho (19 nov). El hero se queda así "de momento" |
 | E3 · Momentos firma | Hecho (19 nov) |
-| E4 · Páginas | Hecho (19 nov). Los casos esperan tu contenido real |
+| E4 · Páginas | Hecho (19 nov). El contenido real de los casos, cerrado el 25 nov |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov; rúbrica aprobada el 25 nov) |
 | **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara, hoja con textura de papel y selectores de tema e idioma, aprobados. A la espera de tu siguiente cambio |
-| Fase técnica | Pendiente |
+| Fase técnica | Hecha (21–25 nov). Al publicar, mirar la consola de la web en vivo |
 | Lanzamiento | En curso (25 nov): vídeo y capturas, hechos. Faltan publicar y el envío a Awwwards |
 
 ## Lo que necesito de ti
