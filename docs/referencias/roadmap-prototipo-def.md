@@ -25,7 +25,7 @@
 | **E5 · Móvil y pulido** | **Hecho** (19 nov; rúbrica aprobada el 25 nov) |
 | **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara, hoja con textura de papel y selectores de tema e idioma, aprobados. A la espera de tu siguiente cambio |
 | Fase técnica | Pendiente |
-| Lanzamiento | Pendiente |
+| Lanzamiento | En curso (25 nov): vídeo y capturas, hechos. Faltan publicar y el envío a Awwwards |
 
 ## Lo que necesito de ti
 
@@ -1039,5 +1039,15 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
 
 - [ ] Publicar `prototipo-def` en christianoller.dev (merge a `main`). Con eso desaparecen los
   proyectos de ejemplo y el formulario roto de la web actual.
-- [ ] Grabar un vídeo de 20–30 s con los momentos firma y hacer capturas a 1440 px y en móvil.
+- [x] Grabar un vídeo de 20–30 s con los momentos firma y hacer capturas a 1440 px y en móvil
+  (hecho y aprobado el 25 nov). Todo queda en `videos-raw/`, fuera de git:
+  - **Vídeo en inglés**, el del envío: `portfolio-en-web.mp4`, 27,6 s a 1920 × 1080, con póster.
+    En español, `portfolio-web.mp4` (27,3 s). Recorre la intro, las lentes de código y QA, las
+    capas 3D, el lienzo, Proyectos y el morph de la caja de Tempora a su caso.
+  - **Capturas**: 13 a 1440 px (a 2x) y 11 a 390 px (a 3x), en oscuro y en inglés, en
+    `capturas/en/`, con una hoja de contactos de cada tamaño.
+  - **Cómo se rehacen**: `app-videos.mjs portfolio-en` (y `portfolio`) y `launch-shots.mjs`, contra
+    la web construida. Hay que repetirlos cuando lleguen las fotos en blanco y negro.
+  - La intro no sale en un navegador automatizado (`navigator.webdriver`): el guion la fuerza con
+    `?intro`.
 - [ ] Enviar a Awwwards la URL en inglés.

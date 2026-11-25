@@ -178,8 +178,9 @@ Por orden de urgencia (lista completa en el roadmap):
    en el código había 18, arreglados. En los dos `href="#"` hechos a propósito (la web de ejemplo
    inerte de "Cómo lo veo yo" y "Volver arriba") la regla se desactiva con su motivo escrito.
 
-Después, el **lanzamiento**: publicar en christianoller.dev, grabar el vídeo de los momentos firma y
-enviar a Awwwards la URL en inglés.
+Después, el **lanzamiento**. El vídeo de los momentos firma y las capturas a 1440 px y en móvil ya
+están (25 nov, aprobados), en `videos-raw/` y fuera de git: el vídeo en inglés es el del envío.
+Faltan publicar en christianoller.dev, cuando él lo pida, y enviar a Awwwards la URL en inglés.
 
 ## Lo que falta de Christian
 
@@ -188,9 +189,9 @@ enviar a Awwwards la URL en inglés.
   visitas" en `/privacy/`, una vez en cada navegador que use.
 - **Aviso legal**: solo hace falta si cobra proyectos a través de la web (LSSI); pendiente de que lo
   diga.
-- **Contenido real de los casos**: sus frases de "Lo que más disfruté", decisiones, un fragmento de
-  código real de cada proyecto, año, stack y enlaces. Lo que hay ahora lo escribió Claude.
-- **Imágenes reales** de Tempora, Vibora y Learnish, y la sesión de fotos nueva en blanco y negro.
+- **Fotos**: la sesión nueva en blanco y negro. Cuando lleguen, se repiten el vídeo y las capturas
+  del lanzamiento. (El contenido real de los casos y las imágenes de Tempora, Víbora y Learnish se
+  cerraron el 25 nov: ver el roadmap.)
 - **Angular** (resuelto el 20 nov): la web ya no cita versiones, solo "Angular". Él ha tocado
   todas y no quiere un rango. (El PDF del CV sí dice v8–v18: es suyo y no se ha tocado.)
 - **Textos**: revisar todos; los nuevos son provisionales.
