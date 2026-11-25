@@ -136,42 +136,51 @@ function vibora(root: HTMLElement, target: Element) {
 
 /* ---------- Learnish ---------- */
 
+// Como en la sesión real: la tarjeta se gira para ver la respuesta, salen los cuatro botones y, al
+// calificar, entra la siguiente, el «7 de 10» avanza y la sesión suma XP
+type Card = { word: string; meaning: string; translation: string; example: string };
+
 function learnish(root: HTMLElement, target: Element) {
-  const info = data<{ cards: [string, string][]; of: string; say: { answer: string; card: string } }>(root);
+  const info = data<{ cards: Card[]; of: string; say: { answer: string; card: string } }>(root);
+  const front = root.querySelector<HTMLElement>('[data-demo-front]');
   const answer = root.querySelector<HTMLElement>('[data-demo-answer]');
   const reveal = root.querySelector<HTMLElement>('[data-demo-reveal]');
-  const buttons = root.querySelectorAll<HTMLButtonElement>('[data-demo-next]');
-  if (!answer || !reveal) return;
+  const grades = root.querySelector<HTMLElement>('[data-demo-grades]');
+  if (!front || !answer || !reveal || !grades) return;
 
   if (target.closest('[data-demo-reveal]')) {
+    front.hidden = true;
     reveal.hidden = true;
     answer.hidden = false;
-    buttons.forEach((btn) => (btn.disabled = false));
-    buttons[1]?.focus({ preventScroll: true });
-    say(root, info.say.answer, { answer: answer.textContent?.trim() ?? '' });
+    grades.hidden = false;
+    grades.querySelector<HTMLElement>('[data-demo-next="good"]')?.focus({ preventScroll: true });
+    say(root, info.say.answer, { answer: answer.dataset.say ?? '' });
     return;
   }
 
-  const next = target.closest<HTMLElement>('[data-demo-next]');
-  if (next) {
-    // "Lo sabía" avanza la lección; "Repasar" deja la tarjeta para después
-    let step = Number(root.dataset.demoStep ?? 7);
-    if (next.dataset.demoNext === 'good') step = step >= 10 ? 1 : step + 1;
+  if (target.closest('[data-demo-next]')) {
+    const step = Number(root.dataset.demoStep ?? 7) >= 10 ? 1 : Number(root.dataset.demoStep ?? 7) + 1;
     root.dataset.demoStep = String(step);
     const index = (Number(root.dataset.demoCard ?? 0) + 1) % info.cards.length;
     root.dataset.demoCard = String(index);
-    const [word, translation] = info.cards[index];
-    root.querySelector('[data-demo-word]')!.textContent = word;
-    answer.textContent = translation;
+    const card = info.cards[index];
+    root.querySelector('[data-demo-word]')!.textContent = card.word;
+    answer.querySelector('[data-demo-meaning]')!.textContent = card.meaning;
+    answer.querySelector('[data-demo-translation]')!.textContent = card.translation;
+    answer.querySelector('[data-demo-example]')!.textContent = card.example;
+    answer.dataset.say = `${card.meaning} — ${card.translation}`;
     answer.hidden = true;
+    grades.hidden = true;
+    front.hidden = false;
     reveal.hidden = false;
-    buttons.forEach((btn) => (btn.disabled = true));
     root.querySelector('[data-demo-progress]')!.textContent = `${step} ${info.of} 10`;
     root.querySelector<HTMLElement>('[data-demo-bar]')!.style.width = `${step * 10}%`;
-    const card = root.querySelector('[data-demo-card]');
-    if (card) replay(card, 'is-next');
+    const xp = root.querySelector('[data-demo-xp]');
+    if (xp) xp.textContent = String(Number(xp.textContent) + 2);
+    const box = root.querySelector('[data-demo-card]');
+    if (box) replay(box, 'is-next');
     reveal.focus({ preventScroll: true });
-    say(root, info.say.card, { word });
+    say(root, info.say.card, { word: card.word });
   }
 }
 

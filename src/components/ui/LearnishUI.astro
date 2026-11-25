@@ -1,51 +1,63 @@
 ---
-// Fragmento de interfaz de Learnish (aprender inglés). Datos de ejemplo hasta tener capturas reales.
+// Fragmento de una sesión de tarjetas de Learnish (preparar el Cambridge B2 First), dibujado en HTML a
+// partir de la app real: menú plegado, «7 de 10» con su barra y los XP de la sesión; la tarjeta se
+// gira para ver la respuesta y se califica con cuatro botones (también con las teclas 1 a 4). Las
+// tarjetas son de su mazo de phrasal verbs; los datos son de ejemplo. Sin `interactive` se dibuja
+// con la tarjeta ya girada y los cuatro botones a la vista.
 interface Props {
   lang: 'es' | 'en';
-  /** Se puede tocar: ver la respuesta y pasar de tarjeta (src/scripts/project-demos.ts) */
+  /** Se puede tocar: girar la tarjeta y calificarla (src/scripts/project-demos.ts) */
   interactive?: boolean;
 }
 
 import { useTranslations } from '@/i18n/utils';
 
 const { lang, interactive = false } = Astro.props;
+const Action = interactive ? 'button' : 'span';
 // Lo que anuncia la región educada de la demo (project-demos.ts rellena {answer} y {word})
 const t = useTranslations(lang);
 const say = { answer: t('demo.say.answer'), card: t('demo.say.card') };
 
-// Las tarjetas que van saliendo al responder
+// Las tarjetas que van saliendo al calificar (la traducción es al español: la app es para hispanohablantes)
 const cards = [
-  ['Tengo ganas de verte', 'I’m looking forward to seeing you'],
-  ['Se me ha hecho tarde', 'I’m running late'],
-  ['¿Me pones un café?', 'Could I have a coffee, please?'],
-  ['Me da igual', 'I don’t mind'],
-  ['Te echo de menos', 'I miss you'],
+  { word: 'put off', meaning: 'postpone; delay', translation: 'aplazar, posponer', example: 'They put off the meeting until next week.' },
+  { word: 'give up', meaning: 'stop trying; quit', translation: 'rendirse, dejar de', example: 'She gave up smoking last year.' },
+  { word: 'look into', meaning: 'investigate', translation: 'investigar, estudiar', example: 'We are looking into the problem.' },
+  { word: 'carry on', meaning: 'continue', translation: 'seguir, continuar', example: 'Carry on with your work.' },
+  { word: 'run out of', meaning: 'have no more of', translation: 'quedarse sin', example: 'We have run out of milk.' },
 ];
+const [card] = cards;
 
 const copy = {
   es: {
-    lesson: 'Lección 12 · Viajes',
+    label: 'Sesión de tarjetas · Phrasal verbs',
     progress: '7 de 10',
-    prompt: '¿Cómo se dice?',
-    word: 'Tengo ganas de verte',
-    answer: 'I’m looking forward to seeing you',
-    again: 'Repasar',
-    good: 'Lo sabía',
-    streak: '9 días seguidos',
-    reveal: 'Ver respuesta',
     of: 'de',
+    xp: 12,
+    badge: 'Nueva',
+    flip: 'Espacio para girar',
+    reveal: 'Ver la respuesta',
+    grades: [
+      ['again', 'Otra vez', 'hoy'],
+      ['hard', 'Difícil', 'mañana'],
+      ['good', 'Bien', 'en 3 días'],
+      ['easy', 'Fácil', 'en 7 días'],
+    ],
   },
   en: {
-    lesson: 'Lesson 12 · Travel',
+    label: 'Card session · Phrasal verbs',
     progress: '7 of 10',
-    prompt: 'How do you say it?',
-    word: 'Tengo ganas de verte',
-    answer: 'I’m looking forward to seeing you',
-    again: 'Review',
-    good: 'Got it',
-    streak: '9-day streak',
-    reveal: 'Show answer',
     of: 'of',
+    xp: 12,
+    badge: 'New',
+    flip: 'Space to flip',
+    reveal: 'Show answer',
+    grades: [
+      ['again', 'Again', 'today'],
+      ['hard', 'Hard', 'tomorrow'],
+      ['good', 'Good', 'in 3 days'],
+      ['easy', 'Easy', 'in 7 days'],
+    ],
   },
 }[lang];
 ---
@@ -54,202 +66,353 @@ const copy = {
   class="ln"
   data-ui
   role={interactive ? 'group' : 'img'}
-  aria-label={`Learnish — ${copy.lesson}`}
+  aria-label={`Learnish — ${copy.label}`}
   data-demo={interactive ? 'learnish' : undefined}
   data-demo-data={interactive ? JSON.stringify({ cards, of: copy.of, say }) : undefined}
 >
-  <div class="ln-top">
-    <span class="ln-logo" data-sketch="text">Learnish</span>
-    <span class="ln-streak" data-sketch="box">{copy.streak}</span>
+  <div class="ln-side" data-sketch="box" aria-hidden="true">
+    <span class="ln-badge">B2</span>
+    {Array.from({ length: 7 }, (_, i) => <i class:list={{ 'is-on': i === 4 }} />)}
   </div>
-  <div class="ln-progress">
-    <span>{copy.lesson}</span>
-    <span data-demo-progress>{copy.progress}</span>
-  </div>
-  <div class="ln-track" data-sketch="box" aria-hidden="true"><span data-demo-bar></span></div>
-  <div class="ln-card" data-sketch="box" data-demo-card>
-    <span class="ln-prompt" data-sketch="text">{copy.prompt}</span>
-    <span class="ln-word" data-sketch="text" data-demo-word>{copy.word}</span>
+  <div class="ln-main">
+    <div class="ln-head">
+      <span class="ln-close" aria-hidden="true"></span>
+      <span class="ln-progress">
+        <span data-demo-progress data-sketch="text">{copy.progress}</span>
+        <span class="ln-track" data-sketch="box" aria-hidden="true"><span data-demo-bar></span></span>
+      </span>
+      <span class="ln-xp" data-sketch="box">+<span data-demo-xp>{copy.xp}</span> XP</span>
+    </div>
+    <div class="ln-stage">
+    <div class="ln-card" data-sketch="box" data-demo-card>
+      <div class="ln-front" data-demo-front hidden={!interactive}>
+        <span class="ln-new">{copy.badge}</span>
+        <span class="ln-word" data-sketch="text" data-demo-word>{card.word}</span>
+        <span class="ln-flip">{copy.flip}</span>
+      </div>
+      <div
+        class="ln-back"
+        data-demo-answer
+        data-say={`${card.meaning} — ${card.translation}`}
+        hidden={interactive}
+      >
+        <span class="ln-meaning" data-sketch="text" data-demo-meaning>{card.meaning}</span>
+        <span class="ln-translation" data-sketch="text" data-demo-translation>{card.translation}</span>
+        <span class="ln-example" data-sketch="text" data-demo-example>{card.example}</span>
+      </div>
+    </div>
     {
-      interactive ? (
-        <>
-          <button type="button" class="ln-reveal" data-demo-reveal>
-            {copy.reveal}
-          </button>
-          <span class="ln-answer" data-sketch="text" data-demo-answer hidden>
-            {copy.answer}
-          </span>
-        </>
-      ) : (
-        <span class="ln-answer" data-sketch="text">{copy.answer}</span>
+      interactive && (
+        <button type="button" class="ln-reveal" data-demo-reveal>
+          {copy.reveal}
+        </button>
       )
     }
-  </div>
-  <div class="ln-actions">
-    {
-      interactive ? (
-        <>
-          <button type="button" class="ln-btn" data-sketch="box" data-demo-next="again" disabled>
-            {copy.again}
-          </button>
-          <button type="button" class="ln-btn ln-btn--good" data-sketch="box" data-demo-next="good" disabled>
-            {copy.good}
-          </button>
-        </>
-      ) : (
-        <>
-          <span class="ln-btn" data-sketch="box">{copy.again}</span>
-          <span class="ln-btn ln-btn--good" data-sketch="box">{copy.good}</span>
-        </>
-      )
-    }
+    <div class="ln-grades" data-demo-grades hidden={interactive}>
+      {
+        copy.grades.map(([key, label, when], i) => (
+          <Action
+            class={`ln-grade is-${key}`}
+            type={interactive ? 'button' : undefined}
+            data-demo-next={interactive ? key : undefined}
+            data-sketch="box"
+          >
+            <b>{label}</b>
+            <small>{when}</small>
+            <kbd aria-hidden="true">{i + 1}</kbd>
+          </Action>
+        ))
+      }
+    </div>
+    </div>
   </div>
 </div>
 
 <style>
   .ln {
+    --ln-ink: #f1f2f6;
+    --ln-muted: #9ba1b6;
+    --ln-line: #2a2f40;
+    --ln-card: #171a24;
+    --ln-gold: #e9b93a;
+    --ln-blue: #3561ea;
     display: grid;
-    align-content: start;
-    gap: 0.923em;
+    grid-template-columns: 3.4em minmax(0, 1fr);
     width: 100%;
     height: 100%;
-    padding: 1.231em 1.354em 1.354em;
+    overflow: hidden;
     font-size: var(--ui-size, 0.8125rem);
     line-height: 1.3;
-    color: #17213f;
-    background: #f6f7fb;
+    color: var(--ln-ink);
+    background: #0e1016;
   }
-  .ln-top,
-  .ln-progress {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .ln-side {
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    gap: 1.05em;
+    padding: 0.9em 0;
+    background: #0c1a5a;
   }
-  .ln-logo {
-    font-size: 1.23em;
+  .ln-badge {
+    display: grid;
+    place-items: center;
+    width: 2em;
+    height: 2em;
+    font-size: 0.85em;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #17213f;
+    color: #2a1d00;
+    background: linear-gradient(135deg, #f7d36a, #d99b1c);
+    border-radius: 0.55em;
   }
-  .ln-streak {
-    padding: 0.246em 0.677em;
-    font-weight: 600;
-    color: #3d3000;
-    background: #ffd84d;
+  .ln-side i {
+    width: 1.15em;
+    height: 1.15em;
+    border: 2px solid #8f9bd0;
+    border-radius: 0.3em;
+  }
+  .ln-side i.is-on {
+    width: 2.2em;
+    height: 2.2em;
+    background: #fff;
+    border-color: #fff;
+    border-radius: 0.6em;
+  }
+  /* Arriba, la barra de la sesión; en medio, la tarjeta y sus botones, como en la app */
+  .ln-main {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    justify-items: center;
+    gap: 1em;
+    padding: 1em 1.4em 1.2em;
+    min-width: 0;
+  }
+  .ln-stage {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 1.1em;
+    width: 100%;
+    min-height: 0;
+  }
+  .ln-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1em;
+    width: min(100%, 38em);
+  }
+  .ln-close {
+    position: relative;
+    width: 0.9em;
+    height: 0.9em;
+  }
+  .ln-close::before,
+  .ln-close::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--ln-ink);
+    transform: rotate(45deg);
+  }
+  .ln-close::after {
+    transform: rotate(-45deg);
   }
   .ln-progress {
-    color: #4a5372;
+    display: grid;
+    gap: 0.4em;
+    font-size: 0.92em;
+    font-weight: 700;
   }
   .ln-track {
-    height: 0.615em;
-    background: #e3e6f0;
+    display: block;
+    height: 0.45em;
+    background: #262b3b;
+    border-radius: 99px;
+    overflow: hidden;
   }
   .ln-track span {
     display: block;
-    width: 70%;
+    width: 60%;
     height: 100%;
-    background: #f2c200;
-    transition: width 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    background: var(--ln-blue);
+    border-radius: 99px;
+    transition: width 300ms ease;
+  }
+  .ln-xp {
+    padding: 0.3em 0.7em;
+    font-weight: 800;
+    color: #f3c44a;
+    background: #3a2d0b;
+    border-radius: 99px;
   }
   .ln-card {
     display: grid;
-    gap: 0.615em;
-    padding: 1.354em 1.231em;
-    background: #fff;
-    border: 1px solid #e3e6f0;
+    width: min(100%, 30em);
+    min-height: 12em;
+    padding: 1.4em 1.7em;
+    background: var(--ln-card);
+    border-top: 3px solid var(--ln-gold);
+    border-radius: 0.9em;
+    box-shadow: 0 0.8em 2em rgb(0 0 0 / 0.35);
   }
-  .ln-prompt {
-    color: #4a5372;
+  .ln-front {
+    display: grid;
+    justify-items: center;
+    align-content: space-between;
+    gap: 0.8em;
+  }
+  .ln-front[hidden],
+  .ln-back[hidden],
+  .ln-grades[hidden] {
+    display: none;
+  }
+  .ln-new {
+    justify-self: start;
+    padding: 0.15em 0.55em;
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #2a1d00;
+    background: var(--ln-gold);
+    border-radius: 99px;
   }
   .ln-word {
-    font-size: 1.54em;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 2.6em;
     font-weight: 700;
-    letter-spacing: -0.01em;
   }
-  .ln-answer {
-    padding-top: 0.615em;
-    font-weight: 600;
-    color: #2e3f8f;
-    border-top: 1px dashed #d5d9e6;
+  .ln-flip {
+    font-size: 0.8em;
+    color: var(--ln-muted);
   }
-  .ln-actions {
+  .ln-back {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.615em;
+    align-content: center;
+    gap: 0.45em;
   }
-  .ln-btn {
-    padding: 0.738em;
-    text-align: center;
+  .ln-meaning {
+    font-family: Georgia, 'Times New Roman', serif;
+    color: #c9cde0;
+  }
+  .ln-translation {
+    font-size: 1.35em;
+    font-weight: 800;
+  }
+  .ln-example {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    color: #d8dbe8;
+  }
+  .ln-reveal {
+    padding: 0.6em 1.3em;
+    font: inherit;
     font-weight: 700;
-    color: #17213f;
-    background: #e3e6f0;
+    color: #fff;
+    background: var(--ln-blue);
+    border: 0;
+    border-radius: 0.5em;
+    cursor: pointer;
   }
-  .ln-btn--good {
-    color: #2b2200;
-    background: #ffd84d;
+  .ln-grades {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6em;
+    width: min(100%, 38em);
+  }
+  .ln-grade {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.1em;
+    padding: 0.6em 0.4em;
+    font: inherit;
+    color: var(--ln-ink);
+    background: var(--ln-card);
+    border: 1px solid #3a4054;
+    border-bottom-width: 3px;
+    border-radius: 0.55em;
+  }
+  .ln-grade b {
+    font-weight: 700;
+  }
+  .ln-grade small {
+    font-size: 0.82em;
+    color: var(--ln-muted);
+  }
+  .ln-grade kbd {
+    position: absolute;
+    top: 0.3em;
+    right: 0.35em;
+    padding: 0 0.3em;
+    font: inherit;
+    font-size: 0.7em;
+    color: var(--ln-muted);
+    border: 1px solid #3a4054;
+    border-radius: 0.3em;
+  }
+  .ln-grade.is-again {
+    border-bottom-color: #e2534d;
+  }
+  .ln-grade.is-hard {
+    border-bottom-color: #e5a22b;
+  }
+  .ln-grade.is-good {
+    border-bottom-color: #3cb371;
+  }
+  .ln-grade.is-easy {
+    border-bottom-color: var(--ln-blue);
   }
   /* Lo que se puede tocar */
-  .ln-reveal {
-    justify-self: start;
-    margin-top: 0.308em;
-    padding: 0.554em 0.923em;
-    font-weight: 700;
-    color: #2e3f8f;
-    background: #e9ecfa;
+  button.ln-grade,
+  button.ln-reveal {
     cursor: pointer;
     transition:
       background-color 140ms ease-out,
       transform 140ms ease-out;
   }
-  .ln-reveal:hover {
-    background: #d9dff7;
+  button.ln-grade:hover {
+    background: #20243a;
   }
-  button.ln-btn {
-    cursor: pointer;
-    transition:
-      opacity 140ms ease-out,
-      transform 140ms ease-out;
+  button.ln-reveal:hover {
+    background: #2a52d6;
   }
-  button.ln-btn:disabled {
-    cursor: default;
-    opacity: 0.45;
-  }
-  button.ln-btn:not(:disabled):hover {
-    filter: brightness(0.96);
-  }
-  .ln-reveal:active,
-  button.ln-btn:not(:disabled):active {
+  button.ln-grade:active,
+  button.ln-reveal:active {
     transform: scale(0.97);
   }
   .ln :focus-visible {
-    outline: 2px solid #17213f;
+    outline: 2px solid var(--ln-ink);
     outline-offset: 2px;
   }
-  .ln-answer:not([hidden]) {
-    animation: ln-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
   .ln-card.is-next {
-    animation: ln-card 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: ln-next 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  @keyframes ln-in {
+  @keyframes ln-next {
     from {
       opacity: 0;
-      transform: translateY(0.369em);
-    }
-  }
-  @keyframes ln-card {
-    from {
-      opacity: 0;
-      transform: translateX(1.477em);
+      transform: translateX(1.2rem);
     }
   }
   @media (prefers-reduced-motion: reduce) {
+    .ln-card.is-next {
+      animation: none;
+    }
     .ln-track span {
       transition: none;
     }
-    .ln-answer:not([hidden]),
-    .ln-card.is-next {
-      animation: none;
+  }
+  @media (max-width: 640px) {
+    .ln {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .ln-side {
+      display: none;
+    }
+    .ln-grades {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 </style>

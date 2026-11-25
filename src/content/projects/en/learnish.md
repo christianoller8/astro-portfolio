@@ -2,7 +2,6 @@
 title: 'Learnish'
 description: 'Desktop web application to prepare for the Cambridge B2 First: practice for the four papers, mock exams with an estimated score and error review.'
 kind: 'app'
-format: 'mobile'
 status: 'Version 2.1, for personal use'
 role: 'Design, development and QA'
 ui: 'learnish'

@@ -97,42 +97,7 @@ const host = link ? new URL(link).host : '';
     object-position: top center;
   }
 
-  /* Cada app en su formato: Vibora y Learnish son de móvil, así que van centradas sobre su color */
-  .pv--vibora .pv-clip {
-    background: #0b1712;
-  }
-  .pv--learnish .pv-clip {
-    background: #e7eaf5;
-  }
-  /* En oscuro, el fondo de Learnish baja para que solo brille la pantalla de la app */
-  :global(:root.dark) .pv--learnish .pv-clip {
-    background: #1c1f2e;
-  }
-  .pv--vibora .pv-clip > :global(*),
-  .pv--learnish .pv-clip > :global(*) {
-    justify-self: center;
-    align-self: center;
-    height: auto;
-  }
-  .pv--vibora .pv-clip > :global(*) {
-    max-width: 46rem;
-  }
-  .pv--learnish .pv-clip > :global(*) {
-    max-width: 27rem;
-  }
-  /* En pantallas estrechas la interfaz de Vibora encoge con el ancho para caber entera */
-  @media (max-width: 767px) {
-    .pv--vibora .pv-clip {
-      --ui-size: clamp(0.625rem, 3.2vw, 0.8125rem);
-    }
-  }
-  /* Con sitio (a partir de tablet) la interfaz va a tamaño de lectura */
-  @media (min-width: 768px) {
-    .pv--vibora .pv-clip,
-    .pv--learnish .pv-clip {
-      --ui-size: 1rem;
-    }
-  }
+  /* Las tres apps son de escritorio: sus interfaces llenan la caja, como la de Tempora */
 
   /* La web publicada: barra de navegador con su dirección y el botón para abrirla aquí mismo */
   .pv-bar {

@@ -127,21 +127,26 @@ for (const lang of LANGS) {
       await expect(slots.first()).toBeFocused();
     });
 
-    test('Learnish shows the answer and moves to the next card, and announces both', async ({ page }) => {
+    test('Learnish flips the card, grades it with one of four buttons and moves on, and announces both', async ({ page }) => {
       const demo = page.locator('.stack [data-demo="learnish"]');
       await demo.scrollIntoViewIfNeeded();
       const live = demo.locator('[data-demo-live-region]');
       const word = demo.locator('[data-demo-word]');
       const answer = demo.locator('[data-demo-answer]');
+      const grades = demo.locator('[data-demo-next]');
       const firstWord = await word.textContent();
       // "7 de 10": el número que sube al pasar de tarjeta se lee de la página, no se copia aquí
       const step = Number(((await demo.locator('[data-demo-progress]').textContent()) ?? '').match(/\d+/)?.[0]);
       expect(step).toBeGreaterThan(0);
 
+      // Los cuatro botones solo salen con la tarjeta girada, como en la app
       await expect(answer).toBeHidden();
+      await expect(grades.first()).toBeHidden();
       await demo.locator('[data-demo-reveal]').click();
       await expect(answer).toBeVisible();
-      const text = ((await answer.textContent()) ?? '').trim();
+      await expect(grades).toHaveCount(4);
+      await expect(demo.locator('[data-demo-next="good"]')).toBeFocused();
+      const text = (await answer.getAttribute('data-say')) ?? '';
       await expect(live).toHaveText(tf(lang, 'demo.say.answer', { answer: text }));
 
       await demo.locator('[data-demo-next="good"]').click();
@@ -150,6 +155,7 @@ for (const lang of LANGS) {
       await expect(live).toHaveText(tf(lang, 'demo.say.card', { word: next }));
       await expect(demo.locator('[data-demo-progress]')).toHaveText(new RegExp(`^${step + 1}\\D`));
       await expect(answer).toBeHidden();
+      await expect(demo.locator('[data-demo-reveal]')).toBeFocused();
     });
   });
 }
