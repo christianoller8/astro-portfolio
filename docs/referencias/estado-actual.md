@@ -44,7 +44,10 @@ actualiza cuando cambie el punto en el que estamos. El detalle de cada cosa est�
   'mobile'`) y las tres maquetas dibujan las apps reales: el cuadrante mensual de Tempora (la demo
   pone un turno pulsando una casilla), la agenda de una pista de Víbora (con el diálogo «Confirmar
   reserva») y la sesión de tarjetas de Learnish (cuatro botones). Las miniaturas del lienzo, las
-  alturas de las páginas y las imágenes para compartir están regeneradas.
+  alturas de las páginas y las imágenes para compartir están regeneradas. Repasadas las 79
+  decisiones contra el código (25 nov), se completaron las dos que faltaban: una frase partida en
+  la privacidad y la «Racha de 9 días» en la maqueta de Learnish. La decisión 2 de Víbora se queda
+  en «dos pasos» y no en «toques», como aceptó él, por ser una app de escritorio (decidido por él).
 - **Más retoques del 20 nov, cerrados**: la marca de la barra es una firma, "Chris" (D28; de
   momento en Rock Salt, pendiente de su firma a mano), que se escribe a máquina al cargar; el
   menú va a 16 px y marca la página con una línea bajo la palabra; los selectores resaltan la

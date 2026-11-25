@@ -1,6 +1,6 @@
 ---
 // Fragmento de una sesión de tarjetas de Learnish (preparar el Cambridge B2 First), dibujado en HTML a
-// partir de la app real: menú plegado, «7 de 10» con su barra y los XP de la sesión; la tarjeta se
+// partir de la app real: menú plegado, «7 de 10» con su barra, la racha y los XP de la sesión; la tarjeta se
 // gira para ver la respuesta y se califica con cuatro botones (también con las teclas 1 a 4). Las
 // tarjetas son de su mazo de phrasal verbs; los datos son de ejemplo. Sin `interactive` se dibuja
 // con la tarjeta ya girada y los cuatro botones a la vista.
@@ -33,6 +33,7 @@ const copy = {
     label: 'Sesión de tarjetas · Phrasal verbs',
     progress: '7 de 10',
     of: 'de',
+    streak: 'Racha de 9 días',
     xp: 12,
     badge: 'Nueva',
     flip: 'Espacio para girar',
@@ -48,6 +49,7 @@ const copy = {
     label: 'Card session · Phrasal verbs',
     progress: '7 of 10',
     of: 'of',
+    streak: '9-day streak',
     xp: 12,
     badge: 'New',
     flip: 'Space to flip',
@@ -81,7 +83,13 @@ const copy = {
         <span data-demo-progress data-sketch="text">{copy.progress}</span>
         <span class="ln-track" data-sketch="box" aria-hidden="true"><span data-demo-bar></span></span>
       </span>
-      <span class="ln-xp" data-sketch="box">+<span data-demo-xp>{copy.xp}</span> XP</span>
+      <span class="ln-chips">
+        <span class="ln-streak" data-sketch="box">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8.4 1c.5 2.3-1.8 3.5-1.8 5.8 0 .9.4 1.7 1 2.1-.2-1.3 1.1-2.3 1.6-3.5 1.8 1.4 2.8 3.1 2.8 4.9A4 4 0 0 1 4 10.3C4 6.6 8.4 5.2 8.4 1Z" fill="currentColor"/></svg>
+          {copy.streak}
+        </span>
+        <span class="ln-xp" data-sketch="box">+<span data-demo-xp>{copy.xp}</span> XP</span>
+      </span>
     </div>
     <div class="ln-stage">
     <div class="ln-card" data-sketch="box" data-demo-card>
@@ -242,12 +250,31 @@ const copy = {
     border-radius: 99px;
     transition: width 300ms ease;
   }
+  .ln-chips {
+    display: flex;
+    gap: 0.5em;
+  }
+  .ln-streak,
   .ln-xp {
     padding: 0.3em 0.7em;
     font-weight: 800;
+    white-space: nowrap;
+    border-radius: 99px;
+  }
+  .ln-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    color: #ff9b57;
+    background: #3b1d0c;
+  }
+  .ln-streak svg {
+    width: 0.95em;
+    height: 0.95em;
+  }
+  .ln-xp {
     color: #f3c44a;
     background: #3a2d0b;
-    border-radius: 99px;
   }
   .ln-card {
     display: grid;
