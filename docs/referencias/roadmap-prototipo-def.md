@@ -24,7 +24,7 @@
 | E4 · Páginas | Hecho (19 nov). El contenido real de los casos, cerrado el 25 nov |
 | **E5 · Móvil y pulido** | **Hecho** (19 nov; rúbrica aprobada el 25 nov) |
 | **Ajustes de diseño** | **En curso** (20 nov): hero, barra, foto clara, hoja con textura de papel y selectores de tema e idioma, aprobados. A la espera de tu siguiente cambio |
-| Fase técnica | Hecha (21–25 nov). Al publicar, mirar la consola de la web en vivo |
+| Fase técnica | Hecha (21–25 nov), con la consola de la web en vivo revisada el 25 nov |
 | Lanzamiento | Hecho (25 nov): vídeo, capturas y publicación. Desde ese día se trabaja en `main` |
 
 ## Lo que necesito de ti
@@ -1026,8 +1026,9 @@ esta lista (SEO, accesibilidad, cabeceras, manifest y 404). El detalle está en
   precargada, imágenes a su tamaño y CSS dentro de cada página (móvil de 88–91 a 91–94 en
   Lighthouse; detalle y coste en estado-actual).
 - [x] **Seguridad**: CSP y cabeceras. Aprobada el 23 nov la CSP simple (todo desde la propia web,
-  guiones en línea permitidos, sin CSP en `/cv/`), con `tests/csp.spec.ts`. Falta mirar la consola
-  de la web publicada cuando se suba.
+  guiones en línea permitidos, sin CSP en `/cv/`), con `tests/csp.spec.ts`. La consola de la
+  web publicada, revisada el 25 nov: limpia en 11 páginas de los dos idiomas, con la analítica
+  cargando desde su ruta propia del mismo origen y sin bloqueos.
 - [x] **Analítica** sin cookies (sin banner). Hecha el 21 nov con Vercel Web Analytics y la página
   de privacidad, publicada y activada ese día: Christian vio llegar su primera visita.
 - [x] **Tests de Playwright**: lentes, navegación, formulario y accesibilidad. Reescritos el 23 nov

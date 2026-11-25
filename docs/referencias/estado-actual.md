@@ -156,8 +156,10 @@ Por orden de urgencia (lista completa en el roadmap):
    lleva `data:` porque el router de Astro mete en cada cambio de página un guion vacío
    `data:application/javascript,`. No se pone en `/cv/`: con `object-src 'none'` el visor de PDF de
    Safari (y a veces el de Chrome) se queda en blanco. `tests/csp.spec.ts` la añade a cada página
-   (astro preview no envía cabeceras) y exige cero bloqueos. Pendiente: mirar la consola de la web
-   publicada tras subirla, porque la analítica de Vercel solo existe allí (carga de la propia web).
+   (astro preview no envía cabeceras) y exige cero bloqueos. La consola de la web
+   publicada se revisó el 25 nov, en 11 páginas de los dos idiomas: limpia. La analítica de Vercel
+   (solo existe allí) carga desde una ruta propia del mismo origen, `/b1a7554041cbcc8b/script.js`, no
+   desde `/_vercel/insights/`; se reconoce por `script[data-sdkn^="@vercel/analytics"]`.
    En los despliegues de prueba de Vercel la barra de comentarios (`vercel.live`) queda bloqueada.
 6. **Analítica** sin cookies: hecha el 21 nov con Vercel Web Analytics (sin banner), junto con la
    página de privacidad. Publicada el 21 nov y comprobada en vivo: el script carga una vez y cada
@@ -188,7 +190,8 @@ están (25 nov, aprobados), en `videos-raw/` y fuera de git. Publicado en christ
 ## Lo que falta de Christian
 
 - **Analítica** (activada el 21 nov): para que no cuenten sus propias visitas, "No contar mis
-  visitas" en `/privacy/`, una vez en cada navegador que use.
+  visitas" en `/privacy/`, una vez en cada navegador que use. Hecho el 25 nov en el navegador
+  integrado de la app de Claude; faltan su Chrome y su móvil.
 - **Aviso legal** (resuelto el 25 nov): no hace falta, porque no va a cobrar a través de la web.
 - **Fotos**: la sesión nueva en blanco y negro. Cuando lleguen, se repiten el vídeo y las capturas
   del lanzamiento. (El contenido real de los casos y las imágenes de Tempora, Víbora y Learnish se
